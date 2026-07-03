@@ -64,6 +64,7 @@ public:
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
 private:
+	aeWindowMain &pWindowMain;
 	MetaContext::Ref pMetaContext;
 	aeAnimator *pAnimator;
 	
@@ -71,18 +72,19 @@ private:
 	
 	bool pTempNoNotify = false;
 	
-	igdeMetaPropertyStringStorage::Storage pMPName;
-	igdeMetaPropertyObjectStorage<aeController>::Storage pMPController;
-	igdeMetaPropertyIntegerStorage::Storage pMPRepeat;
-	igdeMetaPropertyCurveBezierStorage::Storage pMPCurve;
-	igdeMetaPropertyStringStorage::Storage pMPBone;
-	igdeMetaPropertySelectionEnumStorage<deAnimatorLink::eBoneParameter>::Storage pMPBoneParameter;
-	igdeMetaPropertyFloatStorage::Storage pMPBoneMinimum;
-	igdeMetaPropertyFloatStorage::Storage pMPBoneMaximum;
-	igdeMetaPropertyStringStorage::Storage pMPVertexPositionSet;
-	igdeMetaPropertyFloatStorage::Storage pMPVpsMinimum;
-	igdeMetaPropertyFloatStorage::Storage pMPVpsMaximum;
-	igdeMetaPropertyBooleanStorage::Storage pMPWrapY;
+public:
+	igdeMetaPropertyStringStorage::Storage mpName;
+	igdeMetaPropertyObjectStorage<aeController>::Storage mpController;
+	igdeMetaPropertyIntegerStorage::Storage mpRepeat;
+	igdeMetaPropertyCurveBezierStorage::Storage mpCurve;
+	igdeMetaPropertyStringStorage::Storage mpBone;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorLink::eBoneParameter>::Storage mpBoneParameter;
+	igdeMetaPropertyFloatStorage::Storage mpBoneMinimum;
+	igdeMetaPropertyFloatStorage::Storage mpBoneMaximum;
+	igdeMetaPropertyStringStorage::Storage mpVertexPositionSet;
+	igdeMetaPropertyFloatStorage::Storage mpVpsMinimum;
+	igdeMetaPropertyFloatStorage::Storage mpVpsMaximum;
+	igdeMetaPropertyBooleanStorage::Storage mpWrapY;
 	
 	
 public:
@@ -92,9 +94,8 @@ public:
 	aeLink(aeWindowMain &windowMain, const char *name = "Link");
 	
 	/** Create copy of link. */
-	aeLink(aeWindowMain &windowMain, const aeLink &copy);
+	aeLink(const aeLink &copy);
 	
-	aeLink(const aeLink&) = delete;
 	aeLink(aeLink&&) = delete;
 	aeLink& operator=(const aeLink&) = delete;
 	aeLink& operator=(aeLink&&) = delete;
@@ -109,19 +110,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyStringStorage::Storage &GetMPName(){ return pMPName; }
-	inline igdeMetaPropertyObjectStorage<aeController>::Storage &GetMPController(){ return pMPController; }
-	inline igdeMetaPropertyIntegerStorage::Storage &GetMPRepeat(){ return pMPRepeat; }
-	inline igdeMetaPropertyCurveBezierStorage::Storage &GetMPCurve(){ return pMPCurve; }
-	inline igdeMetaPropertyStringStorage::Storage &GetMPBone(){ return pMPBone; }
-	inline igdeMetaPropertySelectionEnumStorage<deAnimatorLink::eBoneParameter>::Storage &GetMPBoneParameter(){ return pMPBoneParameter; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPBoneMinimum(){ return pMPBoneMinimum; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPBoneMaximum(){ return pMPBoneMaximum; }
-	inline igdeMetaPropertyStringStorage::Storage &GetMPVertexPositionSet(){ return pMPVertexPositionSet; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPVertexPositionSetMinimum(){ return pMPVpsMinimum; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPVertexPositionSetMaximum(){ return pMPVpsMaximum; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPWrapY(){ return pMPWrapY; }
-	
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
@@ -144,7 +133,7 @@ public:
 	
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pMPName; }
+	inline const decString &GetName() const{ return mpName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
@@ -152,13 +141,13 @@ public:
 	
 	
 	/** Controller or \em nullptr. */
-	inline const deTObjectReference<aeController> &GetController() const{ return pMPController; }
+	inline const deTObjectReference<aeController> &GetController() const{ return mpController; }
 	
 	/** Set controller or \em nullptr. */
 	void SetController(aeController *controller, bool notify = true);
 	
 	/** Repeat count of input value. */
-	inline int GetRepeat() const{ return pMPRepeat; }
+	inline int GetRepeat() const{ return mpRepeat; }
 	
 	/**
 	 * Set repeat count of input value.
@@ -167,7 +156,7 @@ public:
 	void SetRepeat(int repeat);
 	
 	/** Curve. */
-	const decCurveBezier &GetCurve() const{ return pMPCurve; }
+	const decCurveBezier &GetCurve() const{ return mpCurve; }
 	
 	/** Set curve. */
 	void SetCurve(const decCurveBezier &curve);
@@ -176,7 +165,7 @@ public:
 	 * Bone to use parameter of as input or empty string to not use.
 	 * \version 1.6
 	 */
-	inline const decString &GetBone() const{ return pMPBone; }
+	inline const decString &GetBone() const{ return mpBone; }
 	
 	/**
 	 * Set bone to use parameter of as input or empty string to not use.
@@ -188,7 +177,7 @@ public:
 	 * Bone parameter to use as input.
 	 * \version 1.6
 	 */
-	inline deAnimatorLink::eBoneParameter GetBoneParameter() const{ return pMPBoneParameter; }
+	inline deAnimatorLink::eBoneParameter GetBoneParameter() const{ return mpBoneParameter; }
 	
 	/**
 	 * Set bone parameter to use as input.
@@ -200,7 +189,7 @@ public:
 	 * Minimum bone parameter value.
 	 * \version 1.6
 	 */
-	inline float GetBoneMinimum() const{ return pMPBoneMinimum; }
+	inline float GetBoneMinimum() const{ return mpBoneMinimum; }
 	
 	/**
 	 * Set minimum bone parameter value
@@ -212,7 +201,7 @@ public:
 	 * Maximum bone parameter value.
 	 * \version 1.6
 	 */
-	inline float GetBoneMaximum() const{ return pMPBoneMaximum; }
+	inline float GetBoneMaximum() const{ return mpBoneMaximum; }
 	
 	/**
 	 * Set maximum bone parameter value.
@@ -221,19 +210,19 @@ public:
 	void SetBoneMaximum(float value);
 	
 	/** Vertex position set to use as input or empty string to not use. */
-	inline const decString &GetVertexPositionSet() const{ return pMPVertexPositionSet; }
+	inline const decString &GetVertexPositionSet() const{ return mpVertexPositionSet; }
 	
 	/** Set vertex position set to use as input or empty string to not use. */
 	void SetVertexPositionSet(const char *vertexPositionSet);
 	
 	/** Minimum vertex position set parameter value. */
-	inline float GetVertexPositionSetMinimum() const{ return pMPVpsMinimum; }
+	inline float GetVertexPositionSetMinimum() const{ return mpVpsMinimum; }
 	
 	/** Set minimum vertex position set parameter value. */
 	void SetVertexPositionSetMinimum(float value);
 	
 	/** Maximum vertex position set parameter value. */
-	inline float GetVertexPositionSetMaximum() const{ return pMPVpsMaximum; }
+	inline float GetVertexPositionSetMaximum() const{ return mpVpsMaximum; }
 	
 	/** Set maximum vertex position set parameter value. */
 	void SetVertexPositionSetMaximum(float value);
@@ -242,7 +231,7 @@ public:
 	 * Wrap Y value instead of clamping.
 	 * \version 1.9
 	 */
-	inline bool GetWrapY() const{ return pMPWrapY; }
+	inline bool GetWrapY() const{ return mpWrapY; }
 	
 	/**
 	 * Set to wrap Y value instead of clamping.

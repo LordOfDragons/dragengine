@@ -86,9 +86,9 @@ public:
 		pEulerAngles = value.GetEulerAngles() * RAD2DEG;
 		pQuaternion = value;
 		
-		igdeMetaPropertyStorage<P>::onValueChanged();
+		this->onValueChanged();
 		if(notify){
-			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+			this->Property().NotifyValueChanged(this->Context());
 		}
 	}
 	
@@ -101,9 +101,9 @@ public:
 		pEulerAngles = value;
 		pQuaternion.SetFromEuler(value * DEG2RAD);
 		
-		igdeMetaPropertyStorage<P>::onValueChanged();
+		this->onValueChanged();
 		if(notify){
-			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+			this->Property().NotifyValueChanged(this->Context());
 		}
 	}
 	

@@ -48,422 +48,422 @@ aeRuleLimit(windowMain, aname, CreateMetaContext(windowMain, this)){}
 
 aeRuleLimit::aeRuleLimit(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
 aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertLimit, aname),
-pMPMinPosition(windowMain.GetMCAnimatorProperties().ruleLimit.minPosition, metaContext),
-pMPMaxPosition(windowMain.GetMCAnimatorProperties().ruleLimit.maxPosition, metaContext),
-pMPMinRotation(windowMain.GetMCAnimatorProperties().ruleLimit.minRotation, metaContext),
-pMPMaxRotation(windowMain.GetMCAnimatorProperties().ruleLimit.maxRotation, metaContext),
-pMPMinScaling(windowMain.GetMCAnimatorProperties().ruleLimit.minScaling, metaContext),
-pMPMaxScaling(windowMain.GetMCAnimatorProperties().ruleLimit.maxScaling, metaContext),
-pMPMinVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleLimit.minVertexPositionSet, metaContext),
-pMPMaxVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleLimit.maxVertexPositionSet, metaContext),
-pMPTargetBone(windowMain.GetMCAnimatorProperties().ruleLimit.targetBone, metaContext),
-pMPCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleLimit.coordinateFrame, metaContext),
-pMPEnablePositionXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionXMin, metaContext),
-pMPEnablePositionXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionXMax, metaContext),
-pMPEnablePositionYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionYMin, metaContext),
-pMPEnablePositionYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionYMax, metaContext),
-pMPEnablePositionZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionZMin, metaContext),
-pMPEnablePositionZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionZMax, metaContext),
-pMPEnableRotationXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationXMin, metaContext),
-pMPEnableRotationXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationXMax, metaContext),
-pMPEnableRotationYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationYMin, metaContext),
-pMPEnableRotationYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationYMax, metaContext),
-pMPEnableRotationZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationZMin, metaContext),
-pMPEnableRotationZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationZMax, metaContext),
-pMPEnableScalingXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingXMin, metaContext),
-pMPEnableScalingXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingXMax, metaContext),
-pMPEnableScalingYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingYMin, metaContext),
-pMPEnableScalingYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingYMax, metaContext),
-pMPEnableScalingZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingZMin, metaContext),
-pMPEnableScalingZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingZMax, metaContext),
-pMPEnableVertexPositionSetMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableVertexPositionSetMin, metaContext),
-pMPEnableVertexPositionSetMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableVertexPositionSetMax, metaContext)
+mpMinPosition(windowMain.GetMCAnimatorProperties().ruleLimit.minPosition, metaContext),
+mpMaxPosition(windowMain.GetMCAnimatorProperties().ruleLimit.maxPosition, metaContext),
+mpMinRotation(windowMain.GetMCAnimatorProperties().ruleLimit.minRotation, metaContext),
+mpMaxRotation(windowMain.GetMCAnimatorProperties().ruleLimit.maxRotation, metaContext),
+mpMinScaling(windowMain.GetMCAnimatorProperties().ruleLimit.minScaling, metaContext),
+mpMaxScaling(windowMain.GetMCAnimatorProperties().ruleLimit.maxScaling, metaContext),
+mpMinVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleLimit.minVertexPositionSet, metaContext),
+mpMaxVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleLimit.maxVertexPositionSet, metaContext),
+mpTargetBone(windowMain.GetMCAnimatorProperties().ruleLimit.targetBone, metaContext),
+mpCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleLimit.coordinateFrame, metaContext),
+mpEnablePositionXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionXMin, metaContext),
+mpEnablePositionXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionXMax, metaContext),
+mpEnablePositionYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionYMin, metaContext),
+mpEnablePositionYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionYMax, metaContext),
+mpEnablePositionZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionZMin, metaContext),
+mpEnablePositionZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionZMax, metaContext),
+mpEnableRotationXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationXMin, metaContext),
+mpEnableRotationXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationXMax, metaContext),
+mpEnableRotationYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationYMin, metaContext),
+mpEnableRotationYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationYMax, metaContext),
+mpEnableRotationZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationZMin, metaContext),
+mpEnableRotationZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationZMax, metaContext),
+mpEnableScalingXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingXMin, metaContext),
+mpEnableScalingXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingXMax, metaContext),
+mpEnableScalingYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingYMin, metaContext),
+mpEnableScalingYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingYMax, metaContext),
+mpEnableScalingZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingZMin, metaContext),
+mpEnableScalingZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingZMax, metaContext),
+mpEnableVertexPositionSetMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableVertexPositionSetMin, metaContext),
+mpEnableVertexPositionSetMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableVertexPositionSetMax, metaContext)
 {
-	pMPMinPosition.onValueChanged = [this](){
+	mpMinPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumPosition(pMPMinPosition);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumPosition(mpMinPosition);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPMaxPosition.onValueChanged = [this](){
+	mpMaxPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumPosition(pMPMaxPosition);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumPosition(mpMaxPosition);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPMinRotation.onValueChanged = [this](){
+	mpMinRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumRotation(pMPMinRotation);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumRotation(mpMinRotation);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPMaxRotation.onValueChanged = [this](){
+	mpMaxRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumRotation(pMPMaxRotation);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumRotation(mpMaxRotation);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPMinScaling.onValueChanged = [this](){
+	mpMinScaling.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumScaling(pMPMinScaling);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumScaling(mpMinScaling);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPMaxScaling.onValueChanged = [this](){
+	mpMaxScaling.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumScaling(pMPMaxScaling);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumScaling(mpMaxScaling);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPMinVertexPositionSet.onValueChanged = [this](){
+	mpMinVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumVertexPositionSet(pMPMinVertexPositionSet);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumVertexPositionSet(mpMinVertexPositionSet);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPMaxVertexPositionSet.onValueChanged = [this](){
+	mpMaxVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumVertexPositionSet(pMPMaxVertexPositionSet);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumVertexPositionSet(mpMaxVertexPositionSet);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPTargetBone.onValueChanged = [this](){
+	mpTargetBone.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetTargetBone(pMPTargetBone);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetTargetBone(mpTargetBone);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPCoordinateFrame.onValueChanged = [this](){
+	mpCoordinateFrame.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetCoordinateFrame(pMPCoordinateFrame);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetCoordinateFrame(mpCoordinateFrame);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionXMin.onValueChanged = [this](){
+	mpEnablePositionXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMin(pMPEnablePositionXMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMin(mpEnablePositionXMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionXMax.onValueChanged = [this](){
+	mpEnablePositionXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMax(pMPEnablePositionXMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMax(mpEnablePositionXMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionYMin.onValueChanged = [this](){
+	mpEnablePositionYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMin(pMPEnablePositionYMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMin(mpEnablePositionYMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionYMax.onValueChanged = [this](){
+	mpEnablePositionYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMax(pMPEnablePositionYMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMax(mpEnablePositionYMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionZMin.onValueChanged = [this](){
+	mpEnablePositionZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMin(pMPEnablePositionZMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMin(mpEnablePositionZMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionZMax.onValueChanged = [this](){
+	mpEnablePositionZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMax(pMPEnablePositionZMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMax(mpEnablePositionZMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationXMin.onValueChanged = [this](){
+	mpEnableRotationXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMin(pMPEnableRotationXMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMin(mpEnableRotationXMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationXMax.onValueChanged = [this](){
+	mpEnableRotationXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMax(pMPEnableRotationXMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMax(mpEnableRotationXMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationYMin.onValueChanged = [this](){
+	mpEnableRotationYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMin(pMPEnableRotationYMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMin(mpEnableRotationYMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationYMax.onValueChanged = [this](){
+	mpEnableRotationYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMax(pMPEnableRotationYMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMax(mpEnableRotationYMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationZMin.onValueChanged = [this](){
+	mpEnableRotationZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMin(pMPEnableRotationZMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMin(mpEnableRotationZMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationZMax.onValueChanged = [this](){
+	mpEnableRotationZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMax(pMPEnableRotationZMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMax(mpEnableRotationZMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingXMin.onValueChanged = [this](){
+	mpEnableScalingXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMin(pMPEnableScalingXMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMin(mpEnableScalingXMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingXMax.onValueChanged = [this](){
+	mpEnableScalingXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMax(pMPEnableScalingXMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMax(mpEnableScalingXMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingYMin.onValueChanged = [this](){
+	mpEnableScalingYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMin(pMPEnableScalingYMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMin(mpEnableScalingYMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingYMax.onValueChanged = [this](){
+	mpEnableScalingYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMax(pMPEnableScalingYMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMax(mpEnableScalingYMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingZMin.onValueChanged = [this](){
+	mpEnableScalingZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMin(pMPEnableScalingZMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMin(mpEnableScalingZMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingZMax.onValueChanged = [this](){
+	mpEnableScalingZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMax(pMPEnableScalingZMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMax(mpEnableScalingZMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableVertexPositionSetMin.onValueChanged = [this](){
+	mpEnableVertexPositionSetMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMin(pMPEnableVertexPositionSetMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMin(mpEnableVertexPositionSetMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableVertexPositionSetMax.onValueChanged = [this](){
+	mpEnableVertexPositionSetMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMax(pMPEnableVertexPositionSetMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMax(mpEnableVertexPositionSetMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionXMin.onValueChanged = [this](){
+	mpEnablePositionXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMin(pMPEnablePositionXMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMin(mpEnablePositionXMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionXMax.onValueChanged = [this](){
+	mpEnablePositionXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMax(pMPEnablePositionXMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMax(mpEnablePositionXMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionYMin.onValueChanged = [this](){
+	mpEnablePositionYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMin(pMPEnablePositionYMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMin(mpEnablePositionYMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionYMax.onValueChanged = [this](){
+	mpEnablePositionYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMax(pMPEnablePositionYMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMax(mpEnablePositionYMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionZMin.onValueChanged = [this](){
+	mpEnablePositionZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMin(pMPEnablePositionZMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMin(mpEnablePositionZMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePositionZMax.onValueChanged = [this](){
+	mpEnablePositionZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMax(pMPEnablePositionZMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMax(mpEnablePositionZMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationXMin.onValueChanged = [this](){
+	mpEnableRotationXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMin(pMPEnableRotationXMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMin(mpEnableRotationXMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationXMax.onValueChanged = [this](){
+	mpEnableRotationXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMax(pMPEnableRotationXMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMax(mpEnableRotationXMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationYMin.onValueChanged = [this](){
+	mpEnableRotationYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMin(pMPEnableRotationYMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMin(mpEnableRotationYMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationYMax.onValueChanged = [this](){
+	mpEnableRotationYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMax(pMPEnableRotationYMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMax(mpEnableRotationYMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationZMin.onValueChanged = [this](){
+	mpEnableRotationZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMin(pMPEnableRotationZMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMin(mpEnableRotationZMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableRotationZMax.onValueChanged = [this](){
+	mpEnableRotationZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMax(pMPEnableRotationZMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMax(mpEnableRotationZMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingXMin.onValueChanged = [this](){
+	mpEnableScalingXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMin(pMPEnableScalingXMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMin(mpEnableScalingXMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingXMax.onValueChanged = [this](){
+	mpEnableScalingXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMax(pMPEnableScalingXMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMax(mpEnableScalingXMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingYMin.onValueChanged = [this](){
+	mpEnableScalingYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMin(pMPEnableScalingYMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMin(mpEnableScalingYMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingYMax.onValueChanged = [this](){
+	mpEnableScalingYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMax(pMPEnableScalingYMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMax(mpEnableScalingYMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingZMin.onValueChanged = [this](){
+	mpEnableScalingZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMin(pMPEnableScalingZMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMin(mpEnableScalingZMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableScalingZMax.onValueChanged = [this](){
+	mpEnableScalingZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMax(pMPEnableScalingZMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMax(mpEnableScalingZMax);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableVertexPositionSetMin.onValueChanged = [this](){
+	mpEnableVertexPositionSetMin.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMin(pMPEnableVertexPositionSetMin);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMin(mpEnableVertexPositionSetMin);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableVertexPositionSetMax.onValueChanged = [this](){
+	mpEnableVertexPositionSetMax.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMax(pMPEnableVertexPositionSetMax);
+			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMax(mpEnableVertexPositionSetMax);
 		}
 		NotifyRuleChanged();
 	};
 }
 
-aeRuleLimit::aeRuleLimit(aeWindowMain &windowMain, const aeRuleLimit &copy) :
-aeRuleLimit(windowMain, copy.GetName())
+aeRuleLimit::aeRuleLimit(const aeRuleLimit &copy) :
+aeRuleLimit(copy.GetWindowMain(), copy.GetName())
 {
 	pInitCopy(copy);
-	pMPMinPosition.SetValue(copy.pMPMinPosition, false);
-	pMPMaxPosition.SetValue(copy.pMPMaxPosition, false);
-	pMPMinRotation.SetValue(copy.pMPMinRotation, false);
-	pMPMaxRotation.SetValue(copy.pMPMaxRotation, false);
-	pMPMinScaling.SetValue(copy.pMPMinScaling, false);
-	pMPMaxScaling.SetValue(copy.pMPMaxScaling, false);
-	pMPMinVertexPositionSet.SetValue(copy.pMPMinVertexPositionSet, false);
-	pMPMaxVertexPositionSet.SetValue(copy.pMPMaxVertexPositionSet, false);
-	pMPTargetBone.SetValue(copy.pMPTargetBone, false);
-	pMPCoordinateFrame.SetValue(copy.pMPCoordinateFrame, false);
-	pMPEnablePositionXMin.SetValue(copy.pMPEnablePositionXMin, false);
-	pMPEnablePositionXMax.SetValue(copy.pMPEnablePositionXMax, false);
-	pMPEnablePositionYMin.SetValue(copy.pMPEnablePositionYMin, false);
-	pMPEnablePositionYMax.SetValue(copy.pMPEnablePositionYMax, false);
-	pMPEnablePositionZMin.SetValue(copy.pMPEnablePositionZMin, false);
-	pMPEnablePositionZMax.SetValue(copy.pMPEnablePositionZMax, false);
-	pMPEnableRotationXMin.SetValue(copy.pMPEnableRotationXMin, false);
-	pMPEnableRotationXMax.SetValue(copy.pMPEnableRotationXMax, false);
-	pMPEnableRotationYMin.SetValue(copy.pMPEnableRotationYMin, false);
-	pMPEnableRotationYMax.SetValue(copy.pMPEnableRotationYMax, false);
-	pMPEnableRotationZMin.SetValue(copy.pMPEnableRotationZMin, false);
-	pMPEnableRotationZMax.SetValue(copy.pMPEnableRotationZMax, false);
-	pMPEnableScalingXMin.SetValue(copy.pMPEnableScalingXMin, false);
-	pMPEnableScalingXMax.SetValue(copy.pMPEnableScalingXMax, false);
-	pMPEnableScalingYMin.SetValue(copy.pMPEnableScalingYMin, false);
-	pMPEnableScalingYMax.SetValue(copy.pMPEnableScalingYMax, false);
-	pMPEnableScalingZMin.SetValue(copy.pMPEnableScalingZMin, false);
-	pMPEnableScalingZMax.SetValue(copy.pMPEnableScalingZMax, false);
-	pMPEnableVertexPositionSetMin.SetValue(copy.pMPEnableVertexPositionSetMin, false);
-	pMPEnableVertexPositionSetMax.SetValue(copy.pMPEnableVertexPositionSetMax, false);
+	mpMinPosition.SetValue(copy.mpMinPosition, false);
+	mpMaxPosition.SetValue(copy.mpMaxPosition, false);
+	mpMinRotation.SetValue(copy.mpMinRotation, false);
+	mpMaxRotation.SetValue(copy.mpMaxRotation, false);
+	mpMinScaling.SetValue(copy.mpMinScaling, false);
+	mpMaxScaling.SetValue(copy.mpMaxScaling, false);
+	mpMinVertexPositionSet.SetValue(copy.mpMinVertexPositionSet, false);
+	mpMaxVertexPositionSet.SetValue(copy.mpMaxVertexPositionSet, false);
+	mpTargetBone.SetValue(copy.mpTargetBone, false);
+	mpCoordinateFrame.SetValue(copy.mpCoordinateFrame, false);
+	mpEnablePositionXMin.SetValue(copy.mpEnablePositionXMin, false);
+	mpEnablePositionXMax.SetValue(copy.mpEnablePositionXMax, false);
+	mpEnablePositionYMin.SetValue(copy.mpEnablePositionYMin, false);
+	mpEnablePositionYMax.SetValue(copy.mpEnablePositionYMax, false);
+	mpEnablePositionZMin.SetValue(copy.mpEnablePositionZMin, false);
+	mpEnablePositionZMax.SetValue(copy.mpEnablePositionZMax, false);
+	mpEnableRotationXMin.SetValue(copy.mpEnableRotationXMin, false);
+	mpEnableRotationXMax.SetValue(copy.mpEnableRotationXMax, false);
+	mpEnableRotationYMin.SetValue(copy.mpEnableRotationYMin, false);
+	mpEnableRotationYMax.SetValue(copy.mpEnableRotationYMax, false);
+	mpEnableRotationZMin.SetValue(copy.mpEnableRotationZMin, false);
+	mpEnableRotationZMax.SetValue(copy.mpEnableRotationZMax, false);
+	mpEnableScalingXMin.SetValue(copy.mpEnableScalingXMin, false);
+	mpEnableScalingXMax.SetValue(copy.mpEnableScalingXMax, false);
+	mpEnableScalingYMin.SetValue(copy.mpEnableScalingYMin, false);
+	mpEnableScalingYMax.SetValue(copy.mpEnableScalingYMax, false);
+	mpEnableScalingZMin.SetValue(copy.mpEnableScalingZMin, false);
+	mpEnableScalingZMax.SetValue(copy.mpEnableScalingZMax, false);
+	mpEnableVertexPositionSetMin.SetValue(copy.mpEnableVertexPositionSetMin, false);
+	mpEnableVertexPositionSetMax.SetValue(copy.mpEnableVertexPositionSetMax, false);
 }
 
 aeRuleLimit::~aeRuleLimit() = default;
@@ -473,123 +473,123 @@ aeRuleLimit::~aeRuleLimit() = default;
 ///////////////
 
 void aeRuleLimit::SetMinimumPosition(const decVector &value){
-	pMPMinPosition = value;
+	mpMinPosition = value;
 }
 
 void aeRuleLimit::SetMaximumPosition(const decVector &value){
-	pMPMaxPosition = value;
+	mpMaxPosition = value;
 }
 
 void aeRuleLimit::SetMinimumRotation(const decVector &value){
-	pMPMinRotation = value;
+	mpMinRotation = value;
 }
 
 void aeRuleLimit::SetMaximumRotation(const decVector &value){
-	pMPMaxRotation = value;
+	mpMaxRotation = value;
 }
 
 void aeRuleLimit::SetMinimumScaling(const decVector &value){
-	pMPMinScaling = value;
+	mpMinScaling = value;
 }
 
 void aeRuleLimit::SetMaximumScaling(const decVector &value){
-	pMPMaxScaling = value;
+	mpMaxScaling = value;
 }
 
 void aeRuleLimit::SetMinimumVertexPositionSet(float value){
-	pMPMinVertexPositionSet = value;
+	mpMinVertexPositionSet = value;
 }
 
 void aeRuleLimit::SetMaximumVertexPositionSet(float value){
-	pMPMaxVertexPositionSet = value;
+	mpMaxVertexPositionSet = value;
 }
 
 void aeRuleLimit::SetTargetBone(const char *value){
-	pMPTargetBone = value;
+	mpTargetBone = value;
 }
 
 void aeRuleLimit::SetCoordinateFrame(deAnimatorRuleLimit::eCoordinateFrames value){
-	pMPCoordinateFrame = value;
+	mpCoordinateFrame = value;
 }
 
 void aeRuleLimit::SetEnablePositionXMin(bool value){
-	pMPEnablePositionXMin = value;
+	mpEnablePositionXMin = value;
 }
 
 void aeRuleLimit::SetEnablePositionXMax(bool value){
-	pMPEnablePositionXMax = value;
+	mpEnablePositionXMax = value;
 }
 
 void aeRuleLimit::SetEnablePositionYMin(bool value){
-	pMPEnablePositionYMin = value;
+	mpEnablePositionYMin = value;
 }
 
 void aeRuleLimit::SetEnablePositionYMax(bool value){
-	pMPEnablePositionYMax = value;
+	mpEnablePositionYMax = value;
 }
 
 void aeRuleLimit::SetEnablePositionZMin(bool value){
-	pMPEnablePositionZMin = value;
+	mpEnablePositionZMin = value;
 }
 
 void aeRuleLimit::SetEnablePositionZMax(bool value){
-	pMPEnablePositionZMax = value;
+	mpEnablePositionZMax = value;
 }
 
 void aeRuleLimit::SetEnableRotationXMin(bool value){
-	pMPEnableRotationXMin = value;
+	mpEnableRotationXMin = value;
 }
 
 void aeRuleLimit::SetEnableRotationXMax(bool value){
-	pMPEnableRotationXMax = value;
+	mpEnableRotationXMax = value;
 }
 
 void aeRuleLimit::SetEnableRotationYMin(bool value){
-	pMPEnableRotationYMin = value;
+	mpEnableRotationYMin = value;
 }
 
 void aeRuleLimit::SetEnableRotationYMax(bool value){
-	pMPEnableRotationYMax = value;
+	mpEnableRotationYMax = value;
 }
 
 void aeRuleLimit::SetEnableRotationZMin(bool value){
-	pMPEnableRotationZMin = value;
+	mpEnableRotationZMin = value;
 }
 
 void aeRuleLimit::SetEnableRotationZMax(bool value){
-	pMPEnableRotationZMax = value;
+	mpEnableRotationZMax = value;
 }
 
 void aeRuleLimit::SetEnableScalingXMin(bool value){
-	pMPEnableScalingXMin = value;
+	mpEnableScalingXMin = value;
 }
 
 void aeRuleLimit::SetEnableScalingXMax(bool value){
-	pMPEnableScalingXMax = value;
+	mpEnableScalingXMax = value;
 }
 
 void aeRuleLimit::SetEnableScalingYMin(bool value){
-	pMPEnableScalingYMin = value;
+	mpEnableScalingYMin = value;
 }
 
 void aeRuleLimit::SetEnableScalingYMax(bool value){
-	pMPEnableScalingYMax = value;
+	mpEnableScalingYMax = value;
 }
 
 void aeRuleLimit::SetEnableScalingZMin(bool value){
-	pMPEnableScalingZMin = value;
+	mpEnableScalingZMin = value;
 }
 
 void aeRuleLimit::SetEnableScalingZMax(bool value){
-	pMPEnableScalingZMax = value;
+	mpEnableScalingZMax = value;
 }
 
 void aeRuleLimit::SetEnableVertexPositionSetMin(bool value){
-	pMPEnableVertexPositionSetMin = value;
+	mpEnableVertexPositionSetMin = value;
 }
 
 void aeRuleLimit::SetEnableVertexPositionSetMax(bool value){
-	pMPEnableVertexPositionSetMax = value;
+	mpEnableVertexPositionSetMax = value;
 }
 
 
@@ -598,50 +598,46 @@ deAnimatorRule::Ref aeRuleLimit::CreateEngineRule(){
 	
 	InitEngineRule(engRule);
 	
-	engRule->SetMinimumPosition(pMPMinPosition);
-	engRule->SetMaximumPosition(pMPMaxPosition);
-	engRule->SetMinimumRotation(pMPMinRotation.GetEulerAnglesRadians());
-	engRule->SetMaximumRotation(pMPMaxRotation.GetEulerAnglesRadians());
-	engRule->SetMinimumScaling(pMPMinScaling);
-	engRule->SetMaximumScaling(pMPMaxScaling);
-	engRule->SetMinimumVertexPositionSet(pMPMinVertexPositionSet);
-	engRule->SetMaximumVertexPositionSet(pMPMaxVertexPositionSet);
-	engRule->SetCoordinateFrame(pMPCoordinateFrame);
-	engRule->SetTargetBone(pMPTargetBone);
+	engRule->SetMinimumPosition(mpMinPosition);
+	engRule->SetMaximumPosition(mpMaxPosition);
+	engRule->SetMinimumRotation(mpMinRotation.GetEulerAnglesRadians());
+	engRule->SetMaximumRotation(mpMaxRotation.GetEulerAnglesRadians());
+	engRule->SetMinimumScaling(mpMinScaling);
+	engRule->SetMaximumScaling(mpMaxScaling);
+	engRule->SetMinimumVertexPositionSet(mpMinVertexPositionSet);
+	engRule->SetMaximumVertexPositionSet(mpMaxVertexPositionSet);
+	engRule->SetCoordinateFrame(mpCoordinateFrame);
+	engRule->SetTargetBone(mpTargetBone);
 	
-	engRule->SetEnablePositionXMin(pMPEnablePositionXMin);
-	engRule->SetEnablePositionXMax(pMPEnablePositionXMax);
-	engRule->SetEnablePositionYMin(pMPEnablePositionYMin);
-	engRule->SetEnablePositionYMax(pMPEnablePositionYMax);
-	engRule->SetEnablePositionZMin(pMPEnablePositionZMin);
-	engRule->SetEnablePositionZMax(pMPEnablePositionZMax);
+	engRule->SetEnablePositionXMin(mpEnablePositionXMin);
+	engRule->SetEnablePositionXMax(mpEnablePositionXMax);
+	engRule->SetEnablePositionYMin(mpEnablePositionYMin);
+	engRule->SetEnablePositionYMax(mpEnablePositionYMax);
+	engRule->SetEnablePositionZMin(mpEnablePositionZMin);
+	engRule->SetEnablePositionZMax(mpEnablePositionZMax);
 	
-	engRule->SetEnableRotationXMin(pMPEnableRotationXMin);
-	engRule->SetEnableRotationXMax(pMPEnableRotationXMax);
-	engRule->SetEnableRotationYMin(pMPEnableRotationYMin);
-	engRule->SetEnableRotationYMax(pMPEnableRotationYMax);
-	engRule->SetEnableRotationZMin(pMPEnableRotationZMin);
-	engRule->SetEnableRotationZMax(pMPEnableRotationZMax);
+	engRule->SetEnableRotationXMin(mpEnableRotationXMin);
+	engRule->SetEnableRotationXMax(mpEnableRotationXMax);
+	engRule->SetEnableRotationYMin(mpEnableRotationYMin);
+	engRule->SetEnableRotationYMax(mpEnableRotationYMax);
+	engRule->SetEnableRotationZMin(mpEnableRotationZMin);
+	engRule->SetEnableRotationZMax(mpEnableRotationZMax);
 	
-	engRule->SetEnableScalingXMin(pMPEnableScalingXMin);
-	engRule->SetEnableScalingXMax(pMPEnableScalingXMax);
-	engRule->SetEnableScalingYMin(pMPEnableScalingYMin);
-	engRule->SetEnableScalingYMax(pMPEnableScalingYMax);
-	engRule->SetEnableScalingZMin(pMPEnableScalingZMin);
-	engRule->SetEnableScalingZMax(pMPEnableScalingZMax);
+	engRule->SetEnableScalingXMin(mpEnableScalingXMin);
+	engRule->SetEnableScalingXMax(mpEnableScalingXMax);
+	engRule->SetEnableScalingYMin(mpEnableScalingYMin);
+	engRule->SetEnableScalingYMax(mpEnableScalingYMax);
+	engRule->SetEnableScalingZMin(mpEnableScalingZMin);
+	engRule->SetEnableScalingZMax(mpEnableScalingZMax);
 	
-	engRule->SetEnableVertexPositionSetMin(pMPEnableVertexPositionSetMin);
-	engRule->SetEnableVertexPositionSetMax(pMPEnableVertexPositionSetMax);
+	engRule->SetEnableVertexPositionSetMin(mpEnableVertexPositionSetMin);
+	engRule->SetEnableVertexPositionSetMax(mpEnableVertexPositionSetMax);
 	
 	return engRule;
 }
 
 
 
-aeRule::Ref aeRuleLimit::CreateCopy(aeWindowMain &windowMain) const{
-	return Ref::New(windowMain, *this);
-}
-
-void aeRuleLimit::ListLinks(aeLink::List &list){
-	aeRule::ListLinks(list);
+aeRule::Ref aeRuleLimit::CreateCopy() const{
+	return Ref::New(*this);
 }

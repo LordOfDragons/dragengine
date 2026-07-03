@@ -32,17 +32,18 @@
 #include <deigde/meta/property/igdeMetaPropertyPath.h>
 
 
-class aeMCPRuleSubAnimatorPathSubAnimator : public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyPathStorage>{
+class aeMCPRuleSubAnimatorPathSubAnimator :
+	public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyPathStorage>{
 public:
 	aeMCPRuleSubAnimatorPathSubAnimator() : igdeMetaPropertyMCT(
-	"subanimator.pathSubAnimator", "Animator.WPAPanelRuleSubAnimator.Path",
+		"animator.rule_subanimator.pathSubAnimator", "Animator.WPAPanelRuleSubAnimator.Path",
 		igdeEnvironment::eFilePatternListTypes::efpltAnimator){
 	}
 	
 	~aeMCPRuleSubAnimatorPathSubAnimator() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPPathSubAnimator();
+		return Owner(context).mpPathSubAnimator;
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
@@ -51,59 +52,70 @@ public:
 	}
 };
 
-class aeMCPRuleSubAnimatorEnablePosition : public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleSubAnimatorEnablePosition :
+	public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleSubAnimatorEnablePosition() : igdeMetaPropertyMCT(
-	"subanimator.enablePosition", "Animator.WPAPanelRuleSubAnimator.EnablePosition"){
+		"animator.rule_subanimator.enablePosition",
+		"Animator.WPAPanelRuleSubAnimator.EnablePosition")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleSubAnimatorEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePosition();
+		return Owner(context).mpEnablePosition;
 	}
 };
 
-class aeMCPRuleSubAnimatorEnableOrientation : public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleSubAnimatorEnableOrientation :
+	public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleSubAnimatorEnableOrientation() : igdeMetaPropertyMCT(
-	"subanimator.enableOrientation", "Animator.WPAPanelRuleSubAnimator.EnableRotation"){
+		"animator.rule_subanimator.enableOrientation",
+		"Animator.WPAPanelRuleSubAnimator.EnableRotation")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleSubAnimatorEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableOrientation();
+		return Owner(context).mpEnableOrientation;
 	}
 };
 
-class aeMCPRuleSubAnimatorEnableSize : public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleSubAnimatorEnableSize :
+	public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleSubAnimatorEnableSize() : igdeMetaPropertyMCT(
-	"subanimator.enableSize", "Animator.WPAPanelRuleSubAnimator.EnableSize"){
+		"animator.rule_subanimator.enableSize", "Animator.WPAPanelRuleSubAnimator.EnableSize")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleSubAnimatorEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableSize();
+		return Owner(context).mpEnableSize;
 	}
 };
 
-class aeMCPRuleSubAnimatorEnableVertexPositionSet : public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleSubAnimatorEnableVertexPositionSet :
+	public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleSubAnimatorEnableVertexPositionSet() : igdeMetaPropertyMCT(
-	"subanimator.enableVertexPositionSet", "Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet"){
+		"animator.rule_subanimator.enableVertexPositionSet",
+		"Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleSubAnimatorEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableVertexPositionSet();
+		return Owner(context).mpEnableVertexPositionSet;
 	}
 };
 

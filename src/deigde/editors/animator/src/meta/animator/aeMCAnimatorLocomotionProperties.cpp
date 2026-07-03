@@ -26,9 +26,57 @@
 #include "aeMCAnimatorProperties.h"
 
 
-aeMCAnimatorLocomotionProperties::aeMCAnimatorLocomotionProperties() = default;
-
-void aeMCAnimatorLocomotionProperties::Init(const aeMCAnimatorProperties &properties){
-	groupLegs->GetProperties() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		legBlendTime, useLegPairs, properties.locomotionLeg.legIndex, properties.locomotionLeg.leg);
+void aeMCAnimatorLocomotionProperties::Init(aeWindowMain &windowMain){
+	type = deTObjectReference<aeMCPAnimatorLocomotionType>::New();
+	limitLookDown = deTObjectReference<aeMCPAnimatorLocomotionLimitDown>::New();
+	limitLookUp = deTObjectReference<aeMCPAnimatorLocomotionLimitUp>::New();
+	limitLookLeft = deTObjectReference<aeMCPAnimatorLocomotionLimitLeft>::New();
+	limitLookRight = deTObjectReference<aeMCPAnimatorLocomotionLimitRight>::New();
+	groupTesting = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupLocomotionTesting", "Animator.WPPlayground.LocomotionTesting",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			type, limitLookUp, limitLookDown, limitLookLeft, limitLookRight),
+		true);
+	
+	speedWalk = deTObjectReference<aeMCPAnimatorLocomotionSpeedWalk>::New();
+	speedRun = deTObjectReference<aeMCPAnimatorLocomotionSpeedRun>::New();
+	groupMovementSpeeds = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupLocomotionMovementSpeeds", "Animator.WPPlayground.MovementSpeeds",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			speedWalk, speedRun),
+		true);
+	
+	adjustTimeUpDown = deTObjectReference<aeMCPAnimatorLocomotionAdjTimeUD>::New();
+	adjustTimeLeftRight = deTObjectReference<aeMCPAnimatorLocomotionAdjTimeLR>::New();
+	adjustTimeStance = deTObjectReference<aeMCPAnimatorLocomotionAdjTimeStance>::New();
+	adjustTimeOrientation = deTObjectReference<aeMCPAnimatorLocomotionAdjTimeOrientation>::New();
+	adjustTimeVelocity = deTObjectReference<aeMCPAnimatorLocomotionAdjTimeVelocity>::New();
+	adjustTimeTurnIP = deTObjectReference<aeMCPAnimatorLocomotionAdjTimeTurnIP>::New();
+	groupAdjustmentTimes = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupLocomotionAdjustmentTimes", "Animator.WPPlayground.AdjustmentTimes",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			adjustTimeUpDown, adjustTimeLeftRight, adjustTimeStance, adjustTimeOrientation,
+			adjustTimeVelocity, adjustTimeTurnIP),
+		true);
+	
+	leg.Init(windowMain);
+	
+	useLegPairs = deTObjectReference<aeMCPAnimatorLocomotionUseLegPairs>::New();
+	legBlendTime = deTObjectReference<aeMCPAnimatorLocomotionLegBlendTime>::New();
+	groupLegs = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupLocomotionLegs", "Animator.WPPlayground.Legs",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			legBlendTime,
+			useLegPairs,
+			leg.legIndex,
+			leg.leg),
+		true);
+	
+	showShapes = deTObjectReference<aeMCPAnimatorLocomotionShowShapes>::New();
+	useFoGIK = deTObjectReference<aeMCPAnimatorLocomotionUseFoGIK>::New();
+	groupVisualization = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupLocomotionVisualization", "Animator.WPPlayground.Visualization",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			showShapes, useFoGIK),
+		true);
 }

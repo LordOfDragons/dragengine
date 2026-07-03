@@ -178,10 +178,16 @@ void igdeNativeFoxTreeList::UpdateItem(igdeTreeItem *item){
 		native->setOpenIcon(nullptr);
 	}
 	native->setClosedIcon(native->getOpenIcon());
-	
-	native->setExpanded(item->GetExpanded());
+	// native->setExpanded(item->GetExpanded());
 	
 	pTreeList->updateItem(native);
+	
+	if(item->GetExpanded()){
+		pTreeList->expandTree(native);
+		
+	}else{
+		pTreeList->collapseTree(native);
+	}
 }
 
 void igdeNativeFoxTreeList::MakeItemVisible(igdeTreeItem *item){

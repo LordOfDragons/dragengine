@@ -49,29 +49,25 @@ public:
 	template<typename T>
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-private:
-	aeControllerTarget::Ref pTargetMoveTime;
-	aeControllerTarget::Ref pTargetSelect;
-	
-	igdeMetaPropertyStringListStorage::Storage pMPMoves;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetMoveTime;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetSelect;
+public:
+	igdeMetaPropertyStringListStorage::Storage mpMoves;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetMoveTime;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetSelect;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	aeRuleAnimationSelect() = delete;
-	aeRuleAnimationSelect(const aeRuleAnimationSelect&) = delete;
 	
 	/** Create animator select rule. */
 	explicit aeRuleAnimationSelect(aeWindowMain &windowMain, const char *name);
 	
 	/** Create copy of animator select rule. */
-	aeRuleAnimationSelect(aeWindowMain &windowMain, const aeRuleAnimationSelect &copy);
+	aeRuleAnimationSelect(const aeRuleAnimationSelect &copy);
 	
 	/** Clean up animator select rule. */
 protected:
@@ -85,17 +81,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyStringListStorage::Storage &GetMPMoves(){ return pMPMoves; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetLeadMoveTime(){ return pMPTargetMoveTime; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetSelect(){ return pMPTargetSelect; }
-	
-	
 	/** Moves. */
-	inline const decStringList &GetMoves() const{ return pMPMoves; }
+	inline const decStringList &GetMoves() const{ return mpMoves; }
 	
 	/** Set moves. */
 	void SetMoves(const decStringList &moves);
@@ -103,37 +90,28 @@ public:
 	
 	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
+	inline bool GetEnablePosition() const{ return mpEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	
 	/** Orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pMPEnableSize; }
+	inline bool GetEnableSize() const{ return mpEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);
-	
-	
-	
-	/** Move time target. */
-	inline const aeControllerTarget::Ref &GetTargetMoveTime() const{ return pTargetMoveTime; }
-	
-	/** Select target. */
-	inline const aeControllerTarget::Ref &GetTargetSelect() const{ return pTargetSelect; }
-	
 	
 	
 	/** Create engine animator rule. */
@@ -147,19 +125,9 @@ public:
 	/** Number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
 	
-	/** Remove link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	
-	/** Remove all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
-	
-	
 	
 	/** Create copy of rule. */
-	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
+	aeRule::Ref CreateCopy() const override;
 	/*@}*/
 	
 	

@@ -173,40 +173,39 @@ private:
 	NotifierSet pNotifiers;
 	
 	
-	igdeMetaPropertyStringSetStorage::Storage pMPHiddenBoneNames, pMPHiddenVpsNames, pMPHiddenMoveNames;
-	
-	igdeMetaPropertyPathStorage::Storage pMPRigPath, pMPAnimationPath;
-	igdeMetaPropertyStringSetStorage::Storage pMPAffectedBones, pMPAffectedVps;
-	
-	igdeMetaPropertyListStorage<aeController, aeController::List>::Storage pMPControllers;
-	igdeMetaPropertyContextStorage::Storage pMPController;
-	
-	igdeMetaPropertyListStorage<aeLink, aeLink::List>::Storage pMPLinks;
-	igdeMetaPropertyContextStorage::Storage pMPLink;
-	
-	igdeMetaPropertyTreeListStorage<aeRule>::Storage pMPRuleTree;
-	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage pMPRules;
-	igdeMetaPropertyContextStorage::Storage pMPRule;
-	
-	igdeMetaPropertyObjectType<aeController>::ObjectTypeList pMPAllowedListControllers;
-	
-	igdeMetaPropertySliderBoardStorage<aeController::MetaContext>::Storage pMPPlaygroundControllers;
-	
-	igdeMetaPropertyPathStorage::Storage pMPDisplayModelPath, pMPDisplaySkinPath, pMPDisplayRigPath;
-	
-	igdeMetaPropertyPathStorage::Storage pMPBaseAnimatorPath;
-	igdeMetaPropertyBooleanStorage::Storage pMPResetState;
-	
-	igdeMetaPropertyFloatStorage::Storage pMPPlaySpeed, pMPTimeStep;
-	igdeMetaPropertyBooleanStorage::Storage pMPPaused;
-	
-	igdeMetaPropertyContextStorage::Storage pMPSky, pMPEnvironmentObject, pMPCamera;
-	
-	igdeMetaPropertySetStorage<aeAttachment, AttachmentSet>::Storage pMPAttachments;
-	igdeMetaPropertyContextStorage::Storage pMPAttachment;
-	
-	
 public:
+	igdeMetaPropertyStringSetStorage::Storage mpHiddenBoneNames, mpHiddenVpsNames, mpHiddenMoveNames;
+	
+	igdeMetaPropertyPathStorage::Storage mpRigPath, mpAnimationPath;
+	igdeMetaPropertyStringSetStorage::Storage mpAffectedBones, mpAffectedVps;
+	
+	igdeMetaPropertyListStorage<aeController, aeController::List>::Storage mpControllers;
+	igdeMetaPropertyContextStorage::Storage mpController;
+	
+	igdeMetaPropertyListStorage<aeLink, aeLink::List>::Storage mpLinks;
+	igdeMetaPropertyContextStorage::Storage mpLink;
+	
+	igdeMetaPropertyTreeListStorage<aeRule>::Storage mpRuleTree;
+	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage mpRules;
+	igdeMetaPropertyContextStorage::Storage mpRule;
+	
+	igdeMetaPropertyObjectType<aeController>::ObjectTypeList mpAllowedListControllers;
+	
+	igdeMetaPropertySliderBoardStorage<aeController::MetaContext>::Storage mpPlaygroundControllers;
+	
+	igdeMetaPropertyPathStorage::Storage mpDisplayModelPath, mpDisplaySkinPath, mpDisplayRigPath;
+	
+	igdeMetaPropertyPathStorage::Storage mpBaseAnimatorPath;
+	igdeMetaPropertyBooleanStorage::Storage mpResetState;
+	
+	igdeMetaPropertyFloatStorage::Storage mpPlaySpeed, mpTimeStep;
+	igdeMetaPropertyBooleanStorage::Storage mpPaused;
+	
+	igdeMetaPropertyContextStorage::Storage mpSky, mpEnvironmentObject, mpCamera;
+	
+	igdeMetaPropertySetStorage<aeAttachment, AttachmentSet>::Storage mpAttachments;
+	igdeMetaPropertyContextStorage::Storage mpAttachment;
+	
 	igdeUniqueNameGenerator uniqueNameController, uniqueNameLink, uniqueNameRule, uniqueNameAttachment;
 	
 	decString pathAttachmentConfig;
@@ -238,48 +237,6 @@ public:
 	inline const MetaContext::Ref &GetMetaContextAttachment() const{ return pMetaContextAttachment; }
 	inline const MetaContext::Ref &GetMetaContextView() const{ return pMetaContextView; }
 	
-	inline igdeMetaPropertyStringSetStorage::Storage &GetMPHiddenBoneNames(){ return pMPHiddenBoneNames; }
-	inline igdeMetaPropertyStringSetStorage::Storage &GetMPHiddenVPSNames(){ return pMPHiddenVpsNames; }
-	inline igdeMetaPropertyStringSetStorage::Storage &GetMPHiddenMoveNames(){ return pMPHiddenMoveNames; }
-	
-	inline igdeMetaPropertyPathStorage::Storage &GetMPRigPath(){ return pMPRigPath; }
-	inline igdeMetaPropertyPathStorage::Storage &GetMPAnimationPath(){ return pMPAnimationPath; }
-	inline igdeMetaPropertyStringSetStorage::Storage &GetMPAffectedBones(){ return pMPAffectedBones; }
-	inline igdeMetaPropertyStringSetStorage::Storage &GetMPAffectedVertexPositionSets(){ return pMPAffectedVps; }
-	
-	inline igdeMetaPropertyListStorage<aeController, aeController::List>::Storage &GetMPControllers(){ return pMPControllers; }
-	inline igdeMetaPropertyContextStorage::Storage &GetMPController(){ return pMPController; }
-	
-	inline igdeMetaPropertyListStorage<aeLink, aeLink::List>::Storage &GetMPLinks(){ return pMPLinks; }
-	inline igdeMetaPropertyContextStorage::Storage &GetMPLink(){ return pMPLink; }
-	
-	inline igdeMetaPropertyTreeListStorage<aeRule>::Storage &GetMPRuleTree(){ return pMPRuleTree; }
-	inline igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage &GetMPRules(){ return pMPRules; }
-	inline igdeMetaPropertyContextStorage::Storage &GetMPRule(){ return pMPRule; }
-	
-	inline igdeMetaPropertyObjectType<aeController>::ObjectTypeList &GetMPAllowedListControllers(){ return pMPAllowedListControllers; }
-	
-	inline igdeMetaPropertySliderBoardStorage<aeController::MetaContext>::Storage &GetMPPlayground(){ return pMPPlaygroundControllers; }
-	
-	inline igdeMetaPropertyPathStorage::Storage &GetMPDisplayModelPath(){ return pMPDisplayModelPath; }
-	inline igdeMetaPropertyPathStorage::Storage &GetMPDisplaySkinPath(){ return pMPDisplaySkinPath; }
-	inline igdeMetaPropertyPathStorage::Storage &GetMPDisplayRigPath(){ return pMPDisplayRigPath; }
-	
-	inline igdeMetaPropertyPathStorage::Storage &GetMPBaseAnimatorPath(){ return pMPBaseAnimatorPath; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPResetState(){ return pMPResetState; }
-	
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPPlaySpeed(){ return pMPPlaySpeed; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPTimeStep(){ return pMPTimeStep; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPPaused(){ return pMPPaused; }
-	
-	inline igdeMetaPropertyContextStorage::Storage &GetMPSky(){ return pMPSky; }
-	inline igdeMetaPropertyContextStorage::Storage &GetMPEnvironmentObject(){ return pMPEnvironmentObject; }
-	inline igdeMetaPropertyContextStorage::Storage &GetMPCamera(){ return pMPCamera; }
-	
-	inline igdeMetaPropertySetStorage<aeAttachment, AttachmentSet>::Storage &GetMPAttachments(){ return pMPAttachments; }
-	inline igdeMetaPropertyContextStorage::Storage &GetMPAttachment(){ return pMPAttachment; }
-	
-	
 	/** Dispose of all resources. */
 	void Dispose();
 	
@@ -287,24 +244,24 @@ public:
 	void Reset();
 	
 	/** Retrieves the display model path. */
-	inline const decString &GetDisplayModelPath() const{ return pMPDisplayModelPath; }
+	inline const decString &GetDisplayModelPath() const{ return mpDisplayModelPath; }
 	/** Sets the display model path. */
 	void SetDisplayModelPath(const char *path);
 	/** Retrieves the display skin path. */
-	inline const decString &GetDisplaySkinPath() const{ return pMPDisplaySkinPath; }
+	inline const decString &GetDisplaySkinPath() const{ return mpDisplaySkinPath; }
 	/** Sets the display skin path. */
 	void SetDisplaySkinPath(const char *path);
 	/** Retrieves the display rig path. */
-	inline const decString &GetDisplayRigPath() const{ return pMPDisplayRigPath; }
+	inline const decString &GetDisplayRigPath() const{ return mpDisplayRigPath; }
 	/** Sets the display rig path. */
 	void SetDisplayRigPath(const char *path);
 	
 	/** Retrieves the rig path. */
-	inline const decString &GetRigPath() const{ return pMPRigPath; }
+	inline const decString &GetRigPath() const{ return mpRigPath; }
 	/** Sets the rig path. */
 	void SetRigPath(const char *path);
 	/** Retrieves the rig path. */
-	inline const decString &GetAnimationPath() const{ return pMPAnimationPath; }
+	inline const decString &GetAnimationPath() const{ return mpAnimationPath; }
 	/** Sets the rig path. */
 	void SetAnimationPath(const char *path);
 	
@@ -318,15 +275,15 @@ public:
 	void SetDDBoneSize(float size);
 	
 	/** Determines if the animation is paused. */
-	inline bool GetPaused() const{ return pMPPaused; }
+	inline bool GetPaused() const{ return mpPaused; }
 	/** Sets if the animation is paused. */
 	void SetPaused(bool paused);
 	/** Retrieves the play speed. */
-	inline float GetPlaySpeed() const{ return pMPPlaySpeed; }
+	inline float GetPlaySpeed() const{ return mpPlaySpeed; }
 	/** Sets the play speed. */
 	void SetPlaySpeed(float playSpeed);
 	/** Retrieves the time step. */
-	inline float GetTimeStep() const{ return pMPTimeStep; }
+	inline float GetTimeStep() const{ return mpTimeStep; }
 	/** Sets the time step. */
 	void SetTimeStep(float timeStep);
 	
@@ -348,7 +305,7 @@ public:
 	inline const deTUniqueReference<aeSubAnimator> &GetTestingSubAnimator() const{ return pTestingSubAnimator; }
 	
 	/** Determines if the state is reset before applying the animator. */
-	inline bool GetResetState() const{ return pMPResetState; }
+	inline bool GetResetState() const{ return mpResetState; }
 	/** Sets if the state is reset before applying the animator. */
 	void SetResetState(bool resetState);
 	
@@ -394,7 +351,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** Controllers. */
-	inline const aeController::List &GetControllers() const{ return pMPControllers; }
+	inline const aeController::List &GetControllers() const{ return mpControllers; }
 	
 	/** Add controller. */
 	void AddController(aeController *controller);
@@ -412,7 +369,7 @@ public:
 	void RemoveAllControllers();
 	
 	/** Active controller or nullptr. */
-	inline const aeController::Ref &GetActiveController() const{ return pMPControllers.GetActive(); }
+	inline const aeController::Ref &GetActiveController() const{ return mpControllers.GetActive(); }
 	
 	/** Set active controller or nullptr. */
 	void SetActiveController(aeController *controller);
@@ -435,7 +392,7 @@ public:
 	/** \name Links */
 	/*@{*/
 	/** Links. */
-	inline const aeLink::List &GetLinks() const{ return pMPLinks; }
+	inline const aeLink::List &GetLinks() const{ return mpLinks; }
 	
 	/** Add link. */
 	void AddLink(aeLink *link);
@@ -447,7 +404,7 @@ public:
 	void RemoveAllLinks();
 	
 	/** Active link or nullptr. */
-	inline const aeLink::Ref &GetActiveLink() const{ return pMPLinks.GetActive(); }
+	inline const aeLink::Ref &GetActiveLink() const{ return mpLinks.GetActive(); }
 	
 	/** Set active link or nullptr. */
 	void SetActiveLink(aeLink *link);
@@ -461,7 +418,7 @@ public:
 	/** \name Rules */
 	/*@{*/
 	/** Rules. */
-	inline const aeRule::List &GetRules() const{ return pMPRules; }
+	inline const aeRule::List &GetRules() const{ return mpRules; }
 	
 	/** Add rule. */
 	void AddRule(aeRule *rule);
@@ -479,7 +436,7 @@ public:
 	void RemoveAllRules();
 	
 	/** Active rule or nullptr. */
-	inline const aeRule::Ref &GetActiveRule() const{ return pMPRules.GetActive(); }
+	inline const aeRule::Ref &GetActiveRule() const{ return mpRules.GetActive(); }
 	
 	/** Set active rule or nullptr. */
 	void SetActiveRule(aeRule *rule);
@@ -493,7 +450,7 @@ public:
 	/** \name Bone Management */
 	/*@{*/
 	/** List of bones. */
-	inline const decStringSet &GetListBones() const{ return pMPAffectedBones; }
+	inline const decStringSet &GetListBones() const{ return mpAffectedBones; }
 	
 	/** Set list of bones. */
 	void SetListBones(const decStringSet &bones);
@@ -513,7 +470,7 @@ public:
 	/** \name Vertex position set Management */
 	/*@{*/
 	/** List of vertex position sets. */
-	inline const decStringSet &GetListVertexPositionSets() const{ return pMPAffectedVps; }
+	inline const decStringSet &GetListVertexPositionSets() const{ return mpAffectedVps; }
 	
 	/** Set list of vertex position sets. */
 	void SetListVertexPositionSets(const decStringSet &sets);
@@ -533,7 +490,7 @@ public:
 	/** \name Attachments */
 	/*@{*/
 	/** Attachments. */
-	inline const AttachmentSet &GetAttachments() const{ return pMPAttachments; }
+	inline const AttachmentSet &GetAttachments() const{ return mpAttachments; }
 	
 	/** Visitor to find attachment by name. */
 	aeAttachment *GetAttachmentNamed(const char *name) const;
@@ -548,7 +505,7 @@ public:
 	void RemoveAllAttachments();
 	
 	/** Active attachment or nullptr. */
-	inline const aeAttachment::Ref &GetActiveAttachment() const{ return pMPAttachments.GetActive(); }
+	inline const aeAttachment::Ref &GetActiveAttachment() const{ return mpAttachments.GetActive(); }
 	
 	/** Set active attachment or nullptr. */
 	void SetActiveAttachment(aeAttachment *attachment);

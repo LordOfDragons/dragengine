@@ -35,32 +35,28 @@ class aeMCAnimatorProperties;
 
 class aeMCControllerProperties{
 public:
-	deTObjectReference<aeMCPControllerName> name = deTObjectReference<aeMCPControllerName>::New();
-	deTObjectReference<aeMCPControllerMinimumValue> minimumValue = deTObjectReference<aeMCPControllerMinimumValue>::New();
-	deTObjectReference<aeMCPControllerMaximumValue> maximumValue = deTObjectReference<aeMCPControllerMaximumValue>::New();
-	deTObjectReference<aeMCPControllerCurrentValue> currentValue = deTObjectReference<aeMCPControllerCurrentValue>::New();
-	deTObjectReference<aeMCPControllerVector> vector = deTObjectReference<aeMCPControllerVector>::New();
-	deTObjectReference<aeMCPControllerClamp> clamp = deTObjectReference<aeMCPControllerClamp>::New();
-	deTObjectReference<aeMCPControllerFrozen> frozen = deTObjectReference<aeMCPControllerFrozen>::New();
-	deTObjectReference<aeMCPControllerDefaultValue> defaultValue = deTObjectReference<aeMCPControllerDefaultValue>::New();
-	deTObjectReference<aeMCPControllerDefaultVector> defaultVector = deTObjectReference<aeMCPControllerDefaultVector>::New();
+	deTObjectReference<aeMCPControllerName> name;
+	deTObjectReference<aeMCPControllerMinimumValue> minimumValue;
+	deTObjectReference<aeMCPControllerMaximumValue> maximumValue;
+	deTObjectReference<aeMCPControllerCurrentValue> currentValue;
+	deTObjectReference<aeMCPControllerVector> vector;
+	deTObjectReference<aeMCPControllerClamp> clamp;
+	deTObjectReference<aeMCPControllerFrozen> frozen;
+	deTObjectReference<aeMCPControllerDefaultValue> defaultValue;
+	deTObjectReference<aeMCPControllerDefaultVector> defaultVector;
 	
-	deTObjectReference<aeMCPControllerLocomotionAttribute> locomotionAttribute = deTObjectReference<aeMCPControllerLocomotionAttribute>::New();
-	deTObjectReference<aeMCPControllerLocomotionLeg> locomotionLeg = deTObjectReference<aeMCPControllerLocomotionLeg>::New();
-	deTObjectReference<aeMCPControllerVectorSimulation> vectorSimulation = deTObjectReference<aeMCPControllerVectorSimulation>::New();
-	deTObjectReference<igdeMetaPropertyGroup> groupLocomotionTesting = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"controller.groupLocomotionTesting", "Animator.WPController.LocomotionTesting");
+	deTObjectReference<aeMCPControllerLocomotionAttribute> locomotionAttribute;
+	deTObjectReference<aeMCPControllerLocomotionLeg> locomotionLeg;
+	deTObjectReference<aeMCPControllerVectorSimulation> vectorSimulation;
+	deTObjectReference<igdeMetaPropertyGroup> groupLocomotionTesting;
 	
-	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
+	igdeMetaContext::PropertyList::Ref metaProperties;
 	
-	deTObjectReference<aeMCPControllers> controllers = deTObjectReference<aeMCPControllers>::New();
+	deTObjectReference<aeMCPControllers> controllers;
 	deTObjectReference<aeMCPController> controller;
-	deTObjectReference<igdeMetaPropertyGroup> group = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"animator.groupControllers", "Animator.WPController.Controllers",
-		decTObjectOrderedSet<igdeMetaProperty>(devctag, controllers, controller));
+	deTObjectReference<igdeMetaPropertyGroup> group;
 	
-	aeMCControllerProperties(aeWindowMain &windowMain);
-	void Init(const aeMCAnimatorProperties &properties);
+	void Init(aeWindowMain &windowMain);
 };
 
 #endif

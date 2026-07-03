@@ -46,40 +46,34 @@ public:
 	template<typename T>
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-private:
-	aeControllerTarget::Ref pTargetPosition;
-	aeControllerTarget::Ref pTargetRotation;
-	aeControllerTarget::Ref pTargetSize;
-	aeControllerTarget::Ref pTargetVertexPositionSet;
-	
-	igdeMetaPropertyVectorStorage::Storage pMPMinPosition;
-	igdeMetaPropertyVectorStorage::Storage pMPMaxPosition;
-	igdeMetaPropertyVectorStorageQuaternion::Storage pMPMinRotation;
-	igdeMetaPropertyVectorStorageQuaternion::Storage pMPMaxRotation;
-	igdeMetaPropertyVectorStorage::Storage pMPMinSize;
-	igdeMetaPropertyVectorStorage::Storage pMPMaxSize;
-	igdeMetaPropertyFloatStorage::Storage pMPMinVertexPositionSet;
-	igdeMetaPropertyFloatStorage::Storage pMPMaxVertexPositionSet;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableRotation;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetPosition;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetRotation;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetSize;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetVertexPositionSet;
+public:
+	igdeMetaPropertyVectorStorage::Storage mpMinPosition;
+	igdeMetaPropertyVectorStorage::Storage mpMaxPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage mpMinRotation;
+	igdeMetaPropertyVectorStorageQuaternion::Storage mpMaxRotation;
+	igdeMetaPropertyVectorStorage::Storage mpMinSize;
+	igdeMetaPropertyVectorStorage::Storage mpMaxSize;
+	igdeMetaPropertyFloatStorage::Storage mpMinVertexPositionSet;
+	igdeMetaPropertyFloatStorage::Storage mpMaxVertexPositionSet;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableRotation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetRotation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetSize;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	aeRuleStateManipulator() = delete;
-	aeRuleStateManipulator(const aeRuleStateManipulator&) = delete;
 	
 	/** Create rule. */
 	aeRuleStateManipulator(aeWindowMain &windowMain, const char *name);
 	
 	/** Create copy of rule. */
-	aeRuleStateManipulator(aeWindowMain &windowMain, const aeRuleStateManipulator &copy);
+	aeRuleStateManipulator(const aeRuleStateManipulator &copy);
 	
 	/** Clean up rule. */
 protected:
@@ -93,68 +87,50 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPMinPosition(){ return pMPMinPosition; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPMaxPosition(){ return pMPMaxPosition; }
-	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPMinRotation(){ return pMPMinRotation; }
-	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPMaxRotation(){ return pMPMaxRotation; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPMinSize(){ return pMPMinSize; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPMaxSize(){ return pMPMaxSize; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPMinVertexPositionSet(){ return pMPMinVertexPositionSet; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPMaxVertexPositionSet(){ return pMPMaxVertexPositionSet; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableRotation(){ return pMPEnableRotation; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetPosition(){ return pMPTargetPosition; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetRotation(){ return pMPTargetRotation; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetSize(){ return pMPTargetSize; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetVertexPositionSet(){ return pMPTargetVertexPositionSet; }
-	
-	
 	/** Minimum position. */
-	inline const decVector &GetMinimumPosition() const{ return pMPMinPosition; }
+	inline const decVector &GetMinimumPosition() const{ return mpMinPosition; }
 	
 	/** Set minimum position. */
 	void SetMinimumPosition(const decVector &value);
 	
 	/** Maximum position. */
-	inline const decVector &GetMaximumPosition() const{ return pMPMaxPosition; }
+	inline const decVector &GetMaximumPosition() const{ return mpMaxPosition; }
 	
 	/** Set maximum position. */
 	void SetMaximumPosition(const decVector &value);
 	
 	/** Minimum rotation. */
-	inline const decVector &GetMinimumRotation() const{ return pMPMinRotation; }
+	inline const decVector &GetMinimumRotation() const{ return mpMinRotation; }
 	
 	/** Set minimum rotation. */
 	void SetMinimumRotation(const decVector &value);
 	
 	/** Maximum rotation. */
-	inline const decVector &GetMaximumRotation() const{ return pMPMaxRotation; }
+	inline const decVector &GetMaximumRotation() const{ return mpMaxRotation; }
 	
 	/** Set maximum rotation. */
 	void SetMaximumRotation(const decVector &value);
 	
 	/** Minimum size. */
-	inline const decVector &GetMinimumSize() const{ return pMPMinSize; }
+	inline const decVector &GetMinimumSize() const{ return mpMinSize; }
 	
 	/** Set minimum size. */
 	void SetMinimumSize(const decVector &value);
 	
 	/** Maximum size. */
-	inline const decVector &GetMaximumSize() const{ return pMPMaxSize; }
+	inline const decVector &GetMaximumSize() const{ return mpMaxSize; }
 	
 	/** Set maximum size. */
 	void SetMaximumSize(const decVector &value);
 	
 	/** Minimum vertex position set. */
-	inline float GetMinimumVertexPositionSet() const{ return pMPMinVertexPositionSet; }
+	inline float GetMinimumVertexPositionSet() const{ return mpMinVertexPositionSet; }
 	
 	/** Set minimum vertex position set. */
 	void SetMinimumVertexPositionSet(float weight);
 	
 	/** Maximum vertex position set. */
-	inline float GetMaximumVertexPositionSet() const{ return pMPMaxVertexPositionSet; }
+	inline float GetMaximumVertexPositionSet() const{ return mpMaxVertexPositionSet; }
 	
 	/** Set maximum vertex position set. */
 	void SetMaximumVertexPositionSet(float weight);
@@ -162,43 +138,28 @@ public:
 	
 	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
+	inline bool GetEnablePosition() const{ return mpEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	
 	/** Rotation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pMPEnableRotation; }
+	inline bool GetEnableOrientation() const{ return mpEnableRotation; }
 	
 	/** Set if rotation manipulation is enabled. */
 	void SetEnableRotation(bool value);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pMPEnableSize; }
+	inline bool GetEnableSize() const{ return mpEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);
-	
-	
-	
-	/** Position target. */
-	inline const aeControllerTarget::Ref &GetTargetPosition() const{ return pTargetPosition; }
-	
-	/** Rotation target. */
-	inline const aeControllerTarget::Ref &GetTargetRotation() const{ return pTargetRotation; }
-	
-	/** Size target. */
-	inline const aeControllerTarget::Ref &GetTargetSize() const{ return pTargetSize; }
-	
-	/** Vertex position set target. */
-	inline const aeControllerTarget::Ref &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
-	
 	
 	
 	/** Create an engine animator rule. */
@@ -210,21 +171,9 @@ public:
 	/** Retrieve the number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
 	
-	/** Remove a link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	
-	/** Remove all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
-	
-	
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
-	
-	
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
+	aeRule::Ref CreateCopy() const override;
 	/*@}*/
 	
 	

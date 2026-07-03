@@ -31,6 +31,8 @@
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyList.h>
+#include <deigde/meta/property/igdeMetaPropertyContext.h>
 
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
@@ -43,22 +45,33 @@ public:
 	using Ref = deTObjectReference<aeRuleMirror>;
 	
 	
-	class MatchName : public deObject {
+	class MatchName : public deObject{
 	public:
 		using Ref = deTObjectReference<MatchName>;
-		using List = decTObjectOrderedSet<MatchName>;
 		
-		const decString first;
-		const decString second;
-		const deAnimatorRuleMirror::eMatchNameType type;
+		using MetaContext = igdeMetaContextType<MatchName>;
+		static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, MatchName *matchName);
 		
-		MatchName(const char *first, const char *second, deAnimatorRuleMirror::eMatchNameType type);
+		template<typename T>
+		using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+		
+		aeWindowMain &windowMain;
+		MetaContext::Ref metaContext;
+		igdeMetaPropertyStringStorage::Storage mpFirst, mpSecond;
+		igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMatchNameType>::Storage mpType;
+		
+		explicit MatchName(aeWindowMain &windowMain);
+		explicit MatchName(aeWindowMain &windowMain, const char *first, const char *second,
+			deAnimatorRuleMirror::eMatchNameType type);
+		MatchName(const MatchName &copy);
 		
 		bool operator==(const MatchName &matchName) const;
-		bool operator!=(const MatchName &matchName) const;
+		
+		igdeEnvironment &GetEnvironment() const;
+		igdeUndoSystem *GetUndoSystem() const;
 		
 	protected:
-		~MatchName() override = default;
+		~MatchName() override;
 	};
 	
 	
@@ -70,26 +83,28 @@ public:
 	
 	
 private:
-	MatchName::List pMatchNames;
+	aeWindowMain &pWindowMain;
 	
-	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>::Storage pMPMirrorAxis;
-	igdeMetaPropertyStringStorage::Storage pMPMirrorBone;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
+public:
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>::Storage mpMirrorAxis;
+	igdeMetaPropertyStringStorage::Storage mpMirrorBone;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyListStorage<MatchName>::Storage mpMatchNames;
+	igdeMetaPropertyContextStorage::Storage mpMatchName;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	aeRuleMirror() = delete;
-	aeRuleMirror(const aeRuleMirror&) = delete;
 	
 	/** Create rule. */
 	aeRuleMirror(aeWindowMain &windowMain, const char *name);
 	
 	/** Create copy of rule. */
-	aeRuleMirror(aeWindowMain &windowMain, const aeRuleMirror &copy);
+	aeRuleMirror(const aeRuleMirror &copy);
 	
 	/** Create rule with default settings. */
 	static aeRuleMirror::Ref CreateDefault(aeWindowMain &windowMain, const char *name);
@@ -107,64 +122,40 @@ private:
 public:
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>::Storage &GetMPMirrorAxis(){ return pMPMirrorAxis; }
-	inline igdeMetaPropertyStringStorage::Storage &GetMPMirrorBone(){ return pMPMirrorBone; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
-	
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Mirror axis. */
-	inline deAnimatorRuleMirror::eMirrorAxis GetMirrorAxis() const{ return pMPMirrorAxis; }
+	inline deAnimatorRuleMirror::eMirrorAxis GetMirrorAxis() const{ return mpMirrorAxis; }
 	
 	/** Set mirror axis. */
 	void SetMirrorAxis(deAnimatorRuleMirror::eMirrorAxis axis);
 	
 	/** Name of mirror bone or empty string to use component. */
-	inline const decString &GetMirrorBone() const{ return pMPMirrorBone; }
+	inline const decString &GetMirrorBone() const{ return mpMirrorBone; }
 	
 	/** Set name of mirror bone or empty string to use component. */
 	void SetMirrorBone(const char *boneName);
 	
-	/** Match names. */
-	const MatchName::List &GetMatchNames() const{ return pMatchNames; }
-	
-	/** Add match name. */
-	void AddMatchName(aeRuleMirror::MatchName *matchName);
-	
-	/** Insert match name. */
-	void InsertMatchName(aeRuleMirror::MatchName *matchName, int index);
-	
-	/** Set match name at index. */
-	void SetMatchNameAt(int index, aeRuleMirror::MatchName *matchName);
-	
-	/** Remove match name. */
-	void RemoveMatchName(MatchName *matchName);
-	
-	/** Remove all match names. */
-	void RemoveAllMatchNames();
-	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
+	inline bool GetEnablePosition() const{ return mpEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	
 	/** Orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pMPEnableSize; }
+	inline bool GetEnableSize() const{ return mpEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);
@@ -175,7 +166,7 @@ public:
 	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Create copy of rule. */
-	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
+	aeRule::Ref CreateCopy() const override;
 	/*@}*/
 	
 	

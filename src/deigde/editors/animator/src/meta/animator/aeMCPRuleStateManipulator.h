@@ -34,196 +34,233 @@
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
 
 
-class aeMCPRuleStateManipulatorMinPosition : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleStateManipulatorMinPosition :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleStateManipulatorMinPosition() : igdeMetaPropertyMCT(
-	"statemanipulator.minPosition", "Animator.WPAPanelRuleStateManipulator.MinPosition"){}
+		"animator.rule_state_manipulator.minPosition",
+		"Animator.WPAPanelRuleStateManipulator.MinPosition"){}
 	
 	~aeMCPRuleStateManipulatorMinPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMinPosition();
+		return Owner(context).mpMinPosition;
 	}
 };
 
-class aeMCPRuleStateManipulatorMaxPosition : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleStateManipulatorMaxPosition :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleStateManipulatorMaxPosition() : igdeMetaPropertyMCT(
-	"statemanipulator.maxPosition", "Animator.WPAPanelRuleStateManipulator.MaxPosition"){}
-	
+		"animator.rule_state_manipulator.maxPosition",
+		"Animator.WPAPanelRuleStateManipulator.MaxPosition"){}
+		
 	~aeMCPRuleStateManipulatorMaxPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMaxPosition();
+		return Owner(context).mpMaxPosition;
 	}
 };
 
-class aeMCPRuleStateManipulatorMinRotation : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
+class aeMCPRuleStateManipulatorMinRotation :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
 public:
 	aeMCPRuleStateManipulatorMinRotation() : igdeMetaPropertyMCT(
-	"statemanipulator.minRotation", "Animator.WPAPanelRuleStateManipulator.MinRotation"){}
+		"animator.rule_state_manipulator.minRotation",
+		"Animator.WPAPanelRuleStateManipulator.MinRotation"){}
 	
 	~aeMCPRuleStateManipulatorMinRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMinRotation();
+		return Owner(context).mpMinRotation;
 	}
 };
 
-class aeMCPRuleStateManipulatorMaxRotation : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
+class aeMCPRuleStateManipulatorMaxRotation :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
 public:
 	aeMCPRuleStateManipulatorMaxRotation() : igdeMetaPropertyMCT(
-	"statemanipulator.maxRotation", "Animator.WPAPanelRuleStateManipulator.MaxRotation"){}
+		"animator.rule_state_manipulator.maxRotation",
+		"Animator.WPAPanelRuleStateManipulator.MaxRotation"){}
 	
 	~aeMCPRuleStateManipulatorMaxRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMaxRotation();
+		return Owner(context).mpMaxRotation;
 	}
 };
 
-class aeMCPRuleStateManipulatorMinSize : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleStateManipulatorMinSize :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleStateManipulatorMinSize() : igdeMetaPropertyMCT(
-	"statemanipulator.minSize", "Animator.WPAPanelRuleStateManipulator.MinScaling"){
+		"animator.rule_state_manipulator.minSize",
+		"Animator.WPAPanelRuleStateManipulator.MinScaling")
+	{
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
 	}
 	
 	~aeMCPRuleStateManipulatorMinSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMinSize();
+		return Owner(context).mpMinSize;
 	}
 };
 
-class aeMCPRuleStateManipulatorMaxSize : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleStateManipulatorMaxSize :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleStateManipulatorMaxSize() : igdeMetaPropertyMCT(
-	"statemanipulator.maxSize", "Animator.WPAPanelRuleStateManipulator.MaxScaling"){
+		"animator.rule_state_manipulator.maxSize",
+		"Animator.WPAPanelRuleStateManipulator.MaxScaling")
+	{
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
 	}
 	
 	~aeMCPRuleStateManipulatorMaxSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMaxSize();
+		return Owner(context).mpMaxSize;
 	}
 };
 
-class aeMCPRuleStateManipulatorMinVertexPositionSet : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleStateManipulatorMinVertexPositionSet :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleStateManipulatorMinVertexPositionSet() : igdeMetaPropertyMCT(
-	"statemanipulator.minVertexPositionSet", "Animator.WPAPanelRuleStateManipulator.MinVertexPositionSet"){}
+		"animator.rule_state_manipulator.minVertexPositionSet",
+		"Animator.WPAPanelRuleStateManipulator.MinVertexPositionSet"){}
 	
 	~aeMCPRuleStateManipulatorMinVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMinVertexPositionSet();
+		return Owner(context).mpMinVertexPositionSet;
 	}
 };
 
-class aeMCPRuleStateManipulatorMaxVertexPositionSet : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleStateManipulatorMaxVertexPositionSet :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleStateManipulatorMaxVertexPositionSet() : igdeMetaPropertyMCT(
-	"statemanipulator.maxVertexPositionSet", "Animator.WPAPanelRuleStateManipulator.MaxVertexPositionSet"){}
+		"animator.rule_state_manipulator.maxVertexPositionSet",
+		"Animator.WPAPanelRuleStateManipulator.MaxVertexPositionSet"){}
 	
 	~aeMCPRuleStateManipulatorMaxVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMaxVertexPositionSet();
+		return Owner(context).mpMaxVertexPositionSet;
 	}
 };
 
-class aeMCPRuleStateManipulatorEnablePosition : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleStateManipulatorEnablePosition :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleStateManipulatorEnablePosition() : igdeMetaPropertyMCT(
-	"statemanipulator.enablePosition", "Animator.WPAPanelRuleStateManipulator.EnablePosition"){}
+		"animator.rule_state_manipulator.enablePosition",
+		"Animator.WPAPanelRuleStateManipulator.EnablePosition"){}
 	
 	~aeMCPRuleStateManipulatorEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePosition();
+		return Owner(context).mpEnablePosition;
 	}
 };
 
-class aeMCPRuleStateManipulatorEnableRotation : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleStateManipulatorEnableRotation :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleStateManipulatorEnableRotation() : igdeMetaPropertyMCT(
-	"statemanipulator.enableRotation", "Animator.WPAPanelRuleStateManipulator.EnableRotation"){
+		"animator.rule_state_manipulator.enableRotation",
+		"Animator.WPAPanelRuleStateManipulator.EnableRotation")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleStateManipulatorEnableRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableRotation();
+		return Owner(context).mpEnableRotation;
 	}
 };
 
-class aeMCPRuleStateManipulatorEnableSize : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleStateManipulatorEnableSize :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleStateManipulatorEnableSize() : igdeMetaPropertyMCT(
-	"statemanipulator.enableSize", "Animator.WPAPanelRuleStateManipulator.EnableSize"){}
+		"animator.rule_state_manipulator.enableSize",
+		"Animator.WPAPanelRuleStateManipulator.EnableSize"){}
 	
 	~aeMCPRuleStateManipulatorEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableSize();
+		return Owner(context).mpEnableSize;
 	}
 };
 
-class aeMCPRuleStateManipulatorEnableVertexPositionSet : public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleStateManipulatorEnableVertexPositionSet :
+	public aeRuleStateManipulator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleStateManipulatorEnableVertexPositionSet() : igdeMetaPropertyMCT(
-	"statemanipulator.enableVertexPositionSet", "Animator.WPAPanelRuleStateManipulator.EnableVertexPositionSet"){
+		"animator.rule_state_manipulator.enableVertexPositionSet",
+		"Animator.WPAPanelRuleStateManipulator.EnableVertexPositionSet")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleStateManipulatorEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableVertexPositionSet();
+		return Owner(context).mpEnableVertexPositionSet;
 	}
 };
 
 
-class aeMCPRuleStateManipulatorTargetPosition : public aeRule::MetaPropertyTarget<aeRuleStateManipulator>{
+class aeMCPRuleStateManipulatorTargetPosition :
+	public aeRule::MetaPropertyTarget<aeRuleStateManipulator>{
 public:
-	aeMCPRuleStateManipulatorTargetPosition() : MetaPropertyTarget("statemanipulator.targetPosition", "Animator.Target.Position"){}
+	aeMCPRuleStateManipulatorTargetPosition() : MetaPropertyTarget(
+		"animator.rule_state_manipulator.targetPosition", "Animator.Target.Position"){}
 	~aeMCPRuleStateManipulatorTargetPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetPosition();
+		return Owner(context).mpTargetPosition;
 	}
 };
 
-class aeMCPRuleStateManipulatorTargetRotation : public aeRule::MetaPropertyTarget<aeRuleStateManipulator>{
+class aeMCPRuleStateManipulatorTargetRotation :
+	public aeRule::MetaPropertyTarget<aeRuleStateManipulator>{
 public:
-	aeMCPRuleStateManipulatorTargetRotation() : MetaPropertyTarget("statemanipulator.targetRotation", "Animator.Target.Rotation"){}
+	aeMCPRuleStateManipulatorTargetRotation() : MetaPropertyTarget(
+		"animator.rule_state_manipulator.targetRotation", "Animator.Target.Rotation"){}
 	~aeMCPRuleStateManipulatorTargetRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetRotation();
+		return Owner(context).mpTargetRotation;
 	}
 };
 
-class aeMCPRuleStateManipulatorTargetSize : public aeRule::MetaPropertyTarget<aeRuleStateManipulator>{
+class aeMCPRuleStateManipulatorTargetSize :
+	public aeRule::MetaPropertyTarget<aeRuleStateManipulator>{
 public:
-	aeMCPRuleStateManipulatorTargetSize() : MetaPropertyTarget("statemanipulator.targetSize", "Animator.Target.Size"){}
+	aeMCPRuleStateManipulatorTargetSize() : MetaPropertyTarget(
+		"animator.rule_state_manipulator.targetSize", "Animator.Target.Size"){}
 	~aeMCPRuleStateManipulatorTargetSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetSize();
+		return Owner(context).mpTargetSize;
 	}
 };
 
-class aeMCPRuleStateManipulatorTargetVertexPositionSet : public aeRule::MetaPropertyTarget<aeRuleStateManipulator>{
+class aeMCPRuleStateManipulatorTargetVertexPositionSet :
+	public aeRule::MetaPropertyTarget<aeRuleStateManipulator>{
 public:
-	aeMCPRuleStateManipulatorTargetVertexPositionSet() : MetaPropertyTarget("statemanipulator.targetVertexPositionSet", "Animator.Target.VertexPositionSet"){}
+	aeMCPRuleStateManipulatorTargetVertexPositionSet() : MetaPropertyTarget(
+		"animator.rule_state_manipulator.targetVertexPositionSet",
+		"Animator.Target.VertexPositionSet"){}
 	~aeMCPRuleStateManipulatorTargetVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetVertexPositionSet();
+		return Owner(context).mpTargetVertexPositionSet;
 	}
 };
 

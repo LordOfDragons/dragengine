@@ -25,7 +25,6 @@
 #ifndef _AERULE_H_
 #define _AERULE_H_
 
-#include "../controller/aeControllerTarget.h"
 #include "../link/aeLink.h"
 
 #include <dragengine/deObject.h>
@@ -81,7 +80,7 @@ public:
 		}
 		
 		igdeMetaPropertyObjectSetStorage<aeLink>::SetType GetValidObjectsType(const igdeMetaContext::Ref &context) const override{
-			return igdeMetaPropertyObjectSetStorage<aeLink>::SetType(this->Owner(context).GetAnimatorRef().GetMPLinks().GetValue());
+			return igdeMetaPropertyObjectSetStorage<aeLink>::SetType(this->Owner(context).GetAnimatorRef().mpLinks.GetValue());
 		}
 		
 		void AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner) override{
@@ -96,6 +95,7 @@ public:
 	
 	
 private:
+	aeWindowMain &pWindowMain;
 	aeAnimator *pAnimator;
 	aeRuleGroup *pParentGroup;
 	deAnimatorRule *pEngRule;
@@ -104,16 +104,15 @@ private:
 	MetaContext::Ref pMetaContext;
 	deAnimatorRuleVisitorIdentify::eRuleTypes pType;
 	
-	aeControllerTarget::Ref pTargetBlendFactor;
-	
-	igdeMetaPropertyStringStorage::Storage pMPName;
-	igdeMetaPropertySelectionEnumStorage<deAnimatorRule::eBlendModes>::Storage pMPBlendMode;
-	igdeMetaPropertyFloatStorage::Storage pMPBlendFactor;
-	igdeMetaPropertyBooleanStorage::Storage pMPInvertBlendFactor;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnabled;
-	igdeMetaPropertyStringSetStorage::Storage pMPAffectedBones;
-	igdeMetaPropertyStringSetStorage::Storage pMPAffectedVps;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetBlendFactor;
+public:
+	igdeMetaPropertyStringStorage::Storage mpName;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRule::eBlendModes>::Storage mpBlendMode;
+	igdeMetaPropertyFloatStorage::Storage mpBlendFactor;
+	igdeMetaPropertyBooleanStorage::Storage mpInvertBlendFactor;
+	igdeMetaPropertyBooleanStorage::Storage mpEnabled;
+	igdeMetaPropertyStringSetStorage::Storage mpAffectedBones;
+	igdeMetaPropertyStringSetStorage::Storage mpAffectedVps;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetBlendFactor;
 	
 	
 protected:
@@ -127,7 +126,7 @@ protected:
 		deAnimatorRuleVisitorIdentify::eRuleTypes type, const char *name);
 	
 	/** Create a copy of an animator rule. */
-	aeRule(aeWindowMain &windowMain, const MetaContext::Ref &metaContext, const aeRule &copy);
+	aeRule(const MetaContext::Ref &metaContext, const aeRule &copy);
 	
 	/** Clean up the animator rule. */
 	~aeRule() override;
@@ -136,15 +135,7 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyStringStorage::Storage &GetMPName(){ return pMPName; }
-	inline igdeMetaPropertySelectionEnumStorage<deAnimatorRule::eBlendModes>::Storage &GetMPBlendMode(){ return pMPBlendMode; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPBlendFactor(){ return pMPBlendFactor; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPInvertBlendFactor(){ return pMPInvertBlendFactor; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnabled(){ return pMPEnabled; }
-	inline igdeMetaPropertyStringSetStorage::Storage &GetMPAffectedBones(){ return pMPAffectedBones; }
-	inline igdeMetaPropertyStringSetStorage::Storage &GetMPAffectedVps(){ return pMPAffectedVps; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetBlendFactor(){ return pMPTargetBlendFactor; }
-	
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Retrieve the parent animator. */
 	aeAnimator *GetAnimator() const;
@@ -184,24 +175,24 @@ public:
 	void SetParentGroup(aeRuleGroup *group);
 	
 	/** Retrieve the name. */
-	inline const decString &GetName() const{ return pMPName; }
+	inline const decString &GetName() const{ return mpName; }
 	/** Set the name. */
 	void SetName(const char *filename);
 	
 	/** Determine if the rule is enabled. */
-	inline bool GetEnabled() const{ return pMPEnabled; }
+	inline bool GetEnabled() const{ return mpEnabled; }
 	/** Set if the rule is enabled. */
 	void SetEnabled(bool enabled);
-	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return pMPBlendMode; }
+	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return mpBlendMode; }
 	/** Set the blend mode. */
 	void SetBlendMode(deAnimatorRule::eBlendModes mode);
 	/** Retrieve the blend factor. */
-	inline float GetBlendFactor() const{ return pMPBlendFactor; }
+	inline float GetBlendFactor() const{ return mpBlendFactor; }
 	/** Set the source blend factor. */
 	void SetBlendFactor(float factor);
 	
 	/** Invert blend factor. */
-	inline bool GetInvertBlendFactor() const{ return pMPInvertBlendFactor; }
+	inline bool GetInvertBlendFactor() const{ return mpInvertBlendFactor; }
 	
 	/** Set invert blend factor. */
 	void SetInvertBlendFactor(bool invert);
@@ -212,22 +203,12 @@ public:
 	virtual void UpdateTargets();
 	/** Retrieve the number of targets using a given link. */
 	virtual int CountLinkUsage(aeLink *link) const;
-	/** Remove a link from all targets using it. */
-	virtual void RemoveLinkFromTargets(aeLink *link);
-	/** Remove all links from all targets. */
-	virtual void RemoveLinksFromAllTargets();
-	
-	/** Retrieve the source factor target. */
-	inline const aeControllerTarget::Ref &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
-	
-	/** List all links of all rule targets. */
-	virtual void ListLinks(aeLink::List& list);
 	
 	/** Notify the engine that the rule changed. */
 	void NotifyRuleChanged();
 	
 	/** Create a copy of this rule. */
-	virtual aeRule::Ref CreateCopy(aeWindowMain &windowMain) const = 0;
+	virtual aeRule::Ref CreateCopy() const = 0;
 	
 	/** Parent animator changed. */
 	virtual void OnParentAnimatorChanged();
@@ -238,7 +219,7 @@ public:
 	/** \name Bone Management */
 	/*@{*/
 	/** Retrieve the list of bones. */
-	inline const decStringSet &GetListBones() const{ return pMPAffectedBones; }
+	inline const decStringSet &GetListBones() const{ return mpAffectedBones; }
 	
 	/** Set list of bones. */
 	void SetListBones(const decStringSet &bones);
@@ -258,7 +239,7 @@ public:
 	/** \name Vertex position set management */
 	/*@{*/
 	/** List of vertex position sets. */
-	inline const decStringSet &GetListVertexPositionSets() const{ return pMPAffectedVps; }
+	inline const decStringSet &GetListVertexPositionSets() const{ return mpAffectedVps; }
 	
 	/** Set list of vertex position sets. */
 	void SetListVertexPositionSets(const decStringSet &sets);

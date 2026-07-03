@@ -108,7 +108,7 @@ public:
 		
 		pValue = value;
 		
-		igdeMetaPropertyStorage<P>::onValueChanged();
+		this->onValueChanged();
 		if(notify){
 			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
 		}
@@ -125,7 +125,7 @@ public:
 		
 		pSelection = selection;
 		if(notify){
-			igdeMetaPropertyStorage<P>::Property().NotifySelectionChanged(igdeMetaPropertyStorage<P>::Context());
+			this->Property().NotifySelectionChanged(this->Context());
 		}
 	}
 	
@@ -141,7 +141,7 @@ public:
 		pActive = active;
 		onActiveChanged();
 		if(notify){
-			igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+			this->Property().NotifyActiveChanged(this->Context());
 		}
 	}
 	

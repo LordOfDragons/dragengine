@@ -131,34 +131,34 @@ pMetaContextRule(CreateMetaContextRule(windowMain, this)),
 pMetaContextPlayground(CreateMetaContextPlayground(windowMain, this)),
 pMetaContextAttachment(CreateMetaContextAttachment(windowMain, this)),
 pMetaContextView(CreateMetaContextView(windowMain, this)),
-pMPHiddenBoneNames(pWindowMain.GetMCAnimatorProperties().hiddenBoneNames, pMetaContext),
-pMPHiddenVpsNames(pWindowMain.GetMCAnimatorProperties().hiddenVPSNames, pMetaContext),
-pMPHiddenMoveNames(pWindowMain.GetMCAnimatorProperties().hiddenMoveNames, pMetaContext),
-pMPRigPath(pWindowMain.GetMCAnimatorProperties().rig, pMetaContext),
-pMPAnimationPath(pWindowMain.GetMCAnimatorProperties().animation, pMetaContext),
-pMPAffectedBones(pWindowMain.GetMCAnimatorProperties().affectedBones, pMetaContext),
-pMPAffectedVps(pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets, pMetaContext),
-pMPControllers(pWindowMain.GetMCAnimatorProperties().controller.controllers, pMetaContextController),
-pMPController(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaContextController),
-pMPLinks(pWindowMain.GetMCAnimatorProperties().link.links, pMetaContextLink),
-pMPLink(pWindowMain.GetMCAnimatorProperties().link.link, pMetaContextLink),
-pMPRuleTree(pWindowMain.GetMCAnimatorProperties().rule.ruleTree, pMetaContextRule),
-pMPRules(pWindowMain.GetMCAnimatorProperties().rule.rules, pMetaContextRule),
-pMPRule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContextRule),
-pMPPlaygroundControllers(pWindowMain.GetMCAnimatorProperties().playgroundControllers, pMetaContextPlayground),
-pMPDisplayModelPath(pWindowMain.GetMCAnimatorProperties().displayModelPath, pMetaContextView),
-pMPDisplaySkinPath(pWindowMain.GetMCAnimatorProperties().displaySkinPath, pMetaContextView),
-pMPDisplayRigPath(pWindowMain.GetMCAnimatorProperties().displayRigPath, pMetaContextView),
-pMPBaseAnimatorPath(pWindowMain.GetMCAnimatorProperties().baseAnimatorPath, pMetaContextView),
-pMPResetState(pWindowMain.GetMCAnimatorProperties().resetState, pMetaContextView),
-pMPPlaySpeed(pWindowMain.GetMCAnimatorProperties().playSpeed, pMetaContextView),
-pMPTimeStep(pWindowMain.GetMCAnimatorProperties().timeStep, pMetaContextView),
-pMPPaused(pWindowMain.GetMCAnimatorProperties().paused, pMetaContextView),
-pMPSky(pWindowMain.GetMCAnimatorProperties().sky, pMetaContextView),
-pMPEnvironmentObject(pWindowMain.GetMCAnimatorProperties().environmentObject, pMetaContextView),
-pMPCamera(pWindowMain.GetMCAnimatorProperties().camera, pMetaContextView),
-pMPAttachments(pWindowMain.GetMCAnimatorProperties().attachment.attachments, pMetaContextView),
-pMPAttachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMetaContextView)
+mpHiddenBoneNames(pWindowMain.GetMCAnimatorProperties().hiddenBoneNames, pMetaContext),
+mpHiddenVpsNames(pWindowMain.GetMCAnimatorProperties().hiddenVPSNames, pMetaContext),
+mpHiddenMoveNames(pWindowMain.GetMCAnimatorProperties().hiddenMoveNames, pMetaContext),
+mpRigPath(pWindowMain.GetMCAnimatorProperties().rig, pMetaContext),
+mpAnimationPath(pWindowMain.GetMCAnimatorProperties().animation, pMetaContext),
+mpAffectedBones(pWindowMain.GetMCAnimatorProperties().affectedBones, pMetaContext),
+mpAffectedVps(pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets, pMetaContext),
+mpControllers(pWindowMain.GetMCAnimatorProperties().controller.controllers, pMetaContextController),
+mpController(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaContextController),
+mpLinks(pWindowMain.GetMCAnimatorProperties().link.links, pMetaContextLink),
+mpLink(pWindowMain.GetMCAnimatorProperties().link.link, pMetaContextLink),
+mpRuleTree(pWindowMain.GetMCAnimatorProperties().rule.ruleTree, pMetaContextRule),
+mpRules(pWindowMain.GetMCAnimatorProperties().rule.rules, pMetaContextRule),
+mpRule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContextRule),
+mpPlaygroundControllers(pWindowMain.GetMCAnimatorProperties().playgroundControllers, pMetaContextPlayground),
+mpDisplayModelPath(pWindowMain.GetMCAnimatorProperties().displayModelPath, pMetaContextView),
+mpDisplaySkinPath(pWindowMain.GetMCAnimatorProperties().displaySkinPath, pMetaContextView),
+mpDisplayRigPath(pWindowMain.GetMCAnimatorProperties().displayRigPath, pMetaContextView),
+mpBaseAnimatorPath(pWindowMain.GetMCAnimatorProperties().baseAnimatorPath, pMetaContextView),
+mpResetState(pWindowMain.GetMCAnimatorProperties().resetState, pMetaContextView),
+mpPlaySpeed(pWindowMain.GetMCAnimatorProperties().playSpeed, pMetaContextView),
+mpTimeStep(pWindowMain.GetMCAnimatorProperties().timeStep, pMetaContextView),
+mpPaused(pWindowMain.GetMCAnimatorProperties().paused, pMetaContextView),
+mpSky(pWindowMain.GetMCAnimatorProperties().sky, pMetaContextView),
+mpEnvironmentObject(pWindowMain.GetMCAnimatorProperties().environmentObject, pMetaContextView),
+mpCamera(pWindowMain.GetMCAnimatorProperties().camera, pMetaContextView),
+mpAttachments(pWindowMain.GetMCAnimatorProperties().attachment.attachments, pMetaContextView),
+mpAttachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMetaContextView)
 {
 	deEngine * engine = GetEngine();
 	
@@ -193,7 +193,7 @@ pMPAttachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMeta
 		pSky = igdeWSky::Ref::New(windowMain.GetEnvironment());
 		pSky->SetGDDefaultSky();
 		pSky->SetWorld(pEngWorld);
-		pMPSky.SetValue(pSky->GetMetaContext(), false);
+		mpSky.SetValue(pSky->GetMetaContext(), false);
 		
 		// create the environment wrapper object
 		pEnvObject = igdeWObject::Ref::New(windowMain.GetEnvironment());
@@ -209,7 +209,7 @@ pMPAttachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMeta
 		pEnvObject->SetCollisionFilterFallback(decCollisionFilter(layerMask));
 		
 		pEnvObject->SetGDClassName("IGDETestTerrain");
-		pMPEnvironmentObject.SetValue(pEnvObject->GetMetaContext(), false);
+		mpEnvironmentObject.SetValue(pEnvObject->GetMetaContext(), false);
 		
 		// create debug drawers
 		pDDBones = engine->GetDebugDrawerManager()->CreateDebugDrawer();
@@ -223,153 +223,153 @@ pMPAttachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMeta
 	}
 	
 	uniqueNameController.SetIsUnique([this](const decString &name){
-		return !pMPControllers->HasNamed(name);
+		return !mpControllers->HasNamed(name);
 	});
 	
 	uniqueNameLink.SetIsUnique([this](const decString &name){
-		return !pMPLinks->HasMatching([&](const aeLink &each){
+		return !mpLinks->HasMatching([&](const aeLink &each){
 			return each.GetName() == name;
 		});
 	});
 	
 	uniqueNameRule.SetIsUnique([this](const decString &name){
-		return !pMPRules->HasMatching([&](const aeRule &each){
+		return !mpRules->HasMatching([&](const aeRule &each){
 			return each.GetName() == name;
 		});
 	});
 	
 	uniqueNameAttachment.SetIsUnique([this](const decString &name){
-		return !pMPAttachments->HasNamed(name);
+		return !mpAttachments->HasNamed(name);
 	});
 	
-	pMPRigPath.onValueChanged = [this](){
+	mpRigPath.onValueChanged = [this](){
 		pUpdateComponent();
 		NotifyRigChanged();
 	};
 	
-	pMPAnimationPath.onValueChanged = [this](){
+	mpAnimationPath.onValueChanged = [this](){
 		pUpdateAnimator();
 		pCamera->SetBone("");
 		NotifyAnimationChanged();
 	};
 	
-	pMPAffectedBones.onValueChanged = [this](){
+	mpAffectedBones.onValueChanged = [this](){
 		if(pEngAnimator){
-			pEngAnimator->GetListBones() = pMPAffectedBones;
+			pEngAnimator->GetListBones() = mpAffectedBones;
 			pEngAnimator->NotifyBonesChanged();
 		}
 		NotifyAnimatorChanged();
 	};
 	
-	pMPAffectedVps.onValueChanged = [this](){
+	mpAffectedVps.onValueChanged = [this](){
 		if(pEngAnimator){
-			pEngAnimator->GetListVertexPositionSets() = pMPAffectedVps;
+			pEngAnimator->GetListVertexPositionSets() = mpAffectedVps;
 			pEngAnimator->NotifyVertexPositionSetsChanged();
 		}
 		NotifyAnimatorChanged();
 	};
 	
-	pMPControllers.onValueChanged = [this](){
-		pMPAllowedListControllers = igdeMetaPropertyObjectType<aeController>::ObjectTypeList::New(pMPControllers);
+	mpControllers.onValueChanged = [this](){
+		mpAllowedListControllers = igdeMetaPropertyObjectType<aeController>::ObjectTypeList::New(mpControllers);
 		pUpdateLinks();
 		NotifyControllerStructureChanged();
 		pUpdatePlaygroundControllers();
 	};
-	pMPControllers.onObjectAdded = [this](aeController &each){
+	mpControllers.onObjectAdded = [this](aeController &each){
 		each.SetAnimator(this);
 	};
-	pMPControllers.onObjectRemoved = [this](aeController &each){
+	mpControllers.onObjectRemoved = [this](aeController &each){
 		each.SetAnimator(nullptr);
 	};
-	pMPControllers.onActiveChanged = [this](){
+	mpControllers.onActiveChanged = [this](){
 		NotifyActiveControllerChanged();
-		const auto &active = pMPControllers.GetActive();
-		pMPController.SetValue(active ? active->GetMetaContext() : pMPController.Property().GetDefaultValue());
+		const auto &active = mpControllers.GetActive();
+		mpController.SetValue(active ? active->GetMetaContext() : mpController.Property().GetDefaultValue());
 	};
 	
-	pMPLinks.onValueChanged = [this](){
+	mpLinks.onValueChanged = [this](){
 		RebuildRules();
 		NotifyLinkStructureChanged();
 	};
-	pMPLinks.onObjectAdded = [this](aeLink &each){
+	mpLinks.onObjectAdded = [this](aeLink &each){
 		each.SetAnimator(this);
 	};
-	pMPLinks.onObjectRemoved = [this](aeLink &each){
+	mpLinks.onObjectRemoved = [this](aeLink &each){
 		each.SetAnimator(nullptr);
 	};
-	pMPLinks.onActiveChanged = [this](){
+	mpLinks.onActiveChanged = [this](){
 		NotifyActiveLinkChanged();
-		const auto &active = pMPLinks.GetActive();
-		pMPLink.SetValue(active ? active->GetMetaContext() : pMPLink.Property().GetDefaultValue());
+		const auto &active = mpLinks.GetActive();
+		mpLink.SetValue(active ? active->GetMetaContext() : mpLink.Property().GetDefaultValue());
 	};
 	
-	pMPRuleTree.onActiveChanged = [this](){
+	mpRuleTree.onActiveChanged = [this](){
 		NotifyActiveRuleChanged();
-		const auto &active = pMPRuleTree.GetActive();
-		pMPRule.SetValue(active ? active->GetMetaContext() : pMPRule.Property().GetDefaultValue());
+		const auto &active = mpRuleTree.GetActive();
+		mpRule.SetValue(active ? active->GetMetaContext() : mpRule.Property().GetDefaultValue());
 	};
 	
-	pMPRules.onValueChanged = [this](){
+	mpRules.onValueChanged = [this](){
 		pUpdateRuleIndices();
 		RebuildRules();
 		NotifyRuleStructureChanged();
 	};
-	pMPRules.onObjectAdded = [this](aeRule &each){
+	mpRules.onObjectAdded = [this](aeRule &each){
 		each.SetAnimator(this);
 	};
-	pMPRules.onObjectRemoved = [this](aeRule &each){
+	mpRules.onObjectRemoved = [this](aeRule &each){
 		each.SetAnimator(nullptr);
 	};
 	
-	pMPAttachments.onValueChanged = [this](){
+	mpAttachments.onValueChanged = [this](){
 		NotifyAttachmentStructureChanged();
 	};
-	pMPAttachments.onObjectAdded = [this](aeAttachment &each){
+	mpAttachments.onObjectAdded = [this](aeAttachment &each){
 		each.SetAnimator(this);
 	};
-	pMPAttachments.onObjectRemoved = [this](aeAttachment &each){
+	mpAttachments.onObjectRemoved = [this](aeAttachment &each){
 		each.SetAnimator(nullptr);
 	};
-	pMPAttachments.onActiveChanged = [this](){
+	mpAttachments.onActiveChanged = [this](){
 		NotifyActiveAttachmentChanged();
-		const auto &active = pMPAttachments.GetActive();
-		pMPAttachment.SetValue(active ? active->GetMetaContext() : pMPAttachment.Property().GetDefaultValue());
+		const auto &active = mpAttachments.GetActive();
+		mpAttachment.SetValue(active ? active->GetMetaContext() : mpAttachment.Property().GetDefaultValue());
 	};
 	
-	pMPDisplayModelPath.onValueChanged = [this](){
+	mpDisplayModelPath.onValueChanged = [this](){
 		pUpdateComponent();
 		NotifyModelChanged();
 	};
-	pMPDisplaySkinPath.onValueChanged = pMPDisplayModelPath.onValueChanged;
-	pMPDisplayRigPath.onValueChanged = pMPDisplayModelPath.onValueChanged;
+	mpDisplaySkinPath.onValueChanged = mpDisplayModelPath.onValueChanged;
+	mpDisplayRigPath.onValueChanged = mpDisplayModelPath.onValueChanged;
 	
-	pMPBaseAnimatorPath.onValueChanged = [this](){
-		pTestingSubAnimator->SetPathAnimator(pMPBaseAnimatorPath);
+	mpBaseAnimatorPath.onValueChanged = [this](){
+		pTestingSubAnimator->SetPathAnimator(mpBaseAnimatorPath);
 		pTestingSubAnimator->LoadAnimator(pWindowMain.GetLoadSaveSystem());
 		NotifyViewChanged();
 	};
 	
-	pMPResetState.onValueChanged = [this](){
+	mpResetState.onValueChanged = [this](){
 		RebuildRules();
 		NotifyViewChanged();
 	};
 	
-	pMPSky.onValueChanged = [this](){
+	mpSky.onValueChanged = [this](){
 		NotifySkyChanged();
 	};
-	pMPEnvironmentObject.onValueChanged = [this](){
+	mpEnvironmentObject.onValueChanged = [this](){
 		NotifyEnvObjectChanged();
 	};
-	pMPCamera.onValueChanged = [this](){
+	mpCamera.onValueChanged = [this](){
 		NotifyCameraChanged();
 	};
 	
-	pMPPlaySpeed.onValueChanged = [this](){
+	mpPlaySpeed.onValueChanged = [this](){
 		NotifyPlaybackChanged();
 	};
-	pMPTimeStep.onValueChanged = pMPPlaySpeed.onValueChanged;
+	mpTimeStep.onValueChanged = mpPlaySpeed.onValueChanged;
 	
-	pMPPaused.onValueChanged = [this](){
+	mpPaused.onValueChanged = [this](){
 		NotifyPlaybackChanged();
 	};
 	
@@ -390,6 +390,18 @@ void aeAnimator::Dispose(){
 	RemoveAllAttachments();
 	
 	GetUndoSystem()->RemoveAll();
+	if(pMetaContextView){
+		pMetaContextView->Dispose();
+		pMetaContextView.Clear();
+	}
+	if(pMetaContextAttachment){
+		pMetaContextAttachment->Dispose();
+		pMetaContextAttachment.Clear();
+	}
+	if(pMetaContextPlayground){
+		pMetaContextPlayground->Dispose();
+		pMetaContextPlayground.Clear();
+	}
 	if(pMetaContextRule){
 		pMetaContextRule->Dispose();
 		pMetaContextRule.Clear();
@@ -401,14 +413,6 @@ void aeAnimator::Dispose(){
 	if(pMetaContextController){
 		pMetaContextController->Dispose();
 		pMetaContextController.Clear();
-	}
-	if(pMetaContextView){
-		pMetaContextView->Dispose();
-		pMetaContextView.Clear();
-	}
-	if(pMetaContextAttachment){
-		pMetaContextAttachment->Dispose();
-		pMetaContextAttachment.Clear();
 	}
 	if(pMetaContext){
 		pMetaContext->Dispose();
@@ -424,23 +428,23 @@ void aeAnimator::Reset(){
 }
 
 void aeAnimator::SetDisplayModelPath(const char *path){
-	pMPDisplayModelPath = path;
+	mpDisplayModelPath = path;
 }
 
 void aeAnimator::SetDisplaySkinPath(const char *path){
-	pMPDisplaySkinPath = path;
+	mpDisplaySkinPath = path;
 }
 
 void aeAnimator::SetDisplayRigPath(const char *path){
-	pMPDisplayRigPath = path;
+	mpDisplayRigPath = path;
 }
 
 void aeAnimator::SetRigPath(const char *path){
-	pMPRigPath = path;
+	mpRigPath = path;
 }
 
 void aeAnimator::SetAnimationPath(const char *path){
-	pMPAnimationPath = path;
+	mpAnimationPath = path;
 }
 
 bool aeAnimator::GetShowBones() const{
@@ -471,21 +475,21 @@ void aeAnimator::SetDDBoneSize(float size){
 ////////////////////
 
 void aeAnimator::UpdateWorld(float elapsed){
-	const float controllerElapsed = elapsed * pMPPlaySpeed;
-	const float realTimeElapsed = elapsed * pMPPlaySpeed;
+	const float controllerElapsed = elapsed * mpPlaySpeed;
+	const float realTimeElapsed = elapsed * mpPlaySpeed;
 	
 	// update the locomotion testing
 	pLocomotion->Update(realTimeElapsed);
 	
 	// update the controllers which are linked to the elapsed time
-	if(!pMPPaused){
-		pMPControllers->Visit([&](aeController &each){
+	if(!mpPaused){
+		mpControllers->Visit([&](aeController &each){
 			each.UpdateValue(controllerElapsed);
 		});
 	}
 	
 	// reset the animation states if required
-	if(pEngComponent && pMPResetState){
+	if(pEngComponent && mpResetState){
 		pEngComponent->GetBones().Visit([](deComponentBone &bone){
 			bone.SetPosition(decVector());
 			bone.SetRotation(decQuaternion());
@@ -532,8 +536,8 @@ void aeAnimator::UpdateWorld(float elapsed){
 	pLocomotion->PostUpdate();
 	
 	// update attachments
-	if(!pMPPaused){
-		pMPAttachments->Visit([&](aeAttachment &each){
+	if(!mpPaused){
+		mpAttachments->Visit([&](aeAttachment &each){
 			each.Update(realTimeElapsed);
 		});
 	}
@@ -554,21 +558,21 @@ void aeAnimator::UpdateWorld(float elapsed){
 ////////////
 
 void aeAnimator::SetPaused(bool value){
-	pMPPaused = value;
+	mpPaused = value;
 }
 
 void aeAnimator::SetPlaySpeed(float value){
-	pMPPlaySpeed = value;
+	mpPlaySpeed = value;
 }
 
 void aeAnimator::SetTimeStep(float value){
-	pMPTimeStep = value;
+	mpTimeStep = value;
 }
 
 
 
 void aeAnimator::SetResetState(bool value){
-	pMPResetState = value;
+	mpResetState = value;
 }
 
 
@@ -611,44 +615,44 @@ void aeAnimator::SetPathAttachmentConfig(const char *path){
 ////////////////
 
 void aeAnimator::AddController(aeController *acontroller){
-	auto list = pMPControllers.GetValue();
+	auto list = mpControllers.GetValue();
 	list.AddOrThrow(acontroller);
-	pMPControllers = list;
+	mpControllers = list;
 }
 
 void aeAnimator::InsertControllerAt(aeController *acontroller, int index){
-	auto list = pMPControllers.GetValue();
+	auto list = mpControllers.GetValue();
 	list.InsertOrThrow(acontroller, index);
-	pMPControllers = list;
+	mpControllers = list;
 }
 
 void aeAnimator::MoveControllerTo(aeController *acontroller, int index){
-	auto list = pMPControllers.GetValue();
+	auto list = mpControllers.GetValue();
 	list.Move(acontroller, index);
-	pMPControllers = list;
+	mpControllers = list;
 }
 
 void aeAnimator::RemoveController(aeController *acontroller){
-	auto list = pMPControllers.GetValue();
+	auto list = mpControllers.GetValue();
 	list.RemoveOrThrow(acontroller);
-	pMPControllers = list;
+	mpControllers = list;
 }
 
 void aeAnimator::RemoveAllControllers(){
-	pMPControllers = {};
+	mpControllers = {};
 }
 
 void aeAnimator::SetActiveController(aeController *acontroller){
-	pMPControllers.SetActive(acontroller);
+	mpControllers.SetActive(acontroller);
 }
 
 void aeAnimator::ResetControllers(){
-	pMPControllers->Visit([](aeController &each){
+	mpControllers->Visit([](aeController &each){
 		each.ResetValue();
 	});
 }
 void aeAnimator::ResetControllersWith(int locomotionAttribute){
-	pMPControllers->Visit([&](aeController &each){
+	mpControllers->Visit([&](aeController &each){
 		if(each.GetLocomotionAttribute() == locomotionAttribute){
 			each.ResetValue();
 		}
@@ -656,7 +660,7 @@ void aeAnimator::ResetControllersWith(int locomotionAttribute){
 }
 	
 void aeAnimator::InverseControllersWith(int locomotionAttribute){
-	pMPControllers->Visit([&](aeController &each){
+	mpControllers->Visit([&](aeController &each){
 		if(each.GetLocomotionAttribute() == locomotionAttribute){
 			each.InverseValue();
 		}
@@ -664,7 +668,7 @@ void aeAnimator::InverseControllersWith(int locomotionAttribute){
 }
 
 void aeAnimator::IncrementControllersWith(int locomotionAttribute, float incrementBy){
-	pMPControllers->Visit([&](aeController &each){
+	mpControllers->Visit([&](aeController &each){
 		if(each.GetLocomotionAttribute() == locomotionAttribute){
 			each.IncrementCurrentValue(incrementBy);
 		}
@@ -677,28 +681,28 @@ void aeAnimator::IncrementControllersWith(int locomotionAttribute, float increme
 //////////
 
 void aeAnimator::AddLink(aeLink *alink){
-	auto list = pMPLinks.GetValue();
+	auto list = mpLinks.GetValue();
 	list.AddOrThrow(alink);
-	pMPLinks = list;
+	mpLinks = list;
 }
 
 void aeAnimator::RemoveLink(aeLink *alink){
-	auto list = pMPLinks.GetValue();
+	auto list = mpLinks.GetValue();
 	list.RemoveOrThrow(alink);
-	pMPLinks = list;
+	mpLinks = list;
 }
 
 void aeAnimator::RemoveAllLinks(){
-	pMPLinks = {};
+	mpLinks = {};
 }
 
 void aeAnimator::SetActiveLink(aeLink *alink){
-	pMPLinks.SetActive(alink);
+	mpLinks.SetActive(alink);
 }
 
 int aeAnimator::CountLinkUsage(aeLink *alink) const{
 	int count = 0;
-	pMPRules.GetValue().Visit([&](const aeRule &each){
+	mpRules->Visit([&](const aeRule &each){
 		count += each.CountLinkUsage(alink);
 	});
 	return count;
@@ -710,39 +714,39 @@ int aeAnimator::CountLinkUsage(aeLink *alink) const{
 //////////
 
 void aeAnimator::AddRule(aeRule *arule){
-	auto list = pMPRules.GetValue();
+	auto list = mpRules.GetValue();
 	list.AddOrThrow(arule);
-	pMPRules = list;
+	mpRules = list;
 }
 
 void aeAnimator::InsertRuleAt(aeRule *arule, int index){
-	auto list = pMPRules.GetValue();
+	auto list = mpRules.GetValue();
 	list.InsertOrThrow(arule, index);
-	pMPRules = list;
+	mpRules = list;
 }
 
 void aeAnimator::MoveRuleTo(aeRule *arule, int index){
-	auto list = pMPRules.GetValue();
+	auto list = mpRules.GetValue();
 	list.Move(arule, index);
-	pMPRules = list;
+	mpRules = list;
 }
 
 void aeAnimator::RemoveRule(aeRule *arule){
-	auto list = pMPRules.GetValue();
+	auto list = mpRules.GetValue();
 	list.RemoveOrThrow(arule);
-	pMPRules = list;
+	mpRules = list;
 }
 
 void aeAnimator::RemoveAllRules(){
-	pMPRules = {};
+	mpRules = {};
 }
 
 void aeAnimator::SetActiveRule(aeRule *arule){
-	pMPRuleTree.SetActive(arule);
+	mpRuleTree.SetActive(arule);
 }
 
 void aeAnimator::RebuildRules(){
-	pMPRules.GetValue().Visit([](aeRule &each){
+	mpRules.GetValue().Visit([](aeRule &each){
 		each.SetEngineRule(nullptr);
 	});
 	
@@ -752,13 +756,13 @@ void aeAnimator::RebuildRules(){
 	
 	pEngAnimator->RemoveAllRules();
 	
-	if(pMPResetState){
+	if(mpResetState){
 		const deAnimatorRuleStateSnapshot::Ref engRule(deAnimatorRuleStateSnapshot::Ref::New());
 		engRule->SetUseLastState(true);
 		pEngAnimator->AddRule(engRule);
 	}
 	
-	pMPRules.GetValue().Visit([&](aeRule &each){
+	mpRules.GetValue().Visit([&](aeRule &each){
 		const deAnimatorRule::Ref engRule(each.CreateEngineRule());
 		pEngAnimator->AddRule(engRule);
 		each.SetEngineRule(engRule);
@@ -771,19 +775,19 @@ void aeAnimator::RebuildRules(){
 ////////////////////
 
 void aeAnimator::SetListBones(const decStringSet &bones){
-	pMPAffectedBones = bones;
+	mpAffectedBones = bones;
 }
 
 void aeAnimator::AddBone(const char *bone){
-	pMPAffectedBones = pMPAffectedBones.GetValue() + decStringSet(devctag, bone);
+	mpAffectedBones = mpAffectedBones.GetValue() + decStringSet(devctag, bone);
 }
 
 void aeAnimator::RemoveBone(const char *bone){
-	pMPAffectedBones = pMPAffectedBones.GetValue() - decStringSet(devctag, bone);
+	mpAffectedBones = mpAffectedBones.GetValue() - decStringSet(devctag, bone);
 }
 
 void aeAnimator::RemoveAllBones(){
-	pMPAffectedBones = {};
+	mpAffectedBones = {};
 }
 
 
@@ -791,19 +795,19 @@ void aeAnimator::RemoveAllBones(){
 ///////////////////////////////////
 
 void aeAnimator::SetListVertexPositionSets(const decStringSet &sets){
-	pMPAffectedVps = sets;
+	mpAffectedVps = sets;
 }
 
 void aeAnimator::AddVertexPositionSet(const char *vps){
-	pMPAffectedVps = pMPAffectedVps.GetValue() + decStringSet(devctag, vps);
+	mpAffectedVps = mpAffectedVps.GetValue() + decStringSet(devctag, vps);
 }
 
 void aeAnimator::RemoveVertexPositionSet(const char *vps){
-	pMPAffectedVps = pMPAffectedVps.GetValue() - decStringSet(devctag, vps);
+	mpAffectedVps = mpAffectedVps.GetValue() - decStringSet(devctag, vps);
 }
 
 void aeAnimator::RemoveAllVertexPositionSets(){
-	pMPAffectedVps = {};
+	mpAffectedVps = {};
 }
 
 
@@ -812,43 +816,43 @@ void aeAnimator::RemoveAllVertexPositionSets(){
 
 aeAttachment *aeAnimator::GetAttachmentNamed(const char *name) const{
 	DEASSERT_NOTNULL(name)
-	return pMPAttachments->FindOrDefault([&](const aeAttachment &a){ return a.GetName() == name; });
+	return mpAttachments->FindOrDefault([&](const aeAttachment &a){ return a.GetName() == name; });
 }
 
 void aeAnimator::AddAttachment(aeAttachment *each){
-	auto set = pMPAttachments.GetValue();
+	auto set = mpAttachments.GetValue();
 	set.AddOrThrow(each);
-	pMPAttachments = set;
+	mpAttachments = set;
 }
 
 void aeAnimator::RemoveAttachment(aeAttachment *each){
-	auto set = pMPAttachments.GetValue();
+	auto set = mpAttachments.GetValue();
 	set.RemoveOrThrow(each);
-	pMPAttachments = set;
+	mpAttachments = set;
 }
 
 void aeAnimator::RemoveAllAttachments(){
-	pMPAttachments = {};
+	mpAttachments = {};
 }
 
 void aeAnimator::SetActiveAttachment(aeAttachment *each){
-	pMPAttachments.SetActive(each);
+	mpAttachments.SetActive(each);
 }
 
 void aeAnimator::AttachAttachments(){
-	pMPAttachments->Visit([](aeAttachment &each){
+	mpAttachments->Visit([](aeAttachment &each){
 		each.AttachCollider();
 	});
 }
 
 void aeAnimator::DetachAttachments(){
-	pMPAttachments->Visit([](aeAttachment &each){
+	mpAttachments->Visit([](aeAttachment &each){
 		each.DetachCollider();
 	});
 }
 
 void aeAnimator::AttachmentsResetPhysics(){
-	pMPAttachments->Visit([](aeAttachment &each){
+	mpAttachments->Visit([](aeAttachment &each){
 		each.ResetPhysics();
 	});
 }
@@ -954,7 +958,7 @@ void aeAnimator::NotifyLocomotionChanged(){
 
 void aeAnimator::NotifyActiveControllerChanged(){
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->ActiveControllerChanged(this, pMPControllers.GetActive());
+		listener->ActiveControllerChanged(this, mpControllers.GetActive());
 	});
 }
 
@@ -997,7 +1001,7 @@ void aeAnimator::NotifyControllerStructureChanged(){
 
 void aeAnimator::NotifyActiveLinkChanged(){
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->ActiveLinkChanged(this, pMPLinks.GetActive());
+		listener->ActiveLinkChanged(this, mpLinks.GetActive());
 	});
 }
 
@@ -1033,7 +1037,7 @@ void aeAnimator::NotifyLinkStructureChanged(){
 
 void aeAnimator::NotifyActiveRuleChanged(){
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->ActiveRuleChanged(this, pMPRules.GetActive());
+		listener->ActiveRuleChanged(this, mpRules.GetActive());
 	});
 }
 
@@ -1065,7 +1069,7 @@ void aeAnimator::NotifyRuleStructureChanged(){
 
 void aeAnimator::NotifyActiveAttachmentChanged(){
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->ActiveAttachmentChanged(this, pMPAttachments.GetActive());
+		listener->ActiveAttachmentChanged(this, mpAttachments.GetActive());
 	});
 }
 
@@ -1176,7 +1180,7 @@ void aeAnimator::pCreateCamera(){
 	pCamera = aeCamera::Ref::New(*this, GetEngine());
 	pCamera->SetEngineWorld(pEngWorld);
 	pCamera->Reset();
-	pMPCamera.SetValue(pCamera->GetMetaContext(), false);
+	mpCamera.SetValue(pCamera->GetMetaContext(), false);
 }
 
 void aeAnimator::pCreateCollider(){
@@ -1202,17 +1206,17 @@ void aeAnimator::pUpdateComponent(){
 	deRig::Ref displayRig, engineRig;
 	
 	try{
-		if(!pMPDisplayModelPath->IsEmpty()){
-			displayModel = engine->GetModelManager()->LoadModel(pMPDisplayModelPath, GetDirectoryPath());
+		if(!mpDisplayModelPath->IsEmpty()){
+			displayModel = engine->GetModelManager()->LoadModel(mpDisplayModelPath, GetDirectoryPath());
 		}
-		if(!pMPDisplaySkinPath->IsEmpty()){
-			displaySkin = engine->GetSkinManager()->LoadSkin(pMPDisplaySkinPath, GetDirectoryPath());
+		if(!mpDisplaySkinPath->IsEmpty()){
+			displaySkin = engine->GetSkinManager()->LoadSkin(mpDisplaySkinPath, GetDirectoryPath());
 		}
-		if(!pMPDisplayRigPath->IsEmpty()){
-			displayRig = engine->GetRigManager()->LoadRig(pMPDisplayRigPath, GetDirectoryPath());
+		if(!mpDisplayRigPath->IsEmpty()){
+			displayRig = engine->GetRigManager()->LoadRig(mpDisplayRigPath, GetDirectoryPath());
 		}
-		if(!pMPRigPath->IsEmpty()){
-			engineRig = engine->GetRigManager()->LoadRig(pMPRigPath, GetDirectoryPath());
+		if(!mpRigPath->IsEmpty()){
+			engineRig = engine->GetRigManager()->LoadRig(mpRigPath, GetDirectoryPath());
 		}
 		
 	}catch(const deException &e){
@@ -1309,9 +1313,9 @@ void aeAnimator::pUpdateAnimator(){
 	deAnimation::Ref animation;
 	
 	try{
-		if(!pMPAnimationPath->IsEmpty()){
+		if(!mpAnimationPath->IsEmpty()){
 			animation = GetEngine()->GetAnimationManager()->
-				LoadAnimation(pMPAnimationPath, GetDirectoryPath());
+				LoadAnimation(mpAnimationPath, GetDirectoryPath());
 		}
 		
 	}catch(const deException &e){
@@ -1333,36 +1337,36 @@ void aeAnimator::pUpdateAnimator(){
 }
 
 void aeAnimator::pUpdateLinks(){
-	pMPLinks.GetValue().Visit([](aeLink &each){
+	mpLinks.GetValue().Visit([](aeLink &each){
 		each.UpdateController();
 	});
 	RebuildRules();
 }
 
 void aeAnimator::pUpdateRuleIndices(){
-	pMPRules.GetValue().VisitIndexed([](int i, aeRule &each){
+	mpRules.GetValue().VisitIndexed([](int i, aeRule &each){
 		each.SetIndex(i);
 	});
 }
 
 void aeAnimator::pUpdatePlaygroundControllers(){
 	aeMCPAnimatorPlaygroundControllers::ListType sliders;
-	pMPControllers->Visit([&](const aeController &controller){
+	mpControllers->Visit([&](const aeController &controller){
 		sliders.Add(controller.GetMetaContext());
 	});
-	pMPPlaygroundControllers = sliders;
+	mpPlaygroundControllers = sliders;
 }
 
 
 void aeAnimator::pAnimCompChanged(){
-	pMPRules.GetValue().Visit([](aeRule &each){
+	mpRules.GetValue().Visit([](aeRule &each){
 		each.UpdateCompAnim();
 	});
 }
 
 void aeAnimator::pUpdateEngineControllers(){
 	// set all engine controller indices in our controllers to -1
-	pMPControllers->Visit([&](aeController &each){
+	mpControllers->Visit([&](aeController &each){
 		each.SetIndex(-1);
 	});
 	
@@ -1373,7 +1377,7 @@ void aeAnimator::pUpdateEngineControllers(){
 	pEngAnimator->RemoveAllControllers();
 	
 	// add an engine controller for each controller we have
-	pMPControllers->Visit([&](aeController &each){
+	mpControllers->Visit([&](aeController &each){
 		pEngAnimator->AddController(deAnimatorController::Ref::New());
 	});
 	
@@ -1382,7 +1386,7 @@ void aeAnimator::pUpdateEngineControllers(){
 	pEngAnimatorInstance->SetAnimator(pEngAnimator);
 	
 	// now assign the matching engine controller indices to our controllers
-	pMPControllers->VisitIndexed([&](int i, aeController &each){
+	mpControllers->VisitIndexed([&](int i, aeController &each){
 		each.SetIndex(i);
 	});
 	
@@ -1435,7 +1439,7 @@ void aeAnimator::pUpdateHiddenBoneNames(){
 			names.Add(bone.GetName());
 		});
 	}
-	pMPHiddenBoneNames = names;
+	mpHiddenBoneNames = names;
 }
 
 void aeAnimator::pUpdateHiddenVertexPositionSetNames(){
@@ -1445,7 +1449,7 @@ void aeAnimator::pUpdateHiddenVertexPositionSetNames(){
 			names.Add(vps.GetName());
 		});
 	}
-	pMPHiddenVpsNames = names;
+	mpHiddenVpsNames = names;
 }
 
 void aeAnimator::pUpdateHiddenMoveNames(){
@@ -1455,5 +1459,5 @@ void aeAnimator::pUpdateHiddenMoveNames(){
 			names.Add(move.GetName());
 		});
 	}
-	pMPHiddenMoveNames = names;
+	mpHiddenMoveNames = names;
 }

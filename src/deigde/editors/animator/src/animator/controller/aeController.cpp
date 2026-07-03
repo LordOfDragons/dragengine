@@ -49,71 +49,72 @@ aeController::MetaContext::Ref aeController::CreateMetaContext(aeWindowMain &win
 ////////////////////////////
 
 aeController::aeController(aeWindowMain &windowMain, const char *aname) :
+pWindowMain(windowMain),
 pMetaContext(CreateMetaContext(windowMain, this)),
 pAnimator(nullptr),
 pIndex(-1),
-pMPName(windowMain.GetMCAnimatorProperties().controller.name, pMetaContext, aname),
-pMPMinimumValue(windowMain.GetMCAnimatorProperties().controller.minimumValue, pMetaContext),
-pMPMaximumValue(windowMain.GetMCAnimatorProperties().controller.maximumValue, pMetaContext),
-pMPCurrentValue(windowMain.GetMCAnimatorProperties().controller.currentValue, pMetaContext),
-pMPClamp(windowMain.GetMCAnimatorProperties().controller.clamp, pMetaContext),
-pMPFrozen(windowMain.GetMCAnimatorProperties().controller.frozen, pMetaContext),
-pMPVector(windowMain.GetMCAnimatorProperties().controller.vector, pMetaContext),
-pMPLocomotionAttribute(windowMain.GetMCAnimatorProperties().controller.locomotionAttribute, pMetaContext),
-pMPLocomotionLeg(windowMain.GetMCAnimatorProperties().controller.locomotionLeg, pMetaContext),
-pMPVectorSimulation(windowMain.GetMCAnimatorProperties().controller.vectorSimulation, pMetaContext),
-pMPDefaultValue(windowMain.GetMCAnimatorProperties().controller.defaultValue, pMetaContext),
-pMPDefaultVector(windowMain.GetMCAnimatorProperties().controller.defaultVector, pMetaContext)
+mpName(windowMain.GetMCAnimatorProperties().controller.name, pMetaContext, aname),
+mpMinimumValue(windowMain.GetMCAnimatorProperties().controller.minimumValue, pMetaContext),
+mpMaximumValue(windowMain.GetMCAnimatorProperties().controller.maximumValue, pMetaContext),
+mpCurrentValue(windowMain.GetMCAnimatorProperties().controller.currentValue, pMetaContext),
+mpClamp(windowMain.GetMCAnimatorProperties().controller.clamp, pMetaContext),
+mpFrozen(windowMain.GetMCAnimatorProperties().controller.frozen, pMetaContext),
+mpVector(windowMain.GetMCAnimatorProperties().controller.vector, pMetaContext),
+mpLocomotionAttribute(windowMain.GetMCAnimatorProperties().controller.locomotionAttribute, pMetaContext),
+mpLocomotionLeg(windowMain.GetMCAnimatorProperties().controller.locomotionLeg, pMetaContext),
+mpVectorSimulation(windowMain.GetMCAnimatorProperties().controller.vectorSimulation, pMetaContext),
+mpDefaultValue(windowMain.GetMCAnimatorProperties().controller.defaultValue, pMetaContext),
+mpDefaultVector(windowMain.GetMCAnimatorProperties().controller.defaultVector, pMetaContext)
 {
-	pMPName.onValueChanged = [this](){
+	mpName.onValueChanged = [this](){
 		if(pAnimator){
 			pAnimator->NotifyControllerNameChanged(this);
 		}
 	};
 	
-	pMPMinimumValue.onValueChanged = [this](){
+	mpMinimumValue.onValueChanged = [this](){
 		pOnLimitsChanged();
-		pMPCurrentValue.SetLowerLimit(pMPMinimumValue);
-		pMPCurrentValue.SetTickSpacing((pMPMaximumValue - pMPMinimumValue) / 10.0f);
+		mpCurrentValue.SetLowerLimit(mpMinimumValue);
+		mpCurrentValue.SetTickSpacing((mpMaximumValue - mpMinimumValue) / 10.0f);
 	};
 	
-	pMPMaximumValue.onValueChanged = [this](){
+	mpMaximumValue.onValueChanged = [this](){
 		pOnLimitsChanged();
-		pMPCurrentValue.SetUpperLimit(pMPMaximumValue);
-		pMPCurrentValue.SetTickSpacing((pMPMaximumValue - pMPMinimumValue) / 10.0f);
+		mpCurrentValue.SetUpperLimit(mpMaximumValue);
+		mpCurrentValue.SetTickSpacing((mpMaximumValue - mpMinimumValue) / 10.0f);
 	};
 	
-	pMPCurrentValue.onValueChanged = [this](){
+	mpCurrentValue.onValueChanged = [this](){
 		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			instance.GetControllers()[pIndex]->SetCurrentValue(pMPCurrentValue);
+			instance.GetControllers()[pIndex]->SetCurrentValue(mpCurrentValue);
 			instance.NotifyControllerChangedAt(pIndex);
 		}
 		pNotifyControllerValueChanged();
 	};
 	
-	pMPClamp.onValueChanged = [this](){
+	mpClamp.onValueChanged = [this](){
 		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			instance.GetControllers()[pIndex]->SetClamp(pMPClamp);
+			instance.GetControllers()[pIndex]->SetClamp(mpClamp);
 			instance.NotifyControllerChangedAt(pIndex);
 		}
 		pNotifyControllerChanged();
 	};
 	
-	pMPFrozen.onValueChanged = [this](){
+	mpFrozen.onValueChanged = [this](){
 		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			instance.GetControllers()[pIndex]->SetFrozen(pMPFrozen);
+			instance.GetControllers()[pIndex]->SetFrozen(mpFrozen);
 			instance.NotifyControllerChangedAt(pIndex);
 		}
 		pNotifyControllerChanged();
 	};
 	
-	pMPVector.onValueChanged = [this](){
+	mpVector.onValueChanged = [this](){
 		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			instance.GetControllers()[pIndex]->SetVector(pMPVector);
+			instance.GetControllers()[pIndex]->SetVector(mpVector);
 			instance.NotifyControllerChangedAt(pIndex);
 		}
 		pNotifyControllerValueChanged();
@@ -122,32 +123,32 @@ pMPDefaultVector(windowMain.GetMCAnimatorProperties().controller.defaultVector, 
 		}
 	};
 	
-	pMPLocomotionAttribute.onValueChanged = [this](){ pNotifyControllerChanged(); };
+	mpLocomotionAttribute.onValueChanged = [this](){ pNotifyControllerChanged(); };
 	
-	pMPVectorSimulation.onValueChanged = [this](){
+	mpVectorSimulation.onValueChanged = [this](){
 		pReleaseGizmos();
 		pCreateGizmos();
 		pNotifyControllerChanged();
 	};
 	
-	pMPDefaultValue.onValueChanged = [this](){ pNotifyControllerChanged(); };
-	pMPDefaultVector.onValueChanged = [this](){ pNotifyControllerChanged(); };
+	mpDefaultValue.onValueChanged = [this](){ pNotifyControllerChanged(); };
+	mpDefaultVector.onValueChanged = [this](){ pNotifyControllerChanged(); };
 }
 
-aeController::aeController(aeWindowMain &windowMain, const aeController &copy) :
-aeController(windowMain, copy.pMPName)
+aeController::aeController(const aeController &copy) :
+aeController(copy.pWindowMain, copy.mpName)
 {
-	pMPMinimumValue.SetValue(copy.pMPMinimumValue, false);
-	pMPMaximumValue.SetValue(copy.pMPMaximumValue, false);
-	pMPCurrentValue.SetValue(copy.pMPCurrentValue, false);
-	pMPClamp.SetValue(copy.pMPClamp, false);
-	pMPFrozen.SetValue(copy.pMPFrozen, false);
-	pMPVector.SetValue(copy.pMPVector, false);
-	pMPLocomotionAttribute.SetValue(copy.pMPLocomotionAttribute, false);
-	pMPLocomotionLeg.SetValue(copy.pMPLocomotionLeg, false);
-	pMPVectorSimulation.SetValue(copy.pMPVectorSimulation, false);
-	pMPDefaultValue.SetValue(copy.pMPDefaultValue, false);
-	pMPDefaultVector.SetValue(copy.pMPDefaultVector, false);
+	mpMinimumValue.SetValue(copy.mpMinimumValue, false);
+	mpMaximumValue.SetValue(copy.mpMaximumValue, false);
+	mpCurrentValue.SetValue(copy.mpCurrentValue, false);
+	mpClamp.SetValue(copy.mpClamp, false);
+	mpFrozen.SetValue(copy.mpFrozen, false);
+	mpVector.SetValue(copy.mpVector, false);
+	mpLocomotionAttribute.SetValue(copy.mpLocomotionAttribute, false);
+	mpLocomotionLeg.SetValue(copy.mpLocomotionLeg, false);
+	mpVectorSimulation.SetValue(copy.mpVectorSimulation, false);
+	mpDefaultValue.SetValue(copy.mpDefaultValue, false);
+	mpDefaultVector.SetValue(copy.mpDefaultVector, false);
 }
 
 aeController::~aeController(){
@@ -196,14 +197,14 @@ void aeController::SetIndex(int index){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
 			deAnimatorController &controller = instance.GetControllers().GetAt(index);
 			
-			controller.SetName(pMPName);
-			controller.SetValueRange(pMPMinimumValue, pMPMaximumValue);
-			controller.SetCurrentValue(pMPCurrentValue);
-			controller.SetFrozen(pMPFrozen);
-			controller.SetClamp(pMPClamp);
-			controller.SetVector(pMPVector);
+			controller.SetName(mpName);
+			controller.SetValueRange(mpMinimumValue, mpMaximumValue);
+			controller.SetCurrentValue(mpCurrentValue);
+			controller.SetFrozen(mpFrozen);
+			controller.SetClamp(mpClamp);
+			controller.SetVector(mpVector);
 			
-			pMPCurrentValue = controller.GetCurrentValue();
+			mpCurrentValue = controller.GetCurrentValue();
 			
 			instance.NotifyControllerChangedAt(index);
 		}
@@ -213,57 +214,57 @@ void aeController::SetIndex(int index){
 
 
 void aeController::SetName(const char *aname){
-	pMPName = aname;
+	mpName = aname;
 }
 
 void aeController::SetMinimumValue(float value){
-	pMPMinimumValue = value;
+	mpMinimumValue = value;
 }
 
 void aeController::SetMaximumValue(float value){
-	pMPMaximumValue = value;
+	mpMaximumValue = value;
 }
 
 void aeController::SetCurrentValue(float value){
-	if(!pMPFrozen){
-		pMPCurrentValue = pCheckValue(value);
+	if(!mpFrozen){
+		mpCurrentValue = pCheckValue(value);
 	}
 }
 
 void aeController::IncrementCurrentValue(float incrementBy){
-	SetCurrentValue(pMPCurrentValue + incrementBy);
+	SetCurrentValue(mpCurrentValue + incrementBy);
 }
 
 void aeController::SetFrozen(bool afrozen){
-	pMPFrozen = afrozen;
+	mpFrozen = afrozen;
 }
 
 void aeController::SetClamp(bool aclamp){
-	pMPClamp = aclamp;
+	mpClamp = aclamp;
 }
 
 void aeController::SetVector(const decVector &avector){
-	pMPVector = avector;
+	mpVector = avector;
 }
 
 void aeController::SetLocomotionAttribute(aeAnimatorLocomotion::eAttributes attribute){
-	pMPLocomotionAttribute = attribute;
+	mpLocomotionAttribute = attribute;
 }
 
 void aeController::SetLocomotionLeg(int leg){
-	pMPLocomotionLeg = leg;
+	mpLocomotionLeg = leg;
 }
 
 void aeController::SetVectorSimulation(eVectorSimulation simulation){
-	pMPVectorSimulation = simulation;
+	mpVectorSimulation = simulation;
 }
 
 void aeController::SetDefaultValue(float value){
-	pMPDefaultValue = value;
+	mpDefaultValue = value;
 }
 
 void aeController::SetDefaultVector(const decVector &avector){
-	pMPDefaultVector = avector;
+	mpDefaultVector = avector;
 }
 
 
@@ -273,7 +274,7 @@ void aeController::UpdateValue(float elapsed){
 	const bool wakeboarding = pAnimator->GetWakeboard().GetEnabled();
 	const bool enabled = locomotion.GetEnabled();
 	
-	switch(pMPLocomotionAttribute){
+	switch(mpLocomotionAttribute){
 	case aeAnimatorLocomotion::eaElapsedTime:
 		IncrementCurrentValue(elapsed);
 		break;
@@ -352,42 +353,42 @@ void aeController::UpdateValue(float elapsed){
 		
 	case aeAnimatorLocomotion::eaLegGroundPosition:
 		if(enabled || wakeboarding){
-			if(pMPLocomotionLeg >= 0 && pMPLocomotionLeg < locomotion.GetLegs().GetCount()){
-				SetVector(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetGroundPosition());
+			if(mpLocomotionLeg >= 0 && mpLocomotionLeg < locomotion.GetLegs().GetCount()){
+				SetVector(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetGroundPosition());
 			}
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegGroundNormal:
 		if(enabled || wakeboarding){
-			if(pMPLocomotionLeg >= 0 && pMPLocomotionLeg < locomotion.GetLegs().GetCount()){
-				SetVector(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetGroundNormal());
+			if(mpLocomotionLeg >= 0 && mpLocomotionLeg < locomotion.GetLegs().GetCount()){
+				SetVector(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetGroundNormal());
 			}
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegInfluence:
 		if(enabled || wakeboarding){
-			if(pMPLocomotionLeg >= 0 && pMPLocomotionLeg < locomotion.GetLegs().GetCount()){
-				SetCurrentValue(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetIKInfluence());
+			if(mpLocomotionLeg >= 0 && mpLocomotionLeg < locomotion.GetLegs().GetCount()){
+				SetCurrentValue(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetIKInfluence());
 			}
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegPosition:
 		if(enabled || wakeboarding){
-			if(pMPLocomotionLeg >= 0 && pMPLocomotionLeg < locomotion.GetLegs().GetCount()){
-				SetCurrentValue(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetIKInfluence());
-				SetVector(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetIKPosition());
+			if(mpLocomotionLeg >= 0 && mpLocomotionLeg < locomotion.GetLegs().GetCount()){
+				SetCurrentValue(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetIKInfluence());
+				SetVector(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetIKPosition());
 			}
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegOrientation:
 		if(enabled || wakeboarding){
-			if(pMPLocomotionLeg >= 0 && pMPLocomotionLeg < locomotion.GetLegs().GetCount()){
-				SetCurrentValue(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetIKInfluence());
-				SetVector(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetIKOrientation());
+			if(mpLocomotionLeg >= 0 && mpLocomotionLeg < locomotion.GetLegs().GetCount()){
+				SetCurrentValue(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetIKInfluence());
+				SetVector(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetIKOrientation());
 			}
 		}
 		break;
@@ -401,7 +402,7 @@ void aeController::UpdateValue(float elapsed){
 void aeController::ResetValue(bool fullReset){
 	const aeAnimatorLocomotion &locomotion = pAnimator->GetLocomotion();
 	
-	switch(pMPLocomotionAttribute){
+	switch(mpLocomotionAttribute){
 	case aeAnimatorLocomotion::eaElapsedTime:
 	case aeAnimatorLocomotion::eaTimeTurnIP:
 		SetCurrentValue(0.0f);
@@ -453,48 +454,48 @@ void aeController::ResetValue(bool fullReset){
 		break;
 		
 	case aeAnimatorLocomotion::eaLegGroundPosition:
-		if(pMPLocomotionLeg >= 0 && pMPLocomotionLeg < locomotion.GetLegs().GetCount()){
-			SetVector(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetGroundPosition());
+		if(mpLocomotionLeg >= 0 && mpLocomotionLeg < locomotion.GetLegs().GetCount()){
+			SetVector(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetGroundPosition());
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegGroundNormal:
-		if(pMPLocomotionLeg >= 0 && pMPLocomotionLeg < locomotion.GetLegs().GetCount()){
-			SetVector(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetGroundNormal());
+		if(mpLocomotionLeg >= 0 && mpLocomotionLeg < locomotion.GetLegs().GetCount()){
+			SetVector(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetGroundNormal());
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegInfluence:
-		if(pMPLocomotionLeg >= 0 && pMPLocomotionLeg < locomotion.GetLegs().GetCount()){
-			SetCurrentValue(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetIKInfluence());
+		if(mpLocomotionLeg >= 0 && mpLocomotionLeg < locomotion.GetLegs().GetCount()){
+			SetCurrentValue(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetIKInfluence());
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegPosition:
-		if(pMPLocomotionLeg >= 0 && pMPLocomotionLeg < locomotion.GetLegs().GetCount()){
-			SetCurrentValue(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetIKInfluence());
-			SetVector(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetIKPosition());
+		if(mpLocomotionLeg >= 0 && mpLocomotionLeg < locomotion.GetLegs().GetCount()){
+			SetCurrentValue(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetIKInfluence());
+			SetVector(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetIKPosition());
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegOrientation:
-		if(pMPLocomotionLeg >= 0 && pMPLocomotionLeg < locomotion.GetLegs().GetCount()){
-			SetCurrentValue(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetIKInfluence());
-			SetVector(locomotion.GetLegs().GetAt(pMPLocomotionLeg)->GetIKOrientation());
+		if(mpLocomotionLeg >= 0 && mpLocomotionLeg < locomotion.GetLegs().GetCount()){
+			SetCurrentValue(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetIKInfluence());
+			SetVector(locomotion.GetLegs().GetAt(mpLocomotionLeg)->GetIKOrientation());
 		}
 		break;
 		
 	default:
 		if(fullReset){
-			SetCurrentValue(pMPDefaultValue);
-			SetVector(pMPDefaultVector);
+			SetCurrentValue(mpDefaultValue);
+			SetVector(mpDefaultVector);
 		}
 		break;
 	}
 }
 
 void aeController::InverseValue(){
-	SetCurrentValue(pMPMaximumValue - pMPCurrentValue);
+	SetCurrentValue(mpMaximumValue - mpCurrentValue);
 }
 
 
@@ -503,31 +504,31 @@ void aeController::InverseValue(){
 //////////////////////
 
 float aeController::pCheckValue(float value){
-	float range = pMPMaximumValue - pMPMinimumValue;
+	float range = mpMaximumValue - mpMinimumValue;
 	bool hasRange = range > 1e-5f;
 	
 	// make sure the current value is in the correct range
-	if(pMPClamp){
-		if(value < pMPMinimumValue){
-			value = pMPMinimumValue;
+	if(mpClamp){
+		if(value < mpMinimumValue){
+			value = mpMinimumValue;
 			
-		}else if(value > pMPMaximumValue){
-			value = pMPMaximumValue;
+		}else if(value > mpMaximumValue){
+			value = mpMaximumValue;
 		}
 		
 	}else{
 		if(hasRange){
-			value = fmodf(value - pMPMinimumValue, range);
+			value = fmodf(value - mpMinimumValue, range);
 			
 			if(value < 0.0f){
-				value += pMPMinimumValue + range;
+				value += mpMinimumValue + range;
 				
 			}else{
-				value += pMPMinimumValue;
+				value += mpMinimumValue;
 			}
 			
 		}else{
-			value = pMPMinimumValue;
+			value = mpMinimumValue;
 		}
 	}
 	
@@ -548,7 +549,7 @@ void aeController::pCreateGizmos(){
 		return;
 	}
 	
-	switch(pMPVectorSimulation){
+	switch(mpVectorSimulation){
 	case evsPosition:
 		pGizmoIKPosition = aeGizmoControllerIKPosition::Ref::New(pAnimator->GetEnvironment(), *this);
 		pGizmoIKPosition->SetWorld(pAnimator->GetEngineWorld());
@@ -574,7 +575,7 @@ void aeController::pNotifyControllerValueChanged(){
 void aeController::pOnLimitsChanged(){
 	if(pIndex != -1){
 		auto &instance = pAnimator->GetEngineAnimatorInstance();
-		instance->GetControllers()[pIndex]->SetValueRange(pMPMinimumValue, pMPMaximumValue);
+		instance->GetControllers()[pIndex]->SetValueRange(mpMinimumValue, mpMaximumValue);
 		instance->NotifyControllerChangedAt(pIndex);
 	}
 	pNotifyControllerChanged();

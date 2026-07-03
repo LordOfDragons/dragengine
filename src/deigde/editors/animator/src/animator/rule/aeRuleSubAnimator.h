@@ -58,22 +58,22 @@ private:
 	
 	ConnectionList pConnections;
 	
-	igdeMetaPropertyPathStorage::Storage pMPPathSubAnimator;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
+public:
+	igdeMetaPropertyPathStorage::Storage mpPathSubAnimator;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	aeRuleSubAnimator() = delete;
-	aeRuleSubAnimator(const aeRuleSubAnimator&) = delete;
 	
 	/** Create a new sub animator rule. */
 	aeRuleSubAnimator(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a sub animator rule. */
-	aeRuleSubAnimator(aeWindowMain &windowMain, const aeRuleSubAnimator &copy);
+	aeRuleSubAnimator(const aeRuleSubAnimator &copy);
 	/** Clean up the sub animator rule. */
 protected:
 	~aeRuleSubAnimator() override;
@@ -84,15 +84,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyPathStorage::Storage &GetMPPathSubAnimator(){ return pMPPathSubAnimator; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
-	
-	
 	/** Retrieve the path to the sub animator. */
-	inline const decString &GetPathSubAnimator() const{ return pMPPathSubAnimator; }
+	inline const decString &GetPathSubAnimator() const{ return mpPathSubAnimator; }
 	/** Set the path to the sub animator. */
 	void SetPathSubAnimator(const char *value);
 	/** Retrieve the sub animator or nullptr if not existing. */
@@ -107,22 +100,22 @@ public:
 	void SetControllerAt(int position, aeController *controller);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
+	inline bool GetEnablePosition() const{ return mpEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pMPEnableSize; }
+	inline bool GetEnableSize() const{ return mpEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);
@@ -134,10 +127,7 @@ public:
 	void UpdateCompAnim() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** Parent animator changed. */
 	void OnParentAnimatorChanged() override;

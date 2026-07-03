@@ -113,9 +113,9 @@
 	<translation name="Animator.Dialog.DuplicateLink.Title">Link duplizieren</translation>
 	<translation name="Animator.Dialog.DuplicateLink.Name">Name:</translation>
 	<translation name="Animator.Dialog.RemoveLink.Title">Link entfernen</translation>
-	<translation name="Animator.Dialog.RemoveLink.Message">Der Link "{0}" wird von {1} Zielen verwendet.
-Wenn der Link jetzt entfernt wird, wird er auch aus allen Zielen
-entfernt, die ihn verwenden. Möchten Sie den Link entfernen?</translation>
+	<translation name="Animator.Dialog.RemoveLink.Message">Die Links "{0}" werden von {1} Zielen verwendet ({2}).
+Wenn die Links jetzt entfernt werden, werden sie auch aus allen Zielen
+entfernt, die sie verwenden. Möchten Sie die Links entfernen?</translation>
 	<translation name="Animator.Dialog.SetBoneBaseSize.Title">Knochenbasisgrösse festlegen</translation>
 	<translation name="Animator.Dialog.SetBoneBaseSize.Size">Knochengrösse:</translation>
 	<translation name="Animator.Dialog.SaveAnimator.Title">Animator speichern</translation>
@@ -275,8 +275,10 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPAnimator.Action.BoneAdd.ToolTip">Rig-Knochen hinzufügen</translation>
 	<translation name="Animator.WPAnimator.Action.BoneRemove">Entfernen</translation>
 	<translation name="Animator.WPAnimator.Action.BoneRemove.ToolTip">Rig-Knochen entfernen</translation>
-	<translation name="Animator.WPAnimator.Action.BoneMirror">Spiegelknochen</translation>
-	<translation name="Animator.WPAnimator.Action.BoneMirror.ToolTip">Rig-Knochen spiegeln</translation>
+	<translation name="Animator.WPAnimator.Action.BoneMirror">Knochen spiegeln</translation>
+	<translation name="Animator.WPAnimator.Action.BoneMirror.ToolTip">Knochen spiegeln</translation>
+	<translation name="Animator.WPAnimator.Action.BoneMirrorSelected">Ausgewählte Knochen spiegeln</translation>
+	<translation name="Animator.WPAnimator.Action.BoneMirrorSelected.ToolTip">Ausgewählte Knochen spiegeln</translation>
 	<translation name="Animator.WPAnimator.Action.BoneCopy">Kopieren</translation>
 	<translation name="Animator.WPAnimator.Action.BoneCopy.ToolTip">Knochen kopieren</translation>
 	<translation name="Animator.WPAnimator.Action.BonePaste">Einfügen</translation>
@@ -289,8 +291,10 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPAnimator.Action.VPSAdd.ToolTip">Vertex-Positionssatz hinzufügen</translation>
 	<translation name="Animator.WPAnimator.Action.VPSRemove">Entfernen</translation>
 	<translation name="Animator.WPAnimator.Action.VPSRemove.ToolTip">Entfernen Sie die festgelegte Vertex-Positionssatz</translation>
-	<translation name="Animator.WPAnimator.Action.VPSMirror">Spiegeln</translation>
-	<translation name="Animator.WPAnimator.Action.VPSMirror.ToolTip">Spiegeln von Vertex-Positionssatzssätzen</translation>
+	<translation name="Animator.WPAnimator.Action.VPSMirror">Vertex-Positionssätze spiegeln</translation>
+	<translation name="Animator.WPAnimator.Action.VPSMirror.ToolTip">Vertex-Positionssätze spiegeln</translation>
+	<translation name="Animator.WPAnimator.Action.VPSMirrorSelected">Ausgewählte Vertex-Positionssätze spiegeln</translation>
+	<translation name="Animator.WPAnimator.Action.VPSMirrorSelected.ToolTip">Ausgewählte Vertex-Positionssätze spiegeln</translation>
 	<translation name="Animator.WPAnimator.Action.VPSCopy">Kopieren</translation>
 	<translation name="Animator.WPAnimator.Action.VPSCopy.ToolTip">Kopieren von Vertex-Positionssatzssätzen</translation>
 	<translation name="Animator.WPAnimator.Action.VPSPaste">Einfügen</translation>
@@ -969,8 +973,8 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPView.Camera">Kamera:</translation>
 	
 	<!-- WPAPanelRuleMirror -->
-	<translation name="Animator.WPAPanelRuleMirror.Action.AddMatchName">Spielnamen hinzufügen</translation>
-	<translation name="Animator.WPAPanelRuleMirror.Action.EditMatchName">Spielnamen bearbeiten</translation>
+	<translation name="Animator.WPAPanelRuleMirror.Action.MatchName.AddPreset">Abgleich hinzufügen</translation>
+	<translation name="Animator.WPAPanelRuleMirror.Action.EditMatchName">Abgleich bearbeiten</translation>
 	
 	<!-- Undo Strings -->
 	<translation name="Animator.Undo.PasteBones">Knochen einfügen</translation>

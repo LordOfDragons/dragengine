@@ -23,6 +23,7 @@
  */
 
 #include "aeMCPRule.h"
+#include "aeMCPShared.h"
 #include "../../gui/aeWindowMain.h"
 
 #include <deigde/gui/igdeUIHelper.h>
@@ -42,7 +43,7 @@ private:
 	
 public:
 	cWalkerRuleTree(const aeAnimator::Ref &animator) :
-	WalkerHelper<aeRule::List>(&animator->GetMPRules().GetValue()),
+	WalkerHelper<aeRule::List>(&animator->mpRules.GetValue()),
 	pAnimator(animator){
 	}
 	
@@ -51,29 +52,29 @@ public:
 		DEASSERT_TRUE(pAnimator == rule->GetAnimator())
 		
 		if(rule->GetParentGroup()){
-			SetList(&rule->GetParentGroup()->GetMPRules().GetValue(), rule->GetIndex());
+			SetList(&rule->GetParentGroup()->mpRules.GetValue(), rule->GetIndex());
 			
 		}else{
-			SetList(&pAnimator->GetMPRules().GetValue(), rule->GetIndex());
+			SetList(&pAnimator->mpRules.GetValue(), rule->GetIndex());
 		}
 	}
 	
 	void MoveTreeFirst() override{
-		SetList(&pAnimator->GetMPRules().GetValue(), 0);
+		SetList(&pAnimator->mpRules.GetValue(), 0);
 	}
 	
 	bool HasChildren() const override{
 		const auto group = GetCurrent().DynamicCast<aeRuleGroup>();
-		return group && group->GetMPRules()->IsNotEmpty();
+		return group && group->mpRules->IsNotEmpty();
 	}
 	
 	bool MoveChildren() override{
 		const auto group = GetCurrent().DynamicCast<aeRuleGroup>();
-		if(!group || group->GetMPRules()->IsEmpty()){
+		if(!group || group->mpRules->IsEmpty()){
 			return false;
 		}
 		
-		SetList(&group->GetMPRules().GetValue(), 0);
+		SetList(&group->mpRules.GetValue(), 0);
 		return true;
 	}
 	
@@ -94,7 +95,7 @@ public:
 		}
 		
 		const auto parentParent = parent->GetParentGroup();
-		SetList(&(parentParent ? parentParent->GetMPRules() : pAnimator->GetMPRules()).GetValue(), parent->GetIndex());
+		SetList(&(parentParent ? parentParent->mpRules : pAnimator->mpRules).GetValue(), parent->GetIndex());
 		return true;
 	}
 };
@@ -159,7 +160,7 @@ public:
 	}
 	
 	void SyncSelection(){
-		const auto &tree = pPropertyRules.Owner(GetContext()).GetMPRuleTree();
+		const auto &tree = pPropertyRules.Owner(GetContext()).mpRuleTree;
 		auto &storage = pPropertyRules.GetActionStorage(GetContext());
 		storage.SetActive(storage->Has(tree.GetActive()) ? tree.GetActive() : aeRule::Ref());
 	}
@@ -223,8 +224,8 @@ public:
 		auto active = pPropertyRules.GetActiveObjectType(pContext);
 		if(active){
 			pContext->GetClipboard().Set(igdeMetaPropertyList::ClipboardData::Ref::New(
-				pPropertyRules.GetClipboardDataTypeName(), igdeMetaPropertyList::List(devctag,
-					active->CreateCopy(pPropertyRules.Owner(pContext).GetWindowMain()))));
+				pPropertyRules.GetClipboardDataTypeName(),
+					igdeMetaPropertyList::List(devctag,active->CreateCopy())));
 		}
 	}
 	
@@ -296,7 +297,7 @@ void aeMCPRuleTree::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaC
 	helper.MenuCommand(menu, igdeMetaPropertyList::ActionCut::Ref::New(property, owner, ctx));
 	helper.MenuCommand(menu, igdeMetaPropertyList::ActionPaste::Ref::New(property, owner, ctx));
 	
-	if(Owner(context).GetMPRuleTree().GetActive()){
+	if(Owner(context).mpRuleTree.GetActive()){
 		helper.MenuCommand(menu, igdeMetaPropertyList::ActionPasteBefore::Ref::New(property, owner, ctx));
 		helper.MenuCommand(menu, igdeMetaPropertyList::ActionPasteAfter::Ref::New(property, owner, ctx));
 	}
@@ -392,13 +393,13 @@ igdeMetaProperty::Action::Ref aeMCPRuleTree::CreateButtonAction(TargetButton tar
 }
 
 aeRule::Ref aeMCPRuleTree::GetActiveRule(const ContextRef &context) const{
-	return IsValid(context) ? Owner(context).GetMPRuleTree().GetActive() : aeRule::Ref();
+	return IsValid(context) ? Owner(context).mpRuleTree.GetActive() : aeRule::Ref();
 }
 
 igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage &aeMCPRuleTree::GetActionStorage(const ContextRef &context) const{
 	const auto rule = GetActiveRule(context);
 	const auto parentGroup = rule ? rule->GetParentGroup() : nullptr;
-	return parentGroup ? parentGroup->GetMPRules() : Owner(context).GetMPRules();
+	return parentGroup ? parentGroup->mpRules : Owner(context).mpRules;
 }
 
 igdeMetaPropertyList &aeMCPRuleTree::GetActionProperty(const ContextRef &context) const{
@@ -423,37 +424,97 @@ const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const{
 
 aeMCPRules::ObjectTypeRef aeMCPRules::CopyObjectType(const ContextRef &context,
 const aeRule::List &existingObjects, const ObjectTypeRef &object) const{
-	auto copied = object->CreateCopy(Owner(context).GetWindowMain());
-	copied->GetMPName().SetValue(Owner(context).uniqueNameRule.Generate(copied->GetMPName()), false);
+	auto copied = object->CreateCopy();
+	copied->mpName.SetValue(Owner(context).uniqueNameRule.Generate(copied->mpName), false);
 	return copied;
 }
 
 
-// Class aeMCPRuleListBones
-/////////////////////////////
+// Class cActionAffectedBonesMirror
+/////////////////////////////////////
+
+namespace {
+
+class cActionAffectedBonesMirror : public aeActionMirrorStringSet{
+	aeMCPRuleAffectedBones &pProperty;
+	
+public:
+	cActionAffectedBonesMirror(aeMCPRuleAffectedBones &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	aeActionMirrorStringSet(property, owner, context),
+	pProperty(property){
+		SetText("@Animator.WPAnimator.Action.BoneMirror");
+		SetDescription("@Animator.WPAnimator.Action.BoneMirror.ToolTip");
+	}
+};
+
+class cActionAffectedBonesMirrorSelected : public cActionAffectedBonesMirror{
+public:
+	cActionAffectedBonesMirrorSelected(aeMCPRuleAffectedBones &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	cActionAffectedBonesMirror(property, owner, context){
+		pSelected = true;
+		SetText("@Animator.WPAnimator.Action.BoneMirrorSelected");
+		SetDescription("@Animator.WPAnimator.Action.BoneMirrorSelected.ToolTip");
+	}
+};
+
+}
 
 decStringSet aeMCPRuleAffectedBones::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
 	const auto animator = Owner(context).GetAnimator();
-	return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
+	return animator ? animator->mpHiddenBoneNames.GetValue() : decStringSet();
 }
 
 void aeMCPRuleAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, owner, context));
 	AddDefaultContextMenuEntries(menu, context, owner);
+	
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, deTObjectReference<cActionAffectedBonesMirror>::New(*this, owner, context));
+	helper.MenuCommand(menu, deTObjectReference<cActionAffectedBonesMirrorSelected>::New(*this, owner, context));
 }
 
 
 // Class aeMCPRuleListVertexPositionSets
 //////////////////////////////////////////
 
+namespace {
+
+class cActionAffectedVpsMirror : public aeActionMirrorStringSet{
+	aeMCPRuleAffectedVertexPositionSets &pProperty;
+	
+public:
+	cActionAffectedVpsMirror(aeMCPRuleAffectedVertexPositionSets &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	aeActionMirrorStringSet(property, owner, context),
+	pProperty(property){
+		SetText("@Animator.WPAnimator.Action.VPSMirror");
+		SetDescription("@Animator.WPAnimator.Action.VPSMirror.ToolTip");
+	}
+};
+
+class cActionAffectedVpsMirrorSelected : public cActionAffectedVpsMirror{
+public:
+	cActionAffectedVpsMirrorSelected(aeMCPRuleAffectedVertexPositionSets &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	cActionAffectedVpsMirror(property, owner, context){
+		pSelected = true;
+		SetText("@Animator.WPAnimator.Action.VPSMirrorSelected");
+		SetDescription("@Animator.WPAnimator.Action.VPSMirrorSelected.ToolTip");
+	}
+};
+
+}
+
 decStringSet aeMCPRuleAffectedVertexPositionSets::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
 	const auto animator = Owner(context).GetAnimator();
-	return animator ? animator->GetMPHiddenVPSNames().GetValue() : decStringSet();
+	return animator ? animator->mpHiddenVpsNames.GetValue() : decStringSet();
 }
 
 void aeMCPRuleAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, owner, context));
 	AddDefaultContextMenuEntries(menu, context, owner);
+	
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, deTObjectReference<cActionAffectedVpsMirror>::New(*this, owner, context));
+	helper.MenuCommand(menu, deTObjectReference<cActionAffectedVpsMirrorSelected>::New(*this, owner, context));
 }

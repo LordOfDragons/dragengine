@@ -81,6 +81,10 @@ void igdeMetaContext::Dispose(){
 	SetProperties({});
 }
 
+bool igdeMetaContext::IsValid() const{
+	return !pDisposed;
+}
+
 void igdeMetaContext::SetLabel(const char *label){
 	pLabel = label;
 }

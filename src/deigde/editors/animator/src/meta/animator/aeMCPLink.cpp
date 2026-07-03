@@ -53,7 +53,7 @@ class cUndoSetLinks : public igdeMetaPropertyListUndo{
 public:
 	struct sRuleRemoved{
 		aeRule::Ref rule;
-		aeControllerTarget::Ref target;
+		igdeMetaPropertyObjectSetStorage<aeLink>::Storage *target = nullptr;
 		aeLink::Ref link;
 	};
 	
@@ -86,62 +86,60 @@ public:
 	void Undo() override{
 		igdeMetaPropertyListUndo::Undo();
 		pRulesRemoved.Visit([&](const sRuleRemoved &t){
-			t.target->AddLink(t.link);
-			t.rule->NotifyRuleChanged();
+			*t.target = t.target->GetValue() + igdeMetaPropertyObjectSetStorage<aeLink>::SetType(devctag, t.link);
 		});
 	}
 	
 	void Redo() override{
 		pRulesRemoved.Visit([&](const sRuleRemoved &t){
-			t.target->RemoveLink(t.link);
-			t.rule->NotifyRuleChanged();
+			*t.target = t.target->GetValue() - igdeMetaPropertyObjectSetStorage<aeLink>::SetType(devctag, t.link);
 		});
 		igdeMetaPropertyListUndo::Redo();
 	}
 	
 private:
 	void pProcessTargets(const aeLink::Ref &link, const aeRule::Ref &rule){
-		auto process = [&](const aeControllerTarget::Ref &target){
-			if(target->GetLinks().Has(link)){
-				pRulesRemoved.Add({rule, target, link});
+		auto process = [&](igdeMetaPropertyObjectSetStorage<aeLink>::Storage &target){
+			if(target->Has(link)){
+				pRulesRemoved.Add({rule, &target, link});
 			}
 		};
 		
-		process(rule->GetTargetBlendFactor());
+		process(rule->mpTargetBlendFactor);
 		
 		switch(rule->GetType()){
 		case deAnimatorRuleVisitorIdentify::ertAnimation:{
 			const auto r = rule.DynamicCast<aeRuleAnimation>();
-			process(r->GetTargetMoveTime());
+			process(r->mpTargetMoveTime);
 			}break;
 			
 		case deAnimatorRuleVisitorIdentify::ertAnimationDifference:{
 			const auto r = rule.DynamicCast<aeRuleAnimationDifference>();
-			process(r->GetTargetLeadingMoveTime());
-			process(r->GetTargetReferenceMoveTime());
+			process(r->mpTargetLeadingMoveTime);
+			process(r->mpTargetReferenceMoveTime);
 			}break;
 			
 		case deAnimatorRuleVisitorIdentify::ertAnimationSelect:{
 			const auto r = rule.DynamicCast<aeRuleAnimationSelect>();
-			process(r->GetTargetMoveTime());
-			process(r->GetTargetSelect());
+			process(r->mpTargetMoveTime);
+			process(r->mpTargetSelect);
 			}break;
 			
 		case deAnimatorRuleVisitorIdentify::ertBoneTransformator:{
 			const auto r = rule.DynamicCast<aeRuleBoneTransformator>();
-			process(r->GetTargetRotation());
+			process(r->mpTargetRotation);
 			}break;
 			
 		case deAnimatorRuleVisitorIdentify::ertForeignState:{
 			const auto r = rule.DynamicCast<aeRuleForeignState>();
-			process(r->GetTargetPosition());
-			process(r->GetTargetOrientation());
-			process(r->GetTargetSize());
+			process(r->mpTargetPosition);
+			process(r->mpTargetOrientation);
+			process(r->mpTargetSize);
 			}break;
 			
 		case deAnimatorRuleVisitorIdentify::ertGroup:{
 			const auto r = rule.DynamicCast<aeRuleGroup>();
-			process(r->GetTargetSelect());
+			process(r->mpTargetSelect);
 			r->GetRules().Visit([&](const aeRule::Ref &subRule){
 				pProcessTargets(link, subRule);
 			});
@@ -149,24 +147,24 @@ private:
 			
 		case deAnimatorRuleVisitorIdentify::ertInverseKinematic:{
 			const auto r = rule.DynamicCast<aeRuleInverseKinematic>();
-			process(r->GetTargetGoalPosition());
-			process(r->GetTargetGoalOrientation());
-			process(r->GetTargetLocalPosition());
-			process(r->GetTargetLocalOrientation());
-			process(r->GetTargetReachRange());
-			process(r->GetTargetReachCenter());
+			process(r->mpTargetGoalPosition);
+			process(r->mpTargetGoalOrientation);
+			process(r->mpTargetLocalPosition);
+			process(r->mpTargetLocalOrientation);
+			process(r->mpTargetReachRange);
+			process(r->mpTargetReachCenter);
 			}break;
 			
 		case deAnimatorRuleVisitorIdentify::ertStateManipulator:{
 			const auto r = rule.DynamicCast<aeRuleStateManipulator>();
-			process(r->GetTargetPosition());
-			process(r->GetTargetRotation());
+			process(r->mpTargetPosition);
+			process(r->mpTargetRotation);
 			}break;
 			
 		case deAnimatorRuleVisitorIdentify::ertTrackTo:{
 			const auto r = rule.DynamicCast<aeRuleTrackTo>();
-			process(r->GetTargetPosition());
-			process(r->GetTargetUp());
+			process(r->mpTargetPosition);
+			process(r->mpTargetUp);
 			}break;
 			
 		case deAnimatorRuleVisitorIdentify::ertStateSnapshot:
@@ -207,6 +205,35 @@ public:
 	}
 };
 
+class cActionLinkRemoveUnused : public igdeMetaProperty::Action{
+	aeMCPLinks &pPropertyLink;
+	
+public:
+	cActionLinkRemoveUnused(aeMCPLinks &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+		igdeMetaProperty::Action(owner, context, "@Animator.Action.Link.RemoveUnused",
+			owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+			"@Animator.Action.Link.RemoveUnused.ToolTip"),
+		pPropertyLink(property){}
+	
+	void OnAction() override{
+		const auto &context = GetContext();
+		if(!pPropertyLink.IsValid(context)){
+			return;
+		}
+		
+		auto &animator = pPropertyLink.Owner(context);
+		auto newValue = animator.mpLinks->Collect([&](aeLink *link){
+			return animator.CountLinkUsage(link) > 0;
+		});
+		
+		if(newValue == pPropertyLink.GetStorage(context).GetValue()){
+			return;
+		}
+		
+		pPropertyLink.ChangePropertyValueType(context, newValue, BuildUndoInfo(pPropertyLink));
+	}
+};
+
 }
 
 igdeMetaPropertyListUndo::Ref aeMCPLinks::ChangePropertyValue(const ContextRef &context,
@@ -215,18 +242,28 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 	
 	const auto &rulesRemoved = undo->GetRulesRemoved();
 	if(rulesRemoved.IsNotEmpty()){
-		decStringList names;
+		decStringSet ruleNames, linkNames;
 		rulesRemoved.Visit([&](const cUndoSetLinks::sRuleRemoved &each){
 			if(each.rule){
-				names.Add(each.rule->GetName());
+				ruleNames.Add(decString::Formatted("'{}'", each.rule->GetName()));
+			}
+			if(each.link){
+				linkNames.Add(decString::Formatted("'{}'", each.link->GetName()));
 			}
 		});
-		names.SortAscending();
-		auto strNames = names.GetCount() > 5 ? DEJoin(names.GetHead(5), ", ") + ", ..." : DEJoin(names, ", ");
+		
+		auto ruleNamesSorted = decStringList(ruleNames).GetSortedAscending();
+		auto linkNamesSorted = decStringList(linkNames).GetSortedAscending();
+		auto strRuleNames = ruleNamesSorted.GetCount() > 5
+			? DEJoin(ruleNamesSorted.GetHead(5), ", ") + ", ..."
+			: DEJoin(ruleNamesSorted, ", ");
+		auto strLinkNames = linkNamesSorted.GetCount() > 5
+			? DEJoin(linkNamesSorted.GetHead(5), ", ") + ", ..."
+			: DEJoin(linkNamesSorted, ", ");
 		
 		if(igdeCommonDialogs::QuestionFormat(Owner(context).GetWindowMain(), igdeCommonDialogs::ebsYesNo,
 		"@Animator.Dialog.RemoveLink.Title", "@Animator.Dialog.RemoveLink.Message",
-		names.GetCount(), strNames.GetString()) != igdeCommonDialogs::ebYes){
+		strLinkNames.GetString(), ruleNames.GetCount(), strRuleNames.GetString()) != igdeCommonDialogs::ebYes){
 			return {};
 		}
 	}
@@ -242,8 +279,8 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 }
 
 aeMCPLinks::ObjectTypeRef aeMCPLinks::CopyObjectType(const ContextRef &context, const aeLink::List &existingObjects, const ObjectTypeRef &object) const{
-	auto copied = aeLink::Ref::New(Owner(context).GetWindowMain(), *object);
-	copied->GetMPName().SetValue(Owner(context).uniqueNameLink.Generate(copied->GetMPName()), false);
+	auto copied = aeLink::Ref::New(*object);
+	copied->mpName.SetValue(Owner(context).uniqueNameLink.Generate(copied->mpName), false);
 	return copied;
 }
 
@@ -258,10 +295,9 @@ igdeMetaProperty::Action::Ref aeMCPLinks::CreateButtonAction(TargetButton target
 }
 
 void aeMCPLinks::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
-	const auto &windowMain = Owner(context).GetWindowMain();
 	auto &helper = menu.GetEnvironment().GetUIHelper();
-	helper.MenuCommand(menu, windowMain.GetActionLinkAdd());
-	helper.MenuCommand(menu, windowMain.GetActionLinkRemoveUnused());
+	helper.MenuCommand(menu, deTObjectReference<cActionLinkAdd>::New(*this, owner, context));
+	helper.MenuCommand(menu, deTObjectReference<cActionLinkRemoveUnused>::New(*this, owner, context));
 	AddDefaultContextMenuEntries(menu, context, owner);
 }
 
@@ -294,8 +330,8 @@ public:
 			return;
 		}
 		
-		const float x = decMath::linearStep(controller->GetMPCurrentValue(),
-			controller->GetMPMinimumValue(), controller->GetMPMaximumValue());
+		const float x = decMath::linearStep(controller->mpCurrentValue,
+			controller->mpMinimumValue, controller->mpMaximumValue);
 		float y = 0.0f;
 		if(!igdeCommonDialogs::GetFloat(GetOwner(), "@Animator.WPLink.Dialog.InsertCurveValue.Title",
 		"@Animator.WPLink.Dialog.InsertCurveValue.YValue", y)){

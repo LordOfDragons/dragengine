@@ -70,9 +70,9 @@ public:
 		}
 		
 		pValue = value;
-		igdeMetaPropertyStorage<P>::onValueChanged();
+		this->onValueChanged();
 		if(notify){
-			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+			this->Property().NotifyValueChanged(this->Context());
 		}
 	}
 	

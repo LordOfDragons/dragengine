@@ -49,28 +49,24 @@ public:
 	template<typename T>
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-private:
-	aeControllerTarget::Ref pTargetPosition;
-	aeControllerTarget::Ref pTargetUp;
-	
-	igdeMetaPropertyStringStorage::Storage pMPTrackBone;
-	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage pMPTrackAxis;
-	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage pMPUpAxis;
-	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eUpTarget>::Storage pMPUpTarget;
-	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eLockedAxis>::Storage pMPLockedAxis;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetPosition;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetUp;
+public:
+	igdeMetaPropertyStringStorage::Storage mpTrackBone;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage mpTrackAxis;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage mpUpAxis;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eUpTarget>::Storage mpUpTarget;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eLockedAxis>::Storage mpLockedAxis;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetUp;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	aeRuleTrackTo() = delete;
-	aeRuleTrackTo(const aeRuleTrackTo&) = delete;
 	
 	/** Create a new track to rule. */
 	aeRuleTrackTo(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a track to rule. */
-	aeRuleTrackTo(aeWindowMain &windowMain, const aeRuleTrackTo &copy);
+	aeRuleTrackTo(const aeRuleTrackTo &copy);
 	/** Clean up the animator rule. */
 protected:
 	~aeRuleTrackTo() override;
@@ -81,41 +77,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyStringStorage::Storage &GetMPTrackBone(){ return pMPTrackBone; }
-	inline igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage &GetMPTrackAxis(){ return pMPTrackAxis; }
-	inline igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage &GetMPUpAxis(){ return pMPUpAxis; }
-	inline igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eUpTarget>::Storage &GetMPUpTarget(){ return pMPUpTarget; }
-	inline igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eLockedAxis>::Storage &GetMPLockedAxis(){ return pMPLockedAxis; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetPosition(){ return pMPTargetPosition; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetUp(){ return pMPTargetUp; }
-	
-	
 	/** Retrieve the name of the track bone or empty string to use none. */
-	inline const decString &GetTrackBone() const{ return pMPTrackBone; }
+	inline const decString &GetTrackBone() const{ return mpTrackBone; }
 	/** Set the name of the track bone or empty string to use none. */
 	void SetTrackBone(const char *boneName);
 	/** Retrieve the track axis. */
-	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{ return pMPTrackAxis; }
+	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{ return mpTrackAxis; }
 	/** Set the track axis. */
 	void SetTrackAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
 	/** Retrieve the up axis. */
-	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{ return pMPUpAxis; }
+	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{ return mpUpAxis; }
 	/** Set the up axis. */
 	void SetUpAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
 	/** Retrieve the up target. */
-	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{ return pMPUpTarget; }
+	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{ return mpUpTarget; }
 	/** Set the up target. */
 	void SetUpTarget(deAnimatorRuleTrackTo::eUpTarget target);
 	/** Retrieve the locked axis. */
-	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{ return pMPLockedAxis; }
+	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{ return mpLockedAxis; }
 	/** Set the locked axis. */
 	void SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis axis);
-	
-	/** Retrieve the position target. */
-	inline const aeControllerTarget::Ref &GetTargetPosition() const{ return pTargetPosition; }
-	
-	/** Retrieve the up target. */
-	inline const aeControllerTarget::Ref &GetTargetUp() const{ return pTargetUp; }
 	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
@@ -123,16 +104,9 @@ public:
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
-	/** Remove a link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	/** Remove all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
+	aeRule::Ref CreateCopy() const override;
 	/*@}*/
 	
 	/** \name Operators */

@@ -83,6 +83,7 @@ public:
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
 private:
+	aeWindowMain &pWindowMain;
 	MetaContext::Ref pMetaContext;
 	
 	aeAnimator *pAnimator;
@@ -90,10 +91,11 @@ private:
 	cAsyncLoadListener pAsyncLoadListener;
 	igdeWObject::Ref pObjectWrapper;
 	
-	igdeMetaPropertyStringStorage::Storage pMPName;
-	igdeMetaPropertySelectionEnumStorage<eAttachTypes>::Storage pMPAttachType;
-	igdeMetaPropertyStringStorage::Storage pMPBoneName;
-	igdeMetaPropertyContextStorage::Storage pMPWObject;
+public:
+	igdeMetaPropertyStringStorage::Storage mpName;
+	igdeMetaPropertySelectionEnumStorage<eAttachTypes>::Storage mpAttachType;
+	igdeMetaPropertyStringStorage::Storage mpBoneName;
+	igdeMetaPropertyContextStorage::Storage mpWObject;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -102,9 +104,8 @@ public:
 	explicit aeAttachment(aeWindowMain &windowMain, const char *name = "Attachment");
 	
 	/** Create copy of attachment. */
-	aeAttachment(aeWindowMain &windowMain, const aeAttachment &copy);
+	aeAttachment(const aeAttachment &copy);
 	
-	aeAttachment(const aeAttachment &copy) = delete;
 	aeAttachment(aeAttachment &&copy) = delete;
 	aeAttachment &operator=(const aeAttachment &copy) = delete;
 	aeAttachment &operator=(aeAttachment &&copy) = delete;
@@ -119,14 +120,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	
 	/** Get meta context. */
 	inline MetaContext::Ref GetMetaContext() const{ return pMetaContext; }
-	
-	inline igdeMetaPropertyStringStorage::Storage &GetMPName(){ return pMPName; }
-	inline igdeMetaPropertySelectionEnumStorage<eAttachTypes>::Storage &GetMPAttachType(){ return pMPAttachType; }
-	inline igdeMetaPropertyStringStorage::Storage &GetMPBoneName(){ return pMPBoneName; }
-	inline igdeMetaPropertyContextStorage::Storage &GetMPWObject(){ return pMPWObject; }
-	
 	
 	/** Parent animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
@@ -140,19 +137,19 @@ public:
 	
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pMPName; }
+	inline const decString &GetName() const{ return mpName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Attach type. */
-	inline eAttachTypes GetAttachType() const{ return pMPAttachType; }
+	inline eAttachTypes GetAttachType() const{ return mpAttachType; }
 	
 	/** Set attached type. */
 	void SetAttachType(eAttachTypes type);
 	
 	/** Name of the bone to attach to. */
-	inline const decString &GetBoneName() const{ return pMPBoneName; }
+	inline const decString &GetBoneName() const{ return mpBoneName; }
 	
 	/** Set name of the bone to attach to. */
 	void SetBoneName(const char *name);

@@ -52,18 +52,17 @@ public:
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
 private:
-	aeControllerTarget::Ref pTargetSelect;
-	
 	bool pTreeListExpanded;
 	
-	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage pMPRules;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
-	igdeMetaPropertyBooleanStorage::Storage pMPUseCurrentState;
-	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>::Storage pMPApplicationType;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetSelect;
+public:
+	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage mpRules;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyBooleanStorage::Storage mpUseCurrentState;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>::Storage mpApplicationType;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetSelect;
 	
 public:
 	igdeUniqueNameGenerator uniqueNameRule;
@@ -72,12 +71,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	aeRuleGroup() = delete;
-	aeRuleGroup(const aeRuleGroup&) = delete;
 	
 	/** Create a new group rule. */
 	explicit aeRuleGroup(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a group rule. */
-	aeRuleGroup(aeWindowMain &windowMain, const aeRuleGroup &copy);
+	aeRuleGroup(const aeRuleGroup &copy);
 	/** Clean up the group rule. */
 protected:
 	~aeRuleGroup() override;
@@ -88,18 +86,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage &GetMPRules(){ return pMPRules; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPUseCurrentState(){ return pMPUseCurrentState; }
-	inline igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>::Storage &GetMPApplicationType(){ return pMPApplicationType; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetSelect(){ return pMPTargetSelect; }
-	
-	
 	/** Rules. */
-	inline const aeRule::List &GetRules() const{ return pMPRules; }
+	inline const aeRule::List &GetRules() const{ return mpRules; }
 	/** Add a new rule. */
 	void AddRule(aeRule *rule);
 	/** Insert a new rule. */
@@ -112,39 +100,36 @@ public:
 	void RemoveAllRules();
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
+	inline bool GetEnablePosition() const{ return mpEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pMPEnableSize; }
+	inline bool GetEnableSize() const{ return mpEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);
 	
 	/** Use current animation state instead of empty state. */
-	inline bool GetUseCurrentState() const{ return pMPUseCurrentState; }
+	inline bool GetUseCurrentState() const{ return mpUseCurrentState; }
 	
 	/** Set if current animation state is used instead of empty state. */
 	void SetUseCurrentState(bool value);
 	
 	/** Retrieve the rule application type. */
-	inline deAnimatorRuleGroup::eApplicationTypes GetApplicationType() const{ return pMPApplicationType; }
+	inline deAnimatorRuleGroup::eApplicationTypes GetApplicationType() const{ return mpApplicationType; }
 	/** Set the rule application type. */
 	void SetApplicationType(deAnimatorRuleGroup::eApplicationTypes type);
-	
-	/** Retrieve the select target. */
-	inline const aeControllerTarget::Ref &GetTargetSelect() const{ return pTargetSelect; }
 	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
@@ -152,10 +137,6 @@ public:
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
-	/** Removes a link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	/** Removes all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
 	
 	/** Tree list expanded state. */
 	inline bool GetTreeListExpanded() const{ return pTreeListExpanded; }
@@ -164,10 +145,7 @@ public:
 	void SetTreeListExpanded(bool expanded);
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** Parent animator changed. */
 	void OnParentAnimatorChanged() override;

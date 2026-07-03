@@ -45,24 +45,23 @@ public:
 	template<typename T>
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-private:
-	igdeMetaPropertyBooleanStorage::Storage pMPUseLastState;
-	igdeMetaPropertyIntegerStorage::Storage pMPId;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
+public:
+	igdeMetaPropertyBooleanStorage::Storage mpUseLastState;
+	igdeMetaPropertyIntegerStorage::Storage mpId;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	aeRuleStateSnapshot() = delete;
-	aeRuleStateSnapshot(const aeRuleStateSnapshot&) = delete;
 	
 	/** Create a new state snapshot rule. */
 	aeRuleStateSnapshot(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a state snapshot rule. */
-	aeRuleStateSnapshot(aeWindowMain &windowMain, const aeRuleStateSnapshot &copy);
+	aeRuleStateSnapshot(const aeRuleStateSnapshot &copy);
 	/** Clean up the animator rule. */
 protected:
 	~aeRuleStateSnapshot() override;
@@ -73,44 +72,36 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPUseLastState(){ return pMPUseLastState; }
-	inline igdeMetaPropertyIntegerStorage::Storage &GetMPId(){ return pMPId; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
-	
-	
 	/** Determine if the last state of the component is used or only the stored state. */
-	inline bool GetUseLastState() const{ return pMPUseLastState; }
+	inline bool GetUseLastState() const{ return mpUseLastState; }
 	/** Set if the last state of the component is used or only the stored state. */
 	void SetUseLastState(bool value);
 	
 	/** Identifier to snapshot state using animator instance. */
-	inline int GetID() const{ return pMPId; }
+	inline int GetID() const{ return mpId; }
 	
 	/** Set identifier to snapshot state using animator instance. */
 	void SetID(int value);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
+	inline bool GetEnablePosition() const{ return mpEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pMPEnableSize; }
+	inline bool GetEnableSize() const{ return mpEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);
@@ -119,10 +110,7 @@ public:
 	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
+	aeRule::Ref CreateCopy() const override;
 	/*@}*/
 	
 	/** \name Operators */

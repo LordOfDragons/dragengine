@@ -78,11 +78,11 @@ void igdeMetaPropertyUndoHistory::NotifyValueChanged(const igdeMetaContext::Ref 
 }
 
 bool igdeMetaPropertyUndoHistory::IsValid(const ContextRef &context) const{
-	return context && !context->IsDisposed();
+	return context && context->IsValid();
 }
 
 igdeUndoSystem *igdeMetaPropertyUndoHistory::GetPropertyValue(const ContextRef &context) const{
-	return context && !context->IsDisposed() ? context->GetUndoSystem() : nullptr;
+	return context && context->IsValid() ? context->GetUndoSystem() : nullptr;
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyUndoHistory::CreateWidget(){

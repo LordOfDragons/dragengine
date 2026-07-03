@@ -167,8 +167,8 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 
 aeMCPControllers::ObjectTypeRef aeMCPControllers::CopyObjectType(const ContextRef &context,
 const aeController::List &existingObjects, const ObjectTypeRef &object) const{
-	auto copied = aeController::Ref::New(Owner(context).GetWindowMain(), *object);
-	copied->GetMPName().SetValue(Owner(context).uniqueNameController.Generate(copied->GetMPName()), false);
+	auto copied = aeController::Ref::New(*object);
+	copied->mpName.SetValue(Owner(context).uniqueNameController.Generate(copied->mpName), false);
 	return copied;
 }
 
@@ -183,9 +183,8 @@ igdeMetaProperty::Action::Ref aeMCPControllers::CreateButtonAction(TargetButton 
 }
 
 void aeMCPControllers::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
-	const auto &windowMain = Owner(context).GetWindowMain();
 	auto &helper = menu.GetEnvironment().GetUIHelper();
-	helper.MenuCommand(menu, windowMain.GetActionControllerAdd());
+	helper.MenuCommand(menu, deTObjectReference<cActionControllerAdd>::New(*this, owner, context));
 	AddDefaultContextMenuEntries(menu, context, owner);
 }
 
@@ -294,7 +293,7 @@ public:
 		}
 		
 		auto &controller = pPropertyCurrent.Owner(context);
-		pPropertyCurrent.ChangePropertyValue(context, controller.GetMPMinimumValue(), BuildUndoInfo(pPropertyCurrent));
+		pPropertyCurrent.ChangePropertyValue(context, controller.mpMinimumValue, BuildUndoInfo(pPropertyCurrent));
 	}
 };
 
@@ -315,7 +314,7 @@ public:
 		}
 		
 		auto &controller = pPropertyCurrent.Owner(context);
-		pPropertyCurrent.ChangePropertyValue(context, controller.GetMPMaximumValue(), BuildUndoInfo(pPropertyCurrent));
+		pPropertyCurrent.ChangePropertyValue(context, controller.mpMaximumValue, BuildUndoInfo(pPropertyCurrent));
 	}
 };
 
@@ -337,7 +336,7 @@ public:
 		
 		auto &controller = pPropertyCurrent.Owner(context);
 		pPropertyCurrent.ChangePropertyValue(context,
-			(controller.GetMPMinimumValue() + controller.GetMPMaximumValue()) / 2.0f,
+			(controller.mpMinimumValue + controller.mpMaximumValue) / 2.0f,
 			BuildUndoInfo(pPropertyCurrent));
 	}
 };
@@ -359,7 +358,7 @@ public:
 		
 		auto &controller = pPropertyCurrent.Owner(context);
 		pPropertyCurrent.ChangePropertyValue(context,
-			decMath::random(controller.GetMPMinimumValue(), controller.GetMPMaximumValue()),
+			decMath::random(controller.mpMinimumValue, controller.mpMaximumValue),
 			BuildUndoInfo(pPropertyCurrent));
 	}
 };
@@ -368,7 +367,7 @@ public:
 
 deTObjectReference<igdeMetaPropertyFloatUndo> aeMCPControllerCurrentValue::ChangePropertyValue(
 const ContextRef &context, float newValue, const char *undoInfo, const char *undoInfoLong){
-	if(Owner(context).GetMPFrozen()){
+	if(Owner(context).mpFrozen){
 		return {};
 	}
 	return igdeMetaPropertyMCT::ChangePropertyValue(context, newValue, undoInfo, undoInfoLong);

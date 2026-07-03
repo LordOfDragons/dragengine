@@ -152,29 +152,30 @@ public:
 	};
 	
 	
+public:
+	igdeMetaPropertyFloatStorage::Storage mpLimitLookDown;
+	igdeMetaPropertyFloatStorage::Storage mpLimitLookUp;
+	igdeMetaPropertyFloatStorage::Storage mpLimitLookLeft;
+	igdeMetaPropertyFloatStorage::Storage mpLimitLookRight;
+	igdeMetaPropertyFloatStorage::Storage mpSpeedWalk;
+	igdeMetaPropertyFloatStorage::Storage mpSpeedRun;
+	igdeMetaPropertyFloatStorage::Storage mpAdjustTimeUpDown;
+	igdeMetaPropertyFloatStorage::Storage mpAdjustTimeLeftRight;
+	igdeMetaPropertyFloatStorage::Storage mpAdjustTimeStance;
+	igdeMetaPropertyFloatStorage::Storage mpAdjustTimeOrientation;
+	igdeMetaPropertyFloatStorage::Storage mpAdjustTimeVelocity;
+	igdeMetaPropertyFloatStorage::Storage mpAdjustTimeTurnIP;
+	igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eLocomotionTypes>::Storage mpLocomotionType;
+	igdeMetaPropertyFloatStorage::Storage mpLegBlendTime;
+	igdeMetaPropertyIntegerStorage::Storage mpUseLegPairs;
+	igdeMetaPropertyIntegerStorage::Storage mpLegIndex;
+	igdeMetaPropertyListStorage<aeAnimatorLocomotionLeg>::Storage mpLegs;
+	igdeMetaPropertyContextStorage::Storage mpLeg;
+	igdeMetaPropertyBooleanStorage::Storage mpShowShapes;
+	igdeMetaPropertyBooleanStorage::Storage mpUseFoGIK;
+	
 	
 private:
-	igdeMetaPropertyFloatStorage::Storage pMPLimitLookDown;
-	igdeMetaPropertyFloatStorage::Storage pMPLimitLookUp;
-	igdeMetaPropertyFloatStorage::Storage pMPLimitLookLeft;
-	igdeMetaPropertyFloatStorage::Storage pMPLimitLookRight;
-	igdeMetaPropertyFloatStorage::Storage pMPSpeedWalk;
-	igdeMetaPropertyFloatStorage::Storage pMPSpeedRun;
-	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeUD;
-	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeLR;
-	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeStance;
-	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeOrientation;
-	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeVelocity;
-	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeTurnIP;
-	igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eLocomotionTypes>::Storage pMPLocomotionType;
-	igdeMetaPropertyFloatStorage::Storage pMPLegBlendTime;
-	igdeMetaPropertyIntegerStorage::Storage pMPUseLegPairs;
-	igdeMetaPropertyIntegerStorage::Storage pMPLegIndex;
-	igdeMetaPropertyListStorage<aeAnimatorLocomotionLeg>::Storage pMPLegs;
-	igdeMetaPropertyContextStorage::Storage pMPLeg;
-	igdeMetaPropertyBooleanStorage::Storage pMPShowShapes;
-	igdeMetaPropertyBooleanStorage::Storage pMPUseFoGIK;
-	
 	aeAnimator *pAnimator;
 	
 	deDebugDrawer::Ref pDebugDrawer;
@@ -282,28 +283,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPLimitLookDown(){ return pMPLimitLookDown; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPLimitLookUp(){ return pMPLimitLookUp; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPLimitLookLeft(){ return pMPLimitLookLeft; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPLimitLookRight(){ return pMPLimitLookRight; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPSpeedWalk(){ return pMPSpeedWalk; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPSpeedRun(){ return pMPSpeedRun; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeUD(){ return pMPAdjustTimeUD; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeLR(){ return pMPAdjustTimeLR; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeStance(){ return pMPAdjustTimeStance; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeOrientation(){ return pMPAdjustTimeOrientation; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeVelocity(){ return pMPAdjustTimeVelocity; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeTurnIP(){ return pMPAdjustTimeTurnIP; }
-	inline igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eLocomotionTypes>::Storage &GetMPLocomotionType(){ return pMPLocomotionType; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPLegBlendTime(){ return pMPLegBlendTime; }
-	inline igdeMetaPropertyIntegerStorage::Storage &GetMPUseLegPairs(){ return pMPUseLegPairs; }
-	inline igdeMetaPropertyListStorage<aeAnimatorLocomotionLeg>::Storage &GetMPLegs(){ return pMPLegs; }
-	inline igdeMetaPropertyIntegerStorage::Storage &GetMPLegIndex(){ return pMPLegIndex; }
-	inline igdeMetaPropertyContextStorage::Storage &GetMPLeg(){ return pMPLeg; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPShowShapes(){ return pMPShowShapes; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPUseFoGIK(){ return pMPUseFoGIK; }
-	
-	
 	/** Resets the locomotion system for a new simulation round. */
 	void Reset();
 	
@@ -344,38 +323,38 @@ public:
 	inline const deColliderVolume::Ref &GetTGCollider() const{ return pTGCollider; }
 	
 	/** Locomotion type. */
-	inline eLocomotionTypes GetLocomotionType() const{ return pMPLocomotionType; }
+	inline eLocomotionTypes GetLocomotionType() const{ return mpLocomotionType; }
 	/** Set locomotion type. */
 	void SetLocomotionType(eLocomotionTypes type);
 	
 	/** Legs. */
-	const LegList &GetLegs() const{ return pMPLegs; }
+	const LegList &GetLegs() const{ return mpLegs; }
 	
 	/** Retrieves the number of leg pairs to use. */
-	inline int GetUseLegPairCount() const{ return pMPUseLegPairs; }
+	inline int GetUseLegPairCount() const{ return mpUseLegPairs; }
 	/** Sets the number of leg pairs to use. */
 	void SetUseLegPairCount(int pairCount);
 	/** Retrieves the leg blend time in seconds. */
-	inline float GetLegBlendTime() const{ return pMPLegBlendTime; }
+	inline float GetLegBlendTime() const{ return mpLegBlendTime; }
 	/** Sets the leg blend time in seconds. */
 	void SetLegBlendTime(float time);
 	
 	
 	
 	/** Look down limit in degrees. */
-	inline float GetLimitLookDown() const{ return pMPLimitLookDown; }
+	inline float GetLimitLookDown() const{ return mpLimitLookDown; }
 	/** Set look down limit in degrees. */
 	void SetLimitLookDown(float degrees);
 	
 	/** Look up limit in degrees. */
-	inline float GetLimitLookUp() const{ return pMPLimitLookUp; }
+	inline float GetLimitLookUp() const{ return mpLimitLookUp; }
 	/** Set look up limit in degrees. */
 	void SetLimitLookUp(float degrees);
 	
 	/** Look up down angle in degrees. */
 	inline decSmoothFloat &GetLookUpDown(){ return pLookUpDown; }
 	inline const decSmoothFloat &GetLookUpDown() const{ return pLookUpDown; }
-	inline float GetLookUpDownValue() const{ return pMPAdjustTimeUD; }
+	inline float GetLookUpDownValue() const{ return mpAdjustTimeUpDown; }
 	void SetLookUpDown(float degrees);
 	
 	/** Set look up down goal angle in degrees clamped to range. */
@@ -384,13 +363,13 @@ public:
 	
 	
 	/** Look left limit in degrees. */
-	inline float GetLimitLookLeft() const{ return pMPLimitLookLeft; }
+	inline float GetLimitLookLeft() const{ return mpLimitLookLeft; }
 	
 	/** Set look left limit in degrees. */
 	void SetLimitLookRight(float degrees);
 	
 	/** Look right limit in degrees. */
-	inline float GetLimitLookRight() const{ return pMPLimitLookRight; }
+	inline float GetLimitLookRight() const{ return mpLimitLookRight; }
 	
 	/** Set look right limit in degrees. */
 	void SetLimitLookLeft(float degrees);
@@ -402,7 +381,7 @@ public:
 	
 	
 	/** Adjustment speed for turning in place. */
-	inline float GetAdjustTimeTurnIP() const{ return pMPAdjustTimeTurnIP; }
+	inline float GetAdjustTimeTurnIP() const{ return mpAdjustTimeTurnIP; }
 	
 	/** Set adjustment speed for turning in place. */
 	void SetAdjustTimeTurnIP(float adjustTime);
@@ -410,11 +389,11 @@ public:
 	
 	
 	/** Retrieves the walk speed. */
-	inline float GetWalkSpeed() const{ return pMPSpeedWalk; }
+	inline float GetWalkSpeed() const{ return mpSpeedWalk; }
 	/** Sets the walk speed. */
 	void SetWalkSpeed(float speed);
 	/** Retrieves the run speed. */
-	inline float GetRunSpeed() const{ return pMPSpeedRun; }
+	inline float GetRunSpeed() const{ return mpSpeedRun; }
 	/** Sets the run speed. */
 	void SetRunSpeed(float speed);
 	
@@ -549,7 +528,7 @@ public:
 	/** Sets if the locomotion testing is enabled. */
 	void SetEnabled(bool enabled);
 	/** Determines if the feet-on-ground IK is used. */
-	inline bool GetUseFoGIK() const{ return pMPUseFoGIK; }
+	inline bool GetUseFoGIK() const{ return mpUseFoGIK; }
 	/** Sets if the feet-on-ground IK is used. */
 	void SetUseFoGIK(bool use);
 	/*@}*/

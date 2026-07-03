@@ -31,6 +31,7 @@
 #include "igdeMetaPropertyString.h"
 #include "igdeMetaPropertyStringSet.h"
 #include "igdeMetaPropertyTreeList.h"
+#include "igdeMetaPropertySelection.h"
 #include "../igdeMetaContext.h"
 
 
@@ -39,126 +40,130 @@
  */
 class DE_DLL_EXPORT igdeMetaPropertyAdapter{
 public:
-	class DE_DLL_EXPORT StringOnListChanged : public igdeMetaPropertyList::Listener{
-		igdeMetaPropertyString &pProperty;
-		
+	/**
+	 * \brief Watch property value changed.
+	 * 
+	 * Can be used on meta properties with only OnValueChanged event.
+	 */
+	template<typename T>
+	class WatchValueChanged : public T::Listener{
 	public:
-		using Ref = deTObjectReference<StringOnListChanged>;
-		StringOnListChanged(igdeMetaPropertyString &property);
-		void OnValueChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
-		void OnObjectItemInfoChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
+		using Ref = deTObjectReference<WatchValueChanged>;
+		WatchValueChanged() = default;
+		void OnValueChanged(T*, const igdeMetaContext::Ref& context) override{ ValueChanged(context); }
+		virtual void ValueChanged(const igdeMetaContext::Ref &context) = 0;
+		virtual void StructureChanged(const igdeMetaContext::Ref &context){};
 		
 	protected:
-		~StringOnListChanged() override;
+		~WatchValueChanged() override = default;
+	};
+	
+	/**
+	 * \brief Watch property value and object information changed.
+	 * 
+	 * Can be used on meta properties with OnValueChanged and OnObjectItemInfoChanged events.
+	 */
+	template<typename T>
+	class WatchValueObjectItemInfoChanged : public T::Listener{
+	public:
+		using Ref = deTObjectReference<WatchValueObjectItemInfoChanged>;
+		WatchValueObjectItemInfoChanged() = default;
+		void OnValueChanged(T*, const igdeMetaContext::Ref& context) override{ StructureChanged(context); }
+		void OnObjectItemInfoChanged(T*, const igdeMetaContext::Ref& context) override{ ValueChanged(context); }
+		virtual void ValueChanged(const igdeMetaContext::Ref &context) = 0;
+		virtual void StructureChanged(const igdeMetaContext::Ref &context){ ValueChanged(context); }
+		
+	protected:
+		~WatchValueObjectItemInfoChanged() override = default;
 	};
 	
 	
-	class DE_DLL_EXPORT ObjectOnListChanged : public igdeMetaPropertyList::Listener{
-		igdeMetaPropertyObject &pProperty;
+	/**
+	 * \brief Notify list on property changed.
+	 * 
+	 * Can be used on meta properties of list type:
+	 * - igdeMetaPropertyList
+	 * - igdeMetaPropertySet
+	 */
+	template<typename T, typename W>
+	class NotifyListOnChanged : public W{
+		T &pProperty;
 		
 	public:
-		using Ref = deTObjectReference<ObjectOnListChanged>;
-		ObjectOnListChanged(igdeMetaPropertyObject &property);
-		void OnValueChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
-		void OnObjectItemInfoChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
+		using Ref = deTObjectReference<NotifyListOnChanged>;
+		NotifyListOnChanged(T &property) : pProperty(property){}
+		void ValueChanged(const igdeMetaContext::Ref&) override{
+			pProperty.NotifyObjectItemInfoChanged({});
+		}
 		
 	protected:
-		~ObjectOnListChanged() override;
+		~NotifyListOnChanged() override = default;
 	};
 	
-	
-	class DE_DLL_EXPORT TreeOnListChanged : public igdeMetaPropertyList::Listener{
-		igdeMetaPropertyTreeList &pProperty;
+	/**
+	 * \brief Notify string on property changed.
+	 * 
+	 * Can be used on meta properties of string type:
+	 * - igdeMetaPropertyString
+	 */
+	template<typename T, typename W>
+	class NotifyStringOnChanged : public W{
+		T &pProperty;
 		
 	public:
-		using Ref = deTObjectReference<TreeOnListChanged>;
-		TreeOnListChanged(igdeMetaPropertyTreeList &property);
-		void OnValueChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
-		void OnObjectItemInfoChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
+		using Ref = deTObjectReference<NotifyStringOnChanged>;
+		NotifyStringOnChanged(T &property) : pProperty(property){}
+		void ValueChanged(const igdeMetaContext::Ref&) override{
+			pProperty.NotifyAllowedStringsChanged({});
+		}
 		
 	protected:
-		~TreeOnListChanged() override;
+		~NotifyStringOnChanged() override = default;
 	};
 	
-	
-	class DE_DLL_EXPORT StringOnSetChanged : public igdeMetaPropertySet::Listener{
-		igdeMetaPropertyString &pProperty;
+	/**
+	 * \brief Notify object on property changed.
+	 * 
+	 * Can be used on meta properties of object:
+	 * - igdeMetaPropertyObject
+	 */
+	template<typename T, typename W>
+	class NotifyObjectOnChanged : public W{
+		T &pProperty;
 		
 	public:
-		using Ref = deTObjectReference<StringOnSetChanged>;
-		StringOnSetChanged(igdeMetaPropertyString &property);
-		void OnValueChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
-		void OnObjectItemInfoChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
+		using Ref = deTObjectReference<NotifyObjectOnChanged>;
+		NotifyObjectOnChanged(T &property) : pProperty(property){}
+		void ValueChanged(const igdeMetaContext::Ref&) override{
+			pProperty.NotifyAllowedObjectsChanged({});
+		}
 		
 	protected:
-		~StringOnSetChanged() override;
+		~NotifyObjectOnChanged() override = default;
 	};
 	
-	
-	class DE_DLL_EXPORT ObjectOnSetChanged : public igdeMetaPropertySet::Listener{
-		igdeMetaPropertyObject &pProperty;
+	/**
+	 * \brief Notify tree list on property changed.
+	 * 
+	 * Can be used on meta properties of tree list type:
+	 * - igdeMetaPropertyTreeList
+	 */
+	template<typename T, typename W>
+	class NotifyTreeListOnChanged : public W{
+		T &pProperty;
 		
 	public:
-		using Ref = deTObjectReference<ObjectOnSetChanged>;
-		ObjectOnSetChanged(igdeMetaPropertyObject &property);
-		void OnValueChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
-		void OnObjectItemInfoChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
+		using Ref = deTObjectReference<NotifyTreeListOnChanged>;
+		NotifyTreeListOnChanged(T &property) : pProperty(property){}
+		void ValueChanged(const igdeMetaContext::Ref&) override{
+			pProperty.NotifyObjectItemInfoChanged({});
+		}
+		void StructureChanged(const igdeMetaContext::Ref&) override{
+			pProperty.NotifyValueChanged({});
+		}
 		
 	protected:
-		~ObjectOnSetChanged() override;
-	};
-	
-	
-	class DE_DLL_EXPORT TreeOnSetChanged : public igdeMetaPropertySet::Listener{
-		igdeMetaPropertyTreeList &pProperty;
-		
-	public:
-		using Ref = deTObjectReference<TreeOnSetChanged>;
-		TreeOnSetChanged(igdeMetaPropertyTreeList &property);
-		void OnValueChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
-		void OnObjectItemInfoChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
-		
-	protected:
-		~TreeOnSetChanged() override;
-	};
-	
-	
-	class DE_DLL_EXPORT StringOnStringSetChanged : public igdeMetaPropertyStringSet::Listener{
-		igdeMetaPropertyString &pProperty;
-		
-	public:
-		using Ref = deTObjectReference<StringOnStringSetChanged>;
-		StringOnStringSetChanged(igdeMetaPropertyString &property);
-		void OnValueChanged(igdeMetaPropertyStringSet *property, const igdeMetaContext::Ref &context) override;
-		
-	protected:
-		~StringOnStringSetChanged() override;
-	};
-	
-	
-	class DE_DLL_EXPORT ListOnStringChanged : public igdeMetaPropertyString::Listener{
-		igdeMetaPropertyList &pProperty;
-		
-	public:
-		using Ref = deTObjectReference<ListOnStringChanged>;
-		ListOnStringChanged(igdeMetaPropertyList &property);
-		void OnValueChanged(igdeMetaPropertyString *property, const igdeMetaContext::Ref &context) override;
-		
-	protected:
-		~ListOnStringChanged() override;
-	};
-	
-	
-	class DE_DLL_EXPORT SetOnStringChanged : public igdeMetaPropertyString::Listener{
-		igdeMetaPropertySet &pProperty;
-		
-	public:
-		using Ref = deTObjectReference<SetOnStringChanged>;
-		SetOnStringChanged(igdeMetaPropertySet &property);
-		void OnValueChanged(igdeMetaPropertyString *property, const igdeMetaContext::Ref &context) override;
-		
-	protected:
-		~SetOnStringChanged() override;
+		~NotifyTreeListOnChanged() override = default;
 	};
 	
 	
@@ -166,16 +171,92 @@ private:
 	igdeMetaPropertyAdapter();
 	
 public:
+	/** \brief Watch list property and notify target on changes. */
+	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyString &target){
+		watch.GetListeners().Add(NotifyStringOnChanged<igdeMetaPropertyString,
+			WatchValueObjectItemInfoChanged<igdeMetaPropertyList>>::Ref::New(target));
+	}
+	
+	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyObject &target){
+		watch.GetListeners().Add(NotifyObjectOnChanged<igdeMetaPropertyObject,
+			WatchValueObjectItemInfoChanged<igdeMetaPropertyList>>::Ref::New(target));
+	}
+	
+	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyTreeList &target){
+		watch.GetListeners().Add(NotifyTreeListOnChanged<igdeMetaPropertyTreeList,
+			WatchValueObjectItemInfoChanged<igdeMetaPropertyList>>::Ref::New(target));
+	}
+	
+	
+	/** \brief Watch set and notify target on changes. */
+	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyString &target){
+		watch.GetListeners().Add(NotifyStringOnChanged<igdeMetaPropertyString,
+			WatchValueObjectItemInfoChanged<igdeMetaPropertySet>>::Ref::New(target));
+	}
+	
+	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyObject &target){
+		watch.GetListeners().Add(NotifyObjectOnChanged<igdeMetaPropertyObject,
+			WatchValueObjectItemInfoChanged<igdeMetaPropertySet>>::Ref::New(target));
+	}
+	
+	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyTreeList &target){
+		watch.GetListeners().Add(NotifyTreeListOnChanged<igdeMetaPropertyTreeList,
+			WatchValueObjectItemInfoChanged<igdeMetaPropertySet>>::Ref::New(target));
+	}
+	
+	
+	/** \brief Watch string set and notify target on changes. */
+	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyString &target){
+		watch.GetListeners().Add(NotifyStringOnChanged<igdeMetaPropertyString,
+			WatchValueChanged<igdeMetaPropertyStringSet>>::Ref::New(target));
+	}
+	
+	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyObject &target){
+		watch.GetListeners().Add(NotifyObjectOnChanged<igdeMetaPropertyObject,
+			WatchValueChanged<igdeMetaPropertyStringSet>>::Ref::New(target));
+	}
+	
+	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyTreeList &target){
+		watch.GetListeners().Add(NotifyTreeListOnChanged<igdeMetaPropertyTreeList,
+			WatchValueChanged<igdeMetaPropertyStringSet>>::Ref::New(target));
+	}
+	
+	
 	/** \brief Watch property and notify target on changes. */
-	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyString &target);
-	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyObject &target);
-	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyTreeList &target);
-	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyString &target);
-	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyObject &target);
-	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyTreeList &target);
-	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyString &target);
-	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertyList &target);
-	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertySet &target);
+	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertyList &target){
+		watch.GetListeners().Add(NotifyListOnChanged<igdeMetaPropertyList,
+			WatchValueChanged<igdeMetaPropertyString>>::Ref::New(target));
+	}
+	
+	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertySet &target){
+		watch.GetListeners().Add(NotifyListOnChanged<igdeMetaPropertySet,
+			WatchValueChanged<igdeMetaPropertyString>>::Ref::New(target));
+	}
+	
+	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertyTreeList &target){
+		watch.GetListeners().Add(NotifyTreeListOnChanged<igdeMetaPropertyTreeList,
+			WatchValueChanged<igdeMetaPropertyString>>::Ref::New(target));
+	}
+	
+	
+	/** \brief Watch property and notify target on changes. */
+	template<typename T>
+	static void OnChangedUsing(T &watch, igdeMetaPropertyList &target){
+		watch.GetListeners().Add(NotifyListOnChanged<igdeMetaPropertyList,
+			WatchValueChanged<T>>::Ref::New(target));
+	}
+	
+	template<typename T>
+	static void OnChangedUsing(T &watch, igdeMetaPropertySet &target){
+		watch.GetListeners().Add(NotifyListOnChanged<igdeMetaPropertySet,
+			WatchValueChanged<T>>::Ref::New(target));
+	}
+	
+	template<typename T>
+	static void OnChangedUsing(T &watch, igdeMetaPropertyTreeList &target){
+		watch.GetListeners().Add(NotifyTreeListOnChanged<igdeMetaPropertyTreeList,
+			WatchValueChanged<T>>::Ref::New(target));
+	}
 };
 
 

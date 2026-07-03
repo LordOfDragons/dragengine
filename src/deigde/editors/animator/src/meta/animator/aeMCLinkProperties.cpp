@@ -29,28 +29,38 @@
 #include <deigde/meta/property/igdeMetaPropertyAdapters.h>
 
 
-aeMCLinkProperties::aeMCLinkProperties(aeWindowMain &windowMain) :
-link(deTObjectReference<aeMCPLink>::New(windowMain)){
-}
-
-void aeMCLinkProperties::Init(const aeMCAnimatorProperties &properties){
-	metaProperties->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		name,
-		controller,
-		repeat,
-		bone,
-		boneParameter,
-		boneMinimum,
-		boneMaximum,
-		vertexPositionSet,
-		vertexPositionSetMinimum,
-		vertexPositionSetMaximum,
-		wrapY,
-		curve);
+void aeMCLinkProperties::Init(const aeMCAnimatorProperties &properties, aeWindowMain &windowMain){
+	name = deTObjectReference<aeMCPLinkName>::New();
+	controller = deTObjectReference<aeMCPLinkController>::New();
+	repeat = deTObjectReference<aeMCPLinkRepeat>::New();
+	bone = deTObjectReference<aeMCPLinkBone>::New();
+	boneParameter = deTObjectReference<aeMCPLinkBoneParameter>::New();
+	boneMinimum = deTObjectReference<aeMCPLinkBoneMinimum>::New();
+	boneMaximum = deTObjectReference<aeMCPLinkBoneMaximum>::New();
+	vertexPositionSet = deTObjectReference<aeMCPLinkVertexPositionSet>::New();
+	vertexPositionSetMinimum = deTObjectReference<aeMCPLinkVertexPositionSetMinimum>::New();
+	vertexPositionSetMaximum = deTObjectReference<aeMCPLinkVertexPositionSetMaximum>::New();
+	wrapY = deTObjectReference<aeMCPLinkWrapY>::New();
+	curve = deTObjectReference<aeMCPLinkCurve>::New();
 	
-	group->GetProperties() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		links,
-		link);
+	metaProperties = igdeMetaContext::PropertyList::Ref::New(
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			name,
+			controller,
+			repeat,
+			bone,
+			boneParameter,
+			boneMinimum, boneMaximum,
+			vertexPositionSet,
+			vertexPositionSetMinimum, vertexPositionSetMaximum,
+			wrapY,
+			curve));
+	
+	links = deTObjectReference<aeMCPLinks>::New();
+	link = deTObjectReference<aeMCPLink>::New(windowMain);
+	group = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupLinks", "Animator.WPLink.Links",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, links, link));
 	
 	igdeMetaPropertyAdapter::OnChanged(name, links);
 	igdeMetaPropertyAdapter::OnChanged(properties.controller.controllers, controller);

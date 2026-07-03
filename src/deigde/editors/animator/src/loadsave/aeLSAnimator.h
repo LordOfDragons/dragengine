@@ -48,7 +48,6 @@ class aeRuleForeignState;
 class aeRuleSubAnimator;
 class aeRuleTrackTo;
 class aeRuleMirror;
-class aeControllerTarget;
 class aeLoadSaveSystem;
 
 class aeController;
@@ -91,7 +90,8 @@ private:
 	void pSaveController(decXmlWriter &writer, const aeController &controller);
 	void pSaveLink(decXmlWriter &writer, const aeAnimator &animator, const aeLink &link);
 	void pSaveRuleCommon(decXmlWriter &writer, const aeAnimator &animator, const aeRule &rule);
-	void pSaveControllerTarget(decXmlWriter &writer, const aeAnimator &animator, const aeControllerTarget &target, const char *name);
+	void pSaveControllerTarget(decXmlWriter &writer, const aeAnimator &animator,
+		const igdeMetaPropertyObjectSetStorage<aeLink>::Storage &target, const char *name);
 	void pSaveRule(decXmlWriter &writer, const aeAnimator &animator, const aeRule &rule);
 	void pSaveRuleAnimation(decXmlWriter &writer, const aeAnimator &animator, const aeRuleAnimation &rule);
 	void pSaveRuleAnimationDifference(decXmlWriter &writer, const aeAnimator &animator, const aeRuleAnimationDifference &rule);
@@ -134,8 +134,7 @@ private:
 	aeRule::Ref pLoadRuleBoneTransformator(decXmlElementTag *root, aeAnimator &animator);
 	aeRule::Ref pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animator);
 	bool pLoadRuleCommon(decXmlElementTag *root, aeAnimator &animator, aeRule &rule);
-	void pLoadControllerTarget(decXmlElementTag *root, aeAnimator &animator, aeControllerTarget &target);
-	void pLoadVector(decXmlElementTag *root, decVector &vector);
+	void pLoadControllerTarget(decXmlElementTag *root, aeAnimator &animator, igdeMetaPropertyObjectSetStorage<aeLink>::Storage &target);
 	
 	void pLoadSubAnimators(aeAnimator &animator);
 	void pLoadSubAnimators(aeAnimator &animator, const aeRuleGroup &group);

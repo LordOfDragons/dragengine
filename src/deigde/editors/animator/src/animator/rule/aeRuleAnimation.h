@@ -45,27 +45,24 @@ public:
 	template<typename T>
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-private:
-	aeControllerTarget::Ref pTargetMoveTime;
-	
-	igdeMetaPropertyStringStorage::Storage pMPMoveName;
-	igdeMetaPropertyFloatStorage::Storage pMPMoveTime;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
-	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetMoveTime;
+public:
+	igdeMetaPropertyStringStorage::Storage mpMoveName;
+	igdeMetaPropertyFloatStorage::Storage mpMoveTime;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetMoveTime;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	aeRuleAnimation() = delete;
-	aeRuleAnimation(const aeRuleAnimation&) = delete;
 	
 	/** Create a new animator rule. */
 	explicit aeRuleAnimation(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a animator rule. */
-	aeRuleAnimation(aeWindowMain &windowMain, const aeRuleAnimation &copy);
+	aeRuleAnimation(const aeRuleAnimation &copy);
 	/** Clean up the animator rule. */
 protected:
 	~aeRuleAnimation() override;
@@ -76,45 +73,33 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyStringStorage::Storage &GetMPMoveName(){ return pMPMoveName; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPMoveTime(){ return pMPMoveTime; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetMoveTime(){ return pMPTargetMoveTime; }
-	
-	
 	/** Retrieve the name of the animation move. */
-	inline const decString &GetMoveName() const{ return pMPMoveName; }
+	inline const decString &GetMoveName() const{ return mpMoveName; }
 	/** Set the animation move name. */
 	void SetMoveName(const char *value);
 	/** Retrieve the animation move time. */
-	inline float GetMoveTime() const{ return pMPMoveTime; }
+	inline float GetMoveTime() const{ return mpMoveTime; }
 	/** Set the animation move time. */
 	void SetMoveTime(float value);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
+	inline bool GetEnablePosition() const{ return mpEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pMPEnableSize; }
+	inline bool GetEnableSize() const{ return mpEnableSize; }
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Determine if vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);
-	
-	/** Retrieve the move time target. */
-	inline const aeControllerTarget::Ref &GetTargetMoveTime() const{ return pTargetMoveTime; }
 	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
@@ -122,16 +107,9 @@ public:
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
-	/** Remove a link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	/** Remove all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
+	aeRule::Ref CreateCopy() const override;
 	/*@}*/
 	
 	/** \name Operators */

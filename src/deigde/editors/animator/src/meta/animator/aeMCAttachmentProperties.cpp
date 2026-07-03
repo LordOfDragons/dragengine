@@ -29,20 +29,25 @@
 #include <deigde/meta/property/igdeMetaPropertyAdapters.h>
 
 
-aeMCAttachmentProperties::aeMCAttachmentProperties(aeWindowMain &windowMain) :
-attachment(deTObjectReference<aeMCPAttachment>::New(windowMain)){
-}
-
-void aeMCAttachmentProperties::Init(const aeMCAnimatorProperties &properties){
-	metaProperties->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		name,
-		attachType,
-		boneName,
-		wobject);
+void aeMCAttachmentProperties::Init(const aeMCAnimatorProperties &properties, aeWindowMain &windowMain){
+	name = deTObjectReference<aeMCPAttachmentName>::New();
+	attachType = deTObjectReference<aeMCPAttachmentAttachType>::New();
+	boneName = deTObjectReference<aeMCPAttachmentBoneName>::New();
+	wobject = deTObjectReference<aeMCPAttachmentWObject>::New();
 	
-	group->GetProperties() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		attachments,
-		attachment);
+	metaProperties = igdeMetaContext::PropertyList::Ref::New(
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			name,
+			attachType,
+			boneName,
+			wobject));
+	
+	attachments = deTObjectReference<aeMCPAttachments>::New();
+	attachment = deTObjectReference<aeMCPAttachment>::New(windowMain);
+	group = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupAttachments", "Animator.WPView.Attachments",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, attachments, attachment),
+		true);
 	
 	igdeMetaPropertyAdapter::OnChanged(name, attachments);
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenBoneNames, boneName);

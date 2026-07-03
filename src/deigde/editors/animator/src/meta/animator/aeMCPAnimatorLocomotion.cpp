@@ -42,7 +42,7 @@ aeMCPAnimatorLocomotionType::~aeMCPAnimatorLocomotionType() = default;
 
 igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eLocomotionTypes>::Storage&
 aeMCPAnimatorLocomotionType::GetStorage(const igdeMetaContext::Ref &context) const{
-	return Owner(context).GetLocomotion().GetMPLocomotionType();
+	return Owner(context).GetLocomotion().mpLocomotionType;
 }
 
 void aeMCPAnimatorLocomotionType::GetChoiceItemInfoEnum(const ContextRef &context,

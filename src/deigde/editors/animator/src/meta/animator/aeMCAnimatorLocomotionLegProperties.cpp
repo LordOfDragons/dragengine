@@ -26,11 +26,19 @@
 #include "aeMCAnimatorProperties.h"
 
 
-aeMCAnimatorLocomotionLegProperties::aeMCAnimatorLocomotionLegProperties(aeWindowMain &windowMain) :
-leg(deTObjectReference<aeMCPAnimatorLocomotionLeg>::New(windowMain)){
-}
-
-void aeMCAnimatorLocomotionLegProperties::Init(){
-	metaProperties->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		liftOffTime, putDownTime, putDownPosStand, putDownPosWalk, putDownPosRun);
+void aeMCAnimatorLocomotionLegProperties::Init(aeWindowMain &windowMain){
+	liftOffTime = deTObjectReference<aeMCPAnimatorLocomotionLegLiftOffTime>::New();
+	putDownTime = deTObjectReference<aeMCPAnimatorLocomotionLegPutDownTime>::New();
+	putDownPosStand = deTObjectReference<aeMCPAnimatorLocomotionLegPDPosStand>::New();
+	putDownPosWalk = deTObjectReference<aeMCPAnimatorLocomotionLegPDPosWalk>::New();
+	putDownPosRun = deTObjectReference<aeMCPAnimatorLocomotionLegPDPosRun>::New();
+	
+	metaProperties = igdeMetaContext::PropertyList::Ref::New(
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			liftOffTime, putDownTime,
+			putDownPosStand, putDownPosWalk, putDownPosRun));
+	
+	legs = deTObjectReference<aeMCPAnimatorLocomotionLegs>::New();
+	legIndex = deTObjectReference<aeMCPAnimatorLocomotionLegIndex>::New();
+	leg = deTObjectReference<aeMCPAnimatorLocomotionLeg>::New(windowMain);
 }

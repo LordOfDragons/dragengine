@@ -60,12 +60,14 @@ private:
 	aeAnimatorLocomotion *pLocomotion;
 	MetaContext::Ref pMetaContext;
 	
-	igdeMetaPropertyFloatStorage::Storage pMPLiftOffTime;
-	igdeMetaPropertyFloatStorage::Storage pMPPutDownTime;
-	igdeMetaPropertyVectorStorage::Storage pMPPutDownPosStand;
-	igdeMetaPropertyVectorStorage::Storage pMPPutDownPosWalk;
-	igdeMetaPropertyVectorStorage::Storage pMPPutDownPosRun;
+public:
+	igdeMetaPropertyFloatStorage::Storage mpLiftOffTime;
+	igdeMetaPropertyFloatStorage::Storage mpPutDownTime;
+	igdeMetaPropertyVectorStorage::Storage mpPutDownPositionStand;
+	igdeMetaPropertyVectorStorage::Storage mpPutDownPositionWalk;
+	igdeMetaPropertyVectorStorage::Storage mpPutDownPositionRun;
 	
+private:
 	igdeWDebugDrawerShape::Ref pDDSLocked;
 	igdeWCoordSysArrows pDDSLockedCF;
 	igdeWDebugDrawerShape::Ref pDDSPredict;
@@ -107,13 +109,6 @@ public:
 	/*@{*/
 	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPLiftOffTime(){ return pMPLiftOffTime; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPPutDownTime(){ return pMPPutDownTime; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPPutDownPosStand(){ return pMPPutDownPosStand; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPPutDownPosWalk(){ return pMPPutDownPosWalk; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPPutDownPosRun(){ return pMPPutDownPosRun; }
-	
-	
 	/** Locomotion */
 	inline aeAnimatorLocomotion *GetLocomotion() const{ return pLocomotion; }
 	aeAnimatorLocomotion &GetLocomotionRef() const;
@@ -127,24 +122,24 @@ public:
 	void SetName(const char *name);
 	
 	/** Retrieves the stand put down position. */
-	inline const decVector &GetPutDownPositionStand() const{ return pMPPutDownPosStand; }
+	inline const decVector &GetPutDownPositionStand() const{ return mpPutDownPositionStand; }
 	/** Sets the stand put down position. */
 	void SetPutDownPositionStand(const decVector &position);
 	/** Retrieves the walk put down position. */
-	inline const decVector &GetPutDownPositionWalk() const{ return pMPPutDownPosWalk; }
+	inline const decVector &GetPutDownPositionWalk() const{ return mpPutDownPositionWalk; }
 	/** Sets the walk put down position. */
 	void SetPutDownPositionWalk(const decVector &position);
 	/** Retrieves the run put down position. */
-	inline const decVector &GetPutDownPositionRun() const{ return pMPPutDownPosRun; }
+	inline const decVector &GetPutDownPositionRun() const{ return mpPutDownPositionRun; }
 	/** Sets the run put down position. */
 	void SetPutDownPositionRun(const decVector &position);
 	
 	/** Retrieves the lift off time. */
-	inline float GetLiftOffTime() const{ return pMPLiftOffTime; }
+	inline float GetLiftOffTime() const{ return mpLiftOffTime; }
 	/** Sets the lift off time. */
 	void SetLiftOffTime(float time);
 	/** Retrieves the put down time. */
-	inline float GetPutDownTime() const{ return pMPPutDownTime; }
+	inline float GetPutDownTime() const{ return mpPutDownTime; }
 	/** Sets the put down time. */
 	void SetPutDownTime(float time);
 	

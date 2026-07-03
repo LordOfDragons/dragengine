@@ -48,169 +48,156 @@ aeRuleInverseKinematic(windowMain, aname, CreateMetaContext(windowMain, this)){}
 
 aeRuleInverseKinematic::aeRuleInverseKinematic(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
 aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertInverseKinematic, aname),
-pMPGoalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.goalPosition, metaContext),
-pMPGoalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.goalOrientation, metaContext),
-pMPLocalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.localPosition, metaContext),
-pMPLocalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.localOrientation, metaContext),
-pMPAdjustOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.adjustOrientation, metaContext),
-pMPUseSolverBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.useSolverBone, metaContext),
-pMPSolverBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.solverBone, metaContext),
-pMPReachRange(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachRange, metaContext),
-pMPReachBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachBone, metaContext),
-pMPReachCenter(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachCenter, metaContext),
-pMPTargetGoalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetGoalPosition, metaContext),
-pMPTargetGoalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetGoalOrientation, metaContext),
-pMPTargetLocalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetLocalPosition, metaContext),
-pMPTargetLocalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetLocalOrientation, metaContext),
-pMPTargetReachRange(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetReachRange, metaContext),
-pMPTargetReachCenter(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetReachCenter, metaContext)
+mpGoalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.goalPosition, metaContext),
+mpGoalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.goalOrientation, metaContext),
+mpLocalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.localPosition, metaContext),
+mpLocalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.localOrientation, metaContext),
+mpAdjustOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.adjustOrientation, metaContext),
+mpUseSolverBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.useSolverBone, metaContext),
+mpSolverBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.solverBone, metaContext),
+mpReachRange(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachRange, metaContext),
+mpReachBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachBone, metaContext),
+mpReachCenter(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachCenter, metaContext),
+mpTargetGoalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetGoalPosition, metaContext),
+mpTargetGoalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetGoalOrientation, metaContext),
+mpTargetLocalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetLocalPosition, metaContext),
+mpTargetLocalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetLocalOrientation, metaContext),
+mpTargetReachRange(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetReachRange, metaContext),
+mpTargetReachCenter(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetReachCenter, metaContext)
 {
-	pMPGoalPosition.onValueChanged = [this](){
+	mpGoalPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetGoalPosition(pMPGoalPosition);
+			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetGoalPosition(mpGoalPosition);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPGoalOrientation.onValueChanged = [this](){
+	mpGoalOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetGoalOrientation(pMPGoalOrientation);
+			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetGoalOrientation(mpGoalOrientation);
 			}
 			NotifyRuleChanged();
 	};
 	
-	pMPLocalPosition.onValueChanged = [this](){
+	mpLocalPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetLocalPosition(pMPLocalPosition);
+			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetLocalPosition(mpLocalPosition);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPLocalOrientation.onValueChanged = [this](){
+	mpLocalOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetLocalOrientation(pMPLocalOrientation);
+			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetLocalOrientation(mpLocalOrientation);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPAdjustOrientation.onValueChanged = [this](){
+	mpAdjustOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetAdjustOrientation(pMPAdjustOrientation);
+			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetAdjustOrientation(mpAdjustOrientation);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPUseSolverBone.onValueChanged = [this](){
+	mpUseSolverBone.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetUseSolverBone(pMPUseSolverBone);
+			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetUseSolverBone(mpUseSolverBone);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPSolverBone.onValueChanged = [this](){
+	mpSolverBone.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetSolverBone(pMPSolverBone);
+			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetSolverBone(mpSolverBone);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPReachRange.onValueChanged = [this](){
+	mpReachRange.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetReachRange(pMPReachRange);
+			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetReachRange(mpReachRange);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPReachBone.onValueChanged = [this](){
+	mpReachBone.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetReachBone(pMPReachBone);
+			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetReachBone(mpReachBone);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPReachCenter.onValueChanged = [this](){
+	mpReachCenter.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetReachCenter(pMPReachCenter);
+			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetReachCenter(mpReachCenter);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pTargetGoalPosition = aeControllerTarget::Ref::New(pMPTargetGoalPosition);
-	pMPTargetGoalPosition.onValueChanged = [this](){
+	mpTargetGoalPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetGoalPosition(), pMPTargetGoalPosition);
+			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetGoalPosition(), mpTargetGoalPosition);
 		}
-		pTargetGoalPosition->OnStorageChanged();
 		NotifyRuleChanged();
 	};
 	
-	pTargetGoalOrientation = aeControllerTarget::Ref::New(pMPTargetGoalOrientation);
-	pMPTargetGoalOrientation.onValueChanged = [this](){
+	mpTargetGoalOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetGoalOrientation(), pMPTargetGoalOrientation);
+			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetGoalOrientation(), mpTargetGoalOrientation);
 		}
-		pTargetGoalOrientation->OnStorageChanged();
 		NotifyRuleChanged();
 	};
 	
-	pTargetLocalPosition = aeControllerTarget::Ref::New(pMPTargetLocalPosition);
-	pMPTargetLocalPosition.onValueChanged = [this](){
+	mpTargetLocalPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetLocalPosition(), pMPTargetLocalPosition);
+			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetLocalPosition(), mpTargetLocalPosition);
 		}
-		pTargetLocalPosition->OnStorageChanged();
 		NotifyRuleChanged();
 	};
 	
-	pTargetLocalOrientation = aeControllerTarget::Ref::New(pMPTargetLocalOrientation);
-	pMPTargetLocalOrientation.onValueChanged = [this](){
+	mpTargetLocalOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetLocalOrientation(), pMPTargetLocalOrientation);
+			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetLocalOrientation(), mpTargetLocalOrientation);
 		}
-		pTargetLocalOrientation->OnStorageChanged();
 		NotifyRuleChanged();
 	};
 	
-	pTargetReachRange = aeControllerTarget::Ref::New(pMPTargetReachRange);
-	pMPTargetReachRange.onValueChanged = [this](){
+	mpTargetReachRange.onValueChanged = [this](){
 		if(GetEngineRule()){
-			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetReachRange(), pMPTargetReachRange);
+			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetReachRange(), mpTargetReachRange);
 		}
-		pTargetReachRange->OnStorageChanged();
 		NotifyRuleChanged();
 	};
 	
-	pTargetReachCenter = aeControllerTarget::Ref::New(pMPTargetReachCenter);
-	pMPTargetReachCenter.onValueChanged = [this](){
+	mpTargetReachCenter.onValueChanged = [this](){
 		if(GetEngineRule()){
-			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetReachCenter(), pMPTargetReachCenter);
+			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetReachCenter(), mpTargetReachCenter);
 		}
-		pTargetReachCenter->OnStorageChanged();
 		NotifyRuleChanged();
 	};
 }
 
-aeRuleInverseKinematic::aeRuleInverseKinematic(aeWindowMain &windowMain, const aeRuleInverseKinematic &copy) :
-aeRuleInverseKinematic(windowMain, copy.GetName())
+aeRuleInverseKinematic::aeRuleInverseKinematic(const aeRuleInverseKinematic &copy) :
+aeRuleInverseKinematic(copy.GetWindowMain(), copy.GetName())
 {
 	pInitCopy(copy);
-	pMPGoalPosition.SetValue(copy.pMPGoalPosition, false);
-	pMPGoalOrientation.SetValue(copy.pMPGoalOrientation, false);
-	pMPLocalPosition.SetValue(copy.pMPLocalPosition, false);
-	pMPLocalOrientation.SetValue(copy.pMPLocalOrientation, false);
-	pMPAdjustOrientation.SetValue(copy.pMPAdjustOrientation, false);
-	pMPUseSolverBone.SetValue(copy.pMPUseSolverBone, false);
-	pMPSolverBone.SetValue(copy.pMPSolverBone, false);
-	pMPReachRange.SetValue(copy.pMPReachRange, false);
-	pMPReachBone.SetValue(copy.pMPReachBone, false);
-	pMPReachCenter.SetValue(copy.pMPReachCenter, false);
-	
-	pTargetGoalPosition = aeControllerTarget::Ref::New(pMPTargetGoalPosition, copy.pTargetGoalPosition);
-	pTargetGoalOrientation = aeControllerTarget::Ref::New(pMPTargetGoalOrientation, copy.pTargetGoalOrientation);
-	pTargetLocalPosition = aeControllerTarget::Ref::New(pMPTargetLocalPosition, copy.pTargetLocalPosition);
-	pTargetLocalOrientation = aeControllerTarget::Ref::New(pMPTargetLocalOrientation, copy.pTargetLocalOrientation);
-	pTargetReachRange = aeControllerTarget::Ref::New(pMPTargetReachRange, copy.pTargetReachRange);
-	pTargetReachCenter = aeControllerTarget::Ref::New(pMPTargetReachCenter, copy.pTargetReachCenter);
+	mpGoalPosition.SetValue(copy.mpGoalPosition, false);
+	mpGoalOrientation.SetValue(copy.mpGoalOrientation, false);
+	mpLocalPosition.SetValue(copy.mpLocalPosition, false);
+	mpLocalOrientation.SetValue(copy.mpLocalOrientation, false);
+	mpAdjustOrientation.SetValue(copy.mpAdjustOrientation, false);
+	mpUseSolverBone.SetValue(copy.mpUseSolverBone, false);
+	mpSolverBone.SetValue(copy.mpSolverBone, false);
+	mpReachRange.SetValue(copy.mpReachRange, false);
+	mpReachBone.SetValue(copy.mpReachBone, false);
+	mpReachCenter.SetValue(copy.mpReachCenter, false);
+	mpTargetGoalPosition.SetValue(copy.mpTargetGoalPosition, false);
+	mpTargetGoalOrientation.SetValue(copy.mpTargetGoalOrientation, false);
+	mpTargetLocalPosition.SetValue(copy.mpTargetLocalPosition, false);
+	mpTargetLocalOrientation.SetValue(copy.mpTargetLocalOrientation, false);
+	mpTargetReachRange.SetValue(copy.mpTargetReachRange, false);
+	mpTargetReachCenter.SetValue(copy.mpTargetReachCenter, false);
 }
 
 aeRuleInverseKinematic::~aeRuleInverseKinematic() = default;
@@ -220,43 +207,43 @@ aeRuleInverseKinematic::~aeRuleInverseKinematic() = default;
 ///////////////
 
 void aeRuleInverseKinematic::SetGoalPosition(const decVector &value){
-	pMPGoalPosition = value;
+	mpGoalPosition = value;
 }
 
 void aeRuleInverseKinematic::SetGoalOrientation(const decVector &value){
-	pMPGoalOrientation = value;
+	mpGoalOrientation = value;
 }
 
 void aeRuleInverseKinematic::SetLocalPosition(const decVector &value){
-	pMPLocalPosition = value;
+	mpLocalPosition = value;
 }
 
 void aeRuleInverseKinematic::SetLocalOrientation(const decVector &value){
-	pMPLocalOrientation = value;
+	mpLocalOrientation = value;
 }
 
 void aeRuleInverseKinematic::SetAdjustOrientation(bool value){
-	pMPAdjustOrientation = value;
+	mpAdjustOrientation = value;
 }
 
 void aeRuleInverseKinematic::SetUseSolverBone(bool value){
-	pMPUseSolverBone = value;
+	mpUseSolverBone = value;
 }
 
 void aeRuleInverseKinematic::SetSolverBone(const char *value){
-	pMPSolverBone = value;
+	mpSolverBone = value;
 }
 
 void aeRuleInverseKinematic::SetReachRange(float value){
-	pMPReachRange = value;
+	mpReachRange = value;
 }
 
 void aeRuleInverseKinematic::SetReachBone(const char *value){
-	pMPReachBone = value;
+	mpReachBone = value;
 }
 
 void aeRuleInverseKinematic::SetReachCenter(const decVector &value){
-	pMPReachCenter = value;
+	mpReachCenter = value;
 }
 
 
@@ -266,78 +253,39 @@ void aeRuleInverseKinematic::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	if(engRule){
-		pUpdateEngineTarget(engRule->GetTargetGoalPosition(), pMPTargetGoalPosition);
-		pUpdateEngineTarget(engRule->GetTargetGoalOrientation(), pMPTargetGoalOrientation);
-		pUpdateEngineTarget(engRule->GetTargetLocalPosition(), pMPTargetLocalPosition);
-		pUpdateEngineTarget(engRule->GetTargetLocalOrientation(), pMPTargetLocalOrientation);
-		pUpdateEngineTarget(engRule->GetTargetReachRange(), pMPTargetReachRange);
-		pUpdateEngineTarget(engRule->GetTargetReachCenter(), pMPTargetReachCenter);
+		pUpdateEngineTarget(engRule->GetTargetGoalPosition(), mpTargetGoalPosition);
+		pUpdateEngineTarget(engRule->GetTargetGoalOrientation(), mpTargetGoalOrientation);
+		pUpdateEngineTarget(engRule->GetTargetLocalPosition(), mpTargetLocalPosition);
+		pUpdateEngineTarget(engRule->GetTargetLocalOrientation(), mpTargetLocalOrientation);
+		pUpdateEngineTarget(engRule->GetTargetReachRange(), mpTargetReachRange);
+		pUpdateEngineTarget(engRule->GetTargetReachCenter(), mpTargetReachCenter);
 	}
 }
 
 int aeRuleInverseKinematic::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetGoalPosition->GetLinks().Has(link)){
+	if(mpTargetGoalPosition->Has(link)){
 		usageCount++;
 	}
-	if(pTargetGoalOrientation->GetLinks().Has(link)){
+	if(mpTargetGoalOrientation->Has(link)){
 		usageCount++;
 	}
-	if(pTargetLocalPosition->GetLinks().Has(link)){
+	if(mpTargetLocalPosition->Has(link)){
 		usageCount++;
 	}
-	if(pTargetLocalOrientation->GetLinks().Has(link)){
+	if(mpTargetLocalOrientation->Has(link)){
 		usageCount++;
 	}
-	if(pTargetReachRange->GetLinks().Has(link)){
+	if(mpTargetReachRange->Has(link)){
 		usageCount++;
 	}
-	if(pTargetReachCenter->GetLinks().Has(link)){
+	if(mpTargetReachCenter->Has(link)){
 		usageCount++;
 	}
 	
 	return usageCount;
 }
-
-void aeRuleInverseKinematic::RemoveLinkFromTargets(aeLink *link){
-	aeRule::RemoveLinkFromTargets(link);
-	
-	if(pTargetGoalPosition->GetLinks().Has(link)){
-		pTargetGoalPosition->RemoveLink(link);
-	}
-	if(pTargetGoalOrientation->GetLinks().Has(link)){
-		pTargetGoalOrientation->RemoveLink(link);
-	}
-	if(pTargetLocalPosition->GetLinks().Has(link)){
-		pTargetLocalPosition->RemoveLink(link);
-	}
-	if(pTargetLocalOrientation->GetLinks().Has(link)){
-		pTargetLocalOrientation->RemoveLink(link);
-	}
-	if(pTargetReachRange->GetLinks().Has(link)){
-		pTargetReachRange->RemoveLink(link);
-	}
-	if(pTargetReachCenter->GetLinks().Has(link)){
-		pTargetReachCenter->RemoveLink(link);
-	}
-	
-	UpdateTargets();
-}
-
-void aeRuleInverseKinematic::RemoveLinksFromAllTargets(){
-	aeRule::RemoveLinksFromAllTargets();
-	
-	pTargetGoalPosition->RemoveAllLinks();
-	pTargetGoalOrientation->RemoveAllLinks();
-	pTargetLocalPosition->RemoveAllLinks();
-	pTargetLocalOrientation->RemoveAllLinks();
-	pTargetReachRange->RemoveAllLinks();
-	pTargetReachCenter->RemoveAllLinks();
-	
-	UpdateTargets();
-}
-
 
 
 deAnimatorRule::Ref aeRuleInverseKinematic::CreateEngineRule(){
@@ -345,39 +293,29 @@ deAnimatorRule::Ref aeRuleInverseKinematic::CreateEngineRule(){
 	
 	InitEngineRule(engRule);
 	
-	engRule->SetGoalPosition(pMPGoalPosition);
-	engRule->SetGoalOrientation(pMPGoalOrientation);
-	engRule->SetLocalPosition(pMPLocalPosition);
-	engRule->SetLocalOrientation(pMPLocalOrientation);
-	engRule->SetAdjustOrientation(pMPAdjustOrientation);
-	engRule->SetUseSolverBone(pMPUseSolverBone);
-	engRule->SetSolverBone(pMPSolverBone);
-	engRule->SetReachRange(pMPReachRange);
-	engRule->SetReachCenter(pMPReachCenter);
-	engRule->SetReachBone(pMPReachBone);
+	engRule->SetGoalPosition(mpGoalPosition);
+	engRule->SetGoalOrientation(mpGoalOrientation);
+	engRule->SetLocalPosition(mpLocalPosition);
+	engRule->SetLocalOrientation(mpLocalOrientation);
+	engRule->SetAdjustOrientation(mpAdjustOrientation);
+	engRule->SetUseSolverBone(mpUseSolverBone);
+	engRule->SetSolverBone(mpSolverBone);
+	engRule->SetReachRange(mpReachRange);
+	engRule->SetReachCenter(mpReachCenter);
+	engRule->SetReachBone(mpReachBone);
 	
-	pUpdateEngineTarget(engRule->GetTargetGoalPosition(), pMPTargetGoalPosition);
-	pUpdateEngineTarget(engRule->GetTargetGoalOrientation(), pMPTargetGoalOrientation);
-	pUpdateEngineTarget(engRule->GetTargetLocalPosition(), pMPTargetLocalPosition);
-	pUpdateEngineTarget(engRule->GetTargetLocalOrientation(), pMPTargetLocalOrientation);
-	pUpdateEngineTarget(engRule->GetTargetReachRange(), pMPTargetReachRange);
-	pUpdateEngineTarget(engRule->GetTargetReachCenter(), pMPTargetReachCenter);
+	pUpdateEngineTarget(engRule->GetTargetGoalPosition(), mpTargetGoalPosition);
+	pUpdateEngineTarget(engRule->GetTargetGoalOrientation(), mpTargetGoalOrientation);
+	pUpdateEngineTarget(engRule->GetTargetLocalPosition(), mpTargetLocalPosition);
+	pUpdateEngineTarget(engRule->GetTargetLocalOrientation(), mpTargetLocalOrientation);
+	pUpdateEngineTarget(engRule->GetTargetReachRange(), mpTargetReachRange);
+	pUpdateEngineTarget(engRule->GetTargetReachCenter(), mpTargetReachCenter);
 	
 	return engRule;
 }
 
 
 
-aeRule::Ref aeRuleInverseKinematic::CreateCopy(aeWindowMain &windowMain) const{
-	return Ref::New(windowMain, *this);
-}
-
-void aeRuleInverseKinematic::ListLinks(aeLink::List &list){
-	aeRule::ListLinks(list);
-	pTargetGoalPosition->AddLinksToList(list);
-	pTargetGoalOrientation->AddLinksToList(list);
-	pTargetLocalPosition->AddLinksToList(list);
-	pTargetLocalOrientation->AddLinksToList(list);
-	pTargetReachRange->AddLinksToList(list);
-	pTargetReachCenter->AddLinksToList(list);
+aeRule::Ref aeRuleInverseKinematic::CreateCopy() const{
+	return Ref::New(*this);
 }

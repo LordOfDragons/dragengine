@@ -44,71 +44,83 @@
 
 
 /** Playground locomotion type. */
-class aeMCPAnimatorLocomotionType : public aeAnimator::MetaProperty<igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eLocomotionTypes>>{
+class aeMCPAnimatorLocomotionType :
+	public aeAnimator::MetaProperty<
+		igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eLocomotionTypes>>{
 public:
 	aeMCPAnimatorLocomotionType();
 	~aeMCPAnimatorLocomotionType();
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
-	void GetChoiceItemInfoEnum(const ContextRef &context, aeAnimatorLocomotion::eLocomotionTypes choice, igdeMetaContextItemInfo &info) const override;
+	void GetChoiceItemInfoEnum(const ContextRef &context,
+		aeAnimatorLocomotion::eLocomotionTypes choice, igdeMetaContextItemInfo &info) const override;
 };
 
 /** Playground locomotion limit down. */
 class aeMCPAnimatorLocomotionLimitDown : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionLimitDown() : igdeMetaPropertyMCT("animator.locomotion.limitLookDown", "Animator.WPPlayground.LookDownLimit"){
+	aeMCPAnimatorLocomotionLimitDown() : igdeMetaPropertyMCT("animator.locomotion.limitLookDown",
+		"Animator.WPPlayground.LookDownLimit"){
 		SetDefaultValue(-90.0f);
 	}
 	~aeMCPAnimatorLocomotionLimitDown() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPLimitLookDown();
+		return Owner(context).GetLocomotion().mpLimitLookDown;
 	}
 };
 
 /** Playground locomotion limit up. */
 class aeMCPAnimatorLocomotionLimitUp : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionLimitUp() : igdeMetaPropertyMCT("animator.locomotion.limitLookUp", "Animator.WPPlayground.LookUpLimit"){
+	aeMCPAnimatorLocomotionLimitUp() : igdeMetaPropertyMCT("animator.locomotion.limitLookUp",
+		"Animator.WPPlayground.LookUpLimit")
+	{
 		SetDefaultValue(90.0f);
 	}
 	~aeMCPAnimatorLocomotionLimitUp() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPLimitLookUp();
+		return Owner(context).GetLocomotion().mpLimitLookUp;
 	}
 };
 
 /** Playground locomotion limit left. */
 class aeMCPAnimatorLocomotionLimitLeft : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionLimitLeft() : igdeMetaPropertyMCT("animator.locomotion.limitLookLeft", "Animator.WPPlayground.LookLeftLimit"){
+	aeMCPAnimatorLocomotionLimitLeft() : igdeMetaPropertyMCT("animator.locomotion.limitLookLeft",
+		"Animator.WPPlayground.LookLeftLimit")
+	{
 		SetDefaultValue(-90.0f);
 	}
 	~aeMCPAnimatorLocomotionLimitLeft() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPLimitLookLeft();
+		return Owner(context).GetLocomotion().mpLimitLookLeft;
 	}
 };
 
 /** Playground locomotion limit right. */
 class aeMCPAnimatorLocomotionLimitRight : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionLimitRight() : igdeMetaPropertyMCT("animator.locomotion.limitLookRight", "Animator.WPPlayground.LookRightLimit"){
+	aeMCPAnimatorLocomotionLimitRight() : igdeMetaPropertyMCT("animator.locomotion.limitLookRight",
+		"Animator.WPPlayground.LookRightLimit")
+	{
 		SetDefaultValue(90.0f);
 	}
 	~aeMCPAnimatorLocomotionLimitRight() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPLimitLookRight();
+		return Owner(context).GetLocomotion().mpLimitLookRight;
 	}
 };
 
 /** Playground locomotion walk speed. */
 class aeMCPAnimatorLocomotionSpeedWalk : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionSpeedWalk() : igdeMetaPropertyMCT("animator.locomotion.speedWalk", "Animator.WPPlayground.Walk"){
+	aeMCPAnimatorLocomotionSpeedWalk() : igdeMetaPropertyMCT("animator.locomotion.speedWalk",
+		"Animator.WPPlayground.Walk")
+	{
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 		SetDefaultValue(1.25f);
@@ -116,14 +128,16 @@ public:
 	~aeMCPAnimatorLocomotionSpeedWalk() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPSpeedWalk();
+		return Owner(context).GetLocomotion().mpSpeedWalk;
 	}
 };
 
 /** Playground locomotion run speed. */
 class aeMCPAnimatorLocomotionSpeedRun : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionSpeedRun() : igdeMetaPropertyMCT("animator.locomotion.speedRun", "Animator.WPPlayground.Run"){
+	aeMCPAnimatorLocomotionSpeedRun() : igdeMetaPropertyMCT("animator.locomotion.speedRun",
+		"Animator.WPPlayground.Run")
+	{
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 		SetDefaultValue(4.0f);
@@ -131,42 +145,45 @@ public:
 	~aeMCPAnimatorLocomotionSpeedRun() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPSpeedRun();
+		return Owner(context).GetLocomotion().mpSpeedRun;
 	}
 };
 
 /** Playground locomotion adjust time up-down. */
 class aeMCPAnimatorLocomotionAdjTimeUD : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionAdjTimeUD() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeUpDown", "Animator.WPPlayground.LookUpDown"){
+	aeMCPAnimatorLocomotionAdjTimeUD() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeUpDown",
+		"Animator.WPPlayground.LookUpDown"){
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 	}
 	~aeMCPAnimatorLocomotionAdjTimeUD() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPAdjustTimeUD();
+		return Owner(context).GetLocomotion().mpAdjustTimeUpDown;
 	}
 };
 
 /** Playground locomotion adjust time left-right. */
 class aeMCPAnimatorLocomotionAdjTimeLR : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionAdjTimeLR() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeLeftRight", "Animator.WPPlayground.LookLeftRight"){
+	aeMCPAnimatorLocomotionAdjTimeLR() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeLeftRight",
+		"Animator.WPPlayground.LookLeftRight"){
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 	}
 	~aeMCPAnimatorLocomotionAdjTimeLR() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPAdjustTimeLR();
+		return Owner(context).GetLocomotion().mpAdjustTimeLeftRight;
 	}
 };
 
 /** Playground locomotion adjust time stance. */
 class aeMCPAnimatorLocomotionAdjTimeStance : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionAdjTimeStance() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeStance", "Animator.WPPlayground.Stance"){
+	aeMCPAnimatorLocomotionAdjTimeStance() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeStance",
+		"Animator.WPPlayground.Stance"){
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 		SetDefaultValue(0.5f);
@@ -174,14 +191,16 @@ public:
 	~aeMCPAnimatorLocomotionAdjTimeStance() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPAdjustTimeStance();
+		return Owner(context).GetLocomotion().mpAdjustTimeStance;
 	}
 };
 
 /** Playground locomotion adjust time orientation. */
-class aeMCPAnimatorLocomotionAdjTimeOrientation : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPAnimatorLocomotionAdjTimeOrientation :
+	public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionAdjTimeOrientation() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeOrientation", "Animator.WPPlayground.Orientation"){
+	aeMCPAnimatorLocomotionAdjTimeOrientation() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeOrientation",
+		"Animator.WPPlayground.Orientation"){
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 		SetDefaultValue(1.0f);
@@ -189,14 +208,16 @@ public:
 	~aeMCPAnimatorLocomotionAdjTimeOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPAdjustTimeOrientation();
+		return Owner(context).GetLocomotion().mpAdjustTimeOrientation;
 	}
 };
 
 /** Playground locomotion adjust time velocity. */
-class aeMCPAnimatorLocomotionAdjTimeVelocity : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPAnimatorLocomotionAdjTimeVelocity :
+	public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionAdjTimeVelocity() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeVelocity", "Animator.WPPlayground.Velocity"){
+	aeMCPAnimatorLocomotionAdjTimeVelocity() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeVelocity",
+		"Animator.WPPlayground.Velocity"){
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 		SetDefaultValue(0.5f);
@@ -204,14 +225,16 @@ public:
 	~aeMCPAnimatorLocomotionAdjTimeVelocity() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPAdjustTimeVelocity();
+		return Owner(context).GetLocomotion().mpAdjustTimeVelocity;
 	}
 };
 
 /** Playground locomotion adjust time turn in place. */
-class aeMCPAnimatorLocomotionAdjTimeTurnIP : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPAnimatorLocomotionAdjTimeTurnIP :
+	public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionAdjTimeTurnIP() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeTurnInPlace", "Animator.WPPlayground.TurnInPlace"){
+	aeMCPAnimatorLocomotionAdjTimeTurnIP() : igdeMetaPropertyMCT("animator.locomotion.adjustTimeTurnInPlace",
+		"Animator.WPPlayground.TurnInPlace"){
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 		SetDefaultValue(1.0f);
@@ -219,28 +242,34 @@ public:
 	~aeMCPAnimatorLocomotionAdjTimeTurnIP() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPAdjustTimeTurnIP();
+		return Owner(context).GetLocomotion().mpAdjustTimeTurnIP;
 	}
 };
 
 /** Playground locomotion leg blend time. */
-class aeMCPAnimatorLocomotionLegBlendTime : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPAnimatorLocomotionLegBlendTime :
+	public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionLegBlendTime() : igdeMetaPropertyMCT("animator.locomotion.legBlendTime", "Animator.WPPlayground.BlendTime"){
+	aeMCPAnimatorLocomotionLegBlendTime() : igdeMetaPropertyMCT("animator.locomotion.legBlendTime",
+		"Animator.WPPlayground.BlendTime")
+	{
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 	}
 	~aeMCPAnimatorLocomotionLegBlendTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPLegBlendTime();
+		return Owner(context).GetLocomotion().mpLegBlendTime;
 	}
 };
 
 /** Playground locomotion use leg pairs. */
-class aeMCPAnimatorLocomotionUseLegPairs : public aeAnimator::MetaProperty<igdeMetaPropertyIntegerStorage>{
+class aeMCPAnimatorLocomotionUseLegPairs :
+	public aeAnimator::MetaProperty<igdeMetaPropertyIntegerStorage>{
 public:
-	aeMCPAnimatorLocomotionUseLegPairs() : igdeMetaPropertyMCT("animator.locomotion.useLegPairs", "Animator.WPPlayground.LegPairs"){
+	aeMCPAnimatorLocomotionUseLegPairs() : igdeMetaPropertyMCT("animator.locomotion.useLegPairs",
+		"Animator.WPPlayground.LegPairs")
+	{
 		SetLowerLimit(1);
 		SetEnableLowerLimit(true);
 		SetUpperLimit(2);
@@ -251,37 +280,44 @@ public:
 	~aeMCPAnimatorLocomotionUseLegPairs() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPUseLegPairs();
+		return Owner(context).GetLocomotion().mpUseLegPairs;
 	}
 };
 
 /** Playground locomotion show shapes. */
-class aeMCPAnimatorLocomotionShowShapes : public aeAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPAnimatorLocomotionShowShapes :
+	public aeAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPAnimatorLocomotionShowShapes() : igdeMetaPropertyMCT("animator.locomotion.showShapes", "Animator.WPPlayground.ShowShapes"){}
+	aeMCPAnimatorLocomotionShowShapes() : igdeMetaPropertyMCT("animator.locomotion.showShapes",
+		"Animator.WPPlayground.ShowShapes"){}
 	~aeMCPAnimatorLocomotionShowShapes() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPShowShapes();
+		return Owner(context).GetLocomotion().mpShowShapes;
 	}
 };
 
 /** Playground locomotion use feet-on-ground IK. */
-class aeMCPAnimatorLocomotionUseFoGIK : public aeAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPAnimatorLocomotionUseFoGIK :
+	public aeAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPAnimatorLocomotionUseFoGIK() : igdeMetaPropertyMCT("animator.locomotion.useFoGIK", "Animator.WPPlayground.UseFoGIK"){}
+	aeMCPAnimatorLocomotionUseFoGIK() : igdeMetaPropertyMCT("animator.locomotion.useFoGIK",
+		"Animator.WPPlayground.UseFoGIK"){}
 	~aeMCPAnimatorLocomotionUseFoGIK() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPUseFoGIK();
+		return Owner(context).GetLocomotion().mpUseFoGIK;
 	}
 };
 
 
 /** Legs. */
-class aeMCPAnimatorLocomotionLegs : public aeAnimator::MetaProperty<igdeMetaPropertyListStorage<aeAnimatorLocomotionLeg>>{
+class aeMCPAnimatorLocomotionLegs :
+	public aeAnimator::MetaProperty<igdeMetaPropertyListStorage<aeAnimatorLocomotionLeg>>{
 public:
-	aeMCPAnimatorLocomotionLegs() : igdeMetaPropertyMCT("animator.locomotion.legs", "Animator.WPPlayground.Legs"){
+	aeMCPAnimatorLocomotionLegs() : igdeMetaPropertyMCT("animator.locomotion.legs",
+		"Animator.WPPlayground.Legs")
+	{
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetRows(3);
@@ -290,10 +326,11 @@ public:
 	~aeMCPAnimatorLocomotionLegs() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPLegs();
+		return Owner(context).GetLocomotion().mpLegs;
 	}
 	
-	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef&, igdeMetaContextItemInfo &info) const override{
+	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef&,
+	igdeMetaContextItemInfo &info) const override{
 		info.SetAll("Leg");
 	}
 };
@@ -302,36 +339,44 @@ public:
 /** Leg. */
 class aeMCPAnimatorLocomotionLeg : public aeAnimator::MetaProperty<igdeMetaPropertyContextStorage>{
 public:
-	aeMCPAnimatorLocomotionLeg(aeWindowMain &windowMain) : igdeMetaPropertyMCT("animator.locomotion.leg", "", ""){
+	aeMCPAnimatorLocomotionLeg(aeWindowMain &windowMain) : igdeMetaPropertyMCT(
+		"animator.locomotion.leg", "", "")
+	{
 		SetDefaultValue(aeAnimatorLocomotionLeg::CreateMetaContext(windowMain, nullptr));
 	}
 	
 	~aeMCPAnimatorLocomotionLeg() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPLeg();
+		return Owner(context).GetLocomotion().mpLeg;
 	}
 };
 
 
 /** Playground locomotion leg lift off time. */
-class aeMCPAnimatorLocomotionLegLiftOffTime : public aeAnimatorLocomotionLeg::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPAnimatorLocomotionLegLiftOffTime :
+	public aeAnimatorLocomotionLeg::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionLegLiftOffTime() : igdeMetaPropertyMCT("animator.locomotion.leg.liftOffTime", "Animator.WPPlayground.LiftOffTime"){
+	aeMCPAnimatorLocomotionLegLiftOffTime() : igdeMetaPropertyMCT(
+		"animator.locomotion.leg.liftOffTime", "Animator.WPPlayground.LiftOffTime")
+	{
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 	}
 	~aeMCPAnimatorLocomotionLegLiftOffTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPLiftOffTime();
+		return Owner(context).mpLiftOffTime;
 	}
 };
 
 /** Playground locomotion leg put down time. */
-class aeMCPAnimatorLocomotionLegPutDownTime : public aeAnimatorLocomotionLeg::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPAnimatorLocomotionLegPutDownTime :
+	public aeAnimatorLocomotionLeg::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorLocomotionLegPutDownTime() : igdeMetaPropertyMCT("animator.locomotion.leg.putDownTime", "Animator.WPPlayground.PutDownTime"){
+	aeMCPAnimatorLocomotionLegPutDownTime() : igdeMetaPropertyMCT(
+		"animator.locomotion.leg.putDownTime", "Animator.WPPlayground.PutDownTime")
+	{
 		SetLowerLimit(0.0f);
 		SetEnableLowerLimit(true);
 		SetDefaultValue(0.5f);
@@ -339,47 +384,56 @@ public:
 	~aeMCPAnimatorLocomotionLegPutDownTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPPutDownTime();
+		return Owner(context).mpPutDownTime;
 	}
 };
 
 /** Playground locomotion leg put down position stand. */
-class aeMCPAnimatorLocomotionLegPDPosStand : public aeAnimatorLocomotionLeg::MetaProperty<igdeMetaPropertyVectorStorage>{
+class aeMCPAnimatorLocomotionLegPDPosStand :
+	public aeAnimatorLocomotionLeg::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPAnimatorLocomotionLegPDPosStand() : igdeMetaPropertyMCT("animator.locomotion.leg.pdPosStand", "Animator.WPPlayground.PutDownStand"){}
+	aeMCPAnimatorLocomotionLegPDPosStand() : igdeMetaPropertyMCT(
+		"animator.locomotion.leg.pdPosStand", "Animator.WPPlayground.PutDownStand"){}
 	~aeMCPAnimatorLocomotionLegPDPosStand() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPPutDownPosStand();
+		return Owner(context).mpPutDownPositionStand;
 	}
 };
 
 /** Playground locomotion leg put down position walk. */
-class aeMCPAnimatorLocomotionLegPDPosWalk : public aeAnimatorLocomotionLeg::MetaProperty<igdeMetaPropertyVectorStorage>{
+class aeMCPAnimatorLocomotionLegPDPosWalk :
+	public aeAnimatorLocomotionLeg::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPAnimatorLocomotionLegPDPosWalk() : igdeMetaPropertyMCT("animator.locomotion.leg.pdPosWalk", "Animator.WPPlayground.PutDownWalk"){}
+	aeMCPAnimatorLocomotionLegPDPosWalk() : igdeMetaPropertyMCT(
+		"animator.locomotion.leg.pdPosWalk", "Animator.WPPlayground.PutDownWalk"){}
 	~aeMCPAnimatorLocomotionLegPDPosWalk() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPPutDownPosWalk();
+		return Owner(context).mpPutDownPositionWalk;
 	}
 };
 
 /** Playground locomotion leg put down position run. */
-class aeMCPAnimatorLocomotionLegPDPosRun : public aeAnimatorLocomotionLeg::MetaProperty<igdeMetaPropertyVectorStorage>{
+class aeMCPAnimatorLocomotionLegPDPosRun :
+	public aeAnimatorLocomotionLeg::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPAnimatorLocomotionLegPDPosRun() : igdeMetaPropertyMCT("animator.locomotion.leg.pdPosRun", "Animator.WPPlayground.PutDownRun"){}
+	aeMCPAnimatorLocomotionLegPDPosRun() : igdeMetaPropertyMCT(
+		"animator.locomotion.leg.pdPosRun", "Animator.WPPlayground.PutDownRun"){}
 	~aeMCPAnimatorLocomotionLegPDPosRun() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPPutDownPosRun();
+		return Owner(context).mpPutDownPositionRun;
 	}
 };
 
 /** Playground locomotion leg index. */
-class aeMCPAnimatorLocomotionLegIndex : public aeAnimator::MetaProperty<igdeMetaPropertyIntegerStorage>{
+class aeMCPAnimatorLocomotionLegIndex :
+	public aeAnimator::MetaProperty<igdeMetaPropertyIntegerStorage>{
 public:
-	aeMCPAnimatorLocomotionLegIndex() : igdeMetaPropertyMCT("animator.locomotion.legIndex", "Animator.WPPlayground.Leg"){
+	aeMCPAnimatorLocomotionLegIndex() : igdeMetaPropertyMCT(
+		"animator.locomotion.legIndex", "Animator.WPPlayground.Leg")
+	{
 		SetLowerLimit(0);
 		SetEnableLowerLimit(true);
 		SetUpperLimit(3);
@@ -391,7 +445,7 @@ public:
 	~aeMCPAnimatorLocomotionLegIndex() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetLocomotion().GetMPLegIndex();
+		return Owner(context).GetLocomotion().mpLegIndex;
 	}
 };
 

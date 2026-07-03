@@ -123,8 +123,8 @@ public:
 
 aeAttachment::Ref aeMCPAttachments::CopyObjectType(const ContextRef &context,
 const SetType &existingObjects, const ObjectTypeRef &object) const{
-	auto copied = aeAttachment::Ref::New(Owner(context).GetWindowMain(), *object);
-	copied->GetMPName().SetValue(Owner(context).uniqueNameAttachment.Generate(copied->GetMPName()), false);
+	auto copied = aeAttachment::Ref::New(*object);
+	copied->mpName.SetValue(Owner(context).uniqueNameAttachment.Generate(copied->mpName), false);
 	return copied;
 }
 

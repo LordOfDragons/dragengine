@@ -120,9 +120,9 @@
 	<translation name="Animator.Dialog.DuplicateLink.Title">Duplicate Link</translation>
 	<translation name="Animator.Dialog.DuplicateLink.Name">Name:</translation>
 	<translation name="Animator.Dialog.RemoveLink.Title">Remove Link</translation>
-	<translation name="Animator.Dialog.RemoveLink.Message">The link '{0}' is used by {1} targets.
-If the link is removed now it is also removed from
-all the targets using it. Do you want to remove the link?</translation>
+	<translation name="Animator.Dialog.RemoveLink.Message">The links '{0}' are used by {1} target ({2}).
+If the links are removed now they are also removed from
+all the targets using them. Do you want to remove the links?</translation>
 	<translation name="Animator.Dialog.SetBoneBaseSize.Title">Set bone base size</translation>
 	<translation name="Animator.Dialog.SetBoneBaseSize.Size">Size:</translation>
 	<translation name="Animator.Dialog.SaveAnimator.Title">Save Animator</translation>
@@ -283,6 +283,8 @@ all the targets using it. Do you want to remove the link?</translation>
 	<translation name="Animator.WPAnimator.Action.BoneRemove.ToolTip">Remove rig bone</translation>
 	<translation name="Animator.WPAnimator.Action.BoneMirror">Mirror Bones</translation>
 	<translation name="Animator.WPAnimator.Action.BoneMirror.ToolTip">Mirror rig bones</translation>
+	<translation name="Animator.WPAnimator.Action.BoneMirrorSelected">Mirror Selected Bones</translation>
+	<translation name="Animator.WPAnimator.Action.BoneMirrorSelected.ToolTip">Mirror selected rig bones</translation>
 	<translation name="Animator.WPAnimator.Action.BoneCopy">Copy</translation>
 	<translation name="Animator.WPAnimator.Action.BoneCopy.ToolTip">Copy bones</translation>
 	<translation name="Animator.WPAnimator.Action.BonePaste">Paste</translation>
@@ -295,8 +297,10 @@ all the targets using it. Do you want to remove the link?</translation>
 	<translation name="Animator.WPAnimator.Action.VPSAdd.ToolTip">Add vertex position set</translation>
 	<translation name="Animator.WPAnimator.Action.VPSRemove">Remove</translation>
 	<translation name="Animator.WPAnimator.Action.VPSRemove.ToolTip">Remove vertex position set</translation>
-	<translation name="Animator.WPAnimator.Action.VPSMirror">Mirror</translation>
+	<translation name="Animator.WPAnimator.Action.VPSMirror">Mirror Vertex Position Sets</translation>
 	<translation name="Animator.WPAnimator.Action.VPSMirror.ToolTip">Mirror vertex position sets</translation>
+	<translation name="Animator.WPAnimator.Action.VPSMirrorSelected">Mirror Selected Vertex Position Sets</translation>
+	<translation name="Animator.WPAnimator.Action.VPSMirrorSelected.ToolTip">Mirror selected vertex position sets</translation>
 	<translation name="Animator.WPAnimator.Action.VPSCopy">Copy</translation>
 	<translation name="Animator.WPAnimator.Action.VPSCopy.ToolTip">Copy vertex position sets</translation>
 	<translation name="Animator.WPAnimator.Action.VPSPaste">Paste</translation>
@@ -975,7 +979,7 @@ Apply all rules (all) or blend between two selected rules using the select targe
 	<translation name="Animator.WPView.Camera">Camera:</translation>
 	
 	<!-- WPAPanelRuleMirror -->
-	<translation name="Animator.WPAPanelRuleMirror.Action.AddMatchName">Add match name</translation>
+	<translation name="Animator.WPAPanelRuleMirror.Action.MatchName.AddPreset">Add Preset</translation>
 	<translation name="Animator.WPAPanelRuleMirror.Action.EditMatchName">Edit match name</translation>
 	
 	<!-- Undo Strings -->

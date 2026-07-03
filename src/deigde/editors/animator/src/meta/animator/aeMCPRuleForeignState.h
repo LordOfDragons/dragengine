@@ -35,157 +35,189 @@
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 
-class aeMCPRuleForeignStateForeignBone : public aeRuleForeignState::MetaProperty<igdeMetaPropertyStringStorage>{
+class aeMCPRuleForeignStateForeignBone :
+	public aeRuleForeignState::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleForeignStateForeignBone() : igdeMetaPropertyMCT("foreignstate.foreignBone", "Animator.WPAPanelRuleForeignState.Bone"){
+	aeMCPRuleForeignStateForeignBone() : igdeMetaPropertyMCT(
+		"animator.rule_foreign_state.foreignBone", "Animator.WPAPanelRuleForeignState.Bone")
+	{
 		SetEnableAllowed(true);
 	}
 	
 	~aeMCPRuleForeignStateForeignBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPForeignBone();
+		return Owner(context).mpForeignBone;
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Owner(context).GetAnimator();
-		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
+		return animator ? animator->mpHiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 
-class aeMCPRuleForeignStateForeignVertexPositionSet : public aeRuleForeignState::MetaProperty<igdeMetaPropertyStringStorage>{
+class aeMCPRuleForeignStateForeignVertexPositionSet :
+	public aeRuleForeignState::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleForeignStateForeignVertexPositionSet() : igdeMetaPropertyMCT(
-	"foreignstate.foreignVertexPositionSet", "Animator.WPAPanelRuleForeignState.VertexPositionSet"){
+		"animator.rule_foreign_state.foreignVertexPositionSet",
+		"Animator.WPAPanelRuleForeignState.VertexPositionSet")
+	{
 		SetEnableAllowed(true);
 	}
 	
 	~aeMCPRuleForeignStateForeignVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPForeignVertexPositionSet();
+		return Owner(context).mpForeignVertexPositionSet;
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Owner(context).GetAnimator();
-		return animator ? animator->GetMPHiddenVPSNames().GetValue() : decStringSet();
+		return animator ? animator->mpHiddenVpsNames.GetValue() : decStringSet();
 	}
 };
 
-class aeMCPRuleForeignStateScalePosition : public aeRuleForeignState::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleForeignStateScalePosition :
+	public aeRuleForeignState::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleForeignStateScalePosition() : igdeMetaPropertyMCT(
-	"foreignstate.scalePosition", "Animator.WPAPanelRuleForeignState.ScalePosition"){
+		"animator.rule_foreign_state.scalePosition",
+		"Animator.WPAPanelRuleForeignState.ScalePosition")
+	{
 		SetDefaultValue(1.0f);
 	}
 	
 	~aeMCPRuleForeignStateScalePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPScalePosition();
+		return Owner(context).mpScalePosition;
 	}
 };
 
-class aeMCPRuleForeignStateScaleOrientation : public aeRuleForeignState::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleForeignStateScaleOrientation :
+	public aeRuleForeignState::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleForeignStateScaleOrientation() : igdeMetaPropertyMCT(
-	"foreignstate.scaleOrientation", "Animator.WPAPanelRuleForeignState.ScaleRotation"){
+		"animator.rule_foreign_state.scaleOrientation",
+		"Animator.WPAPanelRuleForeignState.ScaleRotation")
+	{
 		SetDefaultValue(1.0f);
 	}
 	
 	~aeMCPRuleForeignStateScaleOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPScaleOrientation();
+		return Owner(context).mpScaleOrientation;
 	}
 };
 
-class aeMCPRuleForeignStateScaleSize : public aeRuleForeignState::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleForeignStateScaleSize :
+	public aeRuleForeignState::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleForeignStateScaleSize() : igdeMetaPropertyMCT(
-	"foreignstate.scaleSize", "Animator.WPAPanelRuleForeignState.ScaleSize"){
+		"animator.rule_foreign_state.scaleSize",
+		"Animator.WPAPanelRuleForeignState.ScaleSize")
+	{
 		SetDefaultValue(1.0f);
 	}
 	
 	~aeMCPRuleForeignStateScaleSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPScaleSize();
+		return Owner(context).mpScaleSize;
 	}
 };
 
-class aeMCPRuleForeignStateScaleVertexPositionSet : public aeRuleForeignState::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleForeignStateScaleVertexPositionSet :
+	public aeRuleForeignState::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleForeignStateScaleVertexPositionSet() : igdeMetaPropertyMCT(
-	"foreignstate.scaleVertexPositionSet", "Animator.WPAPanelRuleForeignState.ScaleVertexPositionSet"){
+		"animator.rule_foreign_state.scaleVertexPositionSet",
+		"Animator.WPAPanelRuleForeignState.ScaleVertexPositionSet")
+	{
 		SetDefaultValue(1.0f);
 	}
 	
 	~aeMCPRuleForeignStateScaleVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPScaleVertexPositionSet();
+		return Owner(context).mpScaleVertexPositionSet;
 	}
 };
 
-class aeMCPRuleForeignStateEnablePosition : public aeRuleForeignState::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleForeignStateEnablePosition :
+	public aeRuleForeignState::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleForeignStateEnablePosition() : igdeMetaPropertyMCT(
-	"foreignstate.enablePosition", "Animator.WPAPanelRuleForeignState.EnablePosition"){
+		"animator.rule_foreign_state.enablePosition",
+		"Animator.WPAPanelRuleForeignState.EnablePosition")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleForeignStateEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePosition();
+		return Owner(context).mpEnablePosition;
 	}
 };
 
-class aeMCPRuleForeignStateEnableOrientation : public aeRuleForeignState::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleForeignStateEnableOrientation :
+	public aeRuleForeignState::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleForeignStateEnableOrientation() : igdeMetaPropertyMCT(
-	"foreignstate.enableOrientation", "Animator.WPAPanelRuleForeignState.EnableRotation"){
+		"animator.rule_foreign_state.enableOrientation",
+		"Animator.WPAPanelRuleForeignState.EnableRotation")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleForeignStateEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableOrientation();
+		return Owner(context).mpEnableOrientation;
 	}
 };
 
-class aeMCPRuleForeignStateEnableSize : public aeRuleForeignState::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleForeignStateEnableSize :
+	public aeRuleForeignState::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleForeignStateEnableSize() : igdeMetaPropertyMCT(
-	"foreignstate.enableSize", "Animator.WPAPanelRuleForeignState.EnableSize"){}
+		"animator.rule_foreign_state.enableSize", "Animator.WPAPanelRuleForeignState.EnableSize"){}
 	
 	~aeMCPRuleForeignStateEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableSize();
+		return Owner(context).mpEnableSize;
 	}
 };
 
-class aeMCPRuleForeignStateEnableVertexPositionSet : public aeRuleForeignState::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleForeignStateEnableVertexPositionSet :
+	public aeRuleForeignState::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleForeignStateEnableVertexPositionSet() : igdeMetaPropertyMCT(
-	"foreignstate.enableVertexPositionSet", "Animator.WPAPanelRuleForeignState.EnableVertexPositionSet"){
+		"animator.rule_foreign_state.enableVertexPositionSet",
+		"Animator.WPAPanelRuleForeignState.EnableVertexPositionSet")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleForeignStateEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableVertexPositionSet();
+		return Owner(context).mpEnableVertexPositionSet;
 	}
 };
 
-class aeMCPRuleForeignStateSourceCoordinateFrame : public aeRuleForeignState::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleForeignState::eCoordinateFrames>>{
+class aeMCPRuleForeignStateSourceCoordinateFrame :
+	public aeRuleForeignState::MetaProperty<
+		igdeMetaPropertySelectionEnumStorage<deAnimatorRuleForeignState::eCoordinateFrames>>{
 public:
 	aeMCPRuleForeignStateSourceCoordinateFrame() : igdeMetaPropertyMCT(
-	"foreignstate.sourceCoordinateFrame", "Animator.WPAPanelRuleForeignState.SrcCoordFrame"){
+		"animator.rule_foreign_state.sourceCoordinateFrame",
+		"Animator.WPAPanelRuleForeignState.SrcCoordFrame")
+	{
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleForeignState::ecfBoneLocal,
 			deAnimatorRuleForeignState::ecfComponent));
@@ -195,10 +227,12 @@ public:
 	~aeMCPRuleForeignStateSourceCoordinateFrame() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPSourceCoordinateFrame();
+		return Owner(context).mpSourceCoordinateFrame;
 	}
 
-	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleForeignState::eCoordinateFrames choice, igdeMetaContextItemInfo &info) const override{
+	void GetChoiceItemInfoEnum(const ContextRef &context,
+	deAnimatorRuleForeignState::eCoordinateFrames choice,
+	igdeMetaContextItemInfo &info) const override{
 		switch(choice){
 		case deAnimatorRuleForeignState::ecfBoneLocal:
 			info.SetAll("@Animator.WPAPanelRuleForeignState.CoordFrame.BoneLocal");
@@ -215,10 +249,14 @@ public:
 	}
 };
 
-class aeMCPRuleForeignStateDestCoordinateFrame : public aeRuleForeignState::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleForeignState::eCoordinateFrames>>{
+class aeMCPRuleForeignStateDestCoordinateFrame :
+	public aeRuleForeignState::MetaProperty<
+		igdeMetaPropertySelectionEnumStorage<deAnimatorRuleForeignState::eCoordinateFrames>>{
 public:
 	aeMCPRuleForeignStateDestCoordinateFrame() : igdeMetaPropertyMCT(
-	"foreignstate.destCoordinateFrame", "Animator.WPAPanelRuleForeignState.DestCoordFrame"){
+		"animator.rule_foreign_state.destCoordinateFrame",
+		"Animator.WPAPanelRuleForeignState.DestCoordFrame")
+	{
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleForeignState::ecfBoneLocal,
 			deAnimatorRuleForeignState::ecfComponent));
@@ -228,10 +266,12 @@ public:
 	~aeMCPRuleForeignStateDestCoordinateFrame() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPDestCoordinateFrame();
+		return Owner(context).mpDestCoordinateFrame;
 	}
 	
-	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleForeignState::eCoordinateFrames choice, igdeMetaContextItemInfo &info) const override{
+	void GetChoiceItemInfoEnum(const ContextRef &context,
+	deAnimatorRuleForeignState::eCoordinateFrames choice,
+	igdeMetaContextItemInfo &info) const override{
 		switch(choice){
 		case deAnimatorRuleForeignState::ecfBoneLocal:
 			info.SetAll("@Animator.WPAPanelRuleForeignState.CoordFrame.BoneLocal");
@@ -251,42 +291,47 @@ public:
 
 class aeMCPRuleForeignStateTargetPosition : public aeRule::MetaPropertyTarget<aeRuleForeignState>{
 public:
-	aeMCPRuleForeignStateTargetPosition() : MetaPropertyTarget("foreignstate.targetPosition", "Animator.Target.Position"){}
+	aeMCPRuleForeignStateTargetPosition() : MetaPropertyTarget(
+		"animator.rule_foreign_state.targetPosition", "Animator.Target.Position"){}
 	~aeMCPRuleForeignStateTargetPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetPosition();
+		return Owner(context).mpTargetPosition;
 	}
 };
 
 class aeMCPRuleForeignStateTargetOrientation : public aeRule::MetaPropertyTarget<aeRuleForeignState>{
 public:
-	aeMCPRuleForeignStateTargetOrientation() : MetaPropertyTarget("foreignstate.targetOrientation", "Animator.Target.Orientation"){}
+	aeMCPRuleForeignStateTargetOrientation() : MetaPropertyTarget(
+		"animator.rule_foreign_state.targetOrientation", "Animator.Target.Orientation"){}
 	~aeMCPRuleForeignStateTargetOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetOrientation();
+		return Owner(context).mpTargetOrientation;
 	}
 };
 
 
 class aeMCPRuleForeignStateTargetSize : public aeRule::MetaPropertyTarget<aeRuleForeignState>{
 public:
-	aeMCPRuleForeignStateTargetSize() : MetaPropertyTarget("foreignstate.targetSize", "Animator.Target.Size"){}
+	aeMCPRuleForeignStateTargetSize() : MetaPropertyTarget(
+		"animator.rule_foreign_state.targetSize", "Animator.Target.Size"){}
 	~aeMCPRuleForeignStateTargetSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetSize();
+		return Owner(context).mpTargetSize;
 	}
 };
 
-class aeMCPRuleForeignStateTargetVertexPositionSet : public aeRule::MetaPropertyTarget<aeRuleForeignState>{
+class aeMCPRuleForeignStateTargetVertexPositionSet :
+	public aeRule::MetaPropertyTarget<aeRuleForeignState>{
 public:
-	aeMCPRuleForeignStateTargetVertexPositionSet() : MetaPropertyTarget("foreignstate.targetVertexPositionSet", "Animator.Target.VertexPositionSet"){}
+	aeMCPRuleForeignStateTargetVertexPositionSet() : MetaPropertyTarget(
+		"animator.rule_foreign_state.targetVertexPositionSet", "Animator.Target.VertexPositionSet"){}
 	~aeMCPRuleForeignStateTargetVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetVertexPositionSet();
+		return Owner(context).mpTargetVertexPositionSet;
 	}
 };
 

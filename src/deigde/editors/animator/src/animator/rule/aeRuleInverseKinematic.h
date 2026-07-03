@@ -46,42 +46,34 @@ public:
 	template<typename T>
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-private:
-	aeControllerTarget::Ref pTargetGoalPosition;
-	aeControllerTarget::Ref pTargetGoalOrientation;
-	aeControllerTarget::Ref pTargetLocalPosition;
-	aeControllerTarget::Ref pTargetLocalOrientation;
-	aeControllerTarget::Ref pTargetReachRange;
-	aeControllerTarget::Ref pTargetReachCenter;
-	
-	igdeMetaPropertyVectorStorage::Storage pMPGoalPosition;
-	igdeMetaPropertyVectorStorageQuaternion::Storage pMPGoalOrientation;
-	igdeMetaPropertyVectorStorage::Storage pMPLocalPosition;
-	igdeMetaPropertyVectorStorageQuaternion::Storage pMPLocalOrientation;
-	igdeMetaPropertyBooleanStorage::Storage pMPAdjustOrientation;
-	igdeMetaPropertyBooleanStorage::Storage pMPUseSolverBone;
-	igdeMetaPropertyStringStorage::Storage pMPSolverBone;
-	igdeMetaPropertyFloatStorage::Storage pMPReachRange;
-	igdeMetaPropertyStringStorage::Storage pMPReachBone;
-	igdeMetaPropertyVectorStorage::Storage pMPReachCenter;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetGoalPosition;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetGoalOrientation;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetLocalPosition;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetLocalOrientation;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetReachRange;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetReachCenter;
+public:
+	igdeMetaPropertyVectorStorage::Storage mpGoalPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage mpGoalOrientation;
+	igdeMetaPropertyVectorStorage::Storage mpLocalPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage mpLocalOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpAdjustOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpUseSolverBone;
+	igdeMetaPropertyStringStorage::Storage mpSolverBone;
+	igdeMetaPropertyFloatStorage::Storage mpReachRange;
+	igdeMetaPropertyStringStorage::Storage mpReachBone;
+	igdeMetaPropertyVectorStorage::Storage mpReachCenter;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetGoalPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetGoalOrientation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetLocalPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetLocalOrientation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetReachRange;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetReachCenter;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	aeRuleInverseKinematic() = delete;
-	aeRuleInverseKinematic(const aeRuleInverseKinematic&) = delete;
 	
 	/** Create inverse kinematic rule. */
 	aeRuleInverseKinematic(aeWindowMain &windowMain, const char *name);
 	
 	/** Create copy of an inverse kinematic rule. */
-	aeRuleInverseKinematic(aeWindowMain &windowMain, const aeRuleInverseKinematic &copy);
+	aeRuleInverseKinematic(const aeRuleInverseKinematic &copy);
 	
 	/** Clean up the animator rule. */
 protected:
@@ -93,62 +85,44 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPGoalPosition(){ return pMPGoalPosition; }
-	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPGoalOrientation(){ return pMPGoalOrientation; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPLocalPosition(){ return pMPLocalPosition; }
-	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPLocalOrientation(){ return pMPLocalOrientation; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPAdjustOrientation(){ return pMPAdjustOrientation; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPUseSolverBone(){ return pMPUseSolverBone; }
-	inline igdeMetaPropertyStringStorage::Storage &GetMPSolverBone(){ return pMPSolverBone; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPReachRange(){ return pMPReachRange; }
-	inline igdeMetaPropertyStringStorage::Storage &GetMPReachBone(){ return pMPReachBone; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPReachCenter(){ return pMPReachCenter; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetGoalPosition(){ return pMPTargetGoalPosition; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetGoalOrientation(){ return pMPTargetGoalOrientation; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetLocalPosition(){ return pMPTargetLocalPosition; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetLocalOrientation(){ return pMPTargetLocalOrientation; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetReachRange(){ return pMPTargetReachRange; }
-	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetReachCenter(){ return pMPTargetReachCenter; }
-	
-	
 	/** Goal position. */
-	inline const decVector &GetGoalPosition() const{ return pMPGoalPosition; }
+	inline const decVector &GetGoalPosition() const{ return mpGoalPosition; }
 	
 	/** Set goal position. */
 	void SetGoalPosition(const decVector &value);
 	
 	/** Goal orientation. */
-	inline const decVector &GetGoalOrientation() const{ return pMPGoalOrientation; }
+	inline const decVector &GetGoalOrientation() const{ return mpGoalOrientation; }
 	
 	/** Set goal orientation. */
 	void SetGoalOrientation(const decVector &value);
 	
 	/** Local position. */
-	inline const decVector &GetLocalPosition() const{ return pMPLocalPosition; }
+	inline const decVector &GetLocalPosition() const{ return mpLocalPosition; }
 	
 	/** Set local position. */
 	void SetLocalPosition(const decVector &value);
 	
 	/** Local orientation. */
-	inline const decVector &GetLocalOrientation() const{ return pMPLocalOrientation; }
+	inline const decVector &GetLocalOrientation() const{ return mpLocalOrientation; }
 	
 	/** Set local orientation. */
 	void SetLocalOrientation(const decVector &value);
 	
 	/** Adjust orientation. */
-	inline bool GetAdjustOrientation() const{ return pMPAdjustOrientation; }
+	inline bool GetAdjustOrientation() const{ return mpAdjustOrientation; }
 	
 	/** Set if the orientation is adjusted. */
 	void SetAdjustOrientation(bool value);
 	
 	/** Use solver bone to obtain target position and orientation. */
-	inline bool GetUseSolverBone() const{ return pMPUseSolverBone; }
+	inline bool GetUseSolverBone() const{ return mpUseSolverBone; }
 	
 	/** Set if solver bone is used to obtain target position and orientation. */
 	void SetUseSolverBone(bool value);
 	
 	/** Name of the solver bone if used. */
-	inline const decString &GetSolverBone() const{ return pMPSolverBone; }
+	inline const decString &GetSolverBone() const{ return mpSolverBone; }
 	
 	/** Set the name of the solver bone. */
 	void SetSolverBone(const char *boneName);
@@ -156,13 +130,13 @@ public:
 	
 	
 	/** Limit reach in meters. 0 disables reach limit. */
-	inline float GetReachRange() const{ return pMPReachRange; }
+	inline float GetReachRange() const{ return mpReachRange; }
 	
 	/** Set limit reach in meters. 0 disables reach limit. */
 	void SetReachRange(float range);
 	
 	/** Bone to use as reach origin or an empty string to use a constant position. */
-	inline const decString &GetReachBone() const{ return pMPReachBone; }
+	inline const decString &GetReachBone() const{ return mpReachBone; }
 	
 	/**
 	 * Set bone to use as reach origin or an empty string to use a constant position.
@@ -171,31 +145,10 @@ public:
 	void SetReachBone(const char *value);
 	
 	/** Reach center if no bone is used. */
-	inline const decVector &GetReachCenter() const{ return pMPReachCenter; }
+	inline const decVector &GetReachCenter() const{ return mpReachCenter; }
 	
 	/** Set reach center if no bone is used. */
 	void SetReachCenter(const decVector &value);
-	
-	
-	
-	/** Goal position target. */
-	inline const aeControllerTarget::Ref &GetTargetGoalPosition() const{ return pTargetGoalPosition; }
-	
-	/** Goal orientation target. */
-	inline const aeControllerTarget::Ref &GetTargetGoalOrientation() const{ return pTargetGoalOrientation; }
-	
-	/** Local position target. */
-	inline const aeControllerTarget::Ref &GetTargetLocalPosition() const{ return pTargetLocalPosition; }
-	
-	/** Local orientation target. */
-	inline const aeControllerTarget::Ref &GetTargetLocalOrientation() const{ return pTargetLocalOrientation; }
-	
-	/** Reach range target. */
-	inline const aeControllerTarget::Ref &GetTargetReachRange() const{ return pTargetReachRange; }
-	
-	/** Reach center target. */
-	inline const aeControllerTarget::Ref &GetTargetReachCenter() const{ return pTargetReachCenter; }
-	
 	
 	
 	/** Create engine animator rule. */
@@ -207,19 +160,9 @@ public:
 	/** Retrieve the number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
 	
-	/** Remove a link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	
-	/** Remove all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
-	
-	
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
+	aeRule::Ref CreateCopy() const override;
 	/*@}*/
 	
 	/** \name Operators */

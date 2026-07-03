@@ -34,29 +34,35 @@
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 
-class aeMCPRuleAnimationDifferenceLeadingMoveName : public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyStringStorage>{
+class aeMCPRuleAnimationDifferenceLeadingMoveName :
+	public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleAnimationDifferenceLeadingMoveName() : igdeMetaPropertyMCT(
-	"animationdifference.leadingMoveName", "Animator.WPAPanelRuleAnimationDifference.LeadingMoveName"){
+		"animator.rule_animation_difference.leadingMoveName",
+		"Animator.WPAPanelRuleAnimationDifference.LeadingMoveName")
+	{
 		SetEnableAllowed(true);
 	}
 	
 	~aeMCPRuleAnimationDifferenceLeadingMoveName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPLeadingMoveName();
+		return Owner(context).mpLeadingMoveName;
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Owner(context).GetAnimator();
-		return animator ? animator->GetMPHiddenMoveNames().GetValue() : decStringSet();
+		return animator ? animator->mpHiddenMoveNames.GetValue() : decStringSet();
 	}
 };
 
-class aeMCPRuleAnimationDifferenceLeadingMoveTime : public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleAnimationDifferenceLeadingMoveTime :
+	public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleAnimationDifferenceLeadingMoveTime() : igdeMetaPropertyMCT(
-	"animationdifference.leadingMoveTime", "Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime"){
+		"animator.rule_animation_difference.leadingMoveTime",
+		"Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime")
+	{
 		SetEnableLowerLimit(true);
 		SetEnableUpperLimit(true);
 	}
@@ -64,33 +70,39 @@ public:
 	~aeMCPRuleAnimationDifferenceLeadingMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPLeadingMoveTime();
+		return Owner(context).mpLeadingMoveTime;
 	}
 };
 
-class aeMCPRuleAnimationDifferenceReferenceMoveName : public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyStringStorage>{
+class aeMCPRuleAnimationDifferenceReferenceMoveName :
+	public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleAnimationDifferenceReferenceMoveName() : igdeMetaPropertyMCT(
-	"animationdifference.referenceMoveName", "Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName"){
+		"animator.rule_animation_difference.referenceMoveName",
+		"Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName")
+	{
 		SetEnableAllowed(true);
 	}
 	
 	~aeMCPRuleAnimationDifferenceReferenceMoveName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPReferenceMoveName();
+		return Owner(context).mpReferenceMoveName;
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Owner(context).GetAnimator();
-		return animator ? animator->GetMPHiddenMoveNames().GetValue() : decStringSet();
+		return animator ? animator->mpHiddenMoveNames.GetValue() : decStringSet();
 	}
 };
 
-class aeMCPRuleAnimationDifferenceReferenceMoveTime : public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleAnimationDifferenceReferenceMoveTime :
+	public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleAnimationDifferenceReferenceMoveTime() : igdeMetaPropertyMCT(
-	"animationdifference.referenceMoveTime", "Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime"){
+		"animator.rule_animation_difference.referenceMoveTime",
+		"Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime")
+	{
 		SetEnableLowerLimit(true);
 		SetEnableUpperLimit(true);
 	}
@@ -98,97 +110,112 @@ public:
 	~aeMCPRuleAnimationDifferenceReferenceMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPReferenceMoveTime();
+		return Owner(context).mpReferenceMoveTime;
 	}
 };
 
-class aeMCPRuleAnimationDifferenceUseComponentSpace : public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationDifferenceUseComponentSpace :
+	public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationDifferenceUseComponentSpace() : igdeMetaPropertyMCT(
-	"animationdifference.useComponentSpace", "Animator.WPAPanelRuleAnimationDifference.ComponentSpace"){}
+		"animator.rule_animation_difference.useComponentSpace",
+		"Animator.WPAPanelRuleAnimationDifference.ComponentSpace"){}
 	
 	~aeMCPRuleAnimationDifferenceUseComponentSpace() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPUseComponentSpace();
+		return Owner(context).mpUseComponentSpace;
 	}
 };
 
-class aeMCPRuleAnimationDifferenceEnablePosition : public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationDifferenceEnablePosition :
+	public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationDifferenceEnablePosition() : igdeMetaPropertyMCT(
-	"animationdifference.enablePosition", "Animator.WPAPanelRuleAnimationDifference.EnablePosition"){
+		"animator.rule_animation_difference.enablePosition",
+		"Animator.WPAPanelRuleAnimationDifference.EnablePosition")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleAnimationDifferenceEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePosition();
+		return Owner(context).mpEnablePosition;
 	}
 };
 
-class aeMCPRuleAnimationDifferenceEnableOrientation : public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationDifferenceEnableOrientation :
+	public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationDifferenceEnableOrientation() : igdeMetaPropertyMCT(
-	"animationdifference.enableOrientation", "Animator.WPAPanelRuleAnimationDifference.EnableRotation"){
+		"animator.rule_animation_difference.enableOrientation",
+		"Animator.WPAPanelRuleAnimationDifference.EnableRotation")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleAnimationDifferenceEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableOrientation();
+		return Owner(context).mpEnableOrientation;
 	}
 };
 
-class aeMCPRuleAnimationDifferenceEnableSize : public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationDifferenceEnableSize :
+	public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationDifferenceEnableSize() : igdeMetaPropertyMCT(
-	"animationdifference.enableSize", "Animator.WPAPanelRuleAnimationDifference.EnableSize"){}
+		"animator.rule_animation_difference.enableSize",
+		"Animator.WPAPanelRuleAnimationDifference.EnableSize"){}
 	
 	~aeMCPRuleAnimationDifferenceEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableSize();
+		return Owner(context).mpEnableSize;
 	}
 };
 
-class aeMCPRuleAnimationDifferenceEnableVertexPositionSet : public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationDifferenceEnableVertexPositionSet :
+	public aeRuleAnimationDifference::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationDifferenceEnableVertexPositionSet() : igdeMetaPropertyMCT(
-	"animationdifference.enableVertexPositionSet", "Animator.WPAPanelRuleAnimationDifference.EnableVertexPositionSet"){
+		"animator.rule_animation_difference.enableVertexPositionSet",
+		"Animator.WPAPanelRuleAnimationDifference.EnableVertexPositionSet")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleAnimationDifferenceEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableVertexPositionSet();
+		return Owner(context).mpEnableVertexPositionSet;
 	}
 };
 
 
-class aeMCPRuleAnimationDifferenceTargetLeadMoveTime : public aeRule::MetaPropertyTarget<aeRuleAnimationDifference>{
+class aeMCPRuleAnimationDifferenceTargetLeadMoveTime :
+	public aeRule::MetaPropertyTarget<aeRuleAnimationDifference>{
 public:
 	aeMCPRuleAnimationDifferenceTargetLeadMoveTime() : MetaPropertyTarget(
-	"animationdifference.targetLeadMoveTime", "Animator.Target.LeadingMoveTime"){}
+		"animator.rule_animation_difference.targetLeadMoveTime", "Animator.Target.LeadingMoveTime"){}
 	~aeMCPRuleAnimationDifferenceTargetLeadMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetLeadMoveTime();
+		return Owner(context).mpTargetLeadingMoveTime;
 	}
 };
 
 
-class aeMCPRuleAnimationDifferenceTargetRefMoveTime : public aeRule::MetaPropertyTarget<aeRuleAnimationDifference>{
+class aeMCPRuleAnimationDifferenceTargetRefMoveTime :
+	public aeRule::MetaPropertyTarget<aeRuleAnimationDifference>{
 public:
 	aeMCPRuleAnimationDifferenceTargetRefMoveTime() : MetaPropertyTarget(
-	"animationdifference.targetRefMoveTime", "Animator.Target.ReferenceMoveTime"){}
+		"animator.rule_animation_difference.targetRefMoveTime", "Animator.Target.ReferenceMoveTime"){}
 	~aeMCPRuleAnimationDifferenceTargetRefMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetRefMoveTime();
+		return Owner(context).mpTargetReferenceMoveTime;
 	}
 };
 

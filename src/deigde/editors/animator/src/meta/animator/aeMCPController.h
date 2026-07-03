@@ -43,9 +43,12 @@
 
 
 /** Controllers. */
-class aeMCPControllers : public aeAnimator::MetaProperty<igdeMetaPropertyListStorage<aeController, aeController::List>>{
+class aeMCPControllers :
+	public aeAnimator::MetaProperty<igdeMetaPropertyListStorage<aeController, aeController::List>>{
 public:
-	aeMCPControllers() : igdeMetaPropertyMCT("animator.controllers", "Animator.WPController.Controllers"){
+	aeMCPControllers() : igdeMetaPropertyMCT(
+		"animator.controllers", "Animator.WPController.Controllers")
+	{
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetRows(8);
@@ -55,20 +58,23 @@ public:
 	~aeMCPControllers() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPControllers();
+		return Owner(context).mpControllers;
 	}
 	
-	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &controller, igdeMetaContextItemInfo &info) const override{
+	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &controller,
+	igdeMetaContextItemInfo &info) const override{
 		info.SetAll(decString::Formatted("{0}: {1}", controller->GetIndex(), controller->GetName()));
 	}
 	
 	igdeMetaPropertyListUndo::Ref ChangePropertyValue(const ContextRef &context, const List &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr) override;
 	
-	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeController::List &existingObjects, const ObjectTypeRef &object) const override;
+	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeController::List &existingObjects,
+		const ObjectTypeRef &object) const override;
 	
 	Action::Ref CreateButtonAction(TargetButton target, igdeWidget &owner) override;
-	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu,
+		const ContextRef &context, igdeWidget &owner) override;
 };
 
 
@@ -82,7 +88,7 @@ public:
 	~aeMCPController() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPController();
+		return Owner(context).mpController;
 	}
 };
 
@@ -90,11 +96,12 @@ public:
 /** Controller name. */
 class aeMCPControllerName : public aeController::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPControllerName() : igdeMetaPropertyMCT("controller.name", "Animator.WPController.Name"){}
+	aeMCPControllerName() : igdeMetaPropertyMCT(
+		"animator.controller.name", "Animator.WPController.Name"){}
 	~aeMCPControllerName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPName();
+		return Owner(context).mpName;
 	}
 	
 	deTObjectReference<igdeMetaPropertyStringUndo> ChangePropertyValue(const ContextRef &context,
@@ -105,11 +112,12 @@ public:
 /** Controller minimum value. */
 class aeMCPControllerMinimumValue : public aeController::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPControllerMinimumValue() : igdeMetaPropertyMCT("controller.minimumValue", "Animator.WPController.MinimumValue"){}
+	aeMCPControllerMinimumValue() : igdeMetaPropertyMCT(
+		"animator.controller.minimumValue", "Animator.WPController.MinimumValue"){}
 	~aeMCPControllerMinimumValue() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMinimumValue();
+		return Owner(context).mpMinimumValue;
 	}
 };
 
@@ -117,24 +125,29 @@ public:
 /** Controller maximum value. */
 class aeMCPControllerMaximumValue : public aeController::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPControllerMaximumValue() : igdeMetaPropertyMCT("controller.maximumValue", "Animator.WPController.MaximumValue"){
+	aeMCPControllerMaximumValue() : igdeMetaPropertyMCT(
+		"animator.controller.maximumValue", "Animator.WPController.MaximumValue")
+	{
 		SetDefaultValue(1.0f);
 	}
 	
 	~aeMCPControllerMaximumValue() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMaximumValue();
+		return Owner(context).mpMaximumValue;
 	}
 	
-	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu,
+		const ContextRef &context, igdeWidget &owner) override;
 };
 
 
 /** Controller current value. */
 class aeMCPControllerCurrentValue : public aeController::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPControllerCurrentValue() : igdeMetaPropertyMCT("controller.currentValue", "Animator.WPController.Value"){
+	aeMCPControllerCurrentValue() : igdeMetaPropertyMCT(
+		"animator.controller.currentValue","Animator.WPController.Value")
+	{
 		SetEnableLowerLimit(true);
 		SetEnableUpperLimit(true);
 		SetCanUndo(false);
@@ -143,27 +156,30 @@ public:
 	~aeMCPControllerCurrentValue() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPCurrentValue();
+		return Owner(context).mpCurrentValue;
 	}
 	
 	deTObjectReference<igdeMetaPropertyFloatUndo> ChangePropertyValue(const ContextRef &context,
 		float newValue, const char *undoInfo = nullptr, const char *undoInfoLong = nullptr) override;
 	
-	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu,
+		const ContextRef &context, igdeWidget &owner) override;
 };
 
 
 /** Controller vector. */
 class aeMCPControllerVector : public aeController::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPControllerVector() : igdeMetaPropertyMCT("controller.vector", "Animator.WPController.Vector"){
+	aeMCPControllerVector() : igdeMetaPropertyMCT(
+		"animator.controller.vector", "Animator.WPController.Vector")
+	{
 		SetCanUndo(false);
 	}
 	
 	~aeMCPControllerVector() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPVector();
+		return Owner(context).mpVector;
 	}
 };
 
@@ -171,13 +187,15 @@ public:
 /** Controller clamp. */
 class aeMCPControllerClamp : public aeController::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPControllerClamp() : igdeMetaPropertyMCT("controller.clamp", "Animator.WPController.Clamp"){
+	aeMCPControllerClamp() : igdeMetaPropertyMCT(
+		"animator.controller.clamp", "Animator.WPController.Clamp")
+	{
 		SetDefaultValue(true);
 	}
 	~aeMCPControllerClamp() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPClamp();
+		return Owner(context).mpClamp;
 	}
 };
 
@@ -185,19 +203,24 @@ public:
 /** Controller frozen. */
 class aeMCPControllerFrozen : public aeController::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPControllerFrozen() : igdeMetaPropertyMCT("controller.frozen", "Animator.WPController.Frozen"){}
+	aeMCPControllerFrozen() : igdeMetaPropertyMCT(
+		"animator.controller.frozen", "Animator.WPController.Frozen"){}
 	~aeMCPControllerFrozen() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPFrozen();
+		return Owner(context).mpFrozen;
 	}
 };
 
 
 /** Controller locomotion attribute. */
-class aeMCPControllerLocomotionAttribute : public aeController::MetaProperty<igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eAttributes>>{
+class aeMCPControllerLocomotionAttribute :
+	public aeController::MetaProperty<
+		igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eAttributes>>{
 public:
-	aeMCPControllerLocomotionAttribute() : igdeMetaPropertyMCT("controller.locomotionAttribute", "Animator.WPController.Attribute"){
+	aeMCPControllerLocomotionAttribute() : igdeMetaPropertyMCT(
+		"animator.controller.locomotionAttribute", "Animator.WPController.Attribute")
+	{
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			aeAnimatorLocomotion::eaNone,
 			aeAnimatorLocomotion::eaElapsedTime,
@@ -225,10 +248,11 @@ public:
 	~aeMCPControllerLocomotionAttribute() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPLocomotionAttribute();
+		return Owner(context).mpLocomotionAttribute;
 	}
 	
-	void GetChoiceItemInfoEnum(const ContextRef &context, aeAnimatorLocomotion::eAttributes choice, igdeMetaContextItemInfo &info) const override{
+	void GetChoiceItemInfoEnum(const ContextRef &context, aeAnimatorLocomotion::eAttributes choice,
+	igdeMetaContextItemInfo &info) const override{
 		switch(choice){
 		case aeAnimatorLocomotion::eaNone:
 			info.SetAll("@Animator.WPController.Attribute.None");
@@ -321,7 +345,9 @@ public:
 /** Controller locomotion leg. */
 class aeMCPControllerLocomotionLeg : public aeController::MetaProperty<igdeMetaPropertyIntegerStorage>{
 public:
-	aeMCPControllerLocomotionLeg() : igdeMetaPropertyMCT("controller.locomotionLeg", "Animator.WPController.Leg"){
+	aeMCPControllerLocomotionLeg() : igdeMetaPropertyMCT("animator.controller.locomotionLeg",
+		"Animator.WPController.Leg")
+	{
 		SetLowerLimit(0);
 		SetEnableLowerLimit(true);
 		SetUpperLimit(3);
@@ -331,15 +357,19 @@ public:
 	~aeMCPControllerLocomotionLeg() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPLocomotionLeg();
+		return Owner(context).mpLocomotionLeg;
 	}
 };
 
 
 /** Controller vector simulation. */
-class aeMCPControllerVectorSimulation : public aeController::MetaProperty<igdeMetaPropertySelectionEnumStorage<aeController::eVectorSimulation>>{
+class aeMCPControllerVectorSimulation :
+	public aeController::MetaProperty<
+		igdeMetaPropertySelectionEnumStorage<aeController::eVectorSimulation>>{
 public:
-	aeMCPControllerVectorSimulation() : igdeMetaPropertyMCT("controller.vectorSimulation", "Animator.WPController.VectorSimulation"){
+	aeMCPControllerVectorSimulation() : igdeMetaPropertyMCT(
+		"animator.controller.vectorSimulation", "Animator.WPController.VectorSimulation")
+	{
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			aeController::evsNone,
 			aeController::evsPosition,
@@ -350,10 +380,11 @@ public:
 	~aeMCPControllerVectorSimulation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPVectorSimulation();
+		return Owner(context).mpVectorSimulation;
 	}
 	
-	void GetChoiceItemInfoEnum(const ContextRef &context, aeController::eVectorSimulation choice, igdeMetaContextItemInfo &info) const override{
+	void GetChoiceItemInfoEnum(const ContextRef &context, aeController::eVectorSimulation choice,
+	igdeMetaContextItemInfo &info) const override{
 		switch(choice){
 		case aeController::evsNone:
 			info.SetAll("@Animator.WPController.VectorSimulation.None");
@@ -378,11 +409,12 @@ public:
 /** Controller default value. */
 class aeMCPControllerDefaultValue : public aeController::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPControllerDefaultValue() : igdeMetaPropertyMCT("controller.defaultValue", "Animator.WPController.DefaultValue"){}
+	aeMCPControllerDefaultValue() : igdeMetaPropertyMCT(
+		"animator.controller.defaultValue", "Animator.WPController.DefaultValue"){}
 	~aeMCPControllerDefaultValue() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPDefaultValue();
+		return Owner(context).mpDefaultValue;
 	}
 };
 
@@ -390,11 +422,12 @@ public:
 /** Controller default vector. */
 class aeMCPControllerDefaultVector : public aeController::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPControllerDefaultVector() : igdeMetaPropertyMCT("controller.defaultVector", "Animator.WPController.DefaultVector"){}
+	aeMCPControllerDefaultVector() : igdeMetaPropertyMCT(
+		"animator.controller.defaultVector", "Animator.WPController.DefaultVector"){}
 	~aeMCPControllerDefaultVector() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPDefaultVector();
+		return Owner(context).mpDefaultVector;
 	}
 };
 

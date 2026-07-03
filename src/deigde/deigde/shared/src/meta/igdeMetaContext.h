@@ -119,6 +119,9 @@ public:
 	/** \brief Meta context has been disposed. */
 	inline bool IsDisposed() const{ return pDisposed; }
 	
+	/** \brief Context is valid. */
+	virtual bool IsValid() const;
+	
 	
 	/** \brief Get identifier. */
 	inline const decString &GetIdentifier() const{ return pIdentifier; }
@@ -237,8 +240,8 @@ public:
 	}
 	
 	/** \brief Context is valid. */
-	virtual bool IsValid() const{
-		return !IsDisposed() && pOwner;
+	bool IsValid() const override {
+		return igdeMetaContext::IsValid() && pOwner;
 	}
 	
 	/** \brief Capture context. */
@@ -396,8 +399,8 @@ public:
 	}
 	
 	/** \brief Context is valid. */
-	virtual bool IsValid() const{
-		return !IsDisposed() && pOwner;
+	virtual bool IsValid() const override {
+		return igdeMetaContext::IsValid() && pOwner;
 	}
 	
 	/** \brief Capture context. */

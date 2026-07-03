@@ -74,9 +74,9 @@ public:
 		}
 		
 		pLowerLimit = value;
-		igdeMetaPropertyStorage<P>::Property().NotifyLimitsChanged(igdeMetaPropertyStorage<P>::Context());
+		this->Property().NotifyLimitsChanged(this->Context());
 		
-		if(igdeMetaPropertyStorage<P>::Property().GetEnableLowerLimit()){
+		if(this->Property().GetEnableLowerLimit()){
 			SetValue(pValue);
 		}
 	}
@@ -91,9 +91,9 @@ public:
 		}
 		
 		pUpperLimit = value;
-		igdeMetaPropertyStorage<P>::Property().NotifyLimitsChanged(igdeMetaPropertyStorage<P>::Context());
+		this->Property().NotifyLimitsChanged(this->Context());
 		
-		if(igdeMetaPropertyStorage<P>::Property().GetEnableUpperLimit()){
+		if(this->Property().GetEnableUpperLimit()){
 			SetValue(pValue);
 		}
 	}
@@ -108,7 +108,7 @@ public:
 		}
 		
 		pTickSpacing = decMath::max(value, 0);
-		igdeMetaPropertyStorage<P>::Property().NotifyLimitsChanged(igdeMetaPropertyStorage<P>::Context());
+		this->Property().NotifyLimitsChanged(this->Context());
 	}
 	
 	/** \brief Get value. */
@@ -116,7 +116,7 @@ public:
 	
 	/** \brief Set value. */
 	void SetValue(int value, bool notify = true){
-		const auto &property = igdeMetaPropertyStorage<P>::Property();
+		const auto &property = this->Property();
 		if(property.GetEnableLowerLimit()){
 			value = decMath::max(value, pLowerLimit);
 		}
@@ -129,9 +129,9 @@ public:
 		}
 		
 		pValue = value;
-		igdeMetaPropertyStorage<P>::onValueChanged();
+		this->onValueChanged();
 		if(notify){
-			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+			this->Property().NotifyValueChanged(this->Context());
 		}
 	}
 	

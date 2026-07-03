@@ -38,128 +38,141 @@
 class aeMCPRuleLimitMinPosition : public aeRuleLimit::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleLimitMinPosition() : igdeMetaPropertyMCT(
-	"limit.minPosition", "Animator.WPAPanelRuleLimit.MinPosition"){}
+		"animator.rule_limit.minPosition", "Animator.WPAPanelRuleLimit.MinPosition"){}
 	
 	~aeMCPRuleLimitMinPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMinPosition();
+		return Owner(context).mpMinPosition;
 	}
 };
 
 class aeMCPRuleLimitMaxPosition : public aeRuleLimit::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleLimitMaxPosition() : igdeMetaPropertyMCT(
-	"limit.maxPosition", "Animator.WPAPanelRuleLimit.MaxPosition"){}
+		"animator.rule_limit.maxPosition", "Animator.WPAPanelRuleLimit.MaxPosition"){}
 	
 	~aeMCPRuleLimitMaxPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMaxPosition();
+		return Owner(context).mpMaxPosition;
 	}
 };
 
-class aeMCPRuleLimitMinRotation : public aeRuleLimit::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
+class aeMCPRuleLimitMinRotation :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
 public:
 	aeMCPRuleLimitMinRotation() : igdeMetaPropertyMCT(
-	"limit.minRotation", "Animator.WPAPanelRuleLimit.MinRotation"){}
+		"animator.rule_limit.minRotation", "Animator.WPAPanelRuleLimit.MinRotation"){}
 	
 	~aeMCPRuleLimitMinRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMinRotation();
+		return Owner(context).mpMinRotation;
 	}
 };
 
-class aeMCPRuleLimitMaxRotation : public aeRuleLimit::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
+class aeMCPRuleLimitMaxRotation :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
 public:
 	aeMCPRuleLimitMaxRotation() : igdeMetaPropertyMCT(
-	"limit.maxRotation", "Animator.WPAPanelRuleLimit.MaxRotation"){}
+		"animator.rule_limit.maxRotation", "Animator.WPAPanelRuleLimit.MaxRotation"){}
 	
 	~aeMCPRuleLimitMaxRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMaxRotation();
+		return Owner(context).mpMaxRotation;
 	}
 };
 
 class aeMCPRuleLimitMinScaling : public aeRuleLimit::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleLimitMinScaling() : igdeMetaPropertyMCT(
-	"limit.minScaling", "Animator.WPAPanelRuleLimit.MinScaling"){
+		"animator.rule_limit.minScaling", "Animator.WPAPanelRuleLimit.MinScaling")
+	{
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
 	}
 	
 	~aeMCPRuleLimitMinScaling() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMinScaling();
+		return Owner(context).mpMinScaling;
 	}
 };
 
 class aeMCPRuleLimitMaxScaling : public aeRuleLimit::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleLimitMaxScaling() : igdeMetaPropertyMCT(
-	"limit.maxScaling", "Animator.WPAPanelRuleLimit.MaxScaling"){
+		"animator.rule_limit.maxScaling", "Animator.WPAPanelRuleLimit.MaxScaling")
+	{
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
 	}
 	
 	~aeMCPRuleLimitMaxScaling() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMaxScaling();
+		return Owner(context).mpMaxScaling;
 	}
 };
 
-class aeMCPRuleLimitMinVertexPositionSet : public aeRuleLimit::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleLimitMinVertexPositionSet :
+public aeRuleLimit::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleLimitMinVertexPositionSet() : igdeMetaPropertyMCT(
-	"limit.minVertexPositionSet", "Animator.WPAPanelRuleLimit.MinVertexPositionSet"){}
+		"animator.rule_limit.minVertexPositionSet",
+		"Animator.WPAPanelRuleLimit.MinVertexPositionSet"){}
 	
 	~aeMCPRuleLimitMinVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMinVertexPositionSet();
+		return Owner(context).mpMinVertexPositionSet;
 	}
 };
 
-class aeMCPRuleLimitMaxVertexPositionSet : public aeRuleLimit::MetaProperty<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleLimitMaxVertexPositionSet :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleLimitMaxVertexPositionSet() : igdeMetaPropertyMCT(
-	"limit.maxVertexPositionSet", "Animator.WPAPanelRuleLimit.MaxVertexPositionSet"){
+		"animator.rule_limit.maxVertexPositionSet",
+		"Animator.WPAPanelRuleLimit.MaxVertexPositionSet")
+	{
 		SetDefaultValue(1.0f);
 	}
 	
 	~aeMCPRuleLimitMaxVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMaxVertexPositionSet();
+		return Owner(context).mpMaxVertexPositionSet;
 	}
 };
 
 class aeMCPRuleLimitTargetBone : public aeRuleLimit::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleLimitTargetBone() : igdeMetaPropertyMCT(
-	"limit.targetBone", "Animator.WPAPanelRuleLimit.TargetBone"){
+		"animator.rule_limit.targetBone", "Animator.WPAPanelRuleLimit.TargetBone")
+	{
 		SetEnableAllowed(true);
 	}
 	
 	~aeMCPRuleLimitTargetBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetBone();
+		return Owner(context).mpTargetBone;
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Owner(context).GetAnimator();
-		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
+		return animator ? animator->mpHiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 
-class aeMCPRuleLimitCoordinateFrame : public aeRuleLimit::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleLimit::eCoordinateFrames>>{
+class aeMCPRuleLimitCoordinateFrame :
+	public aeRuleLimit::MetaProperty<
+		igdeMetaPropertySelectionEnumStorage<deAnimatorRuleLimit::eCoordinateFrames>>{
 public:
 	aeMCPRuleLimitCoordinateFrame() : igdeMetaPropertyMCT(
-	"limit.coordinateFrame", "Animator.WPAPanelRuleLimit.CoordFrame"){
+		"animator.rule_limit.coordinateFrame", "Animator.WPAPanelRuleLimit.CoordFrame")
+	{
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleLimit::ecfBoneLocal,
 			deAnimatorRuleLimit::ecfComponent,
@@ -170,10 +183,11 @@ public:
 	~aeMCPRuleLimitCoordinateFrame() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPCoordinateFrame();
+		return Owner(context).mpCoordinateFrame;
 	}
 	
-	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleLimit::eCoordinateFrames choice, igdeMetaContextItemInfo &info) const override{
+	void GetChoiceItemInfoEnum(const ContextRef &context,
+	deAnimatorRuleLimit::eCoordinateFrames choice, igdeMetaContextItemInfo &info) const override{
 		switch(choice){
 		case deAnimatorRuleLimit::ecfBoneLocal:
 			info.SetAll("@Animator.WPAPanelRuleLimit.CoordFrame.BoneLocal");
@@ -194,243 +208,265 @@ public:
 	}
 };
 
-class aeMCPRuleLimitEnablePositionXMin : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnablePositionXMin :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionXMin() : igdeMetaPropertyMCT(
-	"limit.enablePositionXMin", "Animator.WPAPanelRuleLimit.EnablePositionXMin"){}
+		"animator.rule_limit.enablePositionXMin", "Animator.WPAPanelRuleLimit.EnablePositionXMin"){}
 	
 	~aeMCPRuleLimitEnablePositionXMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePositionXMin();
+		return Owner(context).mpEnablePositionXMin;
 	}
 };
 
-class aeMCPRuleLimitEnablePositionXMax : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnablePositionXMax :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionXMax() : igdeMetaPropertyMCT(
-	"limit.enablePositionXMax", "Animator.WPAPanelRuleLimit.EnablePositionXMax"){}
+		"animator.rule_limit.enablePositionXMax", "Animator.WPAPanelRuleLimit.EnablePositionXMax"){}
 	
 	~aeMCPRuleLimitEnablePositionXMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePositionXMax();
+		return Owner(context).mpEnablePositionXMax;
 	}
 };
 
-class aeMCPRuleLimitEnablePositionYMin : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnablePositionYMin :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionYMin() : igdeMetaPropertyMCT(
-	"limit.enablePositionYMin", "Animator.WPAPanelRuleLimit.EnablePositionYMin"){}
+		"animator.rule_limit.enablePositionYMin", "Animator.WPAPanelRuleLimit.EnablePositionYMin"){}
 	
 	~aeMCPRuleLimitEnablePositionYMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePositionYMin();
+		return Owner(context).mpEnablePositionYMin;
 	}
 };
 
-class aeMCPRuleLimitEnablePositionYMax : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnablePositionYMax :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionYMax() : igdeMetaPropertyMCT(
-	"limit.enablePositionYMax", "Animator.WPAPanelRuleLimit.EnablePositionYMax"){}
+		"animator.rule_limit.enablePositionYMax", "Animator.WPAPanelRuleLimit.EnablePositionYMax"){}
 	
 	~aeMCPRuleLimitEnablePositionYMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePositionYMax();
+		return Owner(context).mpEnablePositionYMax;
 	}
 };
 
-class aeMCPRuleLimitEnablePositionZMin : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnablePositionZMin :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionZMin() : igdeMetaPropertyMCT(
-	"limit.enablePositionZMin", "Animator.WPAPanelRuleLimit.EnablePositionZMin"){}
+		"animator.rule_limit.enablePositionZMin", "Animator.WPAPanelRuleLimit.EnablePositionZMin"){}
 	
 	~aeMCPRuleLimitEnablePositionZMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePositionZMin();
+		return Owner(context).mpEnablePositionZMin;
 	}
 };
 
-class aeMCPRuleLimitEnablePositionZMax : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnablePositionZMax :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionZMax() : igdeMetaPropertyMCT(
-	"limit.enablePositionZMax", "Animator.WPAPanelRuleLimit.EnablePositionZMax"){}
+		"animator.rule_limit.enablePositionZMax", "Animator.WPAPanelRuleLimit.EnablePositionZMax"){}
 	
 	~aeMCPRuleLimitEnablePositionZMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePositionZMax();
+		return Owner(context).mpEnablePositionZMax;
 	}
 };
 
-class aeMCPRuleLimitEnableRotationXMin : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableRotationXMin :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationXMin() : igdeMetaPropertyMCT(
-	"limit.enableRotationXMin", "Animator.WPAPanelRuleLimit.EnableRotationXMin"){}
+		"animator.rule_limit.enableRotationXMin", "Animator.WPAPanelRuleLimit.EnableRotationXMin"){}
 	
 	~aeMCPRuleLimitEnableRotationXMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableRotationXMin();
+		return Owner(context).mpEnableRotationXMin;
 	}
 };
 
-class aeMCPRuleLimitEnableRotationXMax : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableRotationXMax :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationXMax() : igdeMetaPropertyMCT(
-	"limit.enableRotationXMax", "Animator.WPAPanelRuleLimit.EnableRotationXMax"){}
+		"animator.rule_limit.enableRotationXMax", "Animator.WPAPanelRuleLimit.EnableRotationXMax"){}
 	
 	~aeMCPRuleLimitEnableRotationXMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableRotationXMax();
+		return Owner(context).mpEnableRotationXMax;
 	}
 };
 
-class aeMCPRuleLimitEnableRotationYMin : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableRotationYMin :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationYMin() : igdeMetaPropertyMCT(
-	"limit.enableRotationYMin", "Animator.WPAPanelRuleLimit.EnableRotationYMin"){}
+		"animator.rule_limit.enableRotationYMin", "Animator.WPAPanelRuleLimit.EnableRotationYMin"){}
 	
 	~aeMCPRuleLimitEnableRotationYMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableRotationYMin();
+		return Owner(context).mpEnableRotationYMin;
 	}
 };
 
-class aeMCPRuleLimitEnableRotationYMax : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableRotationYMax :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationYMax() : igdeMetaPropertyMCT(
-	"limit.enableRotationYMax", "Animator.WPAPanelRuleLimit.EnableRotationYMax"){}
+		"animator.rule_limit.enableRotationYMax", "Animator.WPAPanelRuleLimit.EnableRotationYMax"){}
 	
 	~aeMCPRuleLimitEnableRotationYMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableRotationYMax();
+		return Owner(context).mpEnableRotationYMax;
 	}
 };
 
-class aeMCPRuleLimitEnableRotationZMin : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableRotationZMin :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationZMin() : igdeMetaPropertyMCT(
-	"limit.enableRotationZMin", "Animator.WPAPanelRuleLimit.EnableRotationZMin"){}
+		"animator.rule_limit.enableRotationZMin", "Animator.WPAPanelRuleLimit.EnableRotationZMin"){}
 	
 	~aeMCPRuleLimitEnableRotationZMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableRotationZMin();
+		return Owner(context).mpEnableRotationZMin;
 	}
 };
 
-class aeMCPRuleLimitEnableRotationZMax : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableRotationZMax :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationZMax() : igdeMetaPropertyMCT(
-	"limit.enableRotationZMax", "Animator.WPAPanelRuleLimit.EnableRotationZMax"){}
+		"animator.rule_limit.enableRotationZMax", "Animator.WPAPanelRuleLimit.EnableRotationZMax"){}
 	
 	~aeMCPRuleLimitEnableRotationZMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableRotationZMax();
+		return Owner(context).mpEnableRotationZMax;
 	}
 };
 
-class aeMCPRuleLimitEnableScalingXMin : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableScalingXMin :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingXMin() : igdeMetaPropertyMCT(
-	"limit.enableScalingXMin", "Animator.WPAPanelRuleLimit.EnableScalingXMin"){}
+		"animator.rule_limit.enableScalingXMin", "Animator.WPAPanelRuleLimit.EnableScalingXMin"){}
 	
 	~aeMCPRuleLimitEnableScalingXMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableScalingXMin();
+		return Owner(context).mpEnableScalingXMin;
 	}
 };
 
-class aeMCPRuleLimitEnableScalingXMax : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableScalingXMax :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingXMax() : igdeMetaPropertyMCT(
-	"limit.enableScalingXMax", "Animator.WPAPanelRuleLimit.EnableScalingXMax"){}
+		"animator.rule_limit.enableScalingXMax", "Animator.WPAPanelRuleLimit.EnableScalingXMax"){}
 	
 	~aeMCPRuleLimitEnableScalingXMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableScalingXMax();
+		return Owner(context).mpEnableScalingXMax;
 	}
 };
 
-class aeMCPRuleLimitEnableScalingYMin : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableScalingYMin :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingYMin() : igdeMetaPropertyMCT(
-	"limit.enableScalingYMin", "Animator.WPAPanelRuleLimit.EnableScalingYMin"){}
+		"animator.rule_limit.enableScalingYMin", "Animator.WPAPanelRuleLimit.EnableScalingYMin"){}
 	
 	~aeMCPRuleLimitEnableScalingYMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableScalingYMin();
+		return Owner(context).mpEnableScalingYMin;
 	}
 };
 
-class aeMCPRuleLimitEnableScalingYMax : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableScalingYMax :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingYMax() : igdeMetaPropertyMCT(
-	"limit.enableScalingYMax", "Animator.WPAPanelRuleLimit.EnableScalingYMax"){}
+		"animator.rule_limit.enableScalingYMax", "Animator.WPAPanelRuleLimit.EnableScalingYMax"){}
 	
 	~aeMCPRuleLimitEnableScalingYMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableScalingYMax();
+		return Owner(context).mpEnableScalingYMax;
 	}
 };
 
-class aeMCPRuleLimitEnableScalingZMin : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableScalingZMin :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingZMin() : igdeMetaPropertyMCT(
-	"limit.enableScalingZMin", "Animator.WPAPanelRuleLimit.EnableScalingZMin"){}
+		"animator.rule_limit.enableScalingZMin", "Animator.WPAPanelRuleLimit.EnableScalingZMin"){}
 	
 	~aeMCPRuleLimitEnableScalingZMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableScalingZMin();
+		return Owner(context).mpEnableScalingZMin;
 	}
 };
 
-class aeMCPRuleLimitEnableScalingZMax : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableScalingZMax :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingZMax() : igdeMetaPropertyMCT(
-	"limit.enableScalingZMax", "Animator.WPAPanelRuleLimit.EnableScalingZMax"){}
+		"animator.rule_limit.enableScalingZMax", "Animator.WPAPanelRuleLimit.EnableScalingZMax"){}
 	
 	~aeMCPRuleLimitEnableScalingZMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableScalingZMax();
+		return Owner(context).mpEnableScalingZMax;
 	}
 };
 
-class aeMCPRuleLimitEnableVertexPositionSetMin : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableVertexPositionSetMin :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableVertexPositionSetMin() : igdeMetaPropertyMCT(
-	"limit.enableVertexPositionSetMin", "Animator.WPAPanelRuleLimit.EnableVertexPositionSetMin"){}
+		"animator.rule_limit.enableVertexPositionSetMin",
+		"Animator.WPAPanelRuleLimit.EnableVertexPositionSetMin"){}
 	
 	~aeMCPRuleLimitEnableVertexPositionSetMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableVertexPositionSetMin();
+		return Owner(context).mpEnableVertexPositionSetMin;
 	}
 };
 
-class aeMCPRuleLimitEnableVertexPositionSetMax : public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleLimitEnableVertexPositionSetMax :
+	public aeRuleLimit::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableVertexPositionSetMax() : igdeMetaPropertyMCT(
-	"limit.enableVertexPositionSetMax", "Animator.WPAPanelRuleLimit.EnableVertexPositionSetMax"){}
+		"animator.rule_limit.enableVertexPositionSetMax",
+		"Animator.WPAPanelRuleLimit.EnableVertexPositionSetMax"){}
 	
 	~aeMCPRuleLimitEnableVertexPositionSetMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableVertexPositionSetMax();
+		return Owner(context).mpEnableVertexPositionSetMax;
 	}
 };
 

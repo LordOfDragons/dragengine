@@ -22,31 +22,45 @@
  * SOFTWARE.
  */
 
-#ifndef _AEMCATTACHMENTPROPERTIES_H_
-#define _AEMCATTACHMENTPROPERTIES_H_
+#ifndef _AEMCPSHARED_H_
+#define _AEMCPSHARED_H_
 
-#include "aeMCPAttachment.h"
+#include <deigde/meta/property/igdeMetaPropertyStringSet.h>
 
-#include <deigde/meta/property/igdeMetaPropertyGroup.h>
-
-class aeWindowMain;
-class aeMCAnimatorProperties;
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 
 
-class aeMCAttachmentProperties{
+/**
+ * Mirror string set.
+ * 
+ * The default match names are:
+ * - ".left", ".right", deAnimatorRuleMirror::emntLast
+ * - " left", " right", deAnimatorRuleMirror::emntLast
+ * - ".L", ".R", deAnimatorRuleMirror::emntLast
+ * - " L", " R", deAnimatorRuleMirror::emntLast
+ * - ".l", ".r", deAnimatorRuleMirror::emntLast
+ * - " l", " r", deAnimatorRuleMirror::emntLast
+ */
+class aeActionMirrorStringSet : public igdeMetaProperty::Action{
 public:
-	deTObjectReference<aeMCPAttachmentName> name;
-	deTObjectReference<aeMCPAttachmentAttachType> attachType;
-	deTObjectReference<aeMCPAttachmentBoneName> boneName;
-	deTObjectReference<aeMCPAttachmentWObject> wobject;
+	using MatchNameList = decTList<deAnimatorRuleMirror::sMatchName>;
 	
-	igdeMetaContext::PropertyList::Ref metaProperties;
+private:
+	igdeMetaPropertyStringSetStorage &pProperty;
 	
-	deTObjectReference<aeMCPAttachments> attachments;
-	deTObjectReference<aeMCPAttachment> attachment;
-	deTObjectReference<igdeMetaPropertyGroup> group;
+protected:
+	MatchNameList pMatchNames;
+	bool pSelected = false;
 	
-	void Init(const aeMCAnimatorProperties &properties, aeWindowMain &windowMain);
+public:
+	aeActionMirrorStringSet(igdeMetaPropertyStringSetStorage &property,
+		igdeWidget &owner, const igdeMetaContext::Ref &context);
+	
+	void OnAction() override;
+	void Update() override;
+	
+	decStringSet Mirror(const decStringSet &strings) const;
 };
 
 #endif

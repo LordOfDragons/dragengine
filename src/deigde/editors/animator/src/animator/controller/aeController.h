@@ -72,24 +72,26 @@ public:
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
 private:
+	aeWindowMain &pWindowMain;
 	MetaContext::Ref pMetaContext;
 	aeAnimator *pAnimator;
 	int pIndex;
 	
 	aeGizmoControllerIKPosition::Ref pGizmoIKPosition;
 	
-	igdeMetaPropertyStringStorage::Storage pMPName;
-	igdeMetaPropertyFloatStorage::Storage pMPMinimumValue;
-	igdeMetaPropertyFloatStorage::Storage pMPMaximumValue;
-	igdeMetaPropertyFloatStorage::Storage pMPCurrentValue;
-	igdeMetaPropertyBooleanStorage::Storage pMPClamp;
-	igdeMetaPropertyBooleanStorage::Storage pMPFrozen;
-	igdeMetaPropertyVectorStorage::Storage pMPVector;
-	igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eAttributes>::Storage pMPLocomotionAttribute;
-	igdeMetaPropertyIntegerStorage::Storage pMPLocomotionLeg;
-	igdeMetaPropertySelectionEnumStorage<eVectorSimulation>::Storage pMPVectorSimulation;
-	igdeMetaPropertyFloatStorage::Storage pMPDefaultValue;
-	igdeMetaPropertyVectorStorage::Storage pMPDefaultVector;
+public:
+	igdeMetaPropertyStringStorage::Storage mpName;
+	igdeMetaPropertyFloatStorage::Storage mpMinimumValue;
+	igdeMetaPropertyFloatStorage::Storage mpMaximumValue;
+	igdeMetaPropertyFloatStorage::Storage mpCurrentValue;
+	igdeMetaPropertyBooleanStorage::Storage mpClamp;
+	igdeMetaPropertyBooleanStorage::Storage mpFrozen;
+	igdeMetaPropertyVectorStorage::Storage mpVector;
+	igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eAttributes>::Storage mpLocomotionAttribute;
+	igdeMetaPropertyIntegerStorage::Storage mpLocomotionLeg;
+	igdeMetaPropertySelectionEnumStorage<eVectorSimulation>::Storage mpVectorSimulation;
+	igdeMetaPropertyFloatStorage::Storage mpDefaultValue;
+	igdeMetaPropertyVectorStorage::Storage mpDefaultVector;
 	
 	
 public:
@@ -99,9 +101,8 @@ public:
 	aeController(aeWindowMain &windowMain, const char *name = "Controller");
 	
 	/** Create copy of controller. */
-	aeController(aeWindowMain &windowMain, const aeController &copy);
+	aeController(const aeController &copy);
 	
-	aeController(const aeController&) = delete;
 	aeController(aeController&&) = delete;
 	aeController& operator=(const aeController&) = delete;
 	aeController& operator=(aeController&&) = delete;
@@ -116,19 +117,7 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyStringStorage::Storage &GetMPName(){ return pMPName; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPMinimumValue(){ return pMPMinimumValue; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPMaximumValue(){ return pMPMaximumValue; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPCurrentValue(){ return pMPCurrentValue; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPClamp(){ return pMPClamp; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPFrozen(){ return pMPFrozen; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPVector(){ return pMPVector; }
-	inline igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eAttributes>::Storage &GetMPLocomotionAttribute(){ return pMPLocomotionAttribute; }
-	inline igdeMetaPropertyIntegerStorage::Storage &GetMPLocomotionLeg(){ return pMPLocomotionLeg; }
-	inline igdeMetaPropertySelectionEnumStorage<eVectorSimulation>::Storage &GetMPVectorSimulation(){ return pMPVectorSimulation; }
-	inline igdeMetaPropertyFloatStorage::Storage &GetMPDefaultValue(){ return pMPDefaultValue; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPDefaultVector(){ return pMPDefaultVector; }
-	
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Retrieves the parent animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
@@ -150,7 +139,7 @@ public:
 	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	/** Retrieves the name. */
-	inline const decString &GetName() const{ return pMPName; }
+	inline const decString &GetName() const{ return mpName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	/** Updates the controller if required. */
@@ -161,54 +150,54 @@ public:
 	void InverseValue();
 	
 	/** Retrieves the minimum value. */
-	inline float GetMinimumValue() const{ return pMPMinimumValue; }
+	inline float GetMinimumValue() const{ return mpMinimumValue; }
 	/** Sets the minimum value. */
 	void SetMinimumValue(float value);
 	/** Retrieves the maximum value. */
-	inline float GetMaximumValue() const{ return pMPMaximumValue; }
+	inline float GetMaximumValue() const{ return mpMaximumValue; }
 	/** Sets the maximum value. */
 	void SetMaximumValue(float value);
 	/** Retrieves the current value. */
-	inline float GetCurrentValue() const{ return pMPCurrentValue; }
+	inline float GetCurrentValue() const{ return mpCurrentValue; }
 	/** Sets the current value. */
 	void SetCurrentValue(float value);
 	/** Increments the current value. */
 	void IncrementCurrentValue(float incrementBy);
 	/** Determines if the controller is frozen. */
-	inline bool GetFrozen() const{ return pMPFrozen; }
+	inline bool GetFrozen() const{ return mpFrozen; }
 	/** Sets if the controller is frozen. */
 	void SetFrozen(bool frozen);
 	/** Determines if values passed the range are clamped or wrapped around. */
-	inline bool GetClamp() const{ return pMPClamp; }
+	inline bool GetClamp() const{ return mpClamp; }
 	/** Sets if values passed the range are clamped or wrapped around. */
 	void SetClamp(bool clamp);
 	
 	/** Retrieves the controller vector. */
-	inline const decVector &GetVector() const{ return pMPVector; }
+	inline const decVector &GetVector() const{ return mpVector; }
 	/** Sets the controller vector. */
 	void SetVector(const decVector &vector);
 	
 	/** Retrieves the locomotion attribute this target is controlled by. */
-	inline aeAnimatorLocomotion::eAttributes GetLocomotionAttribute() const{ return pMPLocomotionAttribute; }
+	inline aeAnimatorLocomotion::eAttributes GetLocomotionAttribute() const{ return mpLocomotionAttribute; }
 	/** Sets the locomotion attribute this target is controlled by. */
 	void SetLocomotionAttribute(aeAnimatorLocomotion::eAttributes attribute);
 	/** Retrieves the locomotion leg this target is controlled by. */
-	inline int GetLocomotionLeg() const{ return pMPLocomotionLeg; }
+	inline int GetLocomotionLeg() const{ return mpLocomotionLeg; }
 	/** Sets the locomotion leg this target is controlled by. */
 	void SetLocomotionLeg(int leg);
 	
 	/** Vector simulation. */
-	inline eVectorSimulation GetVectorSimulation() const{ return pMPVectorSimulation; }
+	inline eVectorSimulation GetVectorSimulation() const{ return mpVectorSimulation; }
 	
 	/** Set vector simulation. */
 	void SetVectorSimulation(eVectorSimulation simulation);
 	
 	/** Default value. */
-	inline float GetDefaultValue() const{ return pMPDefaultValue; }
+	inline float GetDefaultValue() const{ return mpDefaultValue; }
 	void SetDefaultValue(float value);
 	
 	/** Default vector. */
-	inline const decVector &GetDefaultVector() const{ return pMPDefaultVector; }
+	inline const decVector &GetDefaultVector() const{ return mpDefaultVector; }
 	void SetDefaultVector(const decVector &vector);
 	
 	inline const aeGizmoControllerIKPosition::Ref &GetGizmoIKPosition() const{ return pGizmoIKPosition; }

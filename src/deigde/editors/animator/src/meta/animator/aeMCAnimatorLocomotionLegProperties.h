@@ -35,20 +35,19 @@ class aeWindowMain;
  */
 class aeMCAnimatorLocomotionLegProperties{
 public:
-	deTObjectReference<aeMCPAnimatorLocomotionLegLiftOffTime> liftOffTime = deTObjectReference<aeMCPAnimatorLocomotionLegLiftOffTime>::New();
-	deTObjectReference<aeMCPAnimatorLocomotionLegPutDownTime> putDownTime = deTObjectReference<aeMCPAnimatorLocomotionLegPutDownTime>::New();
-	deTObjectReference<aeMCPAnimatorLocomotionLegPDPosStand> putDownPosStand = deTObjectReference<aeMCPAnimatorLocomotionLegPDPosStand>::New();
-	deTObjectReference<aeMCPAnimatorLocomotionLegPDPosWalk> putDownPosWalk = deTObjectReference<aeMCPAnimatorLocomotionLegPDPosWalk>::New();
-	deTObjectReference<aeMCPAnimatorLocomotionLegPDPosRun> putDownPosRun = deTObjectReference<aeMCPAnimatorLocomotionLegPDPosRun>::New();
+	deTObjectReference<aeMCPAnimatorLocomotionLegLiftOffTime> liftOffTime;
+	deTObjectReference<aeMCPAnimatorLocomotionLegPutDownTime> putDownTime;
+	deTObjectReference<aeMCPAnimatorLocomotionLegPDPosStand> putDownPosStand;
+	deTObjectReference<aeMCPAnimatorLocomotionLegPDPosWalk> putDownPosWalk;
+	deTObjectReference<aeMCPAnimatorLocomotionLegPDPosRun> putDownPosRun;
 	
-	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
+	igdeMetaContext::PropertyList::Ref metaProperties;
 	
-	deTObjectReference<aeMCPAnimatorLocomotionLegs> legs = deTObjectReference<aeMCPAnimatorLocomotionLegs>::New();
-	deTObjectReference<aeMCPAnimatorLocomotionLegIndex> legIndex = deTObjectReference<aeMCPAnimatorLocomotionLegIndex>::New();
+	deTObjectReference<aeMCPAnimatorLocomotionLegs> legs;
+	deTObjectReference<aeMCPAnimatorLocomotionLegIndex> legIndex;
 	deTObjectReference<aeMCPAnimatorLocomotionLeg> leg;
 	
-	explicit aeMCAnimatorLocomotionLegProperties(aeWindowMain &windowMain);
-	void Init();
+	void Init(aeWindowMain &windowMain);
 };
 
 #endif

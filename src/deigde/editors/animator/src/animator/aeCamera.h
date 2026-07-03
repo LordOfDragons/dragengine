@@ -53,7 +53,7 @@ public:
 	using Ref = deTObjectReference<aeCamera>;
 	
 private:
-	aeAnimator *pAnimator;
+	aeAnimator &pAnimator;
 	
 	decDVector pFreePosition;
 	decVector pFreeOrientation;
@@ -61,10 +61,11 @@ private:
 	bool pDirty;
 	bool pNoNotify;
 	
-	igdeMetaPropertyBooleanStorage::Storage pMPAttachToBone;
-	igdeMetaPropertyStringStorage::Storage pMPBone;
-	igdeMetaPropertyVectorStorage::Storage pMPRelativePosition;
-	igdeMetaPropertyVectorStorageQuaternion::Storage pMPRelativeRotation;
+public:
+	igdeMetaPropertyBooleanStorage::Storage mpAttachToBone;
+	igdeMetaPropertyStringStorage::Storage mpBone;
+	igdeMetaPropertyVectorStorage::Storage mpRelativePosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage mpRelativeRotation;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -80,13 +81,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPAttachToBone(){ return pMPAttachToBone; }
-	inline igdeMetaPropertyStringStorage::Storage &GetMPBone(){ return pMPBone; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPRelativePosition(){ return pMPRelativePosition; }
-	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPRelativeRotation(){ return pMPRelativeRotation; }
-	
 	/** Bone name. */
-	inline const decString &GetBone() const{ return pMPBone; }
+	inline const decString &GetBone() const{ return mpBone; }
 	
 	/** Set bone name. */
 	void SetBone(const char *bone);
@@ -104,15 +100,15 @@ public:
 	/** Sets the distance of camera to the center point along the view direction. */
 	void SetFreeDistance(float freeDistance);
 	/** Retrieves the relative position. */
-	inline const decVector &GetRelativePosition() const{ return pMPRelativePosition; }
+	inline const decVector &GetRelativePosition() const{ return mpRelativePosition; }
 	/** Sets the relative position. */
 	void SetRelativePosition(const decVector &relativePosition);
 	/** Retrieves the relative orientation. */
-	inline const decVector &GetRelativeOrientation() const{ return pMPRelativeRotation; }
+	inline const decVector &GetRelativeOrientation() const{ return mpRelativeRotation; }
 	/** Sets the relative orientation. */
 	void SetRelativeOrientation(const decVector &relativeOrientation);
 	/** Determines if this camera is attached to a bone. */
-	inline bool GetAttachToBone() const{ return pMPAttachToBone; }
+	inline bool GetAttachToBone() const{ return mpAttachToBone; }
 	/** Sets if this camera is attached to a bone. */
 	void SetAttachToBone(bool attachToBone);
 	

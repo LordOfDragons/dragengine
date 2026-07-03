@@ -36,25 +36,29 @@
 
 class aeMCPRuleAnimationMoveName : public aeRuleAnimation::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleAnimationMoveName() : igdeMetaPropertyMCT("animation.moveName", "Animator.WPAPanelRuleAnimation.MoveName"){
+	aeMCPRuleAnimationMoveName() : igdeMetaPropertyMCT(
+		"animator.rule_animation.moveName", "Animator.WPAPanelRuleAnimation.MoveName")
+	{
 		SetEnableAllowed(true);
 	}
 	
 	~aeMCPRuleAnimationMoveName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMoveName();
+		return Owner(context).mpMoveName;
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Owner(context).GetAnimator();
-		return animator ? animator->GetMPHiddenMoveNames().GetValue() : decStringSet();
+		return animator ? animator->mpHiddenMoveNames.GetValue() : decStringSet();
 	}
 };
 
 class aeMCPRuleAnimationMoveTime : public aeRuleAnimation::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPRuleAnimationMoveTime() : igdeMetaPropertyMCT("animation.moveTime", "Animator.WPAPanelRuleAnimation.MoveTime"){
+	aeMCPRuleAnimationMoveTime() : igdeMetaPropertyMCT(
+		"animator.rule_animation.moveTime", "Animator.WPAPanelRuleAnimation.MoveTime")
+	{
 		SetEnableLowerLimit(true);
 		SetEnableUpperLimit(true);
 	}
@@ -62,67 +66,80 @@ public:
 	~aeMCPRuleAnimationMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPMoveTime();
+		return Owner(context).mpMoveTime;
 	}
 };
 
-class aeMCPRuleAnimationEnablePosition : public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationEnablePosition :
+	public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationEnablePosition() : igdeMetaPropertyMCT("animation.enablePosition", "Animator.WPAPanelRuleAnimation.EnablePosition"){
+	aeMCPRuleAnimationEnablePosition() : igdeMetaPropertyMCT(
+		"animator.rule_animation.enablePosition", "Animator.WPAPanelRuleAnimation.EnablePosition")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleAnimationEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnablePosition();
+		return Owner(context).mpEnablePosition;
 	}
 };
 
-class aeMCPRuleAnimationEnableOrientation : public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationEnableOrientation :
+	public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationEnableOrientation() : igdeMetaPropertyMCT("animation.enableOrientation", "Animator.WPAPanelRuleAnimation.EnableRotation"){
+	aeMCPRuleAnimationEnableOrientation() : igdeMetaPropertyMCT(
+		"animator.rule_animation.enableOrientation", "Animator.WPAPanelRuleAnimation.EnableRotation")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleAnimationEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableOrientation();
+		return Owner(context).mpEnableOrientation;
 	}
 };
 
-class aeMCPRuleAnimationEnableSize : public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationEnableSize :
+	public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationEnableSize() : igdeMetaPropertyMCT("animation.enableSize", "Animator.WPAPanelRuleAnimation.EnableSize"){}
+	aeMCPRuleAnimationEnableSize() : igdeMetaPropertyMCT(
+		"animator.rule_animation.enableSize", "Animator.WPAPanelRuleAnimation.EnableSize"){}
 	~aeMCPRuleAnimationEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableSize();
+		return Owner(context).mpEnableSize;
 	}
 };
 
-class aeMCPRuleAnimationEnableVertexPositionSet : public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationEnableVertexPositionSet :
+	public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationEnableVertexPositionSet() : igdeMetaPropertyMCT("animation.enableVertexPositionSet", "Animator.WPAPanelRuleAnimation.EnableVertexPositionSet"){
+	aeMCPRuleAnimationEnableVertexPositionSet() : igdeMetaPropertyMCT(
+		"animator.rule_animation.enableVertexPositionSet",
+		"Animator.WPAPanelRuleAnimation.EnableVertexPositionSet")
+	{
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleAnimationEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPEnableVertexPositionSet();
+		return Owner(context).mpEnableVertexPositionSet;
 	}
 };
 
 
 class aeMCPRuleAnimationTargetMoveTime : public aeRule::MetaPropertyTarget<aeRuleAnimation>{
 public:
-	aeMCPRuleAnimationTargetMoveTime() : MetaPropertyTarget("animation.targetMoveTime", "Animator.Target.MoveTime"){}
+	aeMCPRuleAnimationTargetMoveTime() : MetaPropertyTarget(
+		"animator.rule_animation.targetMoveTime", "Animator.Target.MoveTime"){}
 	~aeMCPRuleAnimationTargetMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPTargetMoveTime();
+		return Owner(context).mpTargetMoveTime;
 	}
 };
 

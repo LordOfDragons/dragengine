@@ -27,31 +27,33 @@
 #include <deigde/meta/property/igdeMetaPropertyAdapters.h>
 
 
-aeMCAnimatorProperties::aeMCAnimatorProperties(aeWindowMain &windowMain) :
-controller(windowMain),
-link(windowMain),
-rule(windowMain),
-attachment(windowMain),
-locomotionLeg(windowMain)
-{
-	Init();
-}
-
-void aeMCAnimatorProperties::Init(){
-	metaProperties->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		rig,
-		animation,
-		affectedBones,
-		affectedVertexPositionSets);
+void aeMCAnimatorProperties::Init(aeWindowMain &windowMain){
+	// animator
+	hiddenBoneNames = deTObjectReference<aeMCPHiddenBoneNames>::New();
+	hiddenVPSNames = deTObjectReference<aeMCPHiddenVPSNames>::New();
+	hiddenMoveNames = deTObjectReference<aeMCPHiddenMoveNames>::New();
 	
-	controller.Init(*this);
-	metaPropertiesController->GetData() += controller.group->GetProperties();
+	rig = deTObjectReference<aeMCPAnimatorRig>::New();
+	animation = deTObjectReference<aeMCPAnimatorAnimation>::New();
+	affectedBones = deTObjectReference<aeMCPAnimatorAffectedBones>::New();
+	affectedVertexPositionSets = deTObjectReference<aeMCPAnimatorAffectedVertexPositionSets>::New();
 	
-	link.Init(*this);
-	metaPropertiesLink->GetData() += link.group->GetProperties();
+	metaProperties = igdeMetaContext::PropertyList::Ref::New(
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			rig, animation,
+			affectedBones, affectedVertexPositionSets));
 	
-	rule.Init(*this);
-	metaPropertiesRule->GetData() += rule.group->GetProperties();
+	// controller
+	controller.Init(windowMain);
+	metaPropertiesController = igdeMetaContext::PropertyList::Ref::New(controller.group->GetProperties());
+	
+	// link
+	link.Init(*this, windowMain);
+	metaPropertiesLink = igdeMetaContext::PropertyList::Ref::New(link.group->GetProperties());
+	
+	// rule
+	rule.Init(windowMain);
+	metaPropertiesRule = igdeMetaContext::PropertyList::Ref::New(rule.group->GetProperties());
 	
 	ruleAnimation.Init(*this);
 	ruleAnimationDifference.Init(*this);
@@ -61,38 +63,86 @@ void aeMCAnimatorProperties::Init(){
 	ruleGroup.Init(*this);
 	ruleInverseKinematic.Init(*this);
 	ruleLimit.Init(*this);
-	ruleMirror.Init(*this);
+	ruleMirror.Init(*this, windowMain);
 	ruleStateManipulator.Init(*this);
 	ruleStateSnapshot.Init(*this);
 	ruleSubAnimator.Init(*this);
 	ruleTrackTo.Init(*this);
 	
-	locomotion.Init(*this);
-	locomotionLeg.Init();
+	// locomotion
+	locomotion.Init(windowMain);
 	
-	playgroundControllers = deTObjectReference<aeMCPAnimatorPlaygroundControllers>::New(controller.name, controller.currentValue);
-	metaPropertiesPlayground->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		playgroundControllers,
-		locomotion.groupTesting,
-		locomotion.groupMovementSpeeds,
-		locomotion.groupAdjustmentTimes,
-		locomotion.groupLegs,
-		locomotion.groupVisualization);
+	// playground
+	playgroundControllers = deTObjectReference<aeMCPAnimatorPlaygroundControllers>::New(
+		controller.name, controller.currentValue);
+	
+	metaPropertiesPlayground = igdeMetaContext::PropertyList::Ref::New(
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			playgroundControllers,
+			locomotion.groupTesting,
+			locomotion.groupMovementSpeeds,
+			locomotion.groupAdjustmentTimes,
+			locomotion.groupLegs,
+			locomotion.groupVisualization));
+	
+	// view
+	displayModelPath = deTObjectReference<aeMCPAnimatorDisplayModelPath>::New();
+	displaySkinPath = deTObjectReference<aeMCPAnimatorDisplaySkinPath>::New();
+	displayRigPath = deTObjectReference<aeMCPAnimatorDisplayRigPath>::New();
+	
+	resetState = deTObjectReference<aeMCPAnimatorResetState>::New();
+	baseAnimatorPath = deTObjectReference<aeMCPAnimatorBaseAnimatorPath>::New();
+	groupBaseAnimator = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupBaseAnimator", "Animator.WPView.TestingBaseAnimator",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, baseAnimatorPath, resetState), true);
+	
+	sky = deTObjectReference<aeMCPAnimatorSky>::New();
+	groupSky = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupSky", "Animator.WPView.Sky",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, sky), true);
+	
+	environmentObject = deTObjectReference<aeMCPAnimatorEnvironmentObject>::New();
+	groupEnvironmentObject = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupEnvironmentObject", "Animator.WPView.EnvironmentObject",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, environmentObject), true);
+	
+	camera = deTObjectReference<aeMCPAnimatorCamera>::New();
+	groupCamera = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupCamera", "Animator.WPView.Camera",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, camera), true);
+	
+	cameraAttachToBone = deTObjectReference<aeMCPAnimatorCameraAttachToBone>::New();
+	cameraAttachBone = deTObjectReference<aeMCPAnimatorCameraAttachBone>::New();
+	cameraAttachRelativePosition = deTObjectReference<aeMCPAnimatorCameraAttachRelativePosition>::New();
+	cameraAttachRelativeRotation = deTObjectReference<aeMCPAnimatorCameraAttachRelativeRotation>::New();
+	groupCameraAttach = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupCameraAttach", "Animator.WPView.CameraAttaching",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, cameraAttachToBone, cameraAttachBone,
+			cameraAttachRelativePosition, cameraAttachRelativeRotation), true);
 	
 	igdeMetaPropertyAdapter::OnChanged(hiddenBoneNames, cameraAttachBone);
 	
-	attachment.Init(*this);
+	playSpeed = deTObjectReference<aeMCPAnimatorPlaySpeed>::New();
+	timeStep = deTObjectReference<aeMCPAnimatorTimeStep>::New();
+	paused = deTObjectReference<aeMCPAnimatorPaused>::New();
+	groupPlayback = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupPlayback", "Animator.WPView.Playback",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, playSpeed, paused));
 	
-	metaPropertiesView->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		displayModelPath,
-		displaySkinPath,
-		displayRigPath,
-		groupBaseAnimator,
-		groupSky,
-		groupEnvironmentObject,
-		groupCamera,
-		groupCameraAttach,
-		groupPlayback,
-		attachment.group,
-		groupUndoHistory);
+	attachment.Init(*this, windowMain);
+	
+	undoHistory = igdeMetaPropertyUndoHistory::CreateForGroup("animator.undoHistory");
+	groupUndoHistory = igdeMetaPropertyUndoHistory::CreateGroup("animator.groupUndoHistory", undoHistory);
+	
+	metaPropertiesView = igdeMetaContext::PropertyList::Ref::New(
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			displayModelPath, displaySkinPath, displayRigPath,
+			groupBaseAnimator,
+			groupSky,
+			groupEnvironmentObject,
+			groupCamera,
+			groupCameraAttach,
+			groupPlayback,
+			attachment.group,
+			groupUndoHistory));
 }

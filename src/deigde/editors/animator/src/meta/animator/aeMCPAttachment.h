@@ -36,7 +36,9 @@
 
 
 /** Attachments. */
-class aeMCPAttachments : public aeAnimator::MetaProperty<igdeMetaPropertySetStorage<aeAttachment, aeAnimator::AttachmentSet>>{
+class aeMCPAttachments :
+	public aeAnimator::MetaProperty<
+		igdeMetaPropertySetStorage<aeAttachment, aeAnimator::AttachmentSet>>{
 public:
 	aeMCPAttachments() : igdeMetaPropertyMCT("animator.attachments", "Animator.WPView.Attachments"){
 		SetHideLabel(true);
@@ -48,17 +50,20 @@ public:
 	~aeMCPAttachments() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPAttachments();
+		return Owner(context).mpAttachments;
 	}
 	
-	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &attachment, igdeMetaContextItemInfo &info) const override{
+	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &attachment,
+	igdeMetaContextItemInfo &info) const override{
 		info.SetAll(decString(attachment->GetName()));
 	}
 	
-	ObjectTypeRef CopyObjectType(const ContextRef &context, const SetType &existingObjects, const ObjectTypeRef &object) const override;
+	ObjectTypeRef CopyObjectType(const ContextRef &context, const SetType &existingObjects,
+		const ObjectTypeRef &object) const override;
 	
 	Action::Ref CreateButtonAction(TargetButton target, igdeWidget &owner) override;
-	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu,
+		const ContextRef &context, igdeWidget &owner) override;
 };
 
 
@@ -72,25 +77,30 @@ public:
 	~aeMCPAttachment() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPAttachment();
+		return Owner(context).mpAttachment;
 	}
 };
 
 /** Attachment name. */
 class aeMCPAttachmentName : public aeAttachment::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPAttachmentName() : igdeMetaPropertyMCT("animator.attachment.name", "Animator.WPView.AttachmentName"){}
+	aeMCPAttachmentName() : igdeMetaPropertyMCT("animator.attachment.name",
+		"Animator.WPView.AttachmentName"){}
 	~aeMCPAttachmentName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPName();
+		return Owner(context).mpName;
 	}
 };
 
 /** Attachment attach type. */
-class aeMCPAttachmentAttachType : public aeAttachment::MetaProperty<igdeMetaPropertySelectionEnumStorage<aeAttachment::eAttachTypes>>{
+class aeMCPAttachmentAttachType :
+	public aeAttachment::MetaProperty<
+		igdeMetaPropertySelectionEnumStorage<aeAttachment::eAttachTypes>>{
 public:
-	aeMCPAttachmentAttachType() : igdeMetaPropertyMCT("animator.attachment.attachType", "Animator.WPView.Attach"){
+	aeMCPAttachmentAttachType() : igdeMetaPropertyMCT(
+		"animator.attachment.attachType", "Animator.WPView.Attach")
+	{
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			aeAttachment::eatNone,
 			aeAttachment::eatBone,
@@ -100,10 +110,11 @@ public:
 	~aeMCPAttachmentAttachType() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPAttachType();
+		return Owner(context).mpAttachType;
 	}
 	
-	void GetChoiceItemInfoEnum(const igdeMetaContext::Ref &context, aeAttachment::eAttachTypes choice, igdeMetaContextItemInfo &info) const override{
+	void GetChoiceItemInfoEnum(const igdeMetaContext::Ref &context,
+	aeAttachment::eAttachTypes choice, igdeMetaContextItemInfo &info) const override{
 		switch(choice){
 		case aeAttachment::eatNone:
 			info.SetAll("None", "@Animator.WPView.AttachType.None");
@@ -123,18 +134,20 @@ public:
 /** Attachment bone name. */
 class aeMCPAttachmentBoneName : public aeAttachment::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPAttachmentBoneName() : igdeMetaPropertyMCT("animator.attachment.boneName", "Animator.WPView.AttachBone"){
+	aeMCPAttachmentBoneName() : igdeMetaPropertyMCT("animator.attachment.boneName",
+		"Animator.WPView.AttachBone")
+	{
 		SetEnableAllowed(true);
 	}
 	~aeMCPAttachmentBoneName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPBoneName();
+		return Owner(context).mpBoneName;
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Owner(context).GetAnimator();
-		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
+		return animator ? animator->mpHiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 
@@ -145,7 +158,7 @@ public:
 	~aeMCPAttachmentWObject() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Owner(context).GetMPWObject();
+		return Owner(context).mpWObject;
 	}
 };
 

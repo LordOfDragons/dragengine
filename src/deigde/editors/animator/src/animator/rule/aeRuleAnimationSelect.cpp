@@ -48,80 +48,75 @@ aeRuleAnimationSelect(windowMain, aname, CreateMetaContext(windowMain, this)){}
 
 aeRuleAnimationSelect::aeRuleAnimationSelect(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
 aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertAnimationSelect, aname),
-pMPMoves(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.moves, metaContext),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enablePosition, metaContext),
-pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableOrientation, metaContext),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableSize, metaContext),
-pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableVertexPositionSet, metaContext),
-pMPTargetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetMoveTime, metaContext),
-pMPTargetSelect(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetSelect, metaContext)
+mpMoves(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.moves, metaContext),
+mpEnablePosition(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enablePosition, metaContext),
+mpEnableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableOrientation, metaContext),
+mpEnableSize(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableSize, metaContext),
+mpEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableVertexPositionSet, metaContext),
+mpTargetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetMoveTime, metaContext),
+mpTargetSelect(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetSelect, metaContext)
 {
-	pMPMoves.onValueChanged = [this](){
+	mpMoves.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimationSelect*)GetEngineRule())->GetMoves() = pMPMoves;
+			((deAnimatorRuleAnimationSelect*)GetEngineRule())->GetMoves() = mpMoves;
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnablePosition.onValueChanged = [this](){
+	mpEnablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnablePosition(pMPEnablePosition);
+			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnablePosition(mpEnablePosition);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableOrientation.onValueChanged = [this](){
+	mpEnableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableOrientation(pMPEnableOrientation);
+			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableOrientation(mpEnableOrientation);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableSize.onValueChanged = [this](){
+	mpEnableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableSize(pMPEnableSize);
+			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableSize(mpEnableSize);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pMPEnableVertexPositionSet.onValueChanged = [this](){
+	mpEnableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableVertexPositionSet(pMPEnableVertexPositionSet);
+			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableVertexPositionSet(mpEnableVertexPositionSet);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pTargetMoveTime = aeControllerTarget::Ref::New(pMPTargetMoveTime);
-	pMPTargetMoveTime.onValueChanged = [this](){
+	mpTargetMoveTime.onValueChanged = [this](){
 		if(GetEngineRule()){
-			pUpdateEngineTarget(((deAnimatorRuleAnimationSelect*)GetEngineRule())->GetTargetMoveTime(), pMPTargetMoveTime);
+			pUpdateEngineTarget(((deAnimatorRuleAnimationSelect*)GetEngineRule())->GetTargetMoveTime(), mpTargetMoveTime);
 		}
-		pTargetMoveTime->OnStorageChanged();
 		NotifyRuleChanged();
 	};
 	
-	pTargetSelect = aeControllerTarget::Ref::New(pMPTargetSelect);
-	pMPTargetSelect.onValueChanged = [this](){
+	mpTargetSelect.onValueChanged = [this](){
 		if(GetEngineRule()){
-			pUpdateEngineTarget(((deAnimatorRuleAnimationSelect*)GetEngineRule())->GetTargetSelect(), pMPTargetSelect);
+			pUpdateEngineTarget(((deAnimatorRuleAnimationSelect*)GetEngineRule())->GetTargetSelect(), mpTargetSelect);
 		}
-		pTargetSelect->OnStorageChanged();
 		NotifyRuleChanged();
 	};
 }
 
-aeRuleAnimationSelect::aeRuleAnimationSelect(aeWindowMain &windowMain, const aeRuleAnimationSelect &copy) :
-aeRuleAnimationSelect(windowMain, copy.GetName())
+aeRuleAnimationSelect::aeRuleAnimationSelect(const aeRuleAnimationSelect &copy) :
+aeRuleAnimationSelect(copy.GetWindowMain(), copy.GetName())
 {
 	pInitCopy(copy);
-	pMPMoves.SetValue(copy.pMPMoves, false);
-	pMPEnablePosition.SetValue(copy.pMPEnablePosition, false);
-	pMPEnableOrientation.SetValue(copy.pMPEnableOrientation, false);
-	pMPEnableSize.SetValue(copy.pMPEnableSize, false);
-	pMPEnableVertexPositionSet.SetValue(copy.pMPEnableVertexPositionSet, false);
-	
-	pTargetMoveTime = aeControllerTarget::Ref::New(pMPTargetMoveTime, copy.pTargetMoveTime);
-	pTargetSelect = aeControllerTarget::Ref::New(pMPTargetSelect, copy.pTargetSelect);
+	mpMoves.SetValue(copy.mpMoves, false);
+	mpEnablePosition.SetValue(copy.mpEnablePosition, false);
+	mpEnableOrientation.SetValue(copy.mpEnableOrientation, false);
+	mpEnableSize.SetValue(copy.mpEnableSize, false);
+	mpEnableVertexPositionSet.SetValue(copy.mpEnableVertexPositionSet, false);
+	mpTargetMoveTime.SetValue(copy.mpTargetMoveTime, false);
+	mpTargetSelect.SetValue(copy.mpTargetSelect, false);
 }
 
 aeRuleAnimationSelect::~aeRuleAnimationSelect() = default;
@@ -131,24 +126,24 @@ aeRuleAnimationSelect::~aeRuleAnimationSelect() = default;
 ///////////////
 
 void aeRuleAnimationSelect::SetEnablePosition(bool value){
-	pMPEnablePosition.SetValue(value);
+	mpEnablePosition.SetValue(value);
 }
 
 void aeRuleAnimationSelect::SetEnableOrientation(bool value){
-	pMPEnableOrientation.SetValue(value);
+	mpEnableOrientation.SetValue(value);
 }
 
 void aeRuleAnimationSelect::SetEnableSize(bool value){
-	pMPEnableSize.SetValue(value);
+	mpEnableSize.SetValue(value);
 }
 
 void aeRuleAnimationSelect::SetEnableVertexPositionSet(bool value){
-	pMPEnableVertexPositionSet.SetValue(value);
+	mpEnableVertexPositionSet.SetValue(value);
 }
 
 
 void aeRuleAnimationSelect::SetMoves(const decStringList &value){
-	pMPMoves.SetValue(value);
+	mpMoves.SetValue(value);
 }
 
 
@@ -158,47 +153,23 @@ void aeRuleAnimationSelect::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	if(rule){
-		pUpdateEngineTarget(rule->GetTargetMoveTime(), pMPTargetMoveTime);
-		pUpdateEngineTarget(rule->GetTargetSelect(), pMPTargetSelect);
+		pUpdateEngineTarget(rule->GetTargetMoveTime(), mpTargetMoveTime);
+		pUpdateEngineTarget(rule->GetTargetSelect(), mpTargetSelect);
 	}
 }
 
 int aeRuleAnimationSelect::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetMoveTime->GetLinks().Has(link)){
+	if(mpTargetMoveTime->Has(link)){
 		usageCount++;
 	}
-	if(pTargetSelect->GetLinks().Has(link)){
+	if(mpTargetSelect->Has(link)){
 		usageCount++;
 	}
 	
 	return usageCount;
 }
-
-void aeRuleAnimationSelect::RemoveLinkFromTargets(aeLink *link){
-	aeRule::RemoveLinkFromTargets(link);
-	
-	if(pTargetMoveTime->GetLinks().Has(link)){
-		pTargetMoveTime->RemoveLink(link);
-	}
-	
-	if(pTargetSelect->GetLinks().Has(link)){
-		pTargetSelect->RemoveLink(link);
-	}
-	
-	UpdateTargets();
-}
-
-void aeRuleAnimationSelect::RemoveLinksFromAllTargets(){
-	aeRule::RemoveLinksFromAllTargets();
-	
-	pTargetMoveTime->RemoveAllLinks();
-	pTargetSelect->RemoveAllLinks();
-	
-	UpdateTargets();
-}
-
 
 
 deAnimatorRule::Ref aeRuleAnimationSelect::CreateEngineRule(){
@@ -206,26 +177,20 @@ deAnimatorRule::Ref aeRuleAnimationSelect::CreateEngineRule(){
 	
 	InitEngineRule(engRule);
 	
-	engRule->GetMoves() = pMPMoves;
-	engRule->SetEnablePosition(pMPEnablePosition);
-	engRule->SetEnableOrientation(pMPEnableOrientation);
-	engRule->SetEnableSize(pMPEnableSize);
-	engRule->SetEnableVertexPositionSet(pMPEnableVertexPositionSet);
+	engRule->GetMoves() = mpMoves;
+	engRule->SetEnablePosition(mpEnablePosition);
+	engRule->SetEnableOrientation(mpEnableOrientation);
+	engRule->SetEnableSize(mpEnableSize);
+	engRule->SetEnableVertexPositionSet(mpEnableVertexPositionSet);
 	
-	pUpdateEngineTarget(engRule->GetTargetMoveTime(), pMPTargetMoveTime);
-	pUpdateEngineTarget(engRule->GetTargetSelect(), pMPTargetSelect);
+	pUpdateEngineTarget(engRule->GetTargetMoveTime(), mpTargetMoveTime);
+	pUpdateEngineTarget(engRule->GetTargetSelect(), mpTargetSelect);
 	
 	return engRule;
 }
 
 
 
-aeRule::Ref aeRuleAnimationSelect::CreateCopy(aeWindowMain &windowMain) const{
-	return Ref::New(windowMain, *this);
-}
-
-void aeRuleAnimationSelect::ListLinks(aeLink::List &list){
-	aeRule::ListLinks(list);
-	pTargetMoveTime->AddLinksToList(list);
-	pTargetSelect->AddLinksToList(list);
+aeRule::Ref aeRuleAnimationSelect::CreateCopy() const{
+	return Ref::New(*this);
 }

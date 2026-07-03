@@ -23,51 +23,48 @@
  */
 
 #include "aeMCPAnimator.h"
+#include "aeMCPShared.h"
 #include "../../gui/aeWindowMain.h"
-#include "../../undosys/animator/aeUAnimatorMirrorBones.h"
-#include "../../undosys/animator/aeUAnimatorMirrorVertexPositionSets.h"
 
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/dialog/igdeDialogSetSelect.h>
 #include <deigde/meta/property/undo/igdeMetaPropertyStringSetUndo.h>
 
+#include <dragengine/common/collection/decTList.h>
 
-// Class aeMCPAnimatorAffectedBones::cActionAdd
-/////////////////////////////////////////////////
+
+// Class aeMCPAnimatorAffectedBones
+/////////////////////////////////////
 
 namespace {
 
-class cActionAffectedBonesMirror : public igdeMetaProperty::Action{
-	aeMCPAnimatorAffectedBones &pPropertyBones;
+class cActionAffectedBonesMirror : public aeActionMirrorStringSet{
+	aeMCPAnimatorAffectedBones &pProperty;
 	
 public:
 	cActionAffectedBonesMirror(aeMCPAnimatorAffectedBones &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
-	igdeMetaProperty::Action(owner, context, "@Animator.WPAnimator.Action.BoneMirror",
-		nullptr, "@Animator.WPAnimator.Action.BoneMirror.ToolTip"),
-	pPropertyBones(property){}
-	
-	void OnAction() override{
-		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
-		const auto &context = GetContext();
-		if(pPropertyBones.IsValid(context)){
-			auto undo = aeUAnimatorMirrorBones::Ref::New(&pPropertyBones.Owner(context));
-			if(undo->HasAnyEffect()){
-				context->GetUndoSystem()->Add(undo);
-			}
-		}
+	aeActionMirrorStringSet(property, owner, context),
+	pProperty(property){
+		SetText("@Animator.WPAnimator.Action.BoneMirror");
+		SetDescription("@Animator.WPAnimator.Action.BoneMirror.ToolTip");
 	}
-	
-	void Update() override{
-		const auto &context = GetContext();
-		SetEnabled(pPropertyBones.IsValid(context) && pPropertyBones.GetStorage(context).GetValue().IsNotEmpty());
+};
+
+class cActionAffectedBonesMirrorSelected : public cActionAffectedBonesMirror{
+public:
+	cActionAffectedBonesMirrorSelected(aeMCPAnimatorAffectedBones &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	cActionAffectedBonesMirror(property, owner, context){
+		pSelected = true;
+		SetText("@Animator.WPAnimator.Action.BoneMirrorSelected");
+		SetDescription("@Animator.WPAnimator.Action.BoneMirrorSelected.ToolTip");
 	}
 };
 
 }
 
 decStringSet aeMCPAnimatorAffectedBones::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
-	return Owner(context).GetMPHiddenBoneNames();
+	return Owner(context).mpHiddenBoneNames;
 }
 
 void aeMCPAnimatorAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
@@ -77,6 +74,7 @@ void aeMCPAnimatorAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, co
 	
 	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, deTObjectReference<cActionAffectedBonesMirror>::New(*this, owner, context));
+	helper.MenuCommand(menu, deTObjectReference<cActionAffectedBonesMirrorSelected>::New(*this, owner, context));
 }
 
 
@@ -85,37 +83,32 @@ void aeMCPAnimatorAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, co
 
 namespace {
 
-class cActionAffectedVertexPositionSetsMirror : public igdeMetaProperty::Action{
-	aeMCPAnimatorAffectedVertexPositionSets &pPropertyVPS;
+class cActionAffectedVpsMirror : public aeActionMirrorStringSet{
+	aeMCPAnimatorAffectedVertexPositionSets &pProperty;
 	
 public:
-	cActionAffectedVertexPositionSetsMirror(aeMCPAnimatorAffectedVertexPositionSets &property,
-		igdeWidget &owner, const igdeMetaContext::Ref &context) :
-	igdeMetaProperty::Action(owner, context, "@Animator.WPAnimator.Action.VPSMirror",
-		nullptr, "@Animator.WPAnimator.Action.VPSMirror.ToolTip"),
-	pPropertyVPS(property){}
-	
-	void OnAction() override{
-		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
-		const auto &context = GetContext();
-		if(pPropertyVPS.IsValid(context)){
-			auto undo = aeUAnimatorMirrorVertexPositionSets::Ref::New(&pPropertyVPS.Owner(context));
-			if(undo->HasAnyEffect()){
-				context->GetUndoSystem()->Add(undo);
-			}
-		}
+	cActionAffectedVpsMirror(aeMCPAnimatorAffectedVertexPositionSets &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	aeActionMirrorStringSet(property, owner, context),
+	pProperty(property){
+		SetText("@Animator.WPAnimator.Action.VPSMirror");
+		SetDescription("@Animator.WPAnimator.Action.VPSMirror.ToolTip");
 	}
-	
-	void Update() override{
-		const auto &context = GetContext();
-		SetEnabled(pPropertyVPS.IsValid(context) && pPropertyVPS.GetStorage(context).GetValue().IsNotEmpty());
+};
+
+class cActionAffectedVpsMirrorSelected : public cActionAffectedVpsMirror{
+public:
+	cActionAffectedVpsMirrorSelected(aeMCPAnimatorAffectedVertexPositionSets &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	cActionAffectedVpsMirror(property, owner, context){
+		pSelected = true;
+		SetText("@Animator.WPAnimator.Action.VPSMirrorSelected");
+		SetDescription("@Animator.WPAnimator.Action.VPSMirrorSelected.ToolTip");
 	}
 };
 
 }
 
 decStringSet aeMCPAnimatorAffectedVertexPositionSets::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
-	return Owner(context).GetMPHiddenVPSNames();
+	return Owner(context).mpHiddenVpsNames;
 }
 
 void aeMCPAnimatorAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
@@ -124,7 +117,8 @@ void aeMCPAnimatorAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCasc
 	AddDefaultContextMenuEntries(menu, context, owner);
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, deTObjectReference<cActionAffectedVertexPositionSetsMirror>::New(*this, owner, context));
+	helper.MenuCommand(menu, deTObjectReference<cActionAffectedVpsMirror>::New(*this, owner, context));
+	helper.MenuCommand(menu, deTObjectReference<cActionAffectedVpsMirrorSelected>::New(*this, owner, context));
 }
 
 
@@ -150,7 +144,7 @@ public:
 			return;
 		}
 		
-		pProperty.Owner(context).GetMPControllers()->Visit([&](aeController &controller){
+		pProperty.Owner(context).mpControllers->Visit([&](aeController &controller){
 			controller.ResetValue();
 		});
 	}
@@ -173,7 +167,7 @@ public:
 			return;
 		}
 		
-		pProperty.Owner(context).GetMPControllers()->Visit([&](aeController &controller){
+		pProperty.Owner(context).mpControllers->Visit([&](aeController &controller){
 			controller.ResetValue(true);
 		});
 	}
@@ -188,7 +182,7 @@ igdeMetaPropertyMCTNoCapture("animator.playgroundControllers", propertyName, pro
 aeMCPAnimatorPlaygroundControllers::~aeMCPAnimatorPlaygroundControllers() = default;
 
 aeMCPAnimatorPlaygroundControllers::Storage &aeMCPAnimatorPlaygroundControllers::GetStorage(const igdeMetaContext::Ref &context) const{
-	return Owner(context).GetMPPlayground();
+	return Owner(context).mpPlaygroundControllers;
 }
 
 void aeMCPAnimatorPlaygroundControllers::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){

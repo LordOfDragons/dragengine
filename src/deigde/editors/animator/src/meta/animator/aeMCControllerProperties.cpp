@@ -28,31 +28,44 @@
 #include <deigde/meta/property/igdeMetaPropertyAdapters.h>
 
 
-aeMCControllerProperties::aeMCControllerProperties(aeWindowMain &windowMain) :
-controller(deTObjectReference<aeMCPController>::New(windowMain)){
-}
-
-void aeMCControllerProperties::Init(const aeMCAnimatorProperties &properties){
-	groupLocomotionTesting->GetProperties() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		locomotionAttribute,
-		locomotionLeg,
-		vectorSimulation);
+void aeMCControllerProperties::Init(aeWindowMain &windowMain){
+	name = deTObjectReference<aeMCPControllerName>::New();
+	minimumValue = deTObjectReference<aeMCPControllerMinimumValue>::New();
+	maximumValue = deTObjectReference<aeMCPControllerMaximumValue>::New();
+	currentValue = deTObjectReference<aeMCPControllerCurrentValue>::New();
+	vector = deTObjectReference<aeMCPControllerVector>::New();
+	clamp = deTObjectReference<aeMCPControllerClamp>::New();
+	frozen = deTObjectReference<aeMCPControllerFrozen>::New();
+	defaultValue = deTObjectReference<aeMCPControllerDefaultValue>::New();
+	defaultVector = deTObjectReference<aeMCPControllerDefaultVector>::New();
 	
-	metaProperties->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		name,
-		minimumValue,
-		maximumValue,
-		currentValue,
-		vector,
-		clamp,
-		frozen,
-		defaultValue,
-		defaultVector,
-		groupLocomotionTesting);
+	locomotionAttribute = deTObjectReference<aeMCPControllerLocomotionAttribute>::New();
+	locomotionLeg = deTObjectReference<aeMCPControllerLocomotionLeg>::New();
+	vectorSimulation = deTObjectReference<aeMCPControllerVectorSimulation>::New();
+	groupLocomotionTesting = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"controller.groupLocomotionTesting", "Animator.WPController.LocomotionTesting",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			locomotionAttribute,
+			locomotionLeg,
+			vectorSimulation));
 	
-	group->GetProperties() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		controllers,
-		controller);
+	metaProperties = igdeMetaContext::PropertyList::Ref::New(
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			name,
+			minimumValue, maximumValue,
+			currentValue,
+			vector,
+			clamp,
+			frozen,
+			defaultValue, defaultVector,
+			groupLocomotionTesting));
+	
+	controllers = deTObjectReference<aeMCPControllers>::New();
+	controller = deTObjectReference<aeMCPController>::New(windowMain);
+	
+	group = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupControllers", "Animator.WPController.Controllers",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, controllers, controller));
 	
 	igdeMetaPropertyAdapter::OnChanged(name, controllers);
 }
