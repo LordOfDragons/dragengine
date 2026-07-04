@@ -28,6 +28,7 @@
 #include <dragengine/dragengine_configuration.h>
 #if defined(OS_UNIX_X11) && defined(BACKEND_OPENGL)
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringList.h>
 
 #include "deoglRTCBUnixX11.h"
@@ -44,6 +45,7 @@ protected:
 	
 	EGLDisplay pEGLDisplay;
 	EGLConfig pEGLConfig;
+	decTList<EGLConfig> pEGLConfigs;
 	EGLContext pEGLContext;
 	EGLContext pEGLLoaderContext;
 	EGLContext pEGLCompileContext[MaxCompileContextCount];
