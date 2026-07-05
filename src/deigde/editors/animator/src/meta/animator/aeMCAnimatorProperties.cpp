@@ -66,7 +66,7 @@ void aeMCAnimatorProperties::Init(aeWindowMain &windowMain){
 	ruleMirror.Init(*this, windowMain);
 	ruleStateManipulator.Init(*this);
 	ruleStateSnapshot.Init(*this);
-	ruleSubAnimator.Init(*this);
+	ruleSubAnimator.Init(*this, windowMain);
 	ruleTrackTo.Init(*this);
 	
 	// locomotion

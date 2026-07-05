@@ -917,6 +917,7 @@ Apply all rules (all) or blend between two selected rules using the select targe
 	<translation name="Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet">Enable vertex position set manipulation</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet.ToolTip">Determines if vertex position set is modified or kept as it is</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.Connections">Connections:</translation>
+	<translation name="Animator.WPAPanelRuleSubAnimator.Connections.ToolTip">Connection between sub-animator and controllers</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.ConnectionInfo"></translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.ConnectionInfo.ToolTip">Auto-Connected if empty</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.ConnectionInfo.Value">Automatically creates connections by matching controller names if no custom connections are defined</translation>

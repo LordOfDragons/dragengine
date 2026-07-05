@@ -408,17 +408,40 @@ void aeMCRuleStateSnapshotProperties::Init(const aeMCAnimatorProperties &propert
 }
 
 
-void aeMCRuleSubAnimatorProperties::Init(const aeMCAnimatorProperties &properties){
+void aeMCRuleSubAnimatorConnectionProperties::Init(const aeMCAnimatorProperties &properties, aeWindowMain &windowMain){
+	target = deTObjectReference<aeMCPRuleSubAnimatorConnectionTarget>::New();
+	controller = deTObjectReference<aeMCPRuleSubAnimatorConnectionController>::New();
+	
+	metaProperties = igdeMetaContext::PropertyList::Ref::New(
+		igdeMetaProperty::List(devctag, target, controller));
+	
+	igdeMetaPropertyAdapter::OnChanged(properties.controller.controllers, controller);
+	
+	connections = deTObjectReference<aeMCPRuleSubAnimatorConnections>::New();
+	connection = deTObjectReference<aeMCPRuleSubAnimatorConnection>::New(windowMain);
+	groupConnections = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.rule_subanimator.groupConnections", "Animator.WPAPanelRuleSubAnimator.Connections",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, connections, connection), true);
+	
+	igdeMetaPropertyAdapter::OnChanged(target, connections);
+	igdeMetaPropertyAdapter::OnChangedUsing<igdeMetaPropertyObject>(controller, connections);
+}
+
+
+void aeMCRuleSubAnimatorProperties::Init(const aeMCAnimatorProperties &properties, aeWindowMain &windowMain){
 	pathSubAnimator = deTObjectReference<aeMCPRuleSubAnimatorPathSubAnimator>::New();
 	enablePosition = deTObjectReference<aeMCPRuleSubAnimatorEnablePosition>::New();
 	enableOrientation = deTObjectReference<aeMCPRuleSubAnimatorEnableOrientation>::New();
 	enableSize = deTObjectReference<aeMCPRuleSubAnimatorEnableSize>::New();
 	enableVertexPositionSet = deTObjectReference<aeMCPRuleSubAnimatorEnableVertexPositionSet>::New();
 	
+	connection.Init(properties, windowMain);
+	
 	metaProperties = igdeMetaContext::PropertyList::Ref::New(
 		properties.rule.metaProperties->GetData()
 		+ igdeMetaProperty::List(devctag,
 			pathSubAnimator,
+			connection.groupConnections,
 			enablePosition, enableOrientation, enableSize, enableVertexPositionSet));
 }
 

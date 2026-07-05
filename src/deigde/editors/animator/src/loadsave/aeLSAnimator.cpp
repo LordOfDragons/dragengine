@@ -1199,15 +1199,15 @@ const aeRuleSubAnimator &rule){
 	
 	writer.WriteDataTagString("pathAnimator", rule.mpPathSubAnimator.GetValue());
 	
-	rule.GetConnections().VisitIndexed([&](int i, aeController *controller){
-		if(!controller){
+	rule.mpConnections->VisitIndexed([&](int i, const aeRuleSubAnimator::Connection &connection){
+		if(connection.mpTarget->IsEmpty()){
 			return;
 		}
 		
 		writer.WriteOpeningTagStart("connection");
-		writer.WriteAttributeInt("controller", animator.mpControllers->IndexOf(controller));
+		writer.WriteAttributeInt("controller", connection.mpController->GetIndex());
 		writer.WriteOpeningTagEnd(false, false);
-		writer.WriteTextString(rule.GetSubAnimator()->GetControllers().GetAt(i)->GetName());
+		writer.WriteTextString(connection.mpTarget.GetValue());
 		writer.WriteClosingTag("connection", false);
 	});
 	
@@ -2994,18 +2994,16 @@ aeRule::Ref aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimato
 				}
 				
 			}else if(strcmp(tag->GetName(), "connection") == 0){
+				auto connection = aeRuleSubAnimator::Connection::Ref::New(animator.GetWindowMain());
+				connection->mpTarget = GetCDataString(*tag);
+				
 				const int controller = pGetAttributeInt(tag, "controller");
-				const decString target(GetCDataString(*tag));
-				if(target.IsEmpty() || !rule->GetSubAnimator()){
-					continue;
+				if(controller != -1){
+					connection->mpController = animator.mpControllers->GetAt(controller);
 				}
 				
-				const int targetIndex = rule->GetSubAnimator()->GetControllers().IndexOfNamed(target);
-				if(targetIndex == -1){
-					continue;
-				}
-				
-				rule->SetControllerAt(targetIndex, animator.mpControllers->GetAt(controller));
+				rule->mpConnections = rule->mpConnections.GetValue()
+					+ aeMCPRuleSubAnimatorConnections::ListType(devctag, connection);
 				
 			}else if(strcmp(tag->GetName(), "enablePosition") == 0){
 				rule->mpEnablePosition.SetValue(GetCDataBool(*tag), false);

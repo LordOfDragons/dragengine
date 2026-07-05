@@ -328,6 +328,21 @@ public:
 };
 
 
+class aeMCRuleSubAnimatorConnectionProperties{
+public:
+	deTObjectReference<aeMCPRuleSubAnimatorConnectionTarget> target;
+	deTObjectReference<aeMCPRuleSubAnimatorConnectionController> controller;
+	
+	igdeMetaContext::PropertyList::Ref metaProperties;
+	
+	deTObjectReference<aeMCPRuleSubAnimatorConnections> connections;
+	deTObjectReference<aeMCPRuleSubAnimatorConnection> connection;
+	deTObjectReference<igdeMetaPropertyGroup> groupConnections;
+	
+	void Init(const aeMCAnimatorProperties &properties, aeWindowMain &windowMain);
+};
+
+
 class aeMCRuleSubAnimatorProperties{
 public:
 	deTObjectReference<aeMCPRuleSubAnimatorPathSubAnimator> pathSubAnimator;
@@ -336,9 +351,11 @@ public:
 	deTObjectReference<aeMCPRuleSubAnimatorEnableSize> enableSize;
 	deTObjectReference<aeMCPRuleSubAnimatorEnableVertexPositionSet> enableVertexPositionSet;
 	
+	aeMCRuleSubAnimatorConnectionProperties connection;
+	
 	igdeMetaContext::PropertyList::Ref metaProperties;
 	
-	void Init(const aeMCAnimatorProperties &properties);
+	void Init(const aeMCAnimatorProperties &properties, aeWindowMain &windowMain);
 };
 
 

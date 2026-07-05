@@ -911,6 +911,7 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet">Vertex-Positionssatz ändern</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet.ToolTip">Legt fest, ob der Vertex-Positionssatz geändert wird.</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.Connections">Verbindungen:</translation>
+	<translation name="Animator.WPAPanelRuleSubAnimator.Connections.ToolTip">Verbindung zwischen Sub-Animator und Controllern</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.ConnectionInfo" />
 	<translation name="Animator.WPAPanelRuleSubAnimator.ConnectionInfo.ToolTip">Automatisch wenn leer</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.ConnectionInfo.Value">Erstellt automatisch Verbindungen durch Abgleich der Controller-Namen, wenn keine benutzerdefinierten Verbindungen festgelegt sind</translation>

@@ -32,7 +32,6 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 
 
-
 // Class aeRuleMirror::MatchName
 //////////////////////////////////
 

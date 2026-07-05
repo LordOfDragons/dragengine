@@ -45,7 +45,35 @@ class deAnimatorRuleSubAnimator;
 class aeRuleSubAnimator : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleSubAnimator>;
-	using ConnectionList = decTObjectList<aeController>;
+	
+	
+	class Connection : public deObject{
+	public:
+		using Ref = deTObjectReference<Connection>;
+		
+		using MetaContext = igdeMetaContextType<Connection>;
+		static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, Connection *connection);
+		
+		template<typename T>
+		using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+		
+		aeWindowMain &windowMain;
+		MetaContext::Ref metaContext;
+		igdeMetaPropertyStringStorage::Storage mpTarget;
+		igdeMetaPropertyObjectStorage<aeController>::Storage mpController;
+		aeRuleSubAnimator *parentRule = nullptr;
+		int targetIndex = -1;
+		
+		explicit Connection(aeWindowMain &windowMain);
+		Connection(const Connection &copy);
+		
+		igdeEnvironment &GetEnvironment() const;
+		igdeUndoSystem *GetUndoSystem() const;
+		
+	protected:
+		~Connection() override;
+	};
+	
 	
 	using MetaContext = igdeMetaContextTypeInherit<aeRuleSubAnimator, aeRule>;
 	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleSubAnimator *rule);
@@ -56,14 +84,14 @@ public:
 private:
 	deAnimator::Ref pSubAnimator;
 	
-	ConnectionList pConnections;
-	
 public:
 	igdeMetaPropertyPathStorage::Storage mpPathSubAnimator;
 	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
 	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
 	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
 	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyListStorage<Connection>::Storage mpConnections;
+	igdeMetaPropertyContextStorage::Storage mpConnection;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -90,12 +118,6 @@ public:
 	/** Load the sub animator using the stored path. */
 	void LoadSubAnimator();
 	
-	/** Connections. */
-	inline const ConnectionList &GetConnections() const{ return pConnections; }
-	
-	/** Set controller for target controller or \em nullptr. */
-	void SetControllerAt(int position, aeController *controller);
-	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	
@@ -107,6 +129,9 @@ public:
 	
 	/** Parent animator changed. */
 	void OnParentAnimatorChanged() override;
+	
+	/** Update engine connections. */
+	void UpdateEngineConnections() const;
 	/*@}*/
 	
 	/** \name Operators */
@@ -115,7 +140,7 @@ public:
 	/*@}*/
 	
 private:
-	void pUpdateConnections(deAnimatorRuleSubAnimator &rule) const;
+	void pUpdateEngineConnections(deAnimatorRuleSubAnimator &rule) const;
 };
 
 #endif
