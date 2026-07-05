@@ -96,6 +96,10 @@ public:
 	igdeMetaContext(const char *identifier, const char *label, const char *description,
 		const igdeIcon::Ref &icon, const PropertyList::Ref &properties);
 	
+	/** \brief Create meta context. */
+	igdeMetaContext(const char *identifier, const char *translationTag,
+		const igdeIcon::Ref &icon, const PropertyList::Ref &properties);
+	
 	/** \brief Create copy of meta context. */
 	igdeMetaContext(const igdeMetaContext &copy);
 	
@@ -204,17 +208,28 @@ public:
 	pOwner(owner){}
 	
 	/** Create type meta context. */
+	igdeMetaContextType(const char *identifier, const char *translationTag,
+		const igdeIcon::Ref &icon, const PropertyList::Ref &properties, T *owner) :
+	igdeMetaContext(identifier, translationTag, icon, properties),
+	pOwner(owner){}
+	
+	/** Create type meta context. */
 	igdeMetaContextType(const char *identifier, const char *label, const char *description,
 		const PropertyList::Ref &properties, T *owner) :
-	igdeMetaContextType(identifier, label, description, {}, properties, owner){}
+	igdeMetaContextType(identifier, label, description, igdeIcon::Ref(), properties, owner){}
+	
+	/** Create type meta context. */
+	igdeMetaContextType(const char *identifier, const char *translationTag,
+		const PropertyList::Ref &properties, T *owner) :
+	igdeMetaContextType(identifier, translationTag, igdeIcon::Ref(), properties, owner){}
 	
 	/** Create type meta context. */
 	igdeMetaContextType(const char *identifier, const PropertyList::Ref &properties, T *owner) :
-	igdeMetaContextType(identifier, "", "", {}, properties, owner){}
+	igdeMetaContextType(identifier, "", "", igdeIcon::Ref(), properties, owner){}
 	
 	/** Create type meta context. */
 	igdeMetaContextType(const char *identifier, T *owner) :
-	igdeMetaContextType(identifier, "", "", {}, {}, owner){}
+	igdeMetaContextType(identifier, "", "", igdeIcon::Ref(), PropertyList::Ref(), owner){}
 	
 	/** \brief Create copy of type meta context. */
 	igdeMetaContextType(const igdeMetaContextType &copy) :

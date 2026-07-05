@@ -197,7 +197,7 @@ class aeMCPRuleInverseKinematicTargetGoalPosition :
 public:
 	aeMCPRuleInverseKinematicTargetGoalPosition() : MetaPropertyTarget(
 		"animator.rule_inverse_kinematics.targetGoalPosition",
-		"Animator.WPAPanelRuleInverseKinematic.GoalPosition"){}
+		"Animator.Target.GoalPosition"){}
 	~aeMCPRuleInverseKinematicTargetGoalPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -210,7 +210,7 @@ class aeMCPRuleInverseKinematicTargetGoalOrientation :
 public:
 	aeMCPRuleInverseKinematicTargetGoalOrientation() : MetaPropertyTarget(
 		"animator.rule_inverse_kinematics.targetGoalOrientation",
-		"Animator.WPAPanelRuleInverseKinematic.GoalOrientation"){}
+		"Animator.Target.GoalOrientation"){}
 	~aeMCPRuleInverseKinematicTargetGoalOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -223,7 +223,7 @@ class aeMCPRuleInverseKinematicTargetLocalPosition :
 public:
 	aeMCPRuleInverseKinematicTargetLocalPosition() : MetaPropertyTarget(
 		"animator.rule_inverse_kinematics.targetLocalPosition",
-		"Animator.WPAPanelRuleInverseKinematic.LocalPosition"){}
+		"Animator.Target.LocalPosition"){}
 	~aeMCPRuleInverseKinematicTargetLocalPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -236,7 +236,7 @@ class aeMCPRuleInverseKinematicTargetLocalOrientation :
 public:
 	aeMCPRuleInverseKinematicTargetLocalOrientation() : MetaPropertyTarget(
 		"animator.rule_inverse_kinematics.targetLocalOrientation",
-		"Animator.WPAPanelRuleInverseKinematic.LocalOrientation"){}
+		"Animator.Target.LocalOrientation"){}
 	~aeMCPRuleInverseKinematicTargetLocalOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -249,7 +249,7 @@ class aeMCPRuleInverseKinematicTargetReachRange :
 public:
 	aeMCPRuleInverseKinematicTargetReachRange() : MetaPropertyTarget(
 		"animator.rule_inverse_kinematics.targetReachRange",
-		"Animator.WPAPanelRuleInverseKinematic.Range"){}
+		"Animator.Target.ReachRange"){}
 	~aeMCPRuleInverseKinematicTargetReachRange() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -262,7 +262,7 @@ class aeMCPRuleInverseKinematicTargetReachCenter :
 public:
 	aeMCPRuleInverseKinematicTargetReachCenter() : MetaPropertyTarget(
 		"animator.rule_inverse_kinematics.targetReachCenter",
-		"Animator.WPAPanelRuleInverseKinematic.ReachCenter"){}
+		"Animator.Target.ReachCenter"){}
 	~aeMCPRuleInverseKinematicTargetReachCenter() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{

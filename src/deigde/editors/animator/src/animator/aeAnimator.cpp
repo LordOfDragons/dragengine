@@ -83,37 +83,37 @@
 /////////////////////
 
 aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContext(aeWindowMain &windowMain, aeAnimator *animator){
-	return MetaContext::Ref::New("animator.animator", "Animator", "Animator properties",
+	return MetaContext::Ref::New("animator.animator", "Animator.Context.Animator",
 		windowMain.GetMCAnimatorProperties().metaProperties, animator);
 }
 
 aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextController(aeWindowMain &windowMain, aeAnimator *animator){
-	return MetaContext::Ref::New("animator.animator_controller", "Controller", "Animator controller properties",
+	return MetaContext::Ref::New("animator.animator_controller", "Animator.Context.Controller",
 		windowMain.GetMCAnimatorProperties().metaPropertiesController, animator);
 }
 
 aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextLink(aeWindowMain &windowMain, aeAnimator *animator){
-	return MetaContext::Ref::New("animator.animator_link", "Link", "Animator link properties",
+	return MetaContext::Ref::New("animator.animator_link", "Animator.Context.Link",
 		windowMain.GetMCAnimatorProperties().metaPropertiesLink, animator);
 }
 
 aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextRule(aeWindowMain &windowMain, aeAnimator *animator){
-	return MetaContext::Ref::New("animator.animator_rule", "Rule", "Animator rule properties",
+	return MetaContext::Ref::New("animator.animator_rule", "Animator.Context.Rule",
 		windowMain.GetMCAnimatorProperties().metaPropertiesRule, animator);
 }
 
 aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextPlayground(aeWindowMain &windowMain, aeAnimator *animator){
-	return MetaContext::Ref::New("animator.animator_playground", "Playground", "Animator playground properties",
+	return MetaContext::Ref::New("animator.animator_playground", "Animator.Context.Playground",
 		windowMain.GetMCAnimatorProperties().metaPropertiesPlayground, animator);
 }
 
 aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextAttachment(aeWindowMain &windowMain, aeAnimator *animator){
-	return MetaContext::Ref::New("animator.animator_attachment", "Attachment", "Animator attachment properties",
+	return MetaContext::Ref::New("animator.animator_attachment", "Animator.Context.Attachment",
 		windowMain.GetMCAnimatorProperties().attachment.metaProperties, animator);
 }
 
 aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextView(aeWindowMain &windowMain, aeAnimator *animator){
-	return MetaContext::Ref::New("animator.animator_view", "View", "Animator view properties",
+	return MetaContext::Ref::New("animator.animator_view", "Animator.Context.View",
 		windowMain.GetMCAnimatorProperties().metaPropertiesView, animator);
 }
 

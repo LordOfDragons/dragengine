@@ -42,11 +42,9 @@ void aeMCRuleProperties::Init(aeWindowMain &windowMain){
 		decTObjectOrderedSet<igdeMetaProperty>(devctag,
 			name,
 			blendMode,
-			blendFactor,
-			invertBlendFactor,
+			blendFactor, targetBlendFactor, invertBlendFactor,
 			enabled,
-			affectedBones, affectedVertexPositionSets,
-			targetBlendFactor));
+			affectedBones, affectedVertexPositionSets));
 	
 	ruleTree = deTObjectReference<aeMCPRuleTree>::New();
 	rules = deTObjectReference<aeMCPRules>::New();
@@ -73,9 +71,8 @@ void aeMCRuleAnimationProperties::Init(const aeMCAnimatorProperties &properties)
 		properties.rule.metaProperties->GetData()
 		+ igdeMetaProperty::List(devctag,
 			moveName,
-			moveTime,
-			enablePosition, enableOrientation, enableSize, enableVertexPositionSet,
-			targetMoveTime));
+			moveTime, targetMoveTime,
+			enablePosition, enableOrientation, enableSize, enableVertexPositionSet));
 	
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenMoveNames, moveName);
 }
@@ -97,11 +94,10 @@ void aeMCRuleAnimationDifferenceProperties::Init(const aeMCAnimatorProperties &p
 	metaProperties = igdeMetaContext::PropertyList::Ref::New(
 		properties.rule.metaProperties->GetData()
 		+ igdeMetaProperty::List(devctag,
-			leadingMoveName, leadingMoveTime,
-			referenceMoveName, referenceMoveTime,
+			leadingMoveName, leadingMoveTime, targetLeadMoveTime,
+			referenceMoveName, referenceMoveTime, targetRefMoveTime,
 			useComponentSpace,
-			enablePosition, enableOrientation, enableSize, enableVertexPositionSet,
-			targetLeadMoveTime, targetRefMoveTime));
+			enablePosition, enableOrientation, enableSize, enableVertexPositionSet));
 	
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenMoveNames, leadingMoveName);
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenMoveNames, referenceMoveName);
@@ -121,8 +117,9 @@ void aeMCRuleAnimationSelectProperties::Init(const aeMCAnimatorProperties &prope
 		properties.rule.metaProperties->GetData()
 		+ igdeMetaProperty::List(devctag,
 			moves,
-			enablePosition, enableOrientation, enableSize, enableVertexPositionSet,
-			targetMoveTime, targetSelect));
+			targetSelect,
+			targetMoveTime,
+			enablePosition, enableOrientation, enableSize, enableVertexPositionSet));
 }
 
 
@@ -151,18 +148,13 @@ void aeMCRuleBoneTransformatorProperties::Init(const aeMCAnimatorProperties &pro
 	metaProperties = igdeMetaContext::PropertyList::Ref::New(
 		properties.rule.metaProperties->GetData()
 		+ igdeMetaProperty::List(devctag,
-			minTranslation, maxTranslation,
-			minRotation, maxRotation,
-			minScaling, maxScaling,
-			axis,
-			minAngle, maxAngle,
-			enablePosition, enableOrientation, enableSize,
-			useAxis,
-			targetBone,
-			inputBone,
+			minTranslation, maxTranslation, targetTranslation, enablePosition,
+			minRotation, maxRotation, targetRotation, enableOrientation,
+			minScaling, maxScaling, targetScaling, enableSize,
+			axis, minAngle, maxAngle, useAxis,
+			targetBone, inputBone,
 			coordinateFrame,
-			inputSource,
-			targetTranslation, targetRotation, targetScaling));
+			inputSource));
 	
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenBoneNames, targetBone);
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenBoneNames, inputBone);
@@ -191,10 +183,11 @@ void aeMCRuleForeignStateProperties::Init(const aeMCAnimatorProperties &properti
 		properties.rule.metaProperties->GetData()
 		+ igdeMetaProperty::List(devctag,
 			foreignBone, foreignVertexPositionSet,
-			scalePosition, scaleOrientation, scaleSize, scaleVertexPositionSet,
-			enablePosition, enableOrientation, enableSize, enableVertexPositionSet,
-			sourceCoordinateFrame, destCoordinateFrame,
-			targetPosition, targetOrientation, targetSize, targetVertexPositionSet));
+			scalePosition, targetPosition, enablePosition,
+			scaleOrientation, targetOrientation, enableOrientation,
+			scaleSize, targetSize, enableSize,
+			scaleVertexPositionSet, targetVertexPositionSet, enableVertexPositionSet,
+			sourceCoordinateFrame, destCoordinateFrame));
 	
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenBoneNames, foreignBone);
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenVPSNames, foreignVertexPositionSet);
@@ -245,17 +238,15 @@ void aeMCRuleInverseKinematicProperties::Init(const aeMCAnimatorProperties &prop
 	metaProperties = igdeMetaContext::PropertyList::Ref::New(
 		properties.rule.metaProperties->GetData()
 		+ igdeMetaProperty::List(devctag,
-			goalPosition, goalOrientation,
-			localPosition, localOrientation,
+			goalPosition, targetGoalPosition,
+			goalOrientation, targetGoalOrientation,
+			localPosition, targetLocalPosition,
+			localOrientation, targetLocalOrientation,
 			adjustOrientation,
 			useSolverBone,
 			solverBone,
-			reachRange,
-			reachBone,
-			reachCenter,
-			targetGoalPosition, targetGoalOrientation,
-			targetLocalPosition, targetLocalOrientation,
-			targetReachRange, targetReachCenter));
+			reachRange, targetReachRange, reachBone, reachCenter,
+			targetReachCenter));
 	
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenBoneNames, solverBone);
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenBoneNames, reachBone);
@@ -297,22 +288,16 @@ void aeMCRuleLimitProperties::Init(const aeMCAnimatorProperties &properties){
 	metaProperties = igdeMetaContext::PropertyList::Ref::New(
 		properties.rule.metaProperties->GetData()
 		+ igdeMetaProperty::List(devctag,
-			minPosition, maxPosition,
-			minRotation, maxRotation,
-			minScaling, maxScaling,
-			minVertexPositionSet, maxVertexPositionSet,
+			minPosition, enablePositionXMin, enablePositionYMin, enablePositionZMin,
+			maxPosition, enablePositionXMax, enablePositionYMax, enablePositionZMax,
+			minRotation, enableRotationXMin, enableRotationYMin, enableRotationZMin,
+			maxRotation, enableRotationXMax, enableRotationYMax, enableRotationZMax,
+			minScaling, enableScalingXMin, enableScalingYMin, enableScalingZMin,
+			maxScaling, enableScalingXMax, enableScalingYMax, enableScalingZMax,
+			minVertexPositionSet, enableVertexPositionSetMin,
+			maxVertexPositionSet, enableVertexPositionSetMax,
 			targetBone,
-			coordinateFrame,
-			enablePositionXMin, enablePositionXMax,
-			enablePositionYMin, enablePositionYMax,
-			enablePositionZMin, enablePositionZMax,
-			enableRotationXMin, enableRotationXMax,
-			enableRotationYMin, enableRotationYMax,
-			enableRotationZMin, enableRotationZMax,
-			enableScalingXMin, enableScalingXMax,
-			enableScalingYMin, enableScalingYMax,
-			enableScalingZMin, enableScalingZMax,
-			enableVertexPositionSetMin, enableVertexPositionSetMax));
+			coordinateFrame));
 	
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenBoneNames, targetBone);
 }
@@ -382,12 +367,10 @@ void aeMCRuleStateManipulatorProperties::Init(const aeMCAnimatorProperties &prop
 	metaProperties = igdeMetaContext::PropertyList::Ref::New(
 		properties.rule.metaProperties->GetData()
 		+ igdeMetaProperty::List(devctag,
-			minPosition, maxPosition,
-			minRotation, maxRotation,
-			minSize, maxSize,
-			minVertexPositionSet, maxVertexPositionSet,
-			enablePosition, enableRotation, enableSize, enableVertexPositionSet,
-			targetPosition, targetRotation, targetSize, targetVertexPositionSet));
+			minPosition, maxPosition, targetPosition, enablePosition,
+			minRotation, maxRotation, targetRotation, enableRotation,
+			minSize, maxSize, targetSize, enableSize,
+			minVertexPositionSet, maxVertexPositionSet, targetVertexPositionSet, enableVertexPositionSet));
 }
 
 
@@ -461,9 +444,9 @@ void aeMCRuleTrackToProperties::Init(const aeMCAnimatorProperties &properties){
 			trackBone,
 			trackAxis,
 			upAxis,
-			upTarget,
+			upTarget, targetUp,
 			lockedAxis,
-			targetPosition, targetUp));
+			targetPosition));
 	
 	igdeMetaPropertyAdapter::OnChanged(properties.hiddenBoneNames, trackBone);
 }

@@ -57,6 +57,16 @@ pProperties(properties),
 pDisposed(false){
 }
 
+igdeMetaContext::igdeMetaContext(const char *identifier, const char *translationTag,
+	const igdeIcon::Ref &icon, const PropertyList::Ref &properties) :
+pIdentifier(identifier),
+pLabel(decString::Formatted("@{}", translationTag)),
+pDescription(decString::Formatted("@{}.ToolTip", translationTag)),
+pIcon(icon),
+pProperties(properties),
+pDisposed(false){
+}
+
 igdeMetaContext::igdeMetaContext(const igdeMetaContext &copy) :
 pIdentifier(copy.pIdentifier),
 pLabel(copy.pLabel),
