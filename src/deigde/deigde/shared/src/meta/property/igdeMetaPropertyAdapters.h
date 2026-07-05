@@ -34,6 +34,8 @@
 #include "igdeMetaPropertySelection.h"
 #include "../igdeMetaContext.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 
 /**
  * \brief Adapter for meta properties displaying information using another meta property.
@@ -164,6 +166,28 @@ public:
 		
 	protected:
 		~NotifyTreeListOnChanged() override = default;
+	};
+	
+	/**
+	 * \brief Update actions on property changed.
+	 */
+	template<typename T>
+	class UpdateActionsOnValueChanged : public T::Listener{
+	public:
+		using ActionList = decTObjectOrderedSet<igdeAction>;
+		
+	private:
+		ActionList pActions;
+		
+	public:
+		using Ref = deTObjectReference<UpdateActionsOnValueChanged>;
+		UpdateActionsOnValueChanged(const ActionList& actions) : pActions(actions){}
+		UpdateActionsOnValueChanged(const igdeAction::Ref& action) : pActions(devctag, action){}
+		void OnValueChanged(T*, const igdeMetaContext::Ref&) override{
+			pActions.Visit([](igdeAction &action){
+				action.Update();
+			});
+		}
 	};
 	
 	

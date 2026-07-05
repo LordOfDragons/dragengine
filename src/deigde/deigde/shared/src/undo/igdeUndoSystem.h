@@ -26,12 +26,12 @@
 #define _IGDEUNDOSYSTEM_H_
 
 #include "igdeUndo.h"
+#include "../meta/property/igdeMetaPropertyUndoHistory.h"
 
 #include <dragengine/common/collection/decTOrderedSet.h>
 
 class igdeEditableEntity;
 class igdeMetaContext;
-class igdeMetaPropertyUndoHistory;
 
 
 /**

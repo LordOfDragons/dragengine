@@ -179,7 +179,7 @@ mpTargetReachCenter(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.ta
 }
 
 aeRuleInverseKinematic::aeRuleInverseKinematic(const aeRuleInverseKinematic &copy) :
-aeRuleInverseKinematic(copy.GetWindowMain(), copy.GetName())
+aeRuleInverseKinematic(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpGoalPosition.SetValue(copy.mpGoalPosition, false);
@@ -205,47 +205,6 @@ aeRuleInverseKinematic::~aeRuleInverseKinematic() = default;
 
 // Management
 ///////////////
-
-void aeRuleInverseKinematic::SetGoalPosition(const decVector &value){
-	mpGoalPosition = value;
-}
-
-void aeRuleInverseKinematic::SetGoalOrientation(const decVector &value){
-	mpGoalOrientation = value;
-}
-
-void aeRuleInverseKinematic::SetLocalPosition(const decVector &value){
-	mpLocalPosition = value;
-}
-
-void aeRuleInverseKinematic::SetLocalOrientation(const decVector &value){
-	mpLocalOrientation = value;
-}
-
-void aeRuleInverseKinematic::SetAdjustOrientation(bool value){
-	mpAdjustOrientation = value;
-}
-
-void aeRuleInverseKinematic::SetUseSolverBone(bool value){
-	mpUseSolverBone = value;
-}
-
-void aeRuleInverseKinematic::SetSolverBone(const char *value){
-	mpSolverBone = value;
-}
-
-void aeRuleInverseKinematic::SetReachRange(float value){
-	mpReachRange = value;
-}
-
-void aeRuleInverseKinematic::SetReachBone(const char *value){
-	mpReachBone = value;
-}
-
-void aeRuleInverseKinematic::SetReachCenter(const decVector &value){
-	mpReachCenter = value;
-}
-
 
 void aeRuleInverseKinematic::UpdateTargets(){
 	auto engRule = static_cast<deAnimatorRuleInverseKinematic*>(GetEngineRule());

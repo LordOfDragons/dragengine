@@ -86,51 +86,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Rules. */
-	inline const aeRule::List &GetRules() const{ return mpRules; }
-	/** Add a new rule. */
-	void AddRule(aeRule *rule);
-	/** Insert a new rule. */
-	void InsertRuleAt(aeRule *rule, int index);
-	/** Move a rule to a new position. */
-	void MoveRuleTo(aeRule *rule, int index);
-	/** Remove the given rule. */
-	void RemoveRule(aeRule *rule);
-	/** Remove all rules. */
-	void RemoveAllRules();
-	
-	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return mpEnablePosition; }
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool value);
-	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
-	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool value);
-	
-	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return mpEnableSize; }
-	
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool value);
-	
-	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool value);
-	
-	/** Use current animation state instead of empty state. */
-	inline bool GetUseCurrentState() const{ return mpUseCurrentState; }
-	
-	/** Set if current animation state is used instead of empty state. */
-	void SetUseCurrentState(bool value);
-	
-	/** Retrieve the rule application type. */
-	inline deAnimatorRuleGroup::eApplicationTypes GetApplicationType() const{ return mpApplicationType; }
-	/** Set the rule application type. */
-	void SetApplicationType(deAnimatorRuleGroup::eApplicationTypes type);
-	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */

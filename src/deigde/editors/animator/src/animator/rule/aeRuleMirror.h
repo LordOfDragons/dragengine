@@ -124,44 +124,6 @@ public:
 	/*@{*/
 	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** Mirror axis. */
-	inline deAnimatorRuleMirror::eMirrorAxis GetMirrorAxis() const{ return mpMirrorAxis; }
-	
-	/** Set mirror axis. */
-	void SetMirrorAxis(deAnimatorRuleMirror::eMirrorAxis axis);
-	
-	/** Name of mirror bone or empty string to use component. */
-	inline const decString &GetMirrorBone() const{ return mpMirrorBone; }
-	
-	/** Set name of mirror bone or empty string to use component. */
-	void SetMirrorBone(const char *boneName);
-	
-	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return mpEnablePosition; }
-	
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool value);
-	
-	/** Orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
-	
-	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool value);
-	
-	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return mpEnableSize; }
-	
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool value);
-	
-	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool value);
-	
-	
-	
 	/** Create engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	

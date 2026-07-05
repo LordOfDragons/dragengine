@@ -98,8 +98,8 @@ void aeLoadSaveAttachmentConfig::SaveAttachmentConfig(const aeAnimator &animator
 void aeLoadSaveAttachmentConfig::pWriteConfiguration(decXmlWriter &writer, const aeAnimator &animator){
 	writer.WriteOpeningTag("attachmentConfig", false, true);
 	
-	animator.GetAttachments().Visit([&](const aeAttachment *attachment){
-		pWriteAttachment(writer, *attachment);
+	animator.mpAttachments->Visit([&](const aeAttachment &attachment){
+		pWriteAttachment(writer, attachment);
 	});
 	
 	writer.WriteClosingTag("attachmentConfig", true);
@@ -113,9 +113,9 @@ void aeLoadSaveAttachmentConfig::pWriteAttachment(decXmlWriter &writer, const ae
 	
 	writer.WriteOpeningTag("attachment");
 	
-	writer.WriteDataTagString("name", attachment.GetName());
+	writer.WriteDataTagString("name", attachment.mpName.GetValue());
 	
-	switch(attachment.GetAttachType()){
+	switch(attachment.mpAttachType){
 	case aeAttachment::eatNone:
 		writer.WriteDataTagString("attachType", "none");
 		break;
@@ -129,7 +129,7 @@ void aeLoadSaveAttachmentConfig::pWriteAttachment(decXmlWriter &writer, const ae
 		break;
 	};
 	
-	writer.WriteDataTagString("attachBone", attachment.GetBoneName());
+	writer.WriteDataTagString("attachBone", attachment.mpBoneName.GetValue());
 	
 	if(wpobject.GetGDClass()){
 		writer.WriteDataTagString("gdclass", wpobject.GetGDClass()->GetName());
@@ -176,7 +176,7 @@ void aeLoadSaveAttachmentConfig::pReadConfiguration(const decXmlElementTag &root
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	animator.RemoveAllAttachments();
+	animator.mpAttachments = {};
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -193,7 +193,7 @@ void aeLoadSaveAttachmentConfig::pReadConfiguration(const decXmlElementTag &root
 }
 
 void aeLoadSaveAttachmentConfig::pReadAttachment(const decXmlElementTag &root, aeAnimator &animator){
-	const aeAttachment::Ref attachment(aeAttachment::Ref::New(pWindowMain));
+	auto attachment = aeAttachment::Ref::New(pWindowMain);
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -202,26 +202,26 @@ void aeLoadSaveAttachmentConfig::pReadAttachment(const decXmlElementTag &root, a
 		
 		if(tag){
 			if(strcmp(tag->GetName(), "name") == 0){
-				attachment->SetName(GetCDataString(*tag));
+				attachment->mpName = GetCDataString(*tag);
 				
 			}else if(strcmp(tag->GetName(), "attachType") == 0){
 				const decString typeName(GetCDataString(*tag));
 				
 				if(typeName == "none"){
-					attachment->SetAttachType(aeAttachment::eatNone);
+					attachment->mpAttachType = aeAttachment::eatNone;
 					
 				}else if(typeName == "bone"){
-					attachment->SetAttachType(aeAttachment::eatBone);
+					attachment->mpAttachType = aeAttachment::eatBone;
 					
 				}else if(typeName == "rig"){
-					attachment->SetAttachType(aeAttachment::eatRig);
+					attachment->mpAttachType = aeAttachment::eatRig;
 					
 				}else{
 					LogWarnUnknownValue(*tag, typeName);
 				}
 				
 			}else if(strcmp(tag->GetName(), "attachBone") == 0){
-				attachment->SetBoneName(GetCDataString(*tag));
+				attachment->mpBoneName = GetCDataString(*tag);
 				
 			}else if(strcmp(tag->GetName(), "gdclass") == 0){
 				attachment->GetObjectWrapper()->SetGDClassName(GetCDataString(*tag));
@@ -251,5 +251,5 @@ void aeLoadSaveAttachmentConfig::pReadAttachment(const decXmlElementTag &root, a
 		}
 	}
 	
-	animator.AddAttachment(attachment);
+	animator.mpAttachments = animator.mpAttachments.GetValue() + aeAnimator::AttachmentSet(devctag, attachment);
 }

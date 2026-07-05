@@ -188,31 +188,6 @@ aeRuleMirror::~aeRuleMirror() = default;
 // Management
 ///////////////
 
-void aeRuleMirror::SetMirrorAxis(deAnimatorRuleMirror::eMirrorAxis value){
-	mpMirrorAxis = value;
-}
-
-void aeRuleMirror::SetMirrorBone(const char *value){
-	mpMirrorBone = value;
-}
-
-void aeRuleMirror::SetEnablePosition(bool value){
-	mpEnablePosition = value;
-}
-
-void aeRuleMirror::SetEnableOrientation(bool value){
-	mpEnableOrientation = value;
-}
-
-void aeRuleMirror::SetEnableSize(bool value){
-	mpEnableSize = value;
-}
-
-void aeRuleMirror::SetEnableVertexPositionSet(bool value){
-	mpEnableVertexPositionSet = value;
-}
-
-
 deAnimatorRule::Ref aeRuleMirror::CreateEngineRule(){
 	const deAnimatorRuleMirror::Ref engRule(deAnimatorRuleMirror::Ref::New());
 	

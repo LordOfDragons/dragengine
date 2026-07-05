@@ -237,7 +237,7 @@ public:
 			return;
 		}
 		
-		pProperty.Owner(context).GetControllers().Visit([](aeController &controller){
+		pProperty.Owner(context).mpControllers->Visit([](aeController &controller){
 			controller.ResetValue();
 		});
 	}

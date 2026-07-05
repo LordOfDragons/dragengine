@@ -63,7 +63,7 @@ public:
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &controller,
 	igdeMetaContextItemInfo &info) const override{
-		info.SetAll(decString::Formatted("{0}: {1}", controller->GetIndex(), controller->GetName()));
+		info.SetAll(decString::Formatted("{0}: {1}", controller->GetIndex(), controller->mpName.GetValue()));
 	}
 	
 	igdeMetaPropertyListUndo::Ref ChangePropertyValue(const ContextRef &context, const List &newValue,

@@ -68,7 +68,7 @@ public:
 	virtual igdeMouseCameraListener::eInteraction ChooseInteraction(){
 		const aeAnimator * const animator = pView.GetAnimator();
 		if(animator){
-			if(animator->GetCamera()->GetAttachToBone()
+			if(animator->GetCamera()->mpAttachToBone
 			|| animator->GetLocomotion().GetEnabled()
 			|| animator->GetWakeboard().GetEnabled()){
 				return eiNone;
@@ -86,8 +86,6 @@ public:
 		camera.SetFreePosition(camera.GetPosition());
 		camera.SetFreeOrientation(camera.GetOrientation());
 		camera.SetFreeDistance(camera.GetDistance());
-		
-		pView.GetAnimator()->NotifyCameraViewChanged();
 	}
 };
 
@@ -109,7 +107,6 @@ public:
 		
 		animator->ResetSimulation();
 		animator->GetLocomotion().SetEnabled(true);
-		animator->NotifyLocomotionChanged();
 		pView.GrabInput();
 	}
 	
@@ -121,7 +118,6 @@ public:
 		
 		pView.ReleaseInput();
 		animator->GetLocomotion().SetEnabled(false);
-		animator->NotifyLocomotionChanged();
 		animator->ResetSimulation();
 	}
 	
@@ -138,7 +134,6 @@ public:
 		aeAnimatorLocomotion &locomotion = animator->GetLocomotion();
 		locomotion.SetLookUpDownGoal(locomotion.GetLookUpDown().GetGoal() + diff.y);
 		locomotion.GetLookLeftRight().SetGoal(locomotion.GetLookLeftRight().GetGoal() - diff.x);
-		animator->NotifyLocomotionChanged();
 	}
 	
 	virtual void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int){
@@ -222,7 +217,6 @@ public:
 		
 		animator->ResetSimulation();
 		animator->GetWakeboard().SetEnabled(true);
-		animator->NotifyLocomotionChanged();
 		pView.GrabInput();
 	}
 	
@@ -234,7 +228,6 @@ public:
 		
 		pView.ReleaseInput();
 		animator->GetWakeboard().SetEnabled(false);
-		animator->NotifyLocomotionChanged();
 		animator->ResetSimulation();
 	}
 	
@@ -252,7 +245,6 @@ public:
 		aeWakeboard &wakeboard = animator->GetWakeboard();
 		wakeboard.SetTiltUpDown(pOldWakeTilt.y + diff.y);
 		wakeboard.SetTiltLeftRight(pOldWakeTilt.x + diff.x);
-		animator->NotifyLocomotionChanged();
 	}
 	
 	virtual void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int){

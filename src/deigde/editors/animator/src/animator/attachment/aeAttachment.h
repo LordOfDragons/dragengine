@@ -136,26 +136,6 @@ public:
 	igdeUndoSystem *GetUndoSystem() const;
 	
 	
-	/** Name. */
-	inline const decString &GetName() const{ return mpName; }
-	
-	/** Set name. */
-	void SetName(const char *name);
-	
-	/** Attach type. */
-	inline eAttachTypes GetAttachType() const{ return mpAttachType; }
-	
-	/** Set attached type. */
-	void SetAttachType(eAttachTypes type);
-	
-	/** Name of the bone to attach to. */
-	inline const decString &GetBoneName() const{ return mpBoneName; }
-	
-	/** Set name of the bone to attach to. */
-	void SetBoneName(const char *name);
-	
-	
-	
 	/** Update attachment. */
 	void Update(float elapsed);
 	

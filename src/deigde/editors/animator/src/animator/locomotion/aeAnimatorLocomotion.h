@@ -322,80 +322,16 @@ public:
 	/** Retrieves the collider used for touch ground rules. */
 	inline const deColliderVolume::Ref &GetTGCollider() const{ return pTGCollider; }
 	
-	/** Locomotion type. */
-	inline eLocomotionTypes GetLocomotionType() const{ return mpLocomotionType; }
-	/** Set locomotion type. */
-	void SetLocomotionType(eLocomotionTypes type);
-	
-	/** Legs. */
-	const LegList &GetLegs() const{ return mpLegs; }
-	
-	/** Retrieves the number of leg pairs to use. */
-	inline int GetUseLegPairCount() const{ return mpUseLegPairs; }
-	/** Sets the number of leg pairs to use. */
-	void SetUseLegPairCount(int pairCount);
-	/** Retrieves the leg blend time in seconds. */
-	inline float GetLegBlendTime() const{ return mpLegBlendTime; }
-	/** Sets the leg blend time in seconds. */
-	void SetLegBlendTime(float time);
-	
-	
-	
-	/** Look down limit in degrees. */
-	inline float GetLimitLookDown() const{ return mpLimitLookDown; }
-	/** Set look down limit in degrees. */
-	void SetLimitLookDown(float degrees);
-	
-	/** Look up limit in degrees. */
-	inline float GetLimitLookUp() const{ return mpLimitLookUp; }
-	/** Set look up limit in degrees. */
-	void SetLimitLookUp(float degrees);
-	
 	/** Look up down angle in degrees. */
 	inline decSmoothFloat &GetLookUpDown(){ return pLookUpDown; }
 	inline const decSmoothFloat &GetLookUpDown() const{ return pLookUpDown; }
-	inline float GetLookUpDownValue() const{ return mpAdjustTimeUpDown; }
+	
 	void SetLookUpDown(float degrees);
-	
-	/** Set look up down goal angle in degrees clamped to range. */
 	void SetLookUpDownGoal(float degrees);
-	
-	
-	
-	/** Look left limit in degrees. */
-	inline float GetLimitLookLeft() const{ return mpLimitLookLeft; }
-	
-	/** Set look left limit in degrees. */
-	void SetLimitLookRight(float degrees);
-	
-	/** Look right limit in degrees. */
-	inline float GetLimitLookRight() const{ return mpLimitLookRight; }
-	
-	/** Set look right limit in degrees. */
-	void SetLimitLookLeft(float degrees);
 	
 	/** Look right angle in degrees. */
 	inline decSmoothFloat &GetLookLeftRight(){ return pLookLeftRight; }
 	inline const decSmoothFloat &GetLookLeftRight() const{ return pLookLeftRight; }
-	
-	
-	
-	/** Adjustment speed for turning in place. */
-	inline float GetAdjustTimeTurnIP() const{ return mpAdjustTimeTurnIP; }
-	
-	/** Set adjustment speed for turning in place. */
-	void SetAdjustTimeTurnIP(float adjustTime);
-	
-	
-	
-	/** Retrieves the walk speed. */
-	inline float GetWalkSpeed() const{ return mpSpeedWalk; }
-	/** Sets the walk speed. */
-	void SetWalkSpeed(float speed);
-	/** Retrieves the run speed. */
-	inline float GetRunSpeed() const{ return mpSpeedRun; }
-	/** Sets the run speed. */
-	void SetRunSpeed(float speed);
 	
 	/** Retrieves the position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
@@ -527,10 +463,6 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	/** Sets if the locomotion testing is enabled. */
 	void SetEnabled(bool enabled);
-	/** Determines if the feet-on-ground IK is used. */
-	inline bool GetUseFoGIK() const{ return mpUseFoGIK; }
-	/** Sets if the feet-on-ground IK is used. */
-	void SetUseFoGIK(bool use);
 	/*@}*/
 	
 private:

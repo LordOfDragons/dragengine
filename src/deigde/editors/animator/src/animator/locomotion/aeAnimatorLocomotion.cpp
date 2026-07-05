@@ -248,7 +248,7 @@ pTurnIP(0.0f)
 		mpLeg = mpLegs->GetAt(0)->GetMetaContext();
 		
 		// update the leg pair information
-		SetUseLegPairCount(1);
+		mpUseLegPairs = 1;
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -256,14 +256,12 @@ pTurnIP(0.0f)
 	}
 	
 	mpLocomotionType.onValueChanged = [this](){
-		pAnimator->NotifyLocomotionChanged();
 		pAnimator->SetChanged(true);
 	};
 	
 	mpLimitLookDown.onValueChanged = [this](){
 		SetLookUpDown(pLookUpDown.GetValue());
 		SetLookUpDownGoal(pLookUpDown.GetGoal());
-		pAnimator->NotifyLocomotionChanged();
 		pAnimator->SetChanged(true);
 	};
 	mpLimitLookUp.onValueChanged = mpLimitLookDown.onValueChanged;
@@ -274,37 +272,31 @@ pTurnIP(0.0f)
 	
 	mpSpeedRun.onValueChanged = [this](){
 		pLinearVelocity.SetAdjustRange(mpSpeedRun);
-		pAnimator->NotifyLocomotionChanged();
 		pAnimator->SetChanged(true);
 	};
 	
 	mpAdjustTimeUpDown.onValueChanged = [this](){
 		pLookUpDown.SetAdjustTime(mpAdjustTimeUpDown);
-		pAnimator->NotifyLocomotionChanged();
 		pAnimator->SetChanged(true);
 	};
 	
 	mpAdjustTimeLeftRight.onValueChanged = [this](){
 		pLookLeftRight.SetAdjustTime(mpAdjustTimeLeftRight);
-		pAnimator->NotifyLocomotionChanged();
 		pAnimator->SetChanged(true);
 	};
 	
 	mpAdjustTimeStance.onValueChanged = [this](){
 		pStance.SetAdjustTime(mpAdjustTimeStance);
-		pAnimator->NotifyLocomotionChanged();
 		pAnimator->SetChanged(true);
 	};
 	
 	mpAdjustTimeOrientation.onValueChanged = [this](){
 		pOrientation.SetAdjustTime(mpAdjustTimeOrientation);
-		pAnimator->NotifyLocomotionChanged();
 		pAnimator->SetChanged(true);
 	};
 	
 	mpAdjustTimeVelocity.onValueChanged = [this](){
 		pLinearVelocity.SetAdjustTime(mpAdjustTimeVelocity);
-		pAnimator->NotifyLocomotionChanged();
 		pAnimator->SetChanged(true);
 	};
 	
@@ -563,22 +555,6 @@ void aeAnimatorLocomotion::SetShowShapes(bool showShapes){
 }
 
 
-
-void aeAnimatorLocomotion::SetLocomotionType(eLocomotionTypes type){
-	mpLocomotionType = type;
-}
-
-
-void aeAnimatorLocomotion::SetLegBlendTime(float time){
-	mpLegBlendTime = time;
-}
-
-void aeAnimatorLocomotion::SetUseLegPairCount(int pairCount){
-	mpUseLegPairs = pairCount;
-}
-
-
-
 void aeAnimatorLocomotion::SetEnabled(bool enabled){
 	if(enabled != pEnabled){
 		pEnabled = enabled;
@@ -594,20 +570,6 @@ void aeAnimatorLocomotion::SetEnabled(bool enabled){
 	}
 }
 
-void aeAnimatorLocomotion::SetUseFoGIK(bool use){
-	mpUseFoGIK = use;
-}
-
-
-
-void aeAnimatorLocomotion::SetLimitLookDown(float degrees){
-	mpLimitLookDown = degrees;
-}
-
-void aeAnimatorLocomotion::SetLimitLookUp(float degrees){
-	mpLimitLookUp = degrees;
-}
-
 void aeAnimatorLocomotion::SetLookUpDown(float degrees){
 	pLookUpDown.SetValue(decMath::clamp(degrees, mpLimitLookDown, mpLimitLookUp));
 }
@@ -615,33 +577,6 @@ void aeAnimatorLocomotion::SetLookUpDown(float degrees){
 void aeAnimatorLocomotion::SetLookUpDownGoal(float degrees){
 	pLookUpDown.SetGoal(decMath::clamp(degrees, mpLimitLookDown, mpLimitLookUp));
 }
-
-
-
-void aeAnimatorLocomotion::SetLimitLookLeft(float degrees){
-	mpLimitLookLeft = degrees;
-}
-
-void aeAnimatorLocomotion::SetLimitLookRight(float degrees){
-	mpLimitLookRight = degrees;
-}
-
-
-void aeAnimatorLocomotion::SetAdjustTimeTurnIP(float adjustTime){
-	mpAdjustTimeTurnIP = adjustTime;
-}
-
-
-
-void aeAnimatorLocomotion::SetWalkSpeed(float speed){
-	mpSpeedWalk = speed;
-}
-
-void aeAnimatorLocomotion::SetRunSpeed(float speed){
-	mpSpeedRun = speed;
-}
-
-
 
 void aeAnimatorLocomotion::SetPosition(const decDVector &position){
 	pPosition = position;
@@ -1493,6 +1428,5 @@ void aeAnimatorLocomotion::pUseLegPairCountChanged(){
 		subAnimator->AddBoneToRule(8, "foot2.r");
 	}
 	
-	pAnimator->NotifyLocomotionChanged();
 	pAnimator->SetChanged(true);
 }

@@ -179,7 +179,7 @@ mpTargetVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.
 }
 
 aeRuleForeignState::aeRuleForeignState(const aeRuleForeignState &copy) :
-aeRuleForeignState(copy.GetWindowMain(), copy.GetName())
+aeRuleForeignState(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpForeignBone.SetValue(copy.mpForeignBone, false);
@@ -205,55 +205,6 @@ aeRuleForeignState::~aeRuleForeignState() = default;
 
 // Management
 ///////////////
-
-void aeRuleForeignState::SetForeignBone(const char *value){
-	mpForeignBone = value;
-}
-
-void aeRuleForeignState::SetForeignVertexPositionSet(const char *value){
-	mpForeignVertexPositionSet = value;
-}
-
-void aeRuleForeignState::SetScalePosition(float value){
-	mpScalePosition = value;
-}
-
-void aeRuleForeignState::SetScaleOrientation(float value){
-	mpScaleOrientation = value;
-}
-
-void aeRuleForeignState::SetScaleSize(float value){
-	mpScaleSize = value;
-}
-
-void aeRuleForeignState::SetScaleVertexPositionSet(float value){
-	mpScaleVertexPositionSet = value;
-}
-
-void aeRuleForeignState::SetEnablePosition(bool value){
-	mpEnablePosition = value;
-}
-
-void aeRuleForeignState::SetEnableOrientation(bool value){
-	mpEnableOrientation = value;
-}
-
-void aeRuleForeignState::SetEnableSize(bool value){
-	mpEnableSize = value;
-}
-
-void aeRuleForeignState::SetEnableVertexPositionSet(bool value){
-	mpEnableVertexPositionSet = value;
-}
-
-void aeRuleForeignState::SetSourceCoordinateFrame(deAnimatorRuleForeignState::eCoordinateFrames value){
-	mpSourceCoordinateFrame = value;
-}
-
-void aeRuleForeignState::SetDestCoordinateFrame(deAnimatorRuleForeignState::eCoordinateFrames value){
-	mpDestCoordinateFrame = value;
-}
-
 
 void aeRuleForeignState::UpdateTargets(){
 	deAnimatorRuleForeignState *rule = (deAnimatorRuleForeignState*)GetEngineRule();

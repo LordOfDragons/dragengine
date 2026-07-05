@@ -55,7 +55,7 @@ class deAnimatorController;
 class aeController : public deObject{
 public:
 	using Ref = deTObjectReference<aeController>;
-	using List = decTCollectionQueryByName<decTObjectOrderedSet<aeController>,aeController>;
+	using List = decTObjectOrderedSet<aeController>;
 	
 	
 	enum eVectorSimulation{
@@ -138,10 +138,6 @@ public:
 	/** Meta context. */
 	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
-	/** Retrieves the name. */
-	inline const decString &GetName() const{ return mpName; }
-	/** Sets the name. */
-	void SetName(const char *name);
 	/** Updates the controller if required. */
 	void UpdateValue(float elapsed);
 	/** Resets the controller if linked to a locomotion attribute. */
@@ -149,56 +145,11 @@ public:
 	/** Inverses the current value. */
 	void InverseValue();
 	
-	/** Retrieves the minimum value. */
-	inline float GetMinimumValue() const{ return mpMinimumValue; }
-	/** Sets the minimum value. */
-	void SetMinimumValue(float value);
-	/** Retrieves the maximum value. */
-	inline float GetMaximumValue() const{ return mpMaximumValue; }
-	/** Sets the maximum value. */
-	void SetMaximumValue(float value);
-	/** Retrieves the current value. */
-	inline float GetCurrentValue() const{ return mpCurrentValue; }
 	/** Sets the current value. */
 	void SetCurrentValue(float value);
+	
 	/** Increments the current value. */
 	void IncrementCurrentValue(float incrementBy);
-	/** Determines if the controller is frozen. */
-	inline bool GetFrozen() const{ return mpFrozen; }
-	/** Sets if the controller is frozen. */
-	void SetFrozen(bool frozen);
-	/** Determines if values passed the range are clamped or wrapped around. */
-	inline bool GetClamp() const{ return mpClamp; }
-	/** Sets if values passed the range are clamped or wrapped around. */
-	void SetClamp(bool clamp);
-	
-	/** Retrieves the controller vector. */
-	inline const decVector &GetVector() const{ return mpVector; }
-	/** Sets the controller vector. */
-	void SetVector(const decVector &vector);
-	
-	/** Retrieves the locomotion attribute this target is controlled by. */
-	inline aeAnimatorLocomotion::eAttributes GetLocomotionAttribute() const{ return mpLocomotionAttribute; }
-	/** Sets the locomotion attribute this target is controlled by. */
-	void SetLocomotionAttribute(aeAnimatorLocomotion::eAttributes attribute);
-	/** Retrieves the locomotion leg this target is controlled by. */
-	inline int GetLocomotionLeg() const{ return mpLocomotionLeg; }
-	/** Sets the locomotion leg this target is controlled by. */
-	void SetLocomotionLeg(int leg);
-	
-	/** Vector simulation. */
-	inline eVectorSimulation GetVectorSimulation() const{ return mpVectorSimulation; }
-	
-	/** Set vector simulation. */
-	void SetVectorSimulation(eVectorSimulation simulation);
-	
-	/** Default value. */
-	inline float GetDefaultValue() const{ return mpDefaultValue; }
-	void SetDefaultValue(float value);
-	
-	/** Default vector. */
-	inline const decVector &GetDefaultVector() const{ return mpDefaultVector; }
-	void SetDefaultVector(const decVector &vector);
 	
 	inline const aeGizmoControllerIKPosition::Ref &GetGizmoIKPosition() const{ return pGizmoIKPosition; }
 	/*@}*/
@@ -211,7 +162,6 @@ private:
 	void pCreateGizmos();
 	
 	void pNotifyControllerChanged();
-	void pNotifyControllerValueChanged();
 	void pOnLimitsChanged();
 };
 

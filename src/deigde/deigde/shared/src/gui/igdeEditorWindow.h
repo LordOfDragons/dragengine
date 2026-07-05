@@ -50,9 +50,9 @@ public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<igdeEditorWindow>;
 	
-	using SharedMenusList = decTOrderedSet<deTObjectReference<igdeMenuCascade>, igdeMenuCascade*>;
-	using SharedToolBarsList = decTOrderedSet<deTObjectReference<igdeToolBar>, igdeToolBar*>;
-	using UpdateActionsList = decTOrderedSet<deTObjectReference<igdeAction>, igdeAction*>;
+	using SharedMenusList = decTObjectOrderedSet<igdeMenuCascade>;
+	using SharedToolBarsList = decTObjectOrderedSet<igdeToolBar>;
+	using UpdateActionsList = decTObjectOrderedSet<igdeAction>;
 	
 	
 private:

@@ -72,40 +72,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Determine if the last state of the component is used or only the stored state. */
-	inline bool GetUseLastState() const{ return mpUseLastState; }
-	/** Set if the last state of the component is used or only the stored state. */
-	void SetUseLastState(bool value);
-	
-	/** Identifier to snapshot state using animator instance. */
-	inline int GetID() const{ return mpId; }
-	
-	/** Set identifier to snapshot state using animator instance. */
-	void SetID(int value);
-	
-	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return mpEnablePosition; }
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool value);
-	
-	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
-	
-	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool value);
-	
-	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return mpEnableSize; }
-	
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool value);
-	
-	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool value);
-	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	

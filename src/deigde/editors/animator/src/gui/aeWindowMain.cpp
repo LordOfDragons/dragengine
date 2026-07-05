@@ -23,7 +23,6 @@
  */
 
 #include "aeWindowMain.h"
-#include "aeWindowMainListener.h"
 #include "aeView3D.h"
 #include "aeTaskSyncGameDefinition.h"
 #include "../animator/aeAnimator.h"
@@ -51,6 +50,12 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
+#include <deigde/gamedefinition/class/igdeGDClass.h>
+#include <deigde/gamedefinition/class/igdeGDClassManager.h>
+#include <deigde/gamedefinition/class/light/igdeGDCLight.h>
+#include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
@@ -69,12 +74,7 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/environment/igdeEnvironment.h>
-#include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gamedefinition/class/igdeGDClass.h>
-#include <deigde/gamedefinition/class/igdeGDClassManager.h>
-#include <deigde/gamedefinition/class/light/igdeGDCLight.h>
-#include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/meta/property/igdeMetaPropertyAdapters.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>
 
@@ -107,7 +107,6 @@ pLoadSaveSystem(nullptr)
 	
 	pMCAnimatorProperties.Init(*this);
 	
-	pListener = aeWindowMainListener::Ref::New(*this);
 	pLoadSaveSystem = new aeLoadSaveSystem(this);
 	pConfiguration = new aeConfiguration(*this);
 	
@@ -129,6 +128,11 @@ pLoadSaveSystem(nullptr)
 	
 	CreateNewAnimator();
 	ResetViews();
+	
+	// add listeners
+	pMCAnimatorProperties.undoHistory->GetListeners().Add(igdeMetaPropertyAdapter
+		::UpdateActionsOnValueChanged<igdeMetaPropertyUndoHistory>::Ref::New(
+			decTObjectOrderedSet<igdeAction>(devctag, pActionEditUndo, pActionEditRedo)));
 }
 
 aeWindowMain::~aeWindowMain(){
@@ -172,15 +176,12 @@ void aeWindowMain::SetAnimator(aeAnimator *animator){
 	pActionEditRedo->SetUndoSystem(nullptr);
 	
 	if(pAnimator){
-		pAnimator->RemoveNotifier(pListener);
 		pAnimator->Dispose();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
-		animator->AddNotifier(pListener);
-		
 		pActionEditUndo->SetUndoSystem(animator->GetUndoSystem());
 		pActionEditRedo->SetUndoSystem(animator->GetUndoSystem());
 		
@@ -208,7 +209,9 @@ void aeWindowMain::SaveAnimator(const char *filename){
 	pAnimator->SetSaved(true);
 	
 	if(pAnimator->GetDirectoryPath() != basePath){
-		pAnimator->NotifyBasePathChanged();
+		auto &metaContext = pAnimator->GetMetaContext();
+		pMCAnimatorProperties.rig->NotifyBasePathChanged(metaContext);
+		pMCAnimatorProperties.animation->NotifyBasePathChanged(metaContext);
 	}
 	
 	GetRecentFiles().AddFile(filename);
@@ -698,13 +701,14 @@ public:
 	cActionBase(window, text, icon, description, mnemonic){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
-		return animator->GetActiveRule() ? OnActionRule(animator, animator->GetActiveRule()) : igdeUndo::Ref();
+		auto &active = animator->mpRuleTree.GetActive();
+		return active ? OnActionRule(animator, active) : igdeUndo::Ref();
 	}
 	
 	virtual igdeUndo::Ref OnActionRule(aeAnimator *animator, aeRule *rule) = 0;
 	
 	void Update(const aeAnimator &animator) override{
-		auto &rule = animator.GetActiveRule();
+		auto &rule = animator.mpRuleTree.GetActive();
 		if(rule){
 			UpdateRule(animator, rule);
 			

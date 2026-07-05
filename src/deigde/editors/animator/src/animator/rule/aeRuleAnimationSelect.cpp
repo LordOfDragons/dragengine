@@ -107,7 +107,7 @@ mpTargetSelect(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetSe
 }
 
 aeRuleAnimationSelect::aeRuleAnimationSelect(const aeRuleAnimationSelect &copy) :
-aeRuleAnimationSelect(copy.GetWindowMain(), copy.GetName())
+aeRuleAnimationSelect(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpMoves.SetValue(copy.mpMoves, false);
@@ -124,28 +124,6 @@ aeRuleAnimationSelect::~aeRuleAnimationSelect() = default;
 
 // Management
 ///////////////
-
-void aeRuleAnimationSelect::SetEnablePosition(bool value){
-	mpEnablePosition.SetValue(value);
-}
-
-void aeRuleAnimationSelect::SetEnableOrientation(bool value){
-	mpEnableOrientation.SetValue(value);
-}
-
-void aeRuleAnimationSelect::SetEnableSize(bool value){
-	mpEnableSize.SetValue(value);
-}
-
-void aeRuleAnimationSelect::SetEnableVertexPositionSet(bool value){
-	mpEnableVertexPositionSet.SetValue(value);
-}
-
-
-void aeRuleAnimationSelect::SetMoves(const decStringList &value){
-	mpMoves.SetValue(value);
-}
-
 
 void aeRuleAnimationSelect::UpdateTargets(){
 	deAnimatorRuleAnimationSelect *rule = (deAnimatorRuleAnimationSelect*)GetEngineRule();

@@ -107,7 +107,7 @@ mpTargetUp(windowMain.GetMCAnimatorProperties().ruleTrackTo.targetUp, metaContex
 }
 
 aeRuleTrackTo::aeRuleTrackTo(const aeRuleTrackTo &copy) :
-aeRuleTrackTo(copy.GetWindowMain(), copy.GetName())
+aeRuleTrackTo(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpTrackBone.SetValue(copy.mpTrackBone, false);
@@ -125,27 +125,6 @@ aeRuleTrackTo::~aeRuleTrackTo(){
 
 // Management
 ///////////////
-
-void aeRuleTrackTo::SetTrackBone(const char *value){
-	mpTrackBone = value;
-}
-
-void aeRuleTrackTo::SetTrackAxis(deAnimatorRuleTrackTo::eTrackAxis value){
-	mpTrackAxis = value;
-}
-
-void aeRuleTrackTo::SetUpAxis(deAnimatorRuleTrackTo::eTrackAxis value){
-	mpUpAxis = value;
-}
-
-void aeRuleTrackTo::SetUpTarget(deAnimatorRuleTrackTo::eUpTarget value){
-	mpUpTarget = value;
-}
-
-void aeRuleTrackTo::SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis value){
-	mpLockedAxis = value;
-}
-
 
 void aeRuleTrackTo::UpdateTargets(){
 	deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();

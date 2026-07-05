@@ -77,48 +77,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieve the name of the leading animation move. */
-	inline const decString &GetLeadingMoveName() const{ return mpLeadingMoveName; }
-	/** Set the leading animation move name. */
-	void SetLeadingMoveName(const char *value);
-	/** Retrieve the leading animation move time. */
-	inline float GetLeadingMoveTime() const{ return mpLeadingMoveTime; }
-	/** Set the leading animation move time. */
-	void SetLeadingMoveTime(float value);
-	/** Retrieve the name of the reference animation move. */
-	inline const decString &GetReferenceMoveName() const{ return mpReferenceMoveName; }
-	/** Set the reference animation move name. */
-	void SetReferenceMoveName(const char *value);
-	/** Retrieve the reference animation move time. */
-	inline float GetReferenceMoveTime() const{ return mpReferenceMoveTime; }
-	/** Set the reference animation move time. */
-	void SetReferenceMoveTime(float value);
-	
-	/** Use component space. */
-	inline bool GetUseComponentSpace() const{ return mpUseComponentSpace; }
-	
-	/** Set use component space. */
-	void SetUseComponentSpace(bool value);
-	
-	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return mpEnablePosition; }
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool value);
-	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
-	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool value);
-	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return mpEnableSize; }
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool value);
-	
-	/** Determine if vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool value);
-	
 	/** Creates an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */

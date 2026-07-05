@@ -225,7 +225,7 @@ mpTargetScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targe
 }
 
 aeRuleBoneTransformator::aeRuleBoneTransformator(const aeRuleBoneTransformator &copy) :
-aeRuleBoneTransformator(copy.GetWindowMain(), copy.GetName())
+aeRuleBoneTransformator(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpMinTranslation.SetValue(copy.mpMinTranslation, false);
@@ -255,75 +255,6 @@ aeRuleBoneTransformator::~aeRuleBoneTransformator() = default;
 
 // Management
 ///////////////
-
-void aeRuleBoneTransformator::SetMinimumTranslation(const decVector &value){
-	mpMinTranslation = value;
-}
-
-void aeRuleBoneTransformator::SetMaximumTranslation(const decVector &value){
-	mpMaxTranslation = value;
-}
-
-void aeRuleBoneTransformator::SetMinimumRotation(const decVector &value){
-	mpMinRotation = value;
-}
-
-void aeRuleBoneTransformator::SetMaximumRotation(const decVector &value){
-	mpMaxRotation = value;
-}
-
-void aeRuleBoneTransformator::SetMinimumScaling(const decVector &value){
-	mpMinScaling = value;
-}
-
-void aeRuleBoneTransformator::SetMaximumScaling(const decVector &value){
-	mpMaxScaling = value;
-}
-
-void aeRuleBoneTransformator::SetAxis(const decVector &value){
-	mpAxis = value;
-}
-
-void aeRuleBoneTransformator::SetMinimumAngle(float value){
-	mpMinAngle = value;
-}
-
-void aeRuleBoneTransformator::SetMaximumAngle(float value){
-	mpMaxAngle = value;
-}
-
-void aeRuleBoneTransformator::SetCoordinateFrame(deAnimatorRuleBoneTransformator::eCoordinateFrames value){
-	mpCoordinateFrame = value;
-}
-
-void aeRuleBoneTransformator::SetEnablePosition(bool value){
-	mpEnablePosition = value;
-}
-
-void aeRuleBoneTransformator::SetEnableOrientation(bool value){
-	mpEnableOrientation = value;
-}
-
-void aeRuleBoneTransformator::SetEnableSize(bool value){
-	mpEnableSize = value;
-}
-
-void aeRuleBoneTransformator::SetUseAxis(bool value){
-	mpUseAxis = value;
-}
-
-void aeRuleBoneTransformator::SetTargetBone(const char *value){
-	mpTargetBone = value;
-}
-
-void aeRuleBoneTransformator::SetInputBone(const char *value){
-	mpInputBone = value;
-}
-
-void aeRuleBoneTransformator::SetInputSource(deAnimatorRuleBoneTransformator::eInputSources value){
-	mpInputSource = value;
-}
-
 
 void aeRuleBoneTransformator::UpdateTargets(){
 	aeRule::UpdateTargets();

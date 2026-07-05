@@ -55,17 +55,14 @@ mpRelativeRotation(animator.GetWindowMain().GetMCAnimatorProperties().cameraAtta
 	
 	mpAttachToBone.onValueChanged = [this](){
 		pDirty = true;
-		pAnimator.NotifyCameraChanged();
 	};
 	
 	mpBone.onValueChanged = [this](){
 		pDirty = true;
-		pAnimator.NotifyCameraChanged();
 	};
 	
 	mpRelativePosition.onValueChanged = [this](){
 		pDirty = true;
-		pAnimator.NotifyCameraChanged();
 	};
 	mpRelativeRotation.onValueChanged = mpRelativePosition.onValueChanged;
 }
@@ -78,16 +75,10 @@ aeCamera::~aeCamera(){
 // Management
 ///////////////
 
-void aeCamera::SetBone(const char *value){
-	mpBone = value;
-}
-
 void aeCamera::SetFreePosition(const decDVector &freePosition){
 	if(!freePosition.IsEqualTo(pFreePosition)){
 		pFreePosition = freePosition;
 		pDirty = true;
-		
-		pAnimator.NotifyCameraChanged();
 	}
 }
 
@@ -95,8 +86,6 @@ void aeCamera::SetFreeOrientation(const decVector &freeOrientation){
 	if(!freeOrientation.IsEqualTo(pFreeOrientation)){
 		pFreeOrientation = freeOrientation;
 		pDirty = true;
-		
-		pAnimator.NotifyCameraChanged();
 	}
 }
 
@@ -104,21 +93,7 @@ void aeCamera::SetFreeDistance(float freeDistance){
 	if(fabsf(freeDistance - pFreeDistance) > 1e-5f){
 		pFreeDistance = freeDistance;
 		pDirty = true;
-		
-		pAnimator.NotifyCameraChanged();
 	}
-}
-
-void aeCamera::SetRelativePosition(const decVector &value){
-	mpRelativePosition = value;
-}
-
-void aeCamera::SetRelativeOrientation(const decVector &value){
-	mpRelativeRotation = value;
-}
-
-void aeCamera::SetAttachToBone(bool value){
-	mpAttachToBone = value;
 }
 
 void aeCamera::Update(){
@@ -172,8 +147,6 @@ void aeCamera::Update(){
 			
 			pDirty = false;
 		}
-		
-		pAnimator.NotifyCameraViewChanged();
 	}
 }
 
@@ -200,18 +173,4 @@ void aeCamera::Reset(){
 //	SetHighestIntensity( 2500.0f );
 	
 	pDirty = true;
-	
-	pAnimator.NotifyCameraChanged();
-}
-
-void aeCamera::ParameterChanged(){
-	igdeCamera::ParameterChanged();
-	
-	pAnimator.NotifyCameraChanged();
-}
-
-void aeCamera::AdaptionChanged(){
-	igdeCamera::AdaptionChanged();
-	
-	pAnimator.NotifyCameraChanged();
 }

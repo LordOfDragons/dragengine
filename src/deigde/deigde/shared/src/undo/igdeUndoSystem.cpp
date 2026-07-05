@@ -26,7 +26,6 @@
 #include "igdeUndoSystem.h"
 #include "../editableentity/igdeEditableEntity.h"
 #include "../meta/igdeMetaContext.h"
-#include "../meta/property/igdeMetaPropertyUndoHistory.h"
 
 #include <dragengine/common/exceptions.h>
 

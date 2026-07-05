@@ -73,34 +73,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieve the name of the animation move. */
-	inline const decString &GetMoveName() const{ return mpMoveName; }
-	/** Set the animation move name. */
-	void SetMoveName(const char *value);
-	/** Retrieve the animation move time. */
-	inline float GetMoveTime() const{ return mpMoveTime; }
-	/** Set the animation move time. */
-	void SetMoveTime(float value);
-	
-	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return mpEnablePosition; }
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool value);
-	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
-	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool value);
-	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return mpEnableSize; }
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool value);
-	
-	/** Determine if vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool value);
-	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */

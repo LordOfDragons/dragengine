@@ -95,7 +95,7 @@ public:
 	
 	/** \brief Implicit conversion operator. */
 	operator T*() const{
-		return GetValue();
+		return GetValue().Pointer();
 	}
 	
 	/** \brief Assignment operator. */
@@ -128,12 +128,12 @@ public:
 	
 	/** \brief Access storage type functions. */
 	inline T* operator->(){
-		return &pValue;
+		return pValue.Pointer();
 	}
 	
 	/** \brief Access storage type functions. */
 	inline const T* operator->() const{
-		return &pValue;
+		return pValue.Pointer();
 	}
 	/*@}*/
 };

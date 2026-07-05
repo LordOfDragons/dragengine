@@ -26,7 +26,6 @@
 #define _AEWINDOWMAIN_H_
 
 #include "aeView3D.h"
-#include "aeWindowMainListener.h"
 #include "../animator/aeAnimator.h"
 #include "../meta/animator/aeMCAnimatorProperties.h"
 
@@ -70,8 +69,6 @@ public:
 	
 	
 private:
-	aeWindowMainListener::Ref pListener;
-	
 	igdeIcon::Ref pIconRuleAnimation;
 	igdeIcon::Ref pIconRuleAnimationDifference;
 	igdeIcon::Ref pIconRuleAnimationSelect;

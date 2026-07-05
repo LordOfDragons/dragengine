@@ -104,7 +104,6 @@ mpPutDownPositionRun(locomotion->GetAnimator()->GetWindowMain().GetMCAnimatorPro
 	mpLiftOffTime.onValueChanged = [this](){
 		auto animator = pLocomotion->GetAnimator();
 		if(animator){
-			animator->NotifyLocomotionChanged();
 			animator->SetChanged(true);
 		}
 	};
@@ -139,26 +138,6 @@ void aeAnimatorLocomotionLeg::SetName(const char *name){
 	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
-}
-
-void aeAnimatorLocomotionLeg::SetPutDownPositionStand(const decVector &position){
-	mpPutDownPositionStand = position;
-}
-
-void aeAnimatorLocomotionLeg::SetPutDownPositionWalk(const decVector &position){
-	mpPutDownPositionWalk = position;
-}
-
-void aeAnimatorLocomotionLeg::SetPutDownPositionRun(const decVector &position){
-	mpPutDownPositionRun = position;
-}
-
-void aeAnimatorLocomotionLeg::SetLiftOffTime(float time){
-	mpLiftOffTime = time;
-}
-
-void aeAnimatorLocomotionLeg::SetPutDownTime(float time){
-	mpPutDownTime = time;
 }
 
 void aeAnimatorLocomotionLeg::SetVisBoneName(const char *name){
@@ -231,8 +210,8 @@ void aeAnimatorLocomotionLeg::Update(float elapsed){
 	
 	//deColliderVolume *castCollider = pLocomotion->
 	float velocity = pLocomotion->GetMovingSpeed();
-	float speedWalk = pLocomotion->GetWalkSpeed();
-	float speedRun = pLocomotion->GetRunSpeed();
+	float speedWalk = pLocomotion->mpSpeedWalk.GetValue();
+	float speedRun = pLocomotion->mpSpeedRun.GetValue();
 	aeCLClosestHit closestHit;
 	float blendFactor = 0.0f;
 	decDVector planeVector;
@@ -254,9 +233,9 @@ void aeAnimatorLocomotionLeg::Update(float elapsed){
 		
 		putDownTime = mpPutDownTime;
 		liftOffTime = mpLiftOffTime;
-		if(animator.GetControllers().GetCount() >= 2){
-			const aeController &controller = *animator.GetControllers().GetAt(1); // hack
-			motionTime = controller.GetCurrentValue();
+		if(animator.mpControllers->GetCount() >= 2){
+			const aeController &controller = *animator.mpControllers->GetAt(1); // hack
+			motionTime = controller.mpCurrentValue;
 		}
 		
 	}else if(velocity < speedRun){
@@ -268,9 +247,9 @@ void aeAnimatorLocomotionLeg::Update(float elapsed){
 		
 		putDownTime = mpPutDownTime;
 		liftOffTime = mpLiftOffTime;
-		if(animator.GetControllers().GetCount() >= 2){
-			const aeController &controller = *animator.GetControllers().GetAt(1); // hack
-			motionTime = controller.GetCurrentValue();
+		if(animator.mpControllers->GetCount() >= 2){
+			const aeController &controller = *animator.mpControllers->GetAt(1); // hack
+			motionTime = controller.mpCurrentValue;
 		}
 		
 	}else{
@@ -278,9 +257,9 @@ void aeAnimatorLocomotionLeg::Update(float elapsed){
 		
 		putDownTime = mpPutDownTime;
 		liftOffTime = mpLiftOffTime;
-		if(animator.GetControllers().GetCount() >= 2){
-			const aeController &controller = *animator.GetControllers().GetAt(1); // hack
-			motionTime = controller.GetCurrentValue();
+		if(animator.mpControllers->GetCount() >= 2){
+			const aeController &controller = *animator.mpControllers->GetAt(1); // hack
+			motionTime = controller.mpCurrentValue;
 		}
 	}
 	

@@ -782,7 +782,7 @@ void reWPView::UpdateResources(){
 }
 
 void reWPView::UpdateCamera(){
-	reCamera * const camera = pRig ? pRig->GetCamera() : nullptr;
+	reCamera * const camera = pRig ? pRig->GetCamera().Pointer() : nullptr;
 	const bool enableAttach = camera ? camera->GetAttachToBone() : false;
 	
 	if(camera){
@@ -840,7 +840,7 @@ void reWPView::UpdateCamera(){
 }
 
 void reWPView::UpdateCameraView(){
-	reCamera * const camera = pRig ? pRig->GetCamera() : nullptr;
+	reCamera * const camera = pRig ? pRig->GetCamera().Pointer() : nullptr;
 	
 	if(camera){
 		pEditCamViewDir->SetVector(camera->GetViewMatrix().TransformView());

@@ -60,7 +60,7 @@ mpTargetSelect(windowMain.GetMCAnimatorProperties().ruleGroup.targetSelect, meta
 {	
 	uniqueNameRule.SetIsUnique([this](const decString &checkName){
 		return !mpRules->HasMatching([&](const aeRule &each){
-			return each.GetName() == checkName;
+			return each.mpName == checkName;
 		});
 	});
 	
@@ -68,7 +68,7 @@ mpTargetSelect(windowMain.GetMCAnimatorProperties().ruleGroup.targetSelect, meta
 		pUpdateRuleIndices();
 		if(GetAnimator()){
 			GetAnimator()->RebuildRules();
-			GetAnimator()->NotifyRuleStructureChanged();
+			GetAnimator()->SetChanged(true);
 		}
 	};
 	mpRules.onObjectAdded = [this](aeRule *rule){
@@ -131,7 +131,7 @@ mpTargetSelect(windowMain.GetMCAnimatorProperties().ruleGroup.targetSelect, meta
 }
 
 aeRuleGroup::aeRuleGroup(const aeRuleGroup &copy) :
-aeRuleGroup(copy.GetWindowMain(), copy.GetName())
+aeRuleGroup(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpEnablePosition.SetValue(copy.mpEnablePosition, false);
@@ -154,60 +154,6 @@ aeRuleGroup::~aeRuleGroup() = default;
 
 // Management
 ///////////////
-
-void aeRuleGroup::SetEnablePosition(bool value){
-	mpEnablePosition = value;
-}
-
-void aeRuleGroup::SetEnableOrientation(bool value){
-	mpEnableOrientation = value;
-}
-
-void aeRuleGroup::SetEnableSize(bool value){
-	mpEnableSize = value;
-}
-
-void aeRuleGroup::SetEnableVertexPositionSet(bool value){
-	mpEnableVertexPositionSet = value;
-}
-
-void aeRuleGroup::SetUseCurrentState(bool value){
-	mpUseCurrentState = value;
-}
-
-void aeRuleGroup::SetApplicationType(deAnimatorRuleGroup::eApplicationTypes value){
-	mpApplicationType = value;
-}
-
-
-void aeRuleGroup::AddRule(aeRule *rule){
-	auto list = mpRules.GetValue();
-	list.AddOrThrow(rule);
-	mpRules = list;
-}
-
-void aeRuleGroup::InsertRuleAt(aeRule *rule, int index){
-	auto list = mpRules.GetValue();
-	list.InsertOrThrow(rule, index);
-	mpRules = list;
-}
-
-void aeRuleGroup::MoveRuleTo(aeRule *rule, int index){
-	auto list = mpRules.GetValue();
-	list.Move(rule, index);
-	mpRules = list;
-}
-
-void aeRuleGroup::RemoveRule(aeRule *rule){
-	auto list = mpRules.GetValue();
-	list.RemoveOrThrow(rule);
-	mpRules = list;
-}
-
-void aeRuleGroup::RemoveAllRules(){
-	mpRules = {};
-}
-
 
 void aeRuleGroup::UpdateTargets(){
 	aeRule::UpdateTargets();
@@ -286,7 +232,7 @@ void aeRuleGroup::OnParentAnimatorChanged(){
 //////////////////////
 
 void aeRuleGroup::pCleanUp(){
-	RemoveAllRules();
+	mpRules.SetValue({}, false);
 }
 
 void aeRuleGroup::pUpdateRuleIndices(){

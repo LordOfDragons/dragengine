@@ -70,8 +70,6 @@ private:
 	
 	deAnimatorLink *pEngLink;
 	
-	bool pTempNoNotify = false;
-	
 public:
 	igdeMetaPropertyStringStorage::Storage mpName;
 	igdeMetaPropertyObjectStorage<aeController>::Storage mpController;
@@ -129,115 +127,6 @@ public:
 	
 	/** Engine controller link or \em nullptr if not managed. */
 	inline deAnimatorLink *GetEngineLink() const{ return pEngLink; }
-	
-	
-	
-	/** Name. */
-	inline const decString &GetName() const{ return mpName; }
-	
-	/** Set name. */
-	void SetName(const char *name);
-	
-	
-	
-	/** Controller or \em nullptr. */
-	inline const deTObjectReference<aeController> &GetController() const{ return mpController; }
-	
-	/** Set controller or \em nullptr. */
-	void SetController(aeController *controller, bool notify = true);
-	
-	/** Repeat count of input value. */
-	inline int GetRepeat() const{ return mpRepeat; }
-	
-	/**
-	 * Set repeat count of input value.
-	 * \throws deeInvalidParam \em repeat is less than 1.
-	 */
-	void SetRepeat(int repeat);
-	
-	/** Curve. */
-	const decCurveBezier &GetCurve() const{ return mpCurve; }
-	
-	/** Set curve. */
-	void SetCurve(const decCurveBezier &curve);
-	
-	/**
-	 * Bone to use parameter of as input or empty string to not use.
-	 * \version 1.6
-	 */
-	inline const decString &GetBone() const{ return mpBone; }
-	
-	/**
-	 * Set bone to use parameter of as input or empty string to not use.
-	 * \version 1.6
-	 */
-	void SetBone(const char *bone);
-	
-	/**
-	 * Bone parameter to use as input.
-	 * \version 1.6
-	 */
-	inline deAnimatorLink::eBoneParameter GetBoneParameter() const{ return mpBoneParameter; }
-	
-	/**
-	 * Set bone parameter to use as input.
-	 * \version 1.6
-	 */
-	void SetBoneParameter(deAnimatorLink::eBoneParameter parameter);
-	
-	/**
-	 * Minimum bone parameter value.
-	 * \version 1.6
-	 */
-	inline float GetBoneMinimum() const{ return mpBoneMinimum; }
-	
-	/**
-	 * Set minimum bone parameter value
-	 * \version 1.6
-	 */
-	void SetBoneMinimum(float value);
-	
-	/**
-	 * Maximum bone parameter value.
-	 * \version 1.6
-	 */
-	inline float GetBoneMaximum() const{ return mpBoneMaximum; }
-	
-	/**
-	 * Set maximum bone parameter value.
-	 * \version 1.6
-	 */
-	void SetBoneMaximum(float value);
-	
-	/** Vertex position set to use as input or empty string to not use. */
-	inline const decString &GetVertexPositionSet() const{ return mpVertexPositionSet; }
-	
-	/** Set vertex position set to use as input or empty string to not use. */
-	void SetVertexPositionSet(const char *vertexPositionSet);
-	
-	/** Minimum vertex position set parameter value. */
-	inline float GetVertexPositionSetMinimum() const{ return mpVpsMinimum; }
-	
-	/** Set minimum vertex position set parameter value. */
-	void SetVertexPositionSetMinimum(float value);
-	
-	/** Maximum vertex position set parameter value. */
-	inline float GetVertexPositionSetMaximum() const{ return mpVpsMaximum; }
-	
-	/** Set maximum vertex position set parameter value. */
-	void SetVertexPositionSetMaximum(float value);
-	
-	/**
-	 * Wrap Y value instead of clamping.
-	 * \version 1.9
-	 */
-	inline bool GetWrapY() const{ return mpWrapY; }
-	
-	/**
-	 * Set to wrap Y value instead of clamping.
-	 * \version 1.9
-	 */
-	void SetWrapY(bool wrap);
 	
 	
 	

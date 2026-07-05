@@ -188,7 +188,7 @@ void aeLSAnimator::SaveAnimator(aeAnimator *animator, decBaseFileWriter *file){
 	});
 	
 	// write rules
-	animator->GetRules().Visit([&](const aeRule &rule){
+	animator->mpRules->Visit([&](const aeRule &rule){
 		writer.WriteNewline();
 		pSaveRule(writer, *animator, rule);
 	});
@@ -229,11 +229,10 @@ void aeLSAnimator::pSaveDisplay(decXmlWriter &writer, const aeAnimator &animator
 
 void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &animator){
 	const aeAnimatorLocomotion &locomotion = animator.GetLocomotion();
-	int l, legCount = locomotion.GetLegs().GetCount();
 	
 	writer.WriteOpeningTag("locomotion");
 	
-	switch(locomotion.GetLocomotionType()){
+	switch(locomotion.mpLocomotionType){
 		case aeAnimatorLocomotion::eltNatural:
 			//writer.WriteDataTagString( "locomotionType", "natural" );
 			break;
@@ -296,8 +295,7 @@ void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &anima
 		writer.WriteDataTagInt("useLegPairs", locomotion.mpUseLegPairs);
 	}
 	
-	for(l=0; l<legCount; l++){
-		const aeAnimatorLocomotionLeg &leg = *locomotion.GetLegs().GetAt(l);
+	locomotion.mpLegs->Visit([&](const aeAnimatorLocomotionLeg &leg){
 		const decVector &pdposStand = leg.mpPutDownPositionStand;
 		const decVector &pdposWalk = leg.mpPutDownPositionWalk;
 		const decVector &pdposRun = leg.mpPutDownPositionRun;
@@ -309,7 +307,7 @@ void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &anima
 		const bool hasPdposRun = !pdposRun.IsZero();
 		
 		if(!hasLiftOffTime && !hasPutDownTime && !hasPdposStand && !hasPdposWalk && !hasPdposRun){
-			continue;
+			return;
 		}
 		
 		writer.WriteOpeningTag("leg");
@@ -347,7 +345,7 @@ void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &anima
 		}
 		
 		writer.WriteClosingTag("leg");
-	}
+	});
 	
 	writer.WriteClosingTag("locomotion");
 }
@@ -481,7 +479,7 @@ void aeLSAnimator::pSaveLink(decXmlWriter &writer, const aeAnimator &animator, c
 	int controllerIndex = -1;
 	
 	if(link.mpController){
-		controllerIndex = animator.GetControllers().IndexOf(link.mpController);
+		controllerIndex = animator.mpControllers->IndexOf(link.mpController);
 	}
 	
 	writer.WriteOpeningTag("link");
@@ -569,7 +567,7 @@ void aeLSAnimator::pSaveLink(decXmlWriter &writer, const aeAnimator &animator, c
 
 void aeLSAnimator::pSaveRuleCommon(decXmlWriter &writer, const aeAnimator &animator, const aeRule &rule){
 	writer.WriteDataTagString("name", rule.mpName.GetValue());
-	if(!rule.GetEnabled()){
+	if(!rule.mpEnabled){
 		writer.WriteDataTagBool("enabled", rule.mpEnabled);
 	}
 	
@@ -670,16 +668,16 @@ const aeRuleAnimation &rule){
 	writer.WriteDataTagString("moveName", rule.mpMoveName.GetValue());
 	writer.WriteDataTagFloat("moveTime", rule.mpMoveTime);
 	
-	if(!rule.GetEnablePosition()){
+	if(!rule.mpEnablePosition){
 		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	if(!rule.GetEnableOrientation()){
+	if(!rule.mpEnableOrientation){
 		writer.WriteDataTagBool("enableOrientation", rule.mpEnableOrientation);
 	}
-	if(rule.GetEnableSize()){
+	if(rule.mpEnableSize){
 		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(!rule.GetEnableVertexPositionSet()){
+	if(!rule.mpEnableVertexPositionSet){
 		writer.WriteDataTagBool("enableVertexPositionSet", rule.mpEnableVertexPositionSet);
 	}
 	
@@ -1207,7 +1205,7 @@ const aeRuleSubAnimator &rule){
 		}
 		
 		writer.WriteOpeningTagStart("connection");
-		writer.WriteAttributeInt("controller", animator.GetControllers().IndexOf(controller));
+		writer.WriteAttributeInt("controller", animator.mpControllers->IndexOf(controller));
 		writer.WriteOpeningTagEnd(false, false);
 		writer.WriteTextString(rule.GetSubAnimator()->GetControllers().GetAt(i)->GetName());
 		writer.WriteClosingTag("connection", false);
@@ -1397,8 +1395,8 @@ const aeRuleLimit &rule){
 	writer.WriteAttributeFloat("z", rule.mpMaxScaling->z);
 	writer.WriteOpeningTagEnd(true);
 	
-	writer.WriteDataTagFloat("minimumVertexPositionSet", rule.GetMinimumVertexPositionSet());
-	writer.WriteDataTagFloat("maximumVertexPositionSet", rule.GetMaximumVertexPositionSet());
+	writer.WriteDataTagFloat("minimumVertexPositionSet", rule.mpMinVertexPositionSet);
+	writer.WriteDataTagFloat("maximumVertexPositionSet", rule.mpMaxVertexPositionSet);
 	
 	switch(rule.mpCoordinateFrame){
 	case deAnimatorRuleLimit::ecfBoneLocal:
@@ -1595,9 +1593,9 @@ void aeLSAnimator::pLoadAnimator(decXmlElementTag *root, aeAnimator &animator){
 				pLoadLink(tag, animator);
 				
 			}else{
-				const aeRule::Ref rule(pLoadRule(tag, animator));
+				auto rule = pLoadRule(tag, animator);
 				if(rule){
-					animator.AddRule(rule);
+					animator.mpRules = animator.mpRules.GetValue() + aeRule::List(devctag, rule);
 					
 				}else{
 					logger.LogWarnFormat(LOGSOURCE, "animator(%i:%i): Unknown Tag %s, ignoring",
@@ -1727,7 +1725,7 @@ void aeLSAnimator::pLoadLocomotion(decXmlElementTag *root, aeAnimator &animator)
 				locomotion.mpUseLegPairs.SetValue((int)strtol(GetCDataString(*tag), nullptr, 10), false);
 				
 			}else if(strcmp(tag->GetName(), "leg") == 0){
-				if(leg >= locomotion.GetLegs().GetCount()){
+				if(leg >= locomotion.mpLegs->GetCount()){
 					logger.LogWarnFormat(LOGSOURCE, "animator(%i:%i): Too many leg definitions, ignoring",
 						tag->GetLineNumber(), tag->GetPositionNumber());
 					continue;
@@ -1746,7 +1744,7 @@ void aeLSAnimator::pLoadLocomotion(decXmlElementTag *root, aeAnimator &animator)
 
 void aeLSAnimator::pLoadLocomotionLeg(decXmlElementTag *root, aeAnimator &animator, int legnum){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeAnimatorLocomotionLeg &leg = *animator.GetLocomotion().GetLegs().GetAt(legnum);
+	aeAnimatorLocomotionLeg &leg = animator.GetLocomotion().mpLegs->GetAt(legnum);
 	decXmlElementTag *tag;
 	decVector vector;
 	int i;
@@ -1796,7 +1794,7 @@ void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator)
 	int i, leg;
 	
 	const auto controller = aeController::Ref::New(*pLSSys->GetWindowMain());
-	animator.AddController(controller);
+	animator.mpControllers = animator.mpControllers.GetValue() + aeController::List(devctag, controller);
 	
 	// parse tag
 	for(i=0; i<root->GetElementCount(); i++){
@@ -1886,7 +1884,7 @@ void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator)
 			}else if(strcmp(tag->GetName(), "locomotionLeg") == 0){
 				leg = (int)strtol(GetCDataString(*tag), nullptr, 10);
 				
-				if(leg >= 0 && leg < animator.GetLocomotion().GetLegs().GetCount()){
+				if(leg >= 0 && leg < animator.GetLocomotion().mpLegs->GetCount()){
 					controller->mpLocomotionLeg.SetValue(leg, false);
 				}
 				
@@ -1906,12 +1904,12 @@ void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator)
 				
 			}else if(strcmp(tag->GetName(), "value") == 0){
 				controller->mpDefaultValue.SetValue(GetCDataFloat(*tag), false);
-				controller->mpCurrentValue.SetValue(controller->GetDefaultValue(), false);
+				controller->mpCurrentValue.SetValue(controller->mpDefaultValue, false);
 				
 			}else if(strcmp(tag->GetName(), "vector") == 0){
 				ReadVector(*tag, vector);
 				controller->mpDefaultVector.SetValue(vector, false);
-				controller->mpVector.SetValue(controller->GetDefaultVector(), false);
+				controller->mpVector.SetValue(controller->mpDefaultVector, false);
 				
 			}else{
 				logger.LogWarnFormat(LOGSOURCE, "controller(%i:%i): Unknown Tag %s, ignoring",
@@ -1949,7 +1947,7 @@ void aeLSAnimator::pLoadLink(decXmlElementTag *root, aeAnimator &animator){
 	int i, index;
 	
 	const aeLink::Ref link(aeLink::Ref::New(*pLSSys->GetWindowMain()));
-	animator.AddLink(link);
+	animator.mpLinks = animator.mpLinks.GetValue() + aeLink::List(devctag, link);
 	
 	// parse tag
 	for(i=0; i<root->GetElementCount(); i++){
@@ -1968,7 +1966,7 @@ void aeLSAnimator::pLoadLink(decXmlElementTag *root, aeAnimator &animator){
 				link->mpController.SetValue(nullptr, false);
 				
 			}else{
-				link->mpController.SetValue(animator.GetControllers()[index], false);
+				link->mpController.SetValue(animator.mpControllers->GetAt(index), false);
 			}
 			
 		}else if(tag->GetName() == "repeat"){
@@ -2264,7 +2262,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAni
 		}
 	}
 	
-	rule->SetMoves(moves);
+	rule->mpMoves = moves;
 	return rule;
 }
 
@@ -2960,10 +2958,9 @@ aeRule::Ref aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &ani
 			}
 			
 		}else{
-			const aeRule::Ref srule(pLoadRule(tag, animator));
-			
+			auto srule = pLoadRule(tag, animator);
 			if(srule){
-				rule->AddRule(srule);
+				rule->mpRules = rule->mpRules.GetValue() + aeRule::List(devctag, srule);
 				
 			}else{
 				logger.LogWarnFormat(LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
@@ -3008,7 +3005,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimato
 					continue;
 				}
 				
-				rule->SetControllerAt(targetIndex, animator.GetControllers().GetAt(controller));
+				rule->SetControllerAt(targetIndex, animator.mpControllers->GetAt(controller));
 				
 			}else if(strcmp(tag->GetName(), "enablePosition") == 0){
 				rule->mpEnablePosition.SetValue(GetCDataBool(*tag), false);
@@ -3343,11 +3340,11 @@ bool aeLSAnimator::pLoadRuleCommon(decXmlElementTag *tag, aeAnimator&, aeRule &r
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	
 	if(strcmp(tag->GetName(), "name") == 0){
-		rule.SetName(GetCDataString(*tag));
+		rule.mpName = GetCDataString(*tag);
 		return true;
 		
 	}else if(strcmp(tag->GetName(), "enabled") == 0){
-		rule.SetEnabled(GetCDataBool(*tag));
+		rule.mpEnabled = GetCDataBool(*tag);
 		return true;
 		
 	}else if(strcmp(tag->GetName(), "blendMode") == 0){
@@ -3408,7 +3405,7 @@ void aeLSAnimator::pLoadControllerTarget(decXmlElementTag *root, aeAnimator &ani
 		tag = root->GetElementIfTag(i);
 		if(tag){
 			if(strcmp(tag->GetName(), "link") == 0){
-				links.Add(animator.GetLinks()[GetCDataInt(*tag)]);
+				links.Add(animator.mpLinks->GetAt(GetCDataInt(*tag)));
 				
 			}else{
 				logger.LogWarnFormat(LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
@@ -3422,45 +3419,35 @@ void aeLSAnimator::pLoadControllerTarget(decXmlElementTag *root, aeAnimator &ani
 }
 
 void aeLSAnimator::pLoadSubAnimators(aeAnimator &animator){
-	const int count = animator.GetRules().GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		aeRule &rule = *animator.GetRules().GetAt(i);
-		
-		switch(rule.GetType()){
+	animator.mpRules->Visit([&](const aeRule::Ref &rule){
+		switch(rule->GetType()){
 		case deAnimatorRuleVisitorIdentify::ertSubAnimator:
-			((aeRuleSubAnimator&)rule).LoadSubAnimator();
+			rule.DynamicCast<aeRuleSubAnimator>()->LoadSubAnimator();
 			break;
 			
 		case deAnimatorRuleVisitorIdentify::ertGroup:
-			pLoadSubAnimators(animator, (aeRuleGroup&)rule);
+			pLoadSubAnimators(animator, rule.DynamicCast<aeRuleGroup>());
 			break;
 			
 		default:
 			break;
 		}
-	}
+	});
 }
 
 void aeLSAnimator::pLoadSubAnimators(aeAnimator &animator, const aeRuleGroup &group){
-	const int count = group.GetRules().GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		aeRule &rule = *group.GetRules().GetAt(i);
-		
-		switch(rule.GetType()){
+	group.mpRules->Visit([&](const aeRule::Ref &rule){
+		switch(rule->GetType()){
 		case deAnimatorRuleVisitorIdentify::ertSubAnimator:
-			((aeRuleSubAnimator&)rule).LoadSubAnimator();
+			rule.DynamicCast<aeRuleSubAnimator>()->LoadSubAnimator();
 			break;
 			
 		case deAnimatorRuleVisitorIdentify::ertGroup:
-			pLoadSubAnimators(animator, (aeRuleGroup&)rule);
+			pLoadSubAnimators(animator, rule.DynamicCast<aeRuleGroup>());
 			break;
 			
 		default:
 			break;
 		}
-	}
+	});
 }

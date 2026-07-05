@@ -57,15 +57,14 @@ public:
 		const auto &animator = property.Owner(context);
 		const auto oldControllers = property.ConvertList(GetOldValue());
 		const auto newControllers = property.ConvertList(GetNewValue());
-		const auto &links = animator.GetLinks();
 		
 		oldControllers.Visit([&](const aeController::Ref &controller){
 			if(newControllers.Has(controller)){
 				return;
 			}
 			
-			links.Visit([&](const aeLink::Ref &link){
-				if(link->GetController() == controller){
+			animator.mpLinks->Visit([&](const aeLink::Ref &link){
+				if(link->mpController == controller){
 					pLinksRemoveControllers.Add({link, controller});
 				}
 			});
@@ -77,13 +76,13 @@ public:
 	void Undo() override{
 		igdeMetaPropertyListUndo::Undo();
 		pLinksRemoveControllers.Visit([&](const sLinkRemoveController &each){
-			each.link->SetController(each.controller, false);
+			each.link->mpController = each.controller;
 		});
 	}
 	
 	void Redo() override{
 		pLinksRemoveControllers.Visit([&](const sLinkRemoveController &each){
-			each.link->SetController(nullptr, false);
+			each.link->mpController = nullptr;
 		});
 		igdeMetaPropertyListUndo::Redo();
 	}
@@ -112,7 +111,9 @@ public:
 		}
 		
 		auto list = pPropertyController.GetStorage(context).GetValue();
-		if(list.HasNamed(name)){
+		if(list.HasMatching([&](const aeController::Ref &controller){
+			return controller->mpName == name;
+		})){
 			igdeCommonDialogs::Error(GetOwner(), "@Animator.Dialog.AddController.Title",
 				"@Animator.Dialog.AddController.ErrorNameExists");
 			return;
@@ -131,7 +132,7 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 	
 	if(newValue.HasMatching([&](const deObject::Ref &a){
 		return newValue.HasMatching([&](const deObject::Ref &b){
-			return a != b && a.StaticCast<aeController>()->GetName() == b.StaticCast<aeController>()->GetName();
+			return a != b && a.StaticCast<aeController>()->mpName == b.StaticCast<aeController>()->mpName.GetValue();
 		});
 	})){
 		igdeCommonDialogs::Error(Owner(context).GetWindowMain(), undo->GetShortInfo(),
@@ -143,7 +144,7 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 	if(linksRemoveControllers.IsNotEmpty()){
 		decStringList names;
 		linksRemoveControllers.Visit([&](const cUndoSetControllers::sLinkRemoveController &each){
-			names.Add(each.link->GetName());
+			names.Add(each.link->mpController->mpName.GetValue());
 		});
 		names.SortAscending();
 		auto strNames = names.GetCount() > 5 ? DEJoin(names.GetHead(5), ", ") + ", ..." : DEJoin(names, ", ");

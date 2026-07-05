@@ -87,7 +87,7 @@ mpTargetBlendFactor(windowMain.GetMCAnimatorProperties().rule.targetBlendFactor,
 {
 	mpName.onValueChanged = [this](){
 		if(pAnimator){
-			pAnimator->NotifyRuleNameChanged(this);
+			pAnimator->SetChanged(true);
 		}
 	};
 	
@@ -223,28 +223,6 @@ void aeRule::SetParentGroup(aeRuleGroup *group){
 }
 
 
-
-void aeRule::SetName(const char *value){
-	mpName = value;
-}
-
-void aeRule::SetEnabled(bool value){
-	mpEnabled = value;
-}
-
-void aeRule::SetBlendMode(deAnimatorRule::eBlendModes value){
-	mpBlendMode = value;
-}
-
-void aeRule::SetBlendFactor(float value){
-	mpBlendFactor = value;
-}
-
-void aeRule::SetInvertBlendFactor(bool value){
-	mpInvertBlendFactor = value;
-}
-
-
 void aeRule::UpdateCompAnim(){
 }
 
@@ -272,55 +250,13 @@ void aeRule::NotifyRuleChanged(){
 			animator->GetEngineAnimator()->NotifyRulesChanged();
 		}
 		
-		animator->NotifyRuleChanged(this);
+		animator->SetChanged(true);
 	}
 }
 
 
 
 void aeRule::OnParentAnimatorChanged(){
-}
-
-
-
-// Bone Management
-////////////////////
-
-void aeRule::SetListBones(const decStringSet &bones){
-	mpAffectedBones = bones;
-}
-
-void aeRule::AddBone(const char *bone){
-	mpAffectedBones = mpAffectedBones.GetValue() + decStringSet(devctag, bone);
-}
-
-void aeRule::RemoveBone(const char *bone){
-	mpAffectedBones = mpAffectedBones.GetValue() - decStringSet(devctag, bone);
-}
-
-void aeRule::RemoveAllBones(){
-	mpAffectedBones = {};
-}
-
-
-
-// Vertex position set management
-///////////////////////////////////
-
-void aeRule::SetListVertexPositionSets(const decStringSet &sets){
-	mpAffectedVps = sets;
-}
-
-void aeRule::AddVertexPositionSet(const char *vps){
-	mpAffectedVps = mpAffectedVps.GetValue() + decStringSet(devctag, vps);
-}
-
-void aeRule::RemoveVertexPositionSet(const char *vps){
-	mpAffectedVps = mpAffectedVps.GetValue() - decStringSet(devctag, vps);
-}
-
-void aeRule::RemoveAllVertexPositionSets(){
-	mpAffectedVps = {};
 }
 
 

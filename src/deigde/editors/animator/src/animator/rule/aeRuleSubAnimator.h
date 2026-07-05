@@ -84,12 +84,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieve the path to the sub animator. */
-	inline const decString &GetPathSubAnimator() const{ return mpPathSubAnimator; }
-	/** Set the path to the sub animator. */
-	void SetPathSubAnimator(const char *value);
 	/** Retrieve the sub animator or nullptr if not existing. */
 	inline const deAnimator::Ref &GetSubAnimator() const{ return pSubAnimator; }
+	
 	/** Load the sub animator using the stored path. */
 	void LoadSubAnimator();
 	
@@ -98,27 +95,6 @@ public:
 	
 	/** Set controller for target controller or \em nullptr. */
 	void SetControllerAt(int position, aeController *controller);
-	
-	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return mpEnablePosition; }
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool value);
-	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return mpEnableOrientation; }
-	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool value);
-	
-	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return mpEnableSize; }
-	
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool value);
-	
-	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return mpEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool value);
 	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;

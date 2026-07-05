@@ -170,7 +170,7 @@ public:
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule,
 	igdeMetaContextItemInfo &info) const override{
-		info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->GetName()));
+		info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->mpName.GetValue()));
 	}
 	
 	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeRule::List &existingObjects,

@@ -58,7 +58,7 @@ public:
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &link,
 	igdeMetaContextItemInfo &info) const override{
-		info.SetAll(link->GetName());
+		info.SetAll(link->mpName);
 	}
 	
 	igdeMetaPropertyListUndo::Ref ChangePropertyValue(const ContextRef &context, const List &newValue,
@@ -121,7 +121,7 @@ public:
 	void GetObjectItemInfoType(const ContextRef &context, const ObjectTypeRef &object,
 	igdeMetaContextItemInfo &info) const override{
 		info.SetAll(object
-			? decString::Formatted("{0} ({1})", object->GetName().GetString(), object->GetIndex())
+			? decString::Formatted("{0} ({1})", object->mpName.GetValue(), object->GetIndex())
 			: decString("@Animator.WPLink.Controller.NoController"));
 	}
 	

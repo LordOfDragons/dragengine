@@ -431,7 +431,7 @@ mpEnableVertexPositionSetMax(windowMain.GetMCAnimatorProperties().ruleLimit.enab
 }
 
 aeRuleLimit::aeRuleLimit(const aeRuleLimit &copy) :
-aeRuleLimit(copy.GetWindowMain(), copy.GetName())
+aeRuleLimit(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpMinPosition.SetValue(copy.mpMinPosition, false);
@@ -471,127 +471,6 @@ aeRuleLimit::~aeRuleLimit() = default;
 
 // Management
 ///////////////
-
-void aeRuleLimit::SetMinimumPosition(const decVector &value){
-	mpMinPosition = value;
-}
-
-void aeRuleLimit::SetMaximumPosition(const decVector &value){
-	mpMaxPosition = value;
-}
-
-void aeRuleLimit::SetMinimumRotation(const decVector &value){
-	mpMinRotation = value;
-}
-
-void aeRuleLimit::SetMaximumRotation(const decVector &value){
-	mpMaxRotation = value;
-}
-
-void aeRuleLimit::SetMinimumScaling(const decVector &value){
-	mpMinScaling = value;
-}
-
-void aeRuleLimit::SetMaximumScaling(const decVector &value){
-	mpMaxScaling = value;
-}
-
-void aeRuleLimit::SetMinimumVertexPositionSet(float value){
-	mpMinVertexPositionSet = value;
-}
-
-void aeRuleLimit::SetMaximumVertexPositionSet(float value){
-	mpMaxVertexPositionSet = value;
-}
-
-void aeRuleLimit::SetTargetBone(const char *value){
-	mpTargetBone = value;
-}
-
-void aeRuleLimit::SetCoordinateFrame(deAnimatorRuleLimit::eCoordinateFrames value){
-	mpCoordinateFrame = value;
-}
-
-void aeRuleLimit::SetEnablePositionXMin(bool value){
-	mpEnablePositionXMin = value;
-}
-
-void aeRuleLimit::SetEnablePositionXMax(bool value){
-	mpEnablePositionXMax = value;
-}
-
-void aeRuleLimit::SetEnablePositionYMin(bool value){
-	mpEnablePositionYMin = value;
-}
-
-void aeRuleLimit::SetEnablePositionYMax(bool value){
-	mpEnablePositionYMax = value;
-}
-
-void aeRuleLimit::SetEnablePositionZMin(bool value){
-	mpEnablePositionZMin = value;
-}
-
-void aeRuleLimit::SetEnablePositionZMax(bool value){
-	mpEnablePositionZMax = value;
-}
-
-void aeRuleLimit::SetEnableRotationXMin(bool value){
-	mpEnableRotationXMin = value;
-}
-
-void aeRuleLimit::SetEnableRotationXMax(bool value){
-	mpEnableRotationXMax = value;
-}
-
-void aeRuleLimit::SetEnableRotationYMin(bool value){
-	mpEnableRotationYMin = value;
-}
-
-void aeRuleLimit::SetEnableRotationYMax(bool value){
-	mpEnableRotationYMax = value;
-}
-
-void aeRuleLimit::SetEnableRotationZMin(bool value){
-	mpEnableRotationZMin = value;
-}
-
-void aeRuleLimit::SetEnableRotationZMax(bool value){
-	mpEnableRotationZMax = value;
-}
-
-void aeRuleLimit::SetEnableScalingXMin(bool value){
-	mpEnableScalingXMin = value;
-}
-
-void aeRuleLimit::SetEnableScalingXMax(bool value){
-	mpEnableScalingXMax = value;
-}
-
-void aeRuleLimit::SetEnableScalingYMin(bool value){
-	mpEnableScalingYMin = value;
-}
-
-void aeRuleLimit::SetEnableScalingYMax(bool value){
-	mpEnableScalingYMax = value;
-}
-
-void aeRuleLimit::SetEnableScalingZMin(bool value){
-	mpEnableScalingZMin = value;
-}
-
-void aeRuleLimit::SetEnableScalingZMax(bool value){
-	mpEnableScalingZMax = value;
-}
-
-void aeRuleLimit::SetEnableVertexPositionSetMin(bool value){
-	mpEnableVertexPositionSetMin = value;
-}
-
-void aeRuleLimit::SetEnableVertexPositionSetMax(bool value){
-	mpEnableVertexPositionSetMax = value;
-}
-
 
 deAnimatorRule::Ref aeRuleLimit::CreateEngineRule(){
 	const deAnimatorRuleLimit::Ref engRule(deAnimatorRuleLimit::Ref::New());

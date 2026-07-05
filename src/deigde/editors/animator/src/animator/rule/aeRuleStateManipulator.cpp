@@ -179,7 +179,7 @@ mpTargetVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipula
 
 }
 aeRuleStateManipulator::aeRuleStateManipulator(const aeRuleStateManipulator &copy) :
-aeRuleStateManipulator(copy.GetWindowMain(), copy.GetName())
+aeRuleStateManipulator(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpMinPosition.SetValue(copy.mpMinPosition, false);
@@ -200,56 +200,6 @@ aeRuleStateManipulator::~aeRuleStateManipulator() = default;
 
 // Management
 ///////////////
-
-
-void aeRuleStateManipulator::SetMinimumPosition(const decVector &value){
-	mpMinPosition = value;
-}
-
-void aeRuleStateManipulator::SetMaximumPosition(const decVector &value){
-	mpMaxPosition = value;
-}
-
-void aeRuleStateManipulator::SetMinimumRotation(const decVector &value){
-	mpMinRotation = value;
-}
-
-void aeRuleStateManipulator::SetMaximumRotation(const decVector &value){
-	mpMaxRotation = value;
-}
-
-void aeRuleStateManipulator::SetMinimumSize(const decVector &value){
-	mpMinSize = value;
-}
-
-void aeRuleStateManipulator::SetMaximumSize(const decVector &value){
-	mpMaxSize = value;
-}
-
-void aeRuleStateManipulator::SetMinimumVertexPositionSet(float value){
-	mpMinVertexPositionSet = value;
-}
-
-void aeRuleStateManipulator::SetMaximumVertexPositionSet(float value){
-	mpMaxVertexPositionSet = value;
-}
-
-void aeRuleStateManipulator::SetEnablePosition(bool value){
-	mpEnablePosition = value;
-}
-
-void aeRuleStateManipulator::SetEnableRotation(bool value){
-	mpEnableRotation = value;
-}
-
-void aeRuleStateManipulator::SetEnableSize(bool value){
-	mpEnableSize = value;
-}
-
-void aeRuleStateManipulator::SetEnableVertexPositionSet(bool value){
-	mpEnableVertexPositionSet = value;
-}
-
 
 void aeRuleStateManipulator::UpdateTargets(){
 	deAnimatorRuleStateManipulator *rule = (deAnimatorRuleStateManipulator*)GetEngineRule();

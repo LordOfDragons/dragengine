@@ -431,6 +431,9 @@ class igdeMetaPropertyMCT : public T{
 public:
 	template <typename... A>
 	igdeMetaPropertyMCT(A&&... args) : T(std::forward<A>(args)...) {}
+	igdeMetaPropertyMCT() = delete;
+	igdeMetaPropertyMCT(const igdeMetaPropertyMCT &copy) = delete;
+	igdeMetaPropertyMCT(igdeMetaPropertyMCT &&move) = delete;
 	
 protected:
 	~igdeMetaPropertyMCT() override{}

@@ -55,7 +55,7 @@ public:
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &attachment,
 	igdeMetaContextItemInfo &info) const override{
-		info.SetAll(decString(attachment->GetName()));
+		info.SetAll(attachment->mpName);
 	}
 	
 	ObjectTypeRef CopyObjectType(const ContextRef &context, const SetType &existingObjects,

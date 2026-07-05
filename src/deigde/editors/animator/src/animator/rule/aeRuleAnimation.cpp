@@ -108,7 +108,7 @@ mpTargetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.targetMoveTi
 }
 
 aeRuleAnimation::aeRuleAnimation(const aeRuleAnimation &copy) :
-aeRuleAnimation(copy.GetWindowMain(), copy.GetName())
+aeRuleAnimation(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpMoveName.SetValue(copy.mpMoveName, false);
@@ -126,32 +126,6 @@ aeRuleAnimation::~aeRuleAnimation() = default;
 
 // Management
 ///////////////
-
-
-void aeRuleAnimation::SetMoveName(const char *value){
-	mpMoveName = value;
-}
-
-void aeRuleAnimation::SetMoveTime(float value){
-	mpMoveTime = value;
-}
-
-void aeRuleAnimation::SetEnablePosition(bool value){
-	mpEnablePosition = value;
-}
-
-void aeRuleAnimation::SetEnableOrientation(bool value){
-	mpEnableOrientation = value;
-}
-
-void aeRuleAnimation::SetEnableSize(bool value){
-	mpEnableSize = value;
-}
-
-void aeRuleAnimation::SetEnableVertexPositionSet(bool value){
-	mpEnableVertexPositionSet = value;
-}
-
 
 void aeRuleAnimation::UpdateTargets(){
 	deAnimatorRuleAnimation *rule = (deAnimatorRuleAnimation*)GetEngineRule();

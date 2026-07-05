@@ -105,7 +105,6 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 	}
 	
 	aeAnimator::Ref animator;
-	int i;
 	
 	pEngine->GetLogger()->LogInfoFormat("Animator Editor",
 		"Loading animator %s", pPathAnimator.GetString());
@@ -114,49 +113,38 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 		// load from file
 		animator = lssys.LoadAnimator(pPathAnimator);
 		
-		const int controllerCount = animator->GetControllers().GetCount();
-		const int linkCount = animator->GetLinks().GetCount();
-		const int ruleCount = animator->GetRules().GetCount();
-		
 		// create animator
 		pEngAnimator = pEngine->GetAnimatorManager()->CreateAnimator();
 		pEngAnimator->SetRig(animator->GetEngineAnimator()->GetRig());
 		pEngAnimator->SetAnimation(animator->GetEngineAnimator()->GetAnimation());
 		
 		// add controllers
-		for(i=0; i<controllerCount; i++){
-			const aeController &controller = *animator->GetControllers().GetAt(i);
-			
-			const deAnimatorController::Ref engController(deAnimatorController::Ref::New());
-			engController->SetName(controller.GetName());
-			engController->SetValueRange(controller.GetMinimumValue(), controller.GetMaximumValue());
-			engController->SetCurrentValue(controller.GetCurrentValue());
-			engController->SetFrozen(controller.GetFrozen());
-			engController->SetClamp(controller.GetClamp());
-			engController->SetVector(controller.GetVector());
-			
+		animator->mpControllers->Visit([&](const aeController &controller){
+			auto engController = deAnimatorController::Ref::New();
+			engController->SetName(controller.mpName);
+			engController->SetValueRange(controller.mpMinimumValue, controller.mpMaximumValue);
+			engController->SetCurrentValue(controller.mpCurrentValue);
+			engController->SetFrozen(controller.mpFrozen);
+			engController->SetClamp(controller.mpClamp);
+			engController->SetVector(controller.mpVector);
 			pEngAnimator->AddController(engController);
-		}
+		});
 		
 		// add links
-		for(i=0; i<linkCount; i++){
-			const aeLink &link = *animator->GetLinks().GetAt(i);
-			
-			const deAnimatorLink::Ref engLink(deAnimatorLink::Ref::New());
-			
-			if(link.GetController()){
-				engLink->SetController(animator->GetControllers().IndexOf(link.GetController()));
+		animator->mpLinks->Visit([&](const aeLink &link){
+			auto engLink = deAnimatorLink::Ref::New();
+			if(link.mpController){
+				engLink->SetController(animator->mpControllers->IndexOf(link.mpController));
 			}
-			engLink->SetCurve(link.GetCurve());
-			engLink->SetRepeat(link.GetRepeat());
-			
+			engLink->SetCurve(link.mpCurve);
+			engLink->SetRepeat(link.mpRepeat);
 			pEngAnimator->AddLink(engLink);
-		}
+		});
 		
 		// add rules
-		for(i=0; i<ruleCount; i++){
-			pEngAnimator->AddRule(animator->GetRules().GetAt(i)->CreateEngineRule());
-		}
+		animator->mpRules->Visit([&](aeRule &rule){
+			pEngAnimator->AddRule(rule.CreateEngineRule());
+		});
 		
 	}catch(const deException &e){
 		pEngine->GetLogger()->LogException("Animator Editor", e);

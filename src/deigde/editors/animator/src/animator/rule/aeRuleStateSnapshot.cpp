@@ -98,7 +98,7 @@ mpEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateSnapshot
 }
 
 aeRuleStateSnapshot::aeRuleStateSnapshot(const aeRuleStateSnapshot &copy) :
-aeRuleStateSnapshot(copy.GetWindowMain(), copy.GetName())
+aeRuleStateSnapshot(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpUseLastState.SetValue(copy.mpUseLastState, false);
@@ -114,31 +114,6 @@ aeRuleStateSnapshot::~aeRuleStateSnapshot() = default;
 
 // Management
 ///////////////
-
-void aeRuleStateSnapshot::SetUseLastState(bool value){
-	mpUseLastState = value;
-}
-
-void aeRuleStateSnapshot::SetID(int value){
-	mpId = value;
-}
-
-void aeRuleStateSnapshot::SetEnablePosition(bool value){
-	mpEnablePosition = value;
-}
-
-void aeRuleStateSnapshot::SetEnableOrientation(bool value){
-	mpEnableOrientation = value;
-}
-
-void aeRuleStateSnapshot::SetEnableSize(bool value){
-	mpEnableSize = value;
-}
-
-void aeRuleStateSnapshot::SetEnableVertexPositionSet(bool value){
-	mpEnableVertexPositionSet = value;
-}
-
 
 deAnimatorRule::Ref aeRuleStateSnapshot::CreateEngineRule(){
 	const deAnimatorRuleStateSnapshot::Ref engRule(deAnimatorRuleStateSnapshot::Ref::New());

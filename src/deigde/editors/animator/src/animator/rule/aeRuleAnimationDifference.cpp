@@ -139,7 +139,7 @@ mpTargetReferenceMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDiff
 }
 
 aeRuleAnimationDifference::aeRuleAnimationDifference(const aeRuleAnimationDifference &copy) :
-aeRuleAnimationDifference(copy.GetWindowMain(), copy.GetName())
+aeRuleAnimationDifference(copy.GetWindowMain(), copy.mpName)
 {
 	pInitCopy(copy);
 	mpLeadingMoveName.SetValue(copy.mpLeadingMoveName, false);
@@ -160,43 +160,6 @@ aeRuleAnimationDifference::~aeRuleAnimationDifference() = default;
 
 // Management
 ///////////////
-
-void aeRuleAnimationDifference::SetLeadingMoveName(const char *value){
-	mpLeadingMoveName = value;
-}
-
-void aeRuleAnimationDifference::SetLeadingMoveTime(float value){
-	mpLeadingMoveTime = value;
-}
-
-void aeRuleAnimationDifference::SetReferenceMoveName(const char *value){
-	mpReferenceMoveName = value;
-}
-
-void aeRuleAnimationDifference::SetReferenceMoveTime(float value){
-	mpReferenceMoveTime = value;
-}
-
-void aeRuleAnimationDifference::SetUseComponentSpace(bool value){
-	mpUseComponentSpace = value;
-}
-
-void aeRuleAnimationDifference::SetEnablePosition(bool value){
-	mpEnablePosition = value;
-}
-
-void aeRuleAnimationDifference::SetEnableOrientation(bool value){
-	mpEnableOrientation = value;
-}
-
-void aeRuleAnimationDifference::SetEnableSize(bool value){
-	mpEnableSize = value;
-}
-
-void aeRuleAnimationDifference::SetEnableVertexPositionSet(bool value){
-	mpEnableVertexPositionSet = value;
-}
-
 
 void aeRuleAnimationDifference::UpdateTargets(){
 	deAnimatorRuleAnimationDifference *rule = (deAnimatorRuleAnimationDifference*)GetEngineRule();

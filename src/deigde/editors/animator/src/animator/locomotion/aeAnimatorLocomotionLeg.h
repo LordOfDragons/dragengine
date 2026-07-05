@@ -121,28 +121,6 @@ public:
 	/** Sets the name. */
 	void SetName(const char *name);
 	
-	/** Retrieves the stand put down position. */
-	inline const decVector &GetPutDownPositionStand() const{ return mpPutDownPositionStand; }
-	/** Sets the stand put down position. */
-	void SetPutDownPositionStand(const decVector &position);
-	/** Retrieves the walk put down position. */
-	inline const decVector &GetPutDownPositionWalk() const{ return mpPutDownPositionWalk; }
-	/** Sets the walk put down position. */
-	void SetPutDownPositionWalk(const decVector &position);
-	/** Retrieves the run put down position. */
-	inline const decVector &GetPutDownPositionRun() const{ return mpPutDownPositionRun; }
-	/** Sets the run put down position. */
-	void SetPutDownPositionRun(const decVector &position);
-	
-	/** Retrieves the lift off time. */
-	inline float GetLiftOffTime() const{ return mpLiftOffTime; }
-	/** Sets the lift off time. */
-	void SetLiftOffTime(float time);
-	/** Retrieves the put down time. */
-	inline float GetPutDownTime() const{ return mpPutDownTime; }
-	/** Sets the put down time. */
-	void SetPutDownTime(float time);
-	
 	/** Retrieves the ground position. */
 	inline const decVector &GetGroundPosition() const{ return pGroundPosition; }
 	/** Retrieves the ground normal. */

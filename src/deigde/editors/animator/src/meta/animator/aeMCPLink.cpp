@@ -68,14 +68,13 @@ public:
 		const auto &animator = property.Owner(context);
 		const auto oldLinks = property.ConvertList(GetOldValue());
 		const auto newLinks = property.ConvertList(GetNewValue());
-		const auto &rules = animator.GetRules();
 		
 		oldLinks.Visit([&](const aeLink::Ref &link){
 			if(newLinks.Has(link)){
 				return;
 			}
 			
-			rules.Visit([&](const aeRule::Ref &rule){
+			animator.mpRules->Visit([&](const aeRule::Ref &rule){
 				pProcessTargets(link, rule);
 			});
 		});
@@ -140,7 +139,7 @@ private:
 		case deAnimatorRuleVisitorIdentify::ertGroup:{
 			const auto r = rule.DynamicCast<aeRuleGroup>();
 			process(r->mpTargetSelect);
-			r->GetRules().Visit([&](const aeRule::Ref &subRule){
+			r->mpRules->Visit([&](const aeRule::Ref &subRule){
 				pProcessTargets(link, subRule);
 			});
 			}break;
@@ -245,10 +244,10 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 		decStringSet ruleNames, linkNames;
 		rulesRemoved.Visit([&](const cUndoSetLinks::sRuleRemoved &each){
 			if(each.rule){
-				ruleNames.Add(decString::Formatted("'{}'", each.rule->GetName()));
+				ruleNames.Add(decString::Formatted("'{}'", each.rule->mpName.GetValue()));
 			}
 			if(each.link){
-				linkNames.Add(decString::Formatted("'{}'", each.link->GetName()));
+				linkNames.Add(decString::Formatted("'{}'", each.link->mpName.GetValue()));
 			}
 		});
 		
@@ -325,7 +324,7 @@ public:
 		}
 		
 		const auto &link = pPropertyCurve.Owner(context);
-		const auto &controller = link.GetController();
+		const auto &controller = link.mpController.GetValue();
 		if(!controller){
 			return;
 		}
@@ -338,7 +337,7 @@ public:
 			return;
 		}
 		
-		auto curve = link.GetCurve();
+		auto curve = link.mpCurve.GetValue();
 		curve.AddPoint(decVector2(x, y));
 		
 		pPropertyCurve.ChangePropertyValue(context, curve, BuildUndoInfo(pPropertyCurve));

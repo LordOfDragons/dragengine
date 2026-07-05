@@ -66,14 +66,14 @@ mpWrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 {
 	mpName.onValueChanged = [&](){
 		if(pAnimator){
-			pAnimator->NotifyLinkNameChanged(this);
+			pAnimator->SetChanged(true);
 		}
 	};
 	
 	mpController.onValueChanged = [&](){
 		UpdateController();
-		if(pAnimator && !pTempNoNotify){
-			pAnimator->NotifyLinkChanged(this);
+		if(pAnimator){
+			pAnimator->SetChanged(true);
 		}
 	};
 	
@@ -83,7 +83,7 @@ mpWrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 			NotifyLinkChanged();
 		}
 		if(pAnimator){
-			pAnimator->NotifyLinkChanged(this);
+			pAnimator->SetChanged(true);
 		}
 	};
 	
@@ -93,7 +93,7 @@ mpWrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 			NotifyLinkChanged();
 		}
 		if(pAnimator){
-			pAnimator->NotifyLinkChanged(this);
+			pAnimator->SetChanged(true);
 		}
 	};
 	
@@ -103,7 +103,7 @@ mpWrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 			NotifyLinkChanged();
 		}
 		if(pAnimator){
-			pAnimator->NotifyLinkChanged(this);
+			pAnimator->SetChanged(true);
 		}
 	};
 	
@@ -114,7 +114,7 @@ mpWrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 			NotifyLinkChanged();
 		}
 		if(pAnimator){
-			pAnimator->NotifyLinkChanged(this);
+			pAnimator->SetChanged(true);
 		}
 	};
 	
@@ -124,7 +124,7 @@ mpWrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 			NotifyLinkChanged();
 		}
 		if(pAnimator){
-			pAnimator->NotifyLinkChanged(this);
+			pAnimator->SetChanged(true);
 		}
 	};
 	mpBoneMaximum.onValueChanged = mpBoneMinimum.onValueChanged;
@@ -135,7 +135,7 @@ mpWrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 			NotifyLinkChanged();
 		}
 		if(pAnimator){
-			pAnimator->NotifyLinkChanged(this);
+			pAnimator->SetChanged(true);
 		}
 	};
 	
@@ -145,7 +145,7 @@ mpWrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 			NotifyLinkChanged();
 		}
 		if(pAnimator){
-			pAnimator->NotifyLinkChanged(this);
+			pAnimator->SetChanged(true);
 		}
 	};
 	mpVpsMaximum.onValueChanged = mpVpsMinimum.onValueChanged;
@@ -156,7 +156,7 @@ mpWrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 			NotifyLinkChanged();
 		}
 		if(pAnimator){
-			pAnimator->NotifyLinkChanged(this);
+			pAnimator->SetChanged(true);
 		}
 	};
 }
@@ -234,62 +234,10 @@ igdeUndoSystem *aeLink::GetUndoSystem() const{
 	return GetAnimatorRef().GetUndoSystem();
 }
 
-void aeLink::SetName(const char *aname){
-	mpName = aname;
-}
-
-void aeLink::SetController(aeController *acontroller, bool notify){
-	pTempNoNotify = !notify;
-	mpController = acontroller;
-	pTempNoNotify = false;
-}
-
-void aeLink::SetRepeat(int arepeat){
-	mpRepeat = arepeat;
-}
-
-void aeLink::SetCurve(const decCurveBezier &acurve){
-	mpCurve = acurve;
-}
-
-void aeLink::SetBone(const char *abone){
-	mpBone = abone;
-}
-
-void aeLink::SetBoneParameter(deAnimatorLink::eBoneParameter parameter){
-	mpBoneParameter = parameter;
-}
-
-void aeLink::SetBoneMinimum(float value){
-	mpBoneMinimum = value;
-}
-
-void aeLink::SetBoneMaximum(float value){
-	mpBoneMaximum = value;
-}
-
-void aeLink::SetVertexPositionSet(const char *vps){
-	mpVertexPositionSet = vps;
-}
-
-void aeLink::SetVertexPositionSetMinimum(float value){
-	mpVpsMinimum = value;
-}
-
-void aeLink::SetVertexPositionSetMaximum(float value){
-	mpVpsMaximum = value;
-}
-
-void aeLink::SetWrapY(bool wrap){
-	mpWrapY = wrap;
-}
-
-
 
 void aeLink::NotifyLinkChanged(){
 	if(pEngLink && pAnimator){
 		deAnimator *engAnimator = pAnimator->GetEngineAnimator();
-		
 		engAnimator->NotifyLinkChangedAt(engAnimator->GetLinks().IndexOf(pEngLink));
 	}
 }

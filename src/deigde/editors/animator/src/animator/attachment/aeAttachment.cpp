@@ -93,9 +93,6 @@ mpWObject(windowMain.GetMCAnimatorProperties().attachment.wobject, pMetaContext)
 		
 		pObjectWrapper->onChanged = [this](){
 			ReattachCollider();
-			if(pAnimator){
-				pAnimator->NotifyAttachmentChanged(this);
-			}
 		};
 		
 	}catch(const deException &){
@@ -103,17 +100,8 @@ mpWObject(windowMain.GetMCAnimatorProperties().attachment.wobject, pMetaContext)
 		throw;
 	}
 	
-	mpName.onValueChanged = [this](){
-		if(pAnimator){
-			pAnimator->NotifyAttachmentChanged(this);
-		}
-	};
-	
 	mpAttachType.onValueChanged = [this](){
 		ReattachCollider();
-		if(pAnimator){
-			pAnimator->NotifyAttachmentChanged(this);
-		}
 	};
 	mpBoneName.onValueChanged = mpAttachType.onValueChanged;
 }
@@ -164,18 +152,6 @@ igdeUndoSystem *aeAttachment::GetUndoSystem() const{
 	return GetAnimatorRef().GetUndoSystem();
 }
 
-
-void aeAttachment::SetName(const char *aname){
-	mpName = aname;
-}
-
-void aeAttachment::SetAttachType(eAttachTypes type){
-	mpAttachType = type;
-}
-
-void aeAttachment::SetBoneName(const char *aname){
-	mpBoneName = aname;
-}
 
 void aeAttachment::ReattachCollider(){
 	DetachCollider();

@@ -77,27 +77,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieve the name of the track bone or empty string to use none. */
-	inline const decString &GetTrackBone() const{ return mpTrackBone; }
-	/** Set the name of the track bone or empty string to use none. */
-	void SetTrackBone(const char *boneName);
-	/** Retrieve the track axis. */
-	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{ return mpTrackAxis; }
-	/** Set the track axis. */
-	void SetTrackAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
-	/** Retrieve the up axis. */
-	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{ return mpUpAxis; }
-	/** Set the up axis. */
-	void SetUpAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
-	/** Retrieve the up target. */
-	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{ return mpUpTarget; }
-	/** Set the up target. */
-	void SetUpTarget(deAnimatorRuleTrackTo::eUpTarget target);
-	/** Retrieve the locked axis. */
-	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{ return mpLockedAxis; }
-	/** Set the locked axis. */
-	void SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis axis);
-	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */

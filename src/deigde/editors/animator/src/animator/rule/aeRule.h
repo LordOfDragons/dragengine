@@ -76,7 +76,7 @@ public:
 		
 		void GetObjectItemInfoType(const igdeMetaContext::Ref&,
 		const aeLink::Ref &link, igdeMetaContextItemInfo &info) const override{
-			info.SetAll(link->GetName());
+			info.SetAll(link->mpName);
 		}
 		
 		igdeMetaPropertyObjectSetStorage<aeLink>::SetType GetValidObjectsType(const igdeMetaContext::Ref &context) const override{
@@ -174,29 +174,6 @@ public:
 	/** Set the parent group or nullptr if there is none. */
 	void SetParentGroup(aeRuleGroup *group);
 	
-	/** Retrieve the name. */
-	inline const decString &GetName() const{ return mpName; }
-	/** Set the name. */
-	void SetName(const char *filename);
-	
-	/** Determine if the rule is enabled. */
-	inline bool GetEnabled() const{ return mpEnabled; }
-	/** Set if the rule is enabled. */
-	void SetEnabled(bool enabled);
-	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return mpBlendMode; }
-	/** Set the blend mode. */
-	void SetBlendMode(deAnimatorRule::eBlendModes mode);
-	/** Retrieve the blend factor. */
-	inline float GetBlendFactor() const{ return mpBlendFactor; }
-	/** Set the source blend factor. */
-	void SetBlendFactor(float factor);
-	
-	/** Invert blend factor. */
-	inline bool GetInvertBlendFactor() const{ return mpInvertBlendFactor; }
-	
-	/** Set invert blend factor. */
-	void SetInvertBlendFactor(bool invert);
-	
 	/** Update Component and Animation. */
 	virtual void UpdateCompAnim();
 	/** Update targets. */
@@ -212,46 +189,6 @@ public:
 	
 	/** Parent animator changed. */
 	virtual void OnParentAnimatorChanged();
-	/*@}*/
-	
-	
-	
-	/** \name Bone Management */
-	/*@{*/
-	/** Retrieve the list of bones. */
-	inline const decStringSet &GetListBones() const{ return mpAffectedBones; }
-	
-	/** Set list of bones. */
-	void SetListBones(const decStringSet &bones);
-	
-	/** Add a bone. */
-	void AddBone(const char *bone);
-	
-	/** Remove the given bone. */
-	void RemoveBone(const char *bone);
-	
-	/** Remove all bones. */
-	void RemoveAllBones();
-	/*@}*/
-	
-	
-	
-	/** \name Vertex position set management */
-	/*@{*/
-	/** List of vertex position sets. */
-	inline const decStringSet &GetListVertexPositionSets() const{ return mpAffectedVps; }
-	
-	/** Set list of vertex position sets. */
-	void SetListVertexPositionSets(const decStringSet &sets);
-	
-	/** Add a vertex position set. */
-	void AddVertexPositionSet(const char *vertexPositionSet);
-	
-	/** Remove vertex position set. */
-	void RemoveVertexPositionSet(const char *vertexPositionSet);
-	
-	/** Remove all vertex position sets. */
-	void RemoveAllVertexPositionSets();
 	/*@}*/
 	
 	

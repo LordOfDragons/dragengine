@@ -271,7 +271,7 @@ igdeMetaPropertyTreeList::Walker::Ref aeMCPRuleTree::CreateWalker(const ContextR
 
 void aeMCPRuleTree::GetObjectItemInfoType(const ContextRef &context,
 const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const{
-	info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->GetName()),
+	info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->mpName.GetValue()),
 		Owner(context).GetWindowMain().GetRuleIcon(rule->GetType()));
 }
 
@@ -418,7 +418,7 @@ igdeMetaContext::Ref aeMCPRuleTree::GetActionContext(const ContextRef &context) 
 
 void aeMCPRules::GetObjectItemInfoType(const ContextRef &context,
 const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const{
-	info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->GetName()),
+	info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->mpName.GetValue()),
 		Owner(context).GetWindowMain().GetRuleIcon(rule->GetType()));
 }
 

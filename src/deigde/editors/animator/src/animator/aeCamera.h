@@ -81,12 +81,6 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Bone name. */
-	inline const decString &GetBone() const{ return mpBone; }
-	
-	/** Set bone name. */
-	void SetBone(const char *bone);
-	
 	/** Retrieves the free position. */
 	inline const decDVector &GetFreePosition() const{ return pFreePosition; }
 	/** Sets the free position. */
@@ -99,29 +93,12 @@ public:
 	inline float GetFreeDistance() const{ return pFreeDistance; }
 	/** Sets the distance of camera to the center point along the view direction. */
 	void SetFreeDistance(float freeDistance);
-	/** Retrieves the relative position. */
-	inline const decVector &GetRelativePosition() const{ return mpRelativePosition; }
-	/** Sets the relative position. */
-	void SetRelativePosition(const decVector &relativePosition);
-	/** Retrieves the relative orientation. */
-	inline const decVector &GetRelativeOrientation() const{ return mpRelativeRotation; }
-	/** Sets the relative orientation. */
-	void SetRelativeOrientation(const decVector &relativeOrientation);
-	/** Determines if this camera is attached to a bone. */
-	inline bool GetAttachToBone() const{ return mpAttachToBone; }
-	/** Sets if this camera is attached to a bone. */
-	void SetAttachToBone(bool attachToBone);
 	
 	/** Updates the camera. */
 	void Update();
 	
 	/** Resets the camera. */
 	void Reset() override;
-	
-	/** Parameter changed. */
-	void ParameterChanged() override;
-	/** Adaption changed. */
-	void AdaptionChanged() override;
 	/*@}*/
 };
 
