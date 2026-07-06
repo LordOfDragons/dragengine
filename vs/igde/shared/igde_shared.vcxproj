@@ -637,6 +637,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\igdeMetaContext.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\igdeMetaContextItemInfo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaProperty.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyAdapters.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyBoolean.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyColor.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyContext.cpp" />

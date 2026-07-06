@@ -196,72 +196,24 @@ private:
 	
 public:
 	/** \brief Watch list property and notify target on changes. */
-	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyString &target){
-		watch.GetListeners().Add(NotifyStringOnChanged<igdeMetaPropertyString,
-			WatchValueObjectItemInfoChanged<igdeMetaPropertyList>>::Ref::New(target));
-	}
-	
-	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyObject &target){
-		watch.GetListeners().Add(NotifyObjectOnChanged<igdeMetaPropertyObject,
-			WatchValueObjectItemInfoChanged<igdeMetaPropertyList>>::Ref::New(target));
-	}
-	
-	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyTreeList &target){
-		watch.GetListeners().Add(NotifyTreeListOnChanged<igdeMetaPropertyTreeList,
-			WatchValueObjectItemInfoChanged<igdeMetaPropertyList>>::Ref::New(target));
-	}
-	
+	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyString &target);
+	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyObject &target);
+	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyTreeList &target);
 	
 	/** \brief Watch set and notify target on changes. */
-	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyString &target){
-		watch.GetListeners().Add(NotifyStringOnChanged<igdeMetaPropertyString,
-			WatchValueObjectItemInfoChanged<igdeMetaPropertySet>>::Ref::New(target));
-	}
-	
-	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyObject &target){
-		watch.GetListeners().Add(NotifyObjectOnChanged<igdeMetaPropertyObject,
-			WatchValueObjectItemInfoChanged<igdeMetaPropertySet>>::Ref::New(target));
-	}
-	
-	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyTreeList &target){
-		watch.GetListeners().Add(NotifyTreeListOnChanged<igdeMetaPropertyTreeList,
-			WatchValueObjectItemInfoChanged<igdeMetaPropertySet>>::Ref::New(target));
-	}
-	
+	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyString &target);
+	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyObject &target);
+	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyTreeList &target);
 	
 	/** \brief Watch string set and notify target on changes. */
-	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyString &target){
-		watch.GetListeners().Add(NotifyStringOnChanged<igdeMetaPropertyString,
-			WatchValueChanged<igdeMetaPropertyStringSet>>::Ref::New(target));
-	}
-	
-	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyObject &target){
-		watch.GetListeners().Add(NotifyObjectOnChanged<igdeMetaPropertyObject,
-			WatchValueChanged<igdeMetaPropertyStringSet>>::Ref::New(target));
-	}
-	
-	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyTreeList &target){
-		watch.GetListeners().Add(NotifyTreeListOnChanged<igdeMetaPropertyTreeList,
-			WatchValueChanged<igdeMetaPropertyStringSet>>::Ref::New(target));
-	}
-	
+	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyString &target);
+	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyObject &target);
+	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyTreeList &target);
 	
 	/** \brief Watch property and notify target on changes. */
-	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertyList &target){
-		watch.GetListeners().Add(NotifyListOnChanged<igdeMetaPropertyList,
-			WatchValueChanged<igdeMetaPropertyString>>::Ref::New(target));
-	}
-	
-	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertySet &target){
-		watch.GetListeners().Add(NotifyListOnChanged<igdeMetaPropertySet,
-			WatchValueChanged<igdeMetaPropertyString>>::Ref::New(target));
-	}
-	
-	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertyTreeList &target){
-		watch.GetListeners().Add(NotifyTreeListOnChanged<igdeMetaPropertyTreeList,
-			WatchValueChanged<igdeMetaPropertyString>>::Ref::New(target));
-	}
-	
+	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertyList &target);
+	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertySet &target);
+	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertyTreeList &target);
 	
 	/** \brief Watch property and notify target on changes. */
 	template<typename T>
