@@ -25,7 +25,6 @@
 #include "igdeUndo.h"
 #include "igdeUndoSystem.h"
 #include "../editableentity/igdeEditableEntity.h"
-#include "../meta/igdeMetaContext.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -50,8 +49,8 @@ igdeUndoSystem::~igdeUndoSystem() = default;
 // Management
 ///////////////
 
-void igdeUndoSystem::SetMetaProperty(const deTObjectReference<igdeMetaContext> &metaContext,
-const deTObjectReference<igdeMetaPropertyUndoHistory> &metaProperty){
+void igdeUndoSystem::SetMetaProperty(const igdeMetaContext::Ref &metaContext,
+const igdeMetaPropertyUndoHistory::Ref &metaProperty){
 	pMetaContext = metaContext;
 	pMetaProperty = metaProperty;
 }

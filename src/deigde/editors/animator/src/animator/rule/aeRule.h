@@ -66,10 +66,10 @@ public:
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
 	template <typename R>
-	class MetaPropertyTarget : public R::MetaProperty<igdeMetaPropertyObjectSetStorage<aeLink>> {
+	class MetaPropertyTarget : public R::template MetaProperty<igdeMetaPropertyObjectSetStorage<aeLink>> {
 	public:
 		template <typename... A>
-		MetaPropertyTarget(A&&... args) : R::MetaProperty<igdeMetaPropertyObjectSetStorage<aeLink>>(std::forward<A>(args)...){
+		MetaPropertyTarget(A&&... args) : R::template MetaProperty<igdeMetaPropertyObjectSetStorage<aeLink>>(std::forward<A>(args)...){
 			this->SetRows(3);
 			this->SetMultiSelection(true);
 		}

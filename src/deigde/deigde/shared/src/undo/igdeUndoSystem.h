@@ -26,12 +26,12 @@
 #define _IGDEUNDOSYSTEM_H_
 
 #include "igdeUndo.h"
+#include "../meta/igdeMetaContext.h"
 #include "../meta/property/igdeMetaPropertyUndoHistory.h"
 
 #include <dragengine/common/collection/decTOrderedSet.h>
 
 class igdeEditableEntity;
-class igdeMetaContext;
 
 
 /**
@@ -46,8 +46,8 @@ class DE_DLL_EXPORT igdeUndoSystem{
 private:
 	igdeEditableEntity *pEditableEntity;
 	
-	deTObjectReference<igdeMetaContext> pMetaContext;
-	deTObjectReference<igdeMetaPropertyUndoHistory> pMetaProperty;
+	igdeMetaContext::Ref pMetaContext;
+	igdeMetaPropertyUndoHistory::Ref pMetaProperty;
 	
 	decTObjectOrderedSet<igdeUndo> pUndos;
 	int pRedoCount;
@@ -76,14 +76,14 @@ public:
 	
 	
 	/** \brief Meta context or nullptr. */
-	inline const deTObjectReference<igdeMetaContext> &GetMetaContext() const{ return pMetaContext; }
+	inline const igdeMetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	/** \brief Meta property for undo history or nullptr. */
-	inline const deTObjectReference<igdeMetaPropertyUndoHistory> &GetMetaProperty() const{ return pMetaProperty; }
+	inline const igdeMetaPropertyUndoHistory::Ref &GetMetaProperty() const{ return pMetaProperty; }
 	
 	/** \brief Set meta property for undo history or nullptr. */
-	void SetMetaProperty(const deTObjectReference<igdeMetaContext> &metaContext,
-		const deTObjectReference<igdeMetaPropertyUndoHistory> &metaProperty);
+	void SetMetaProperty(const igdeMetaContext::Ref &metaContext,
+		const igdeMetaPropertyUndoHistory::Ref &metaProperty);
 	
 	
 	/** \brief Undo actions. */
