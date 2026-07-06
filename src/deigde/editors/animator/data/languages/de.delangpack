@@ -7,11 +7,6 @@
 	<!-- Main Window -->
 	<translation name="Animator.Menu.File">Datei</translation>
 	<translation name="Animator.Menu.Edit">Bearbeiten</translation>
-	<translation name="Animator.Menu.Controller">Steuerung</translation>
-	<translation name="Animator.Menu.Link">Link</translation>
-	<translation name="Animator.Menu.Rule">Regel</translation>
-	<translation name="Animator.Menu.Rule.Add">Hinzufügen</translation>
-	<translation name="Animator.Menu.Rule.Insert">Einfügen</translation>
 	<translation name="Animator.Action.File.New">Neu</translation>
 	<translation name="Animator.Action.File.New.ToolTip">Neuen Animator erstellen</translation>
 	<translation name="Animator.Action.File.Open">Öffnen...</translation>
@@ -36,20 +31,8 @@
 	<translation name="Animator.Action.Edit.ShowBonesBaseSize.ToolTip">Knochengrösse festlegen</translation>
 	<translation name="Animator.Action.Controller.Add">Hinzufügen...</translation>
 	<translation name="Animator.Action.Controller.Add.ToolTip">Steuerung hinzufügen</translation>
-	<translation name="Animator.Action.Controller.Duplicate">Duplizieren</translation>
-	<translation name="Animator.Action.Controller.Duplicate.ToolTip">Steuerung duplizieren</translation>
-	<translation name="Animator.Action.Controller.Remove">Entfernen</translation>
-	<translation name="Animator.Action.Controller.Remove.ToolTip">Steuerung entfernen</translation>
-	<translation name="Animator.Action.Controller.MoveUp">Nach oben verschieben</translation>
-	<translation name="Animator.Action.Controller.MoveUp.ToolTip">Steuerung nach oben verschieben</translation>
-	<translation name="Animator.Action.Controller.MoveDown">Nach unten verschieben</translation>
-	<translation name="Animator.Action.Controller.MoveDown.ToolTip">Steuerung nach unten verschieben</translation>
 	<translation name="Animator.Action.Link.Add">Hinzufügen...</translation>
 	<translation name="Animator.Action.Link.Add.ToolTip">Link hinzufügen</translation>
-	<translation name="Animator.Action.Link.Duplicate">Duplizieren</translation>
-	<translation name="Animator.Action.Link.Duplicate.ToolTip">Link duplizieren</translation>
-	<translation name="Animator.Action.Link.Remove">Entfernen</translation>
-	<translation name="Animator.Action.Link.Remove.ToolTip">Link entfernen</translation>
 	<translation name="Animator.Action.Link.RemoveUnused">Nicht verwendete Links entfernen</translation>
 	<translation name="Animator.Action.Link.RemoveUnused.ToolTip">Entfernt Links, die in keinem Regelziel verwendet werden.</translation>
 	<translation name="Animator.Action.Rule.Animation">Animation</translation>
@@ -78,12 +61,6 @@
 	<translation name="Animator.Action.Rule.Limit.ToolTip">Begrenzungsregel hinzufügen</translation>
 	<translation name="Animator.Action.Rule.Mirror">Spiegel</translation>
 	<translation name="Animator.Action.Rule.Mirror.ToolTip">Spiegelregel hinzufügen</translation>
-	<translation name="Animator.Action.Rule.Remove">Entfernen</translation>
-	<translation name="Animator.Action.Rule.Remove.ToolTip">Regel entfernen</translation>
-	<translation name="Animator.Action.Rule.MoveUp">Nach oben verschieben</translation>
-	<translation name="Animator.Action.Rule.MoveUp.ToolTip">Regel nach oben verschieben</translation>
-	<translation name="Animator.Action.Rule.MoveDown">Nach unten verschieben</translation>
-	<translation name="Animator.Action.Rule.MoveDown.ToolTip">Regel nach unten verschieben</translation>
 	<translation name="Animator.Action.Rule.Animation.Insert.ToolTip">Animationsregel vor ausgewählter Regel einfügen</translation>
 	<translation name="Animator.Action.Rule.AnimationDifference.Insert.ToolTip">Animationsunterschiede-Regel vor ausgewählter Regel einfügen</translation>
 	<translation name="Animator.Action.Rule.AnimationSelect.Insert.ToolTip">Animationsauswahlregel vor ausgewählter Regel einfügen</translation>
@@ -104,14 +81,9 @@
 	<translation name="Animator.Dialog.AddController.Title">Steuerung hinzufügen</translation>
 	<translation name="Animator.Dialog.AddController.Name">Name:</translation>
 	<translation name="Animator.Dialog.AddController.ErrorNameExists">Eine Steuerung mit diesem Namen existiert bereits</translation>
-	<translation name="Animator.Dialog.DuplicateController.Title">Steuerung duplizieren</translation>
-	<translation name="Animator.Dialog.DuplicateController.Name">Name:</translation>
-	<translation name="Animator.Dialog.RemoveController.Title">Steuerung entfernen</translation>
 	<translation name="Animator.Dialog.RemoveController.Message">{0} Links verwenden diese Steuerung ({1}). Möchten Sie die Steuerung entfernen?</translation>
 	<translation name="Animator.Dialog.AddLink.Title">Link hinzufügen</translation>
 	<translation name="Animator.Dialog.AddLink.Name">Name:</translation>
-	<translation name="Animator.Dialog.DuplicateLink.Title">Link duplizieren</translation>
-	<translation name="Animator.Dialog.DuplicateLink.Name">Name:</translation>
 	<translation name="Animator.Dialog.RemoveLink.Title">Link entfernen</translation>
 	<translation name="Animator.Dialog.RemoveLink.Message">Die Links "{0}" werden von {1} Zielen verwendet ({2}).
 Wenn die Links jetzt entfernt werden, werden sie auch aus allen Zielen
@@ -130,13 +102,10 @@ entfernt, die sie verwenden. Möchten Sie die Links entfernen?</translation>
 	<translation name="Animator.DialogMirrorMatchName.First.ToolTip">Zu vergleichende Komponente für den ersten Namen.</translation>
 	<translation name="Animator.DialogMirrorMatchName.Second">Zweiter:</translation>
 	<translation name="Animator.DialogMirrorMatchName.Second.ToolTip">Zu vergleichende Komponente für den zweiten Namen.</translation>
-	<translation name="Animator.DialogMirrorMatchName.ErrorFirstEmpty">Die erste zu vergleichende Zeichenfolge darf nicht leer sein.</translation>
-	<translation name="Animator.DialogMirrorMatchName.ErrorSecondEmpty">Die zweite zu vergleichende Namenszeichenfolge darf nicht leer sein.</translation>
 	
 	<!-- Property Panel: Controller -->
 	<translation name="Animator.WPController.Controllers">Steuerungen</translation>
 	<translation name="Animator.WPController.Controllers.ToolTip">Steuerungen</translation>
-	<translation name="Animator.WPController.ControllerSettings">Steuerungseinstellungen</translation>
 	<translation name="Animator.WPController.Name">Name</translation>
 	<translation name="Animator.WPController.Name.ToolTip">Name der Steuerung</translation>
 	<translation name="Animator.WPController.MinimumValue">Mindestwert</translation>
@@ -149,8 +118,6 @@ entfernt, die sie verwenden. Möchten Sie die Links entfernen?</translation>
 	<translation name="Animator.WPController.Vector.ToolTip">Vektorwert der Steuerung</translation>
 	<translation name="Animator.WPController.SetFromMove">Von Bewegung Setzen</translation>
 	<translation name="Animator.WPController.SetFromMove.ToolTip">Legt Bereich fest aufgrund Spielzeit einer Animationsbewegung.</translation>
-	<translation name="Animator.WPController.Reset">Zurücksetzen</translation>
-	<translation name="Animator.WPController.Reset.ToolTip">Wert auf Steuerung-Minimum zurücksetzen</translation>
 	<translation name="Animator.WPController.ValueSetToLower">Auf Minimum setzen</translation>
 	<translation name="Animator.WPController.ValueSetToLower.ToolTip">Wert auf Steuerung-Minimum setzen</translation>
 	<translation name="Animator.WPController.ValueSetToUpper">Auf Maximum setzen</translation>
@@ -202,13 +169,6 @@ entfernt, die sie verwenden. Möchten Sie die Links entfernen?</translation>
 	<translation name="Animator.WPController.VectorSimulation.None">Keine</translation>
 	<translation name="Animator.WPController.VectorSimulation.Position">Position</translation>
 	<translation name="Animator.WPController.VectorSimulation.Rotation">Drehung</translation>
-	<translation name="Animator.WPController.Action.Copy">Kopieren</translation>
-	<translation name="Animator.WPController.Action.Copy.ToolTip">Steuerung in die Zwischenablage kopieren</translation>
-	<translation name="Animator.WPController.Action.Cut">Ausschneiden</translation>
-	<translation name="Animator.WPController.Action.Cut.ToolTip">Steuerung in die Zwischenablage ausschneiden</translation>
-	<translation name="Animator.WPController.Action.Paste">Einfügen</translation>
-	<translation name="Animator.WPController.Action.Paste.ToolTip">Steuerung aus der Zwischenablage einfügen</translation>
-	<translation name="Animator.WPController.Dialog.SetControllerName.Title">Steuerungsnamen festlegen</translation>
 	<translation name="Animator.WPController.Dialog.SetControllerName.DuplicateName">Eine Steuerung mit diesem Namen existiert bereits</translation>
 	<translation name="Animator.WPController.Dialog.SetRangeFromMove.Title">Bereich von Spielzeit festlegen</translation>
 	<translation name="Animator.WPController.Dialog.SetRangeFromMove.Message">Die Bereichsgrenzen werden auf die Spielzeit der
@@ -217,7 +177,6 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<!-- Property Panel: Link -->
 	<translation name="Animator.WPLink.Links">Links</translation>
 	<translation name="Animator.WPLink.Links.ToolTip">Links</translation>
-	<translation name="Animator.WPLink.LinkSettings">Link-Einstellungen</translation>
 	<translation name="Animator.WPLink.Name">Name</translation>
 	<translation name="Animator.WPLink.Name.ToolTip">Name des Links</translation>
 	<translation name="Animator.WPLink.Controller">Steuerung</translation>
@@ -252,12 +211,6 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPLink.WrapY.ToolTip">Y-Wert beginnt von vorne anstatt auf den Bereich begrenzt zu werden</translation>
 	<translation name="Animator.WPLink.LinkCurve">Link-Kurve</translation>
 	<translation name="Animator.WPLink.LinkCurve.ToolTip">Link-Kurve</translation>
-	<translation name="Animator.WPLink.Action.Copy">Kopieren</translation>
-	<translation name="Animator.WPLink.Action.Copy.ToolTip">Link in die Zwischenablage kopieren</translation>
-	<translation name="Animator.WPLink.Action.Cut">Ausschneiden</translation>
-	<translation name="Animator.WPLink.Action.Cut.ToolTip">Link in die Zwischenablage ausschneiden</translation>
-	<translation name="Animator.WPLink.Action.Paste">Einfügen</translation>
-	<translation name="Animator.WPLink.Action.Paste.ToolTip">Link aus der Zwischenablage einfügen</translation>
 	<translation name="Animator.WPLink.Action.CurveInsertAt">Wert bei Steuerung</translation>
 	<translation name="Animator.WPLink.Action.CurveInsertAt.FilterString">Wert einfügen bei Steuerung</translation>
 	<translation name="Animator.WPLink.Action.CurveInsertAt.ToolTip">Wert an der X-Koordinate einfügen, die dem Wert der verknüpften Steuerung entspricht</translation>
@@ -265,73 +218,30 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPLink.Dialog.InsertCurveValue.YValue">Y-Wert:</translation>
 	
 	<!-- Property Panel: Animator -->
-	<translation name="Animator.WPAnimator.AnimatorFilePath">Animator-Dateipfad</translation>
 	<translation name="Animator.WPAnimator.Rig">Rig</translation>
 	<translation name="Animator.WPAnimator.Rig.ToolTip">Vom Animator verwendete Rig-Ressource</translation>
 	<translation name="Animator.WPAnimator.Animation">Animation</translation>
 	<translation name="Animator.WPAnimator.Animation.ToolTip">Vom Animator verwendete Animationsressource</translation>
 	<translation name="Animator.WPAnimator.AffectedBones">Betroffene Bones</translation>
-	<translation name="Animator.WPAnimator.BoneName.ToolTip">Knochenname</translation>
 	<translation name="Animator.WPAnimator.AffectedBones.ToolTip">Knochen, welche von der Animation beeinflusst werden</translation>
 	<translation name="Animator.WPAnimator.AffectedVertexPositionSets">Betr. V-Pos Sätze</translation>
 	<translation name="Animator.WPAnimator.AffectedVertexPositionSets.FilterString">Betroffene Vertex-Positionssätze</translation>
-	<translation name="Animator.WPAnimator.SetName.ToolTip">Name des Vertex-Positionssatzes</translation>
 	<translation name="Animator.WPAnimator.AffectedVertexPositionSets.ToolTip">Vertex-Positionssätze, welche von der Animation beeinflusst werden</translation>
-	<translation name="Animator.WPAnimator.Action.BoneAdd">Hinzufügen</translation>
-	<translation name="Animator.WPAnimator.Action.BoneAdd.ToolTip">Rig-Knochen hinzufügen</translation>
-	<translation name="Animator.WPAnimator.Action.BoneRemove">Entfernen</translation>
-	<translation name="Animator.WPAnimator.Action.BoneRemove.ToolTip">Rig-Knochen entfernen</translation>
 	<translation name="Animator.WPAnimator.Action.BoneMirror">Knochen spiegeln</translation>
 	<translation name="Animator.WPAnimator.Action.BoneMirror.ToolTip">Knochen spiegeln</translation>
 	<translation name="Animator.WPAnimator.Action.BoneMirrorSelected">Ausg. Knochen spiegel</translation>
 	<translation name="Animator.WPAnimator.Action.BoneMirrorSelected.FilterString">Ausgewählte Knochen spiegeln</translation>
 	<translation name="Animator.WPAnimator.Action.BoneMirrorSelected.ToolTip">Ausgewählte Knochen spiegeln</translation>
-	<translation name="Animator.WPAnimator.Action.BoneCopy">Kopieren</translation>
-	<translation name="Animator.WPAnimator.Action.BoneCopy.ToolTip">Knochen kopieren</translation>
-	<translation name="Animator.WPAnimator.Action.BonePaste">Einfügen</translation>
-	<translation name="Animator.WPAnimator.Action.BonePaste.ToolTip">Knochen einfügen</translation>
-	<translation name="Animator.WPAnimator.Action.BoneExport">In Text exportieren</translation>
-	<translation name="Animator.WPAnimator.Action.BoneExport.ToolTip">Knochenliste exportieren</translation>
-	<translation name="Animator.WPAnimator.Action.BoneImport">Importieren aus Text</translation>
-	<translation name="Animator.WPAnimator.Action.BoneImport.ToolTip">Knochenliste importieren</translation>
-	<translation name="Animator.WPAnimator.Action.VPSAdd">Hinzufügen</translation>
-	<translation name="Animator.WPAnimator.Action.VPSAdd.ToolTip">Vertex-Positionssatz hinzufügen</translation>
-	<translation name="Animator.WPAnimator.Action.VPSRemove">Entfernen</translation>
-	<translation name="Animator.WPAnimator.Action.VPSRemove.ToolTip">Entfernen Sie die festgelegte Vertex-Positionssatz</translation>
 	<translation name="Animator.WPAnimator.Action.VPSMirror">V-PosSätze spiegeln</translation>
 	<translation name="Animator.WPAnimator.Action.VPSMirror.FilterString">Vertex-Positionssätze spiegeln</translation>
 	<translation name="Animator.WPAnimator.Action.VPSMirror.ToolTip">Vertex-Positionssätze spiegeln</translation>
 	<translation name="Animator.WPAnimator.Action.VPSMirrorSelected">Ausw. V-PosSätze spiegel</translation>
 	<translation name="Animator.WPAnimator.Action.VPSMirrorSelected.FilterString">Ausgewählte Vertex-Positionssätze spiegeln</translation>
 	<translation name="Animator.WPAnimator.Action.VPSMirrorSelected.ToolTip">Ausgewählte Vertex-Positionssätze spiegeln</translation>
-	<translation name="Animator.WPAnimator.Action.VPSCopy">Kopieren</translation>
-	<translation name="Animator.WPAnimator.Action.VPSCopy.ToolTip">Kopieren von Vertex-Positionssatzssätzen</translation>
-	<translation name="Animator.WPAnimator.Action.VPSPaste">Einfügen</translation>
-	<translation name="Animator.WPAnimator.Action.VPSPaste.ToolTip">Kopieren von Vertex-Positionssatzssätzen</translation>
-	<translation name="Animator.WPAnimator.Action.VPSExport">In Text exportieren</translation>
-	<translation name="Animator.WPAnimator.Action.VPSExport.ToolTip">Exportieren von Vertex-Positionssatzssätzen</translation>
-	<translation name="Animator.WPAnimator.Action.VPSImport">Aus Text importieren</translation>
-	<translation name="Animator.WPAnimator.Action.VPSImport.ToolTip">Importieren von Vertex-Positionssatzssätzen</translation>
-	<translation name="Animator.WPAnimator.Dialog.BoneExport.Title">In Text exportieren</translation>
-	<translation name="Animator.WPAnimator.Dialog.BoneExport.Bones">Knochen</translation>
-	<translation name="Animator.WPAnimator.Dialog.BoneImport.Title">Aus Text importieren</translation>
-	<translation name="Animator.WPAnimator.Dialog.BoneImport.Message">Knochen. Ein Knochen pro Zeile.</translation>
-	<translation name="Animator.WPAnimator.Dialog.VPSExport.Title">In Text exportieren</translation>
-	<translation name="Animator.WPAnimator.Dialog.VPSExport.Sets">Vertex-Positionssätze</translation>
-	<translation name="Animator.WPAnimator.Dialog.VPSImport.Title">Aus Text importieren</translation>
-	<translation name="Animator.WPAnimator.Dialog.VPSImport.Message">Vertex-Positionssätze. Ein Vertex-Positionssatz pro Zeile.</translation>
 	
 	<!-- Property Panel: Rule -->
 	<translation name="Animator.WPRule.Rules">Regeln:</translation>
 	<translation name="Animator.WPRule.Rules.ToolTip">Regeln</translation>
-	<translation name="Animator.WPRule.Action.Copy">Kopieren</translation>
-	<translation name="Animator.WPRule.Action.Copy.ToolTip">Regel in die Zwischenablage kopieren</translation>
-	<translation name="Animator.WPRule.Action.Cut">Ausschneiden</translation>
-	<translation name="Animator.WPRule.Action.Cut.ToolTip">Regel in die Zwischenablage ausschneiden</translation>
-	<translation name="Animator.WPRule.Action.PasteAppend">Einfügen Anhängen</translation>
-	<translation name="Animator.WPRule.Action.PasteAppend.ToolTip">Anhängen einer Regel aus der Zwischenablage</translation>
-	<translation name="Animator.WPRule.Action.PasteInsert">Einfügen vor Auswahl</translation>
-	<translation name="Animator.WPRule.Action.PasteInsert.ToolTip">Einfügen einer Regel aus der Zwischenablage vor der Auswahl</translation>
 	<translation name="Animator.WPRule.Action.PasteIntoGroup">In Gruppe einfügen</translation>
 	<translation name="Animator.WPRule.Action.PasteIntoGroup.ToolTip">Regeln aus der Zwischenablage in Gruppe einfügen</translation>
 	<translation name="Animator.WPRule.Menu.Add">Hinzufügen</translation>
@@ -339,7 +249,6 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPRule.Menu.Insert">Einfügen</translation>
 	
 	<!-- Property Panel: View -->
-	<translation name="Animator.WPView.DisplayFilePath">Dateipfad anzeigen</translation>
 	<translation name="Animator.WPView.Model">Modell</translation>
 	<translation name="Animator.WPView.Model.ToolTip">Legt das zu verwendende Modell fest</translation>
 	<translation name="Animator.WPView.Skin">Skin</translation>
@@ -366,15 +275,11 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPView.PlaySpeed.ToolTip">Legt die Wiedergabegeschwindigkeit fest</translation>
 	<translation name="Animator.WPView.TimeStep">Zeitschritt</translation>
 	<translation name="Animator.WPView.TimeStep.ToolTip">Schrittweite der Animationszeit</translation>
-	<translation name="Animator.WPView.FramePrev.ToolTip">Schrittweise Animation rückwärts spulen</translation>
-	<translation name="Animator.WPView.FrameNext.ToolTip">Schrittweise Animation vorwärts spulen</translation>
 	<translation name="Animator.WPView.Paused">Pausieren</translation>
 	<translation name="Animator.WPView.Paused.ToolTip">Animationswiedergabe pausieren</translation>
 	<translation name="Animator.WPView.Reset">Zurücksetzen</translation>
 	<translation name="Animator.WPView.Reset.ToolTip">Animation zurücksetzen</translation>
 	<translation name="Animator.WPView.Attachments">Anhänge</translation>
-	<translation name="Animator.WPView.Attachment">Anhang</translation>
-	<translation name="Animator.WPView.Attachment.ToolTip">Anhang auswählen zum Bearbeiten</translation>
 	<translation name="Animator.WPView.AttachmentName">Name</translation>
 	<translation name="Animator.WPView.AttachmentName.ToolTip">Legt den Namen des Anhangs fest.</translation>
 	<translation name="Animator.WPView.AttachBone">Befestigen Knochen</translation>
@@ -384,13 +289,6 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPView.AttachType.None">Keine</translation>
 	<translation name="Animator.WPView.AttachType.Bone">An Knochen</translation>
 	<translation name="Animator.WPView.AttachType.Rig">Am Rig</translation>
-	<translation name="Animator.WPView.AttachmentObject">Anhangsobjekt</translation>
-	<translation name="Animator.WPView.Action.AttachmentAdd">Hinzufügen</translation>
-	<translation name="Animator.WPView.Action.AttachmentAdd.ToolTip">Anhang hinzufügen</translation>
-	<translation name="Animator.WPView.Action.AttachmentRemove">Entfernen</translation>
-	<translation name="Animator.WPView.Action.AttachmentRemove.ToolTip">Anhang entfernen</translation>
-	<translation name="Animator.WPView.Action.AttachmentClear">Löschen</translation>
-	<translation name="Animator.WPView.Action.AttachmentClear.ToolTip">Alle Anhänge entfernen</translation>
 	<translation name="Animator.WPView.Action.AttachmentLoadConfig">Konfiguration laden...</translation>
 	<translation name="Animator.WPView.Action.AttachmentLoadConfig.ToolTip">Konfiguration laden</translation>
 	<translation name="Animator.WPView.Action.AttachmentSaveConfig">Konfiguration spiech.</translation>
@@ -400,7 +298,6 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPView.Dialog.SaveAttachmentConfig.Title">Anhangskonfiguration speichern</translation>
 	
 	<!-- Property Panel: Playground -->
-	<translation name="Animator.WPPlayground.Controllers">Steuerungen</translation>
 	<translation name="Animator.WPPlayground.LocomotionTesting">Bewegungstests</translation>
 	<translation name="Animator.WPPlayground.LocomotionType">Fortbewegungsart</translation>
 	<translation name="Animator.WPPlayground.LocomotionType.ToolTip">Fortbewegungsart</translation>
@@ -465,7 +362,6 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPPlayground.Action.ControllersFullReset.ToolTip">Setzt alle Werte zurück</translation>
 	
 	<!-- Property Panel: Rule (Base) -->
-	<translation name="Animator.WPAPanelRule.GeneralSettings">Allgemeine Einstellungen</translation>
 	<translation name="Animator.WPAPanelRule.Name">Name</translation>
 	<translation name="Animator.WPAPanelRule.Name.ToolTip">Name der Regel</translation>
 	<translation name="Animator.WPAPanelRule.BlendMode">Mischmodus</translation>
@@ -479,70 +375,10 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPAPanelRule.Enabled">Regel aktivieren</translation>
 	<translation name="Animator.WPAPanelRule.Enabled.ToolTip">Legt fest, ob die Regel Auswirkungen auf die Animation hat</translation>
 	<translation name="Animator.WPAPanelRule.AffectedBones">Betroffene Knochen</translation>
-	<translation name="Animator.WPAPanelRule.Bones.ToolTip">Knochen</translation>
-	<translation name="Animator.WPAPanelRule.ListBones.ToolTip">Von der Regel betroffene Knochen</translation>
-	<translation name="Animator.WPAPanelRule.Action.BoneAdd">Hinzufügen</translation>
-	<translation name="Animator.WPAPanelRule.Action.BoneAdd.ToolTip">Knochen hinzufügen</translation>
-	<translation name="Animator.WPAPanelRule.Action.BoneRemoves">Entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.BoneRemoves.ToolTip">Knochen entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.BoneRemoveAll">Alle entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.BoneRemoveAll.ToolTip">Alle Knochen entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.BoneSelectedRemove">Entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.BoneSelectedRemove.ToolTip">Ausgewähltes Knochen entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.MirrorRigBones">Spiegelknochen</translation>
-	<translation name="Animator.WPAPanelRule.Action.MirrorRigBones.ToolTip">Spiegeln von Rig-Knochen</translation>
-	<translation name="Animator.WPAPanelRule.Action.CopyBones">Kopieren</translation>
-	<translation name="Animator.WPAPanelRule.Action.CopyBones.ToolTip">Knochen kopieren</translation>
-	<translation name="Animator.WPAPanelRule.Action.PasteBones">Einfügen</translation>
-	<translation name="Animator.WPAPanelRule.Action.PasteBones.ToolTip">Knochen einfügen</translation>
-	<translation name="Animator.WPAPanelRule.Action.ExportBones">In Text exportieren</translation>
-	<translation name="Animator.WPAPanelRule.Action.ExportBones.ToolTip">Knochenliste exportieren</translation>
-	<translation name="Animator.WPAPanelRule.Action.ImportBones">Aus Text importieren</translation>
-	<translation name="Animator.WPAPanelRule.Action.ImportBones.ToolTip">Knochenliste importieren</translation>
 	<translation name="Animator.WPAPanelRule.AffectedVertexPositionSets">Betr. V-Pos Sätze</translation>
 	<translation name="Animator.WPAPanelRule.AffectedVertexPositionSets.FilterString">Betroffene Vertex-Positionssätze</translation>
-	<translation name="Animator.WPAPanelRule.VertexPositionSets.ToolTip">Vertex-Positionssätze</translation>
-	<translation name="Animator.WPAPanelRule.ListVertexPositionSets.ToolTip">Von der Regel betroffene Vertex-Positionssätze</translation>
-	<translation name="Animator.WPAPanelRule.Action.VPSAdd">Hinzufügen</translation>
-	<translation name="Animator.WPAPanelRule.Action.VPSAdd.ToolTip">Vertex-Positionssatz hinzufügen</translation>
-	<translation name="Animator.WPAPanelRule.Action.VPSRemoves">Entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.VPSRemoves.ToolTip">Vertex-Positionssätze entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.VPSRemoveAll">Alle entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.VPSRemoveAll.ToolTip">Alle Vertex-Positionssätze entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.VPSSelectedRemove">Entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.VPSSelectedRemove.ToolTip">Ausgewählte Vertex-Positionssätze entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.MirrorRigVPS">Spiegel</translation>
-	<translation name="Animator.WPAPanelRule.Action.MirrorRigVPS.ToolTip">Spiegelung der Vertex-Positionssätze</translation>
-	<translation name="Animator.WPAPanelRule.Action.CopyVPS">Kopieren</translation>
-	<translation name="Animator.WPAPanelRule.Action.CopyVPS.ToolTip">Vertex-Positionssätze kopieren</translation>
-	<translation name="Animator.WPAPanelRule.Action.PasteVPS">Einfügen</translation>
-	<translation name="Animator.WPAPanelRule.Action.PasteVPS.ToolTip">Vertex-Positionssätze einfügen</translation>
-	<translation name="Animator.WPAPanelRule.Action.ExportVPS">In Text exportieren</translation>
-	<translation name="Animator.WPAPanelRule.Action.ExportVPS.ToolTip">Vertex-Positionssatz-Liste exportieren</translation>
-	<translation name="Animator.WPAPanelRule.Action.ImportVPS">Aus Text importieren</translation>
-	<translation name="Animator.WPAPanelRule.Action.ImportVPS.ToolTip">Vertex-Positionssatz-Liste importieren</translation>
-	<translation name="Animator.WPAPanelRule.TargetsAndLinks">Links und Ziele</translation>
-	<translation name="Animator.WPAPanelRule.Target">Ziel</translation>
-	<translation name="Animator.WPAPanelRule.Target.ToolTip">Ziele</translation>
-	<translation name="Animator.WPAPanelRule.Links.ToolTip">Links</translation>
-	<translation name="Animator.WPAPanelRule.ListLinks.ToolTip">Links, die sich auf das Ziel auswirken</translation>
-	<translation name="Animator.WPAPanelRule.Action.LinkAdd">Hinzufügen</translation>
-	<translation name="Animator.WPAPanelRule.Action.LinkAdd.ToolTip">Link hinzufügen</translation>
-	<translation name="Animator.WPAPanelRule.Action.LinkRemove">Entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.LinkRemove.ToolTip">Link entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.LinkRemoveAll">Alle entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Action.LinkRemoveAll.ToolTip">Alle Links entfernen</translation>
-	<translation name="Animator.WPAPanelRule.Dialog.ExportBones.Title">In Text exportieren</translation>
-	<translation name="Animator.WPAPanelRule.Dialog.ExportBones.Bones">Knochen</translation>
-	<translation name="Animator.WPAPanelRule.Dialog.ImportBones.Title">Aus Text importieren</translation>
-	<translation name="Animator.WPAPanelRule.Dialog.ImportBones.Message">Knochen. Ein Knochen pro Zeile.</translation>
-	<translation name="Animator.WPAPanelRule.Dialog.ExportVPS.Title">In Text exportieren</translation>
-	<translation name="Animator.WPAPanelRule.Dialog.ExportVPS.VPS">Vertex-Positionssätze</translation>
-	<translation name="Animator.WPAPanelRule.Dialog.ImportVPS.Title">Aus Text importieren</translation>
-	<translation name="Animator.WPAPanelRule.Dialog.ImportVPS.Message">Vertex-Positionssätze. Ein Vertex-Positionssatz pro Zeile.</translation>
 	
 	<!-- Property Panel: Rule Animation -->
-	<translation name="Animator.WPAPanelRuleAnimation.Animation">Animation</translation>
 	<translation name="Animator.WPAPanelRuleAnimation.MoveName">Bewegung</translation>
 	<translation name="Animator.WPAPanelRuleAnimation.MoveName.ToolTip">Name der zu verwendenden Animationsbewegung</translation>
 	<translation name="Animator.WPAPanelRuleAnimation.MoveTime">Bewegungszeit</translation>
@@ -558,7 +394,6 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPAPanelRuleAnimation.EnableVertexPositionSet.ToolTip">Legt fest, ob der Vertex-Positionssatz geändert wird.</translation>
 	
 	<!-- Property Panel: Rule Animation Difference -->
-	<translation name="Animator.WPAPanelRuleAnimationDifference.Animation">Animationsunterschied</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.LeadingMoveName">Führende Bewegung</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.LeadingMoveName.ToolTip">Name der führenden Animationsbewegung (Resultat = führend - Referenz)</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime">Führende Zeit</translation>
@@ -580,17 +415,8 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.EnableVertexPositionSet.ToolTip">Legt fest, ob der Vertex-Positionssatz geändert wird.</translation>
 	
 	<!-- Property Panel: Rule Animation Select -->
-	<translation name="Animator.WPAPanelRuleAnimationSelect.AnimationSelect">Animationsauswahl</translation>
 	<translation name="Animator.WPAPanelRuleAnimationSelect.Moves">Bewegungen</translation>
 	<translation name="Animator.WPAPanelRuleAnimationSelect.Moves.ToolTip">Bewegungen, welche zur Auswahl stehen</translation>
-	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveAdd">Hinzufügen</translation>
-	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveAdd.ToolTip">Bewegung zur Liste hinzufügen</translation>
-	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveRemove">Entfernen</translation>
-	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveRemove.ToolTip">Bewegung aus der Liste entfernen</translation>
-	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveUp">Nach oben verschieben</translation>
-	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveUp.ToolTip">Bewegung in der Liste nach oben verschieben</translation>
-	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveDown">Nach unten verschieben</translation>
-	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveDown.ToolTip">Bewegung in der Liste nach unten verschieben</translation>
 	<translation name="Animator.WPAPanelRuleAnimationSelect.EnablePosition">Position ändern</translation>
 	<translation name="Animator.WPAPanelRuleAnimationSelect.EnablePosition.ToolTip">Legt fest, ob die Position geändert wird.</translation>
 	<translation name="Animator.WPAPanelRuleAnimationSelect.EnableRotation">Drehung ändern</translation>
@@ -602,7 +428,6 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet.ToolTip">Legt fest, ob die Vertex-Position geändert wird.</translation>
 	
 	<!-- Property Panel: Rule Bone Transformator -->
-	<translation name="Animator.WPAPanelRuleBoneTransformator.BoneManipulator">Knochenmanipulator</translation>
 	<translation name="Animator.WPAPanelRuleBoneTransformator.MinTranslation">Minimale Verschiebung</translation>
 	<translation name="Animator.WPAPanelRuleBoneTransformator.MinTranslation.ToolTip">Minimale Verschiebung</translation>
 	<translation name="Animator.WPAPanelRuleBoneTransformator.MaxTranslation">Maximale Verschiebung</translation>
@@ -646,7 +471,6 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPAPanelRuleBoneTransformator.EnableSize.ToolTip">Legt fest, ob die Grösse geändert wird.</translation>
 	
 	<!-- Property Panel: Rule Foreign State -->
-	<translation name="Animator.WPAPanelRuleForeignState.ForeignState">Fremdzustand</translation>
 	<translation name="Animator.WPAPanelRuleForeignState.Bone">Knochen</translation>
 	<translation name="Animator.WPAPanelRuleForeignState.Bone.ToolTip">Legt den Knochen fest, dessen Zustand benutzt werden soll</translation>
 	<translation name="Animator.WPAPanelRuleForeignState.VertexPositionSet">Vertex-Positionssatz</translation>
@@ -678,7 +502,6 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPAPanelRuleForeignState.EnableVertexPositionSet.ToolTip">Legt fest, ob der Vertex-Positionssatz geändert wird.</translation>
 	
 	<!-- Property Panel: Rule Group -->
-	<translation name="Animator.WPAPanelRuleGroup.Group">Gruppe</translation>
 	<translation name="Animator.WPAPanelRuleGroup.ApplicationType">Anwendungstyp</translation>
 	<translation name="Animator.WPAPanelRuleGroup.ApplicationType.ToolTip">Legt fest, wie untergeordnete Regeln in der Gruppe verarbeitet werden.
 Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des Auswahlziels (Auswahl).</translation>
@@ -698,7 +521,6 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleGroup.EnableVertexPositionSet.ToolTip">Legt fest, ob der Vertex-Positionssatz geändert wird.</translation>
 	
 	<!-- Property Panel: Rule Inverse Kinematic -->
-	<translation name="Animator.WPAPanelRuleInverseKinematic.InverseKinematic">Inverse Kinematik</translation>
 	<translation name="Animator.WPAPanelRuleInverseKinematic.GoalPosition">Zielposition</translation>
 	<translation name="Animator.WPAPanelRuleInverseKinematic.GoalPosition.ToolTip">Legt die zu erreichende Position fest</translation>
 	<translation name="Animator.WPAPanelRuleInverseKinematic.GoalOrientation">Zieldrehung</translation>
@@ -713,7 +535,6 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleInverseKinematic.SolverBone.ToolTip">Legt den Zielknochen fest, das als Koordinatensystem verwendet werden soll.</translation>
 	<translation name="Animator.WPAPanelRuleInverseKinematic.UseSolverBone">Zielknochen benutzen</translation>
 	<translation name="Animator.WPAPanelRuleInverseKinematic.UseSolverBone.ToolTip">Legt fest, ob der Zielknochen als Koordinatensystem verwendet werden soll oder die Komponente selbst</translation>
-	<translation name="Animator.WPAPanelRuleInverseKinematic.Reach">Reichweite</translation>
 	<translation name="Animator.WPAPanelRuleInverseKinematic.Range">Bereich</translation>
 	<translation name="Animator.WPAPanelRuleInverseKinematic.Range.ToolTip">Maximal zulässiger Bereich für die Positionierung des IK-Ziels vom Reichweitenzentrum aus</translation>
 	<translation name="Animator.WPAPanelRuleInverseKinematic.ReachBone">Knochen</translation>
@@ -722,7 +543,6 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleInverseKinematic.ReachCenter.ToolTip">Zentrum, das für die Reichweitenberechnung verwendet wird, wenn kein Knochen festgelegt ist</translation>
 	
 	<!-- Property Panel: Rule Limit -->
-	<translation name="Animator.WPAPanelRuleLimit.Limit">Begrenzung</translation>
 	<translation name="Animator.WPAPanelRuleLimit.MinPosition">Minimale Position</translation>
 	<translation name="Animator.WPAPanelRuleLimit.MinPosition.ToolTip">Minimale Position</translation>
 	<translation name="Animator.WPAPanelRuleLimit.MaxPosition">Maximale Position</translation>
@@ -748,67 +568,6 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleLimit.CoordFrame.TargetBone">Zielknochen</translation>
 	<translation name="Animator.WPAPanelRuleLimit.TargetBone">Zielknochen</translation>
 	<translation name="Animator.WPAPanelRuleLimit.TargetBone.ToolTip">Legt den Knochen fest, der als Koordinatensystem verwendet werden soll.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMinPos">Pos Min begr.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMinPos.FilterString">Position Minimum beschränken</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMinPos.ToolTip">Mindestposition begrenzen</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMaxPos">Position Max begr.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMaxPos.FilterString">Position Maximum beschränken</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMaxPos.ToolTip">Begrenzung der maximalen Position</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMinRot">Dreh Min begr.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMinRot.FilterString">Drehung Minimum beschränken</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMinRot.ToolTip">Minimale Drehung begrenzen</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMaxRot">Drehung Max begr.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMaxRot.FilterString">Drehung Maximum beschränken</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMaxRot.ToolTip">Maximale Drehung begrenzen</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMinScale">Min Grösse begr.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMinScale.FilterString">Minimale Grösse beschränken</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMinScale.ToolTip">Begrenzung der minimalen Grösse</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMaxScale">Max Grösse begr.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMaxScale.FilterString">Maximale Grösse beschränken</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableMaxScale.ToolTip">Begrenzung der maximalen Grösse</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableVertexPositionSet">V-Pos Satz begr.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableVertexPositionSet.FilterString">Vertex-Positionssatz begrenzen</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableVertexPositionSet.ToolTip">Begrenzung des Gewichtes des Vertex-Positionssatzes</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMinX">X</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMinX.ToolTip">Legt fest, ob die x-Position von Knochen auf den Mindestwert begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMinY">Y</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMinY.ToolTip">Legt fest, ob die y-Position von Knochen gegenüber dem Minimum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMinZ">Z</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMinZ.ToolTip">Legt fest, ob die Z-Position von Knochen gegenüber dem Minimum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMaxX">X</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMaxX.ToolTip">Legt fest, ob die x-Position von Knochen auf den Maximalwert begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMaxY">Y</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMaxY.ToolTip">Legt fest, ob die y-Position von Knochen auf den Maximalwert begrenzt wird.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMaxZ">Z</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnablePosMaxZ.ToolTip">Legt fest, ob die Z-Position von Knochen auf den Maximalwert begrenzt wird.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMinX">X</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMinX.ToolTip">Legt fest, ob die X-Drehung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMinY">Y</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMinY.ToolTip">Legt fest, ob die Y-Drehung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMinZ">Z</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMinZ.ToolTip">Legt fest, ob die Z-Drehung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMaxX">X</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMaxX.ToolTip">Legt fest, ob die X-Drehung von Knochen gegenüber dem Maximum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMaxY">Y</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMaxY.ToolTip">Legt fest, ob die Y-Drehung von Knochen gegenüber dem Maximum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMaxZ">Z</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableRotMaxZ.ToolTip">Legt fest, ob die Z-Drehung von Knochen gegenüber dem Maximum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMinX">X</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMinX.ToolTip">Legt fest, ob die x-Skalierung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMinY">Y</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMinY.ToolTip">Legt fest, ob die y-Skalierung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMinZ">Z</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMinZ.ToolTip">Legt fest, ob die Z-Skalierung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMaxX">X</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMaxX.ToolTip">Legt fest, ob die x-Skalierung von Knochen auf den Maximalwert begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMaxY">Y</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMaxY.ToolTip">Legt fest, ob die y-Skalierung von Knochen gegenüber dem Maximum begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMaxZ">Z</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableScaleMaxZ.ToolTip">Legt fest, ob die Z-Skalierung von Knochen auf den Maximalwert begrenzt ist.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableVPSMin">Minimum</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableVPSMin.ToolTip">Das Gewicht des Vertex-Positionssatzes ist auf das Minimum beschränkt.</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableVPSMax">Maximal</translation>
-	<translation name="Animator.WPAPanelRuleLimit.EnableVPSMax.ToolTip">Das Gewicht des Vertex-Positionssatzes ist auf das Maximum beschränkt.</translation>
 	
 	<translation name="Animator.WPAPanelRuleLimit.EnablePositionXMin">Min Pos X änd.</translation>
 	<translation name="Animator.WPAPanelRuleLimit.EnablePositionXMin.FilterString">Minimum Position X ändern</translation>
@@ -872,7 +631,6 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleLimit.EnableVertexPositionSetMax.ToolTip">Das Gewicht des Vertex-Positionssatzes ist auf das Maximum beschränkt.</translation>
 	
 	<!-- Property Panel: Rule Mirror -->
-	<translation name="Animator.WPAPanelRuleMirror.Mirror">Spiegeln</translation>
 	<translation name="Animator.WPAPanelRuleMirror.Axis">Achse</translation>
 	<translation name="Animator.WPAPanelRuleMirror.Axis.ToolTip">Spiegelachse</translation>
 	<translation name="Animator.WPAPanelRuleMirror.Axis.X">X</translation>
@@ -891,17 +649,8 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleMirror.EnableVertexPositionSet.ToolTip">Legt fest, ob der Vertex-Positionssatz geändert wird.</translation>
 	<translation name="Animator.WPAPanelRuleMirror.Pairs">Paare</translation>
 	<translation name="Animator.WPAPanelRuleMirror.Pairs.ToolTip">Ordnen Sie Knochenpaare nach Namen zu.</translation>
-	<translation name="Animator.WPAPanelRuleMirror.ActionMatchNameAdd">Hinzufügen...</translation>
-	<translation name="Animator.WPAPanelRuleMirror.ActionMatchNameAdd.ToolTip">Paar hinzufügen</translation>
-	<translation name="Animator.WPAPanelRuleMirror.ActionMatchNameEdit">Bearbeiten...</translation>
-	<translation name="Animator.WPAPanelRuleMirror.ActionMatchNameEdit.ToolTip">Paar bearbeiten</translation>
-	<translation name="Animator.WPAPanelRuleMirror.ActionMatchNameRemove">Entfernen...</translation>
-	<translation name="Animator.WPAPanelRuleMirror.ActionMatchNameRemove.ToolTip">Paar entfernen</translation>
-	<translation name="Animator.WPAPanelRuleMirror.ActionMatchNameRemoveAll">Alle entfernen</translation>
-	<translation name="Animator.WPAPanelRuleMirror.ActionMatchNameRemoveAll.ToolTip">Alle Paare entfernen</translation>
 	
 	<!-- Property Panel: Rule State Manipulator -->
-	<translation name="Animator.WPAPanelRuleStateManipulator.StateManipulator">Zustandsmanipulator</translation>
 	<translation name="Animator.WPAPanelRuleStateManipulator.MinPosition">Minimale Position</translation>
 	<translation name="Animator.WPAPanelRuleStateManipulator.MinPosition.ToolTip">Minimale Position</translation>
 	<translation name="Animator.WPAPanelRuleStateManipulator.MaxPosition">Maximale Position</translation>
@@ -931,15 +680,10 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleStateManipulator.EnableVertexPositionSet.ToolTip">Legt fest, ob die Vertex-Position geändert wird.</translation>
 	
 	<!-- Property Panel: Rule State Snapshot -->
-	<translation name="Animator.WPAPanelRuleStateSnapshot.StateSnapshot">Zustandsaufnahme</translation>
 	<translation name="Animator.WPAPanelRuleStateSnapshot.UseLastState">Letzter Zustand</translation>
 	<translation name="Animator.WPAPanelRuleStateSnapshot.UseLastState.ToolTip">Legt fest, ob der Animationszustand aus der letzten Bildaktualisierung verwendet wird oder der gespeicherte Zustand</translation>
 	<translation name="Animator.WPAPanelRuleStateSnapshot.ID">Kennung</translation>
 	<translation name="Animator.WPAPanelRuleStateSnapshot.ID.ToolTip">Kennung zum Erfassen des Status während der Laufzeit</translation>
-	<translation name="Animator.WPAPanelRuleStateSnapshot.MoveName">Bewegung</translation>
-	<translation name="Animator.WPAPanelRuleStateSnapshot.MoveName.ToolTip">Name der zu verwendenden Animationsbewegung</translation>
-	<translation name="Animator.WPAPanelRuleStateSnapshot.MoveTime">Zeit</translation>
-	<translation name="Animator.WPAPanelRuleStateSnapshot.MoveTime.ToolTip">Zeit in Sekunden der Bewegung, die abgerufen werden soll</translation>
 	<translation name="Animator.WPAPanelRuleStateSnapshot.EnablePosition">Position ändern</translation>
 	<translation name="Animator.WPAPanelRuleStateSnapshot.EnablePosition.ToolTip">Legt fest, ob die Position geändert wird.</translation>
 	<translation name="Animator.WPAPanelRuleStateSnapshot.EnableRotation">Drehung ändern</translation>
@@ -949,15 +693,8 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet">V-Pos Satz änd.</translation>
 	<translation name="Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet.FilterString">Vertex-Positionssatz ändern</translation>
 	<translation name="Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet.ToolTip">Legt fest, ob der Vertex-Positionssatz geändert wird.</translation>
-	<translation name="Animator.WPAPanelRuleStateSnapshot.Snapshot">Zustand speichern</translation>
-	<translation name="Animator.WPAPanelRuleStateSnapshot.Snapshot.ToolTip">Zustand speichern (Laufzeitsimulation)</translation>
-	<translation name="Animator.WPAPanelRuleStateSnapshot.ActionSnapshot">Aktuell</translation>
-	<translation name="Animator.WPAPanelRuleStateSnapshot.ActionSnapshot.ToolTip">Speicherte den aktuellen Animationszustand.</translation>
-	<translation name="Animator.WPAPanelRuleStateSnapshot.ActionGetFrame">Bewegung</translation>
-	<translation name="Animator.WPAPanelRuleStateSnapshot.ActionGetFrame.ToolTip">Speichert Bewegung bei gewünschter Zeit.</translation>
 	
 	<!-- Property Panel: Rule Sub Animator -->
-	<translation name="Animator.WPAPanelRuleSubAnimator.SubAnimator">Sub Animator</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.Path">Pfad</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.Path.ToolTip">Legt den zu verwendenden Animator fest.</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.EnablePosition">Position ändern</translation>
@@ -972,8 +709,6 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleSubAnimator.Connections">Verbindungen</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.Connections.ToolTip">Verbindung zwischen Sub-Animator und Steuerungen</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.ConnectionInfo" />
-	<translation name="Animator.WPAPanelRuleSubAnimator.ConnectionInfo.ToolTip">Automatisch wenn leer</translation>
-	<translation name="Animator.WPAPanelRuleSubAnimator.ConnectionInfo.Value">Erstellt automatisch Verbindungen durch Abgleich der Steuerungs-Namen, wenn keine benutzerdefinierten Verbindungen festgelegt sind</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.Target">Ziel</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.Target.ToolTip">Ziel-Steuerung</translation>
 	<translation name="Animator.WPAPanelRuleSubAnimator.Controller">Steuerung</translation>
@@ -981,7 +716,6 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleSubAnimator.Controller.NotAssigned">&lt; nicht zugewiesen &gt;</translation>
 	
 	<!-- Property Panel: Rule Track To -->
-	<translation name="Animator.WPAPanelRuleTrackTo.TrackTo">Ausrichten</translation>
 	<translation name="Animator.WPAPanelRuleTrackTo.TrackBone">Zielknochen</translation>
 	<translation name="Animator.WPAPanelRuleTrackTo.TrackBone.ToolTip">Name des Zielknochens</translation>
 	<translation name="Animator.WPAPanelRuleTrackTo.TrackAxis">Zielachse</translation>
@@ -1013,239 +747,17 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleTrackTo.LockedAxis.Y">Y-Achse</translation>
 	<translation name="Animator.WPAPanelRuleTrackTo.LockedAxis.Z">Z-Achse</translation>
 	
-	<!-- Window Properties Tabs -->
-	<translation name="Animator.WindowProperties.Animator">Animator</translation>
-	<translation name="Animator.WindowProperties.Controller">Steuerung</translation>
-	<translation name="Animator.WindowProperties.Link">Link</translation>
-	<translation name="Animator.WindowProperties.Rule">Regel</translation>
-	<translation name="Animator.WindowProperties.Playground">Testen</translation>
-	<translation name="Animator.WindowProperties.View">Ansicht</translation>
-	<translation name="Animator.WindowProperties.History">Verlauf</translation>
-	
 	<!-- Window Main -->
 	<translation name="Animator.WindowMain.OpenAnimator.Title">Animator öffnen</translation>
 	<translation name="Animator.WindowMain.OpenAnimator.Message">Animator öffnen verwirft Änderungen. Ist das in Ordnung?</translation>
 	
 	<!-- WPView -->
-	<translation name="Animator.WPView.Action.ResetAnimation.ToolTip">Animation zurücksetzen</translation>
 	<translation name="Animator.WPView.Sky">Himmel</translation>
 	<translation name="Animator.WPView.EnvironmentObject">Umgebungsobjekt</translation>
 	<translation name="Animator.WPView.Camera">Kamera</translation>
 	
 	<!-- WPAPanelRuleMirror -->
 	<translation name="Animator.WPAPanelRuleMirror.Action.MatchName.AddPreset">Abgleich hinzufügen</translation>
-	<translation name="Animator.WPAPanelRuleMirror.Action.EditMatchName">Abgleich bearbeiten</translation>
-	
-	<!-- Undo Strings -->
-	<translation name="Animator.Undo.PasteBones">Knochen einfügen</translation>
-	<translation name="Animator.Undo.ImportBones">Knochen importieren</translation>
-	<translation name="Animator.Undo.PasteVertexPositionSets">Vertex-Positionssätze einfügen</translation>
-	<translation name="Animator.Undo.ImportVertexPositionSets">Vertex-Positionssätze importieren</translation>
-	<translation name="Animator.Undo.RulePasteBones">Regel: Knochen einfügen</translation>
-	<translation name="Animator.Undo.RuleImportBones">Regel: Knochen importieren</translation>
-	<translation name="Animator.Undo.RulePasteVertexPositionSets">Regel: Vertex-Positionssätze einfügen</translation>
-	<translation name="Animator.Undo.RuleImportVertexPositionSets">Regel: Vertex-Positionssätze importieren</translation>
-	<translation name="Animator.Undo.AnimationSelectAddMove">Animationsauswahl: Bewegung hinzufügen</translation>
-	<translation name="Animator.Undo.AnimationSelectRemoveMove">Animationsauswahl: Bewegung entfernen</translation>
-	<translation name="Animator.Undo.AnimationSelectMoveMoveUp">Animationsauswahl: Bewegung nach oben verschieben</translation>
-	<translation name="Animator.Undo.AnimationSelectMoveMoveDown">Animationsauswahl: Bewegung nach unten verschieben</translation>
-	<translation name="Animator.Undo.AddController">Steuerung hinzufügen</translation>
-	<translation name="Animator.Undo.DuplicateController">Steuerung duplizieren</translation>
-	<translation name="Animator.Undo.AnimatorAddBone">Animator: Knochen hinzufügen</translation>
-	<translation name="Animator.Undo.AnimatorAddBones">Animator: Knochen hinzufügen</translation>
-	<translation name="Animator.Undo.AnimatorAddVertexPositionSet">Animator: Vertex-Positionssatz hinzufügen</translation>
-	<translation name="Animator.Undo.AnimatorAddVertexPositionSets">Animator: Vertex-Positionssätze hinzufügen</translation>
-	<translation name="Animator.Undo.AnimatorMirrorBones">Animator: Knochen</translation>
-	<translation name="Animator.Undo.AnimatorMirrorVertexPositionSets">Animator: Vertex-Positionssätze</translation>
-	<translation name="Animator.Undo.AnimatorRemoveBone">Animator: Knochen entfernen</translation>
-	<translation name="Animator.Undo.AnimatorRemoveBones">Animator: Knochen entfernen</translation>
-	<translation name="Animator.Undo.AnimatorRemoveVertexPositionSet">Animator: Vertex-Positionssatz entfernen</translation>
-	<translation name="Animator.Undo.AnimatorRemoveVertexPositionSets">Animator: Vertex-Positionssätze entfernen</translation>
-	<translation name="Animator.Undo.AnimatorSetAnimationPath">Animator: Animation Pfad festlegen</translation>
-	<translation name="Animator.Undo.AnimatorSetBones">Animator: Knochen festlegen</translation>
-	<translation name="Animator.Undo.AnimatorSetRigPath">Animator: Rig-Pfad festlegen</translation>
-	<translation name="Animator.Undo.AnimatorSetVertexPositionSets">Animator: Vertex-Positionssätze festlegen</translation>
-	<translation name="Animator.Undo.ControllerSetDefaultValue">Steuerung: Standardwert festlegen</translation>
-	<translation name="Animator.Undo.ControllerSetDefaultVector">Steuerung: Standardvektor festlegen</translation>
-	<translation name="Animator.Undo.ControllerSetFromMove">Steuerung: Von Bewegung festlegen</translation>
-	<translation name="Animator.Undo.ControllerSetMaximumValue">Steuerung: Maximalwert festlegen</translation>
-	<translation name="Animator.Undo.ControllerSetMinimumValue">Steuerung: Mindestwert festlegen</translation>
-	<translation name="Animator.Undo.ControllerSetName">Steuerung: Namen festlegen</translation>
-	<translation name="Animator.Undo.ControllerToggleClamp">Steuerung: Umschaltung beschränken</translation>
-	<translation name="Animator.Undo.ControllerToggleFrozen">Steuerung: Umschaltung einfrieren</translation>
-	<translation name="Animator.Undo.RemoveController">Steuerung entfernen</translation>
-	<translation name="Animator.Undo.LinkAdd">Link hinzufügen</translation>
-	<translation name="Animator.Undo.LinkRemove">Link entfernen</translation>
-	<translation name="Animator.Undo.LinkRemoveUnused">Nicht verwendete Links entfernen</translation>
-	<translation name="Animator.Undo.LinkSetBone">Link: Knochen festlegen</translation>
-	<translation name="Animator.Undo.LinkSetBoneMaximum">Link: Maximale Knochenanzahl festlegen</translation>
-	<translation name="Animator.Undo.LinkSetBoneMinimum">Link: Minimale Knochenanzahl festlegen</translation>
-	<translation name="Animator.Undo.LinkSetBoneParameter">Link: Knochenparameter festlegen</translation>
-	<translation name="Animator.Undo.LinkSetController">Link: Steuerung festlegen</translation>
-	<translation name="Animator.Undo.LinkSetCurve">Link: Kurve festlegen</translation>
-	<translation name="Animator.Undo.LinkSetName">Link: Namen festlegen</translation>
-	<translation name="Animator.Undo.LinkSetRepeat">Link: Wiederholung festlegen</translation>
-	<translation name="Animator.Undo.LinkSetVertexPositionSet">Link: Vertex-Positionssatz festlegen</translation>
-	<translation name="Animator.Undo.LinkSetVertexPositionSetMaximum">Link: Vertex-Positionssatz Maximum festlegen</translation>
-	<translation name="Animator.Undo.LinkSetVertexPositionSetMinimum">Link: Vertex-Positionssatz Minimum festlegen</translation>
-	<translation name="Animator.Undo.LinkToggleWrapY">Link: Endlos Y umschalten</translation>
-	<translation name="Animator.Undo.AddRule">Regel hinzufügen</translation>
-	<translation name="Animator.Undo.RulePasteAllBones">Regel: Knochen einfügen</translation>
-	<translation name="Animator.Undo.RulePasteAllVertexPositionSets">Regel: Vertex-Positionssätze einfügen</translation>
-	<translation name="Animator.Undo.RuleTargetAddLink">Regelziel: Link hinzufügen</translation>
-	<translation name="Animator.Undo.RuleTargetRemoveAllLinks">Regelziel: Alle Links entfernen</translation>
-	<translation name="Animator.Undo.RuleTargetRemoveLink">Regelziel: Link entfernen</translation>
-	<translation name="Animator.Undo.SetRuleAddBone">Regel: Knochen hinzufügen</translation>
-	<translation name="Animator.Undo.SetRuleAddBones">Regel: Knochen hinzufügen</translation>
-	<translation name="Animator.Undo.SetRuleAddVertexPositionSet">Regel: Vertex-Position hinzufügen</translation>
-	<translation name="Animator.Undo.SetRuleAddVertexPositionSets">Regel: Vertex-Positionssätze hinzufügen</translation>
-	<translation name="Animator.Undo.SetRuleBlendFactor">Regel: Mischfaktor festlegen</translation>
-	<translation name="Animator.Undo.SetRuleBlendMode">Regel: Mischmodus festlegen</translation>
-	<translation name="Animator.Undo.SetRuleBones">Regel: Knochen festlegen</translation>
-	<translation name="Animator.Undo.SetRuleEnabled">Regel: Aktivieren</translation>
-	<translation name="Animator.Undo.SetRuleName">Regel: Namen festlegen</translation>
-	<translation name="Animator.Undo.SetRuleRemoveAllBones">Regel: Alle Knochen entfernen</translation>
-	<translation name="Animator.Undo.SetRuleRemoveAllVertexPositionSets">Regel: Alle Vertex-Positionssatzssätze entfernen</translation>
-	<translation name="Animator.Undo.SetRuleRemoveBone">Regel: Knochen entfernen</translation>
-	<translation name="Animator.Undo.SetRuleRemoveBones">Regel: Knochen entfernen</translation>
-	<translation name="Animator.Undo.SetRuleRemoveVertexPositionSet">Regel: Set-Vertex-Position entfernen</translation>
-	<translation name="Animator.Undo.SetRuleRemoveVertexPositionSets">Regel: Vertex-Positionssatzssätze entfernen</translation>
-	<translation name="Animator.Undo.SetRuleVertexPositionSets">Regel: Vertex-Positionssatzen festlegen</translation>
-	<translation name="Animator.Undo.ToggleRuleInvertBlendFactor">Regel: Umschalten Mischfaktor umkehren</translation>
-	<translation name="Animator.Undo.RuleAnimationToggleEnablePosition">Animation: Position ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleAnimationToggleEnableRotation">Animation: Drehung ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleAnimationToggleEnableSize">Animation: Grösse ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleAnimationToggleEnableVertexPositionSet">Animation: Vertex-Position ändern umschalten</translation>
-	<translation name="Animator.Undo.SetRuleAnimationMoveName">Animation: Bewegung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleAnimationMoveTime">Animation: Bewegungszeit festlegen</translation>
-	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnablePosition">Animationsunterschied: Position umschalten</translation>
-	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableRotation">Animationsunterschied: Drehung umschalten</translation>
-	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableSize">Animationsunterschied: Grösse umschalten</translation>
-	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableVertexPositionSet">Animationsunterschied: Vertex-Position umschalten</translation>
-	<translation name="Animator.Undo.RuleAnimationDifferenceToggleComponentSpace">Animationsunterschied: Komponentenspace benutzen umschalten</translation>
-	<translation name="Animator.Undo.SetRuleAnimationDifferenceLeadingMoveName">Animationsunterschied: Name der führenden Bewegung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleAnimationDifferenceLeadingMoveTime">Animationsunterschied: Führende Bewegungszeit festlegen</translation>
-	<translation name="Animator.Undo.SetRuleAnimationDifferenceReferenceMoveName">Animationsunterschied: Name der Referenzbewegung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleAnimationDifferenceReferenceMoveTime">Animationsunterschied: Referenzzeit festlegen</translation>
-	<translation name="Animator.Undo.RuleAnimationSelectToggleEnablePosition">Animationsauswahl: Position umschalten</translation>
-	<translation name="Animator.Undo.RuleAnimationSelectToggleEnableRotation">Animationsauswahl: Drehung umschalten</translation>
-	<translation name="Animator.Undo.RuleAnimationSelectToggleEnableSize">Animationsauswahl: Grösse umschalten</translation>
-	<translation name="Animator.Undo.RuleAnimationSelectToggleEnableVertexPositionSet">Animationsauswahl: Vertex-Position umschalten</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetAxis">Knochentransformator: Achse festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetCoordinateFrame">Knochentransformator: Koordinatensystem festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetEnableOrientation">Knochentransformator: Ausrichtung aktivieren</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetEnablePosition">Knochentransformator: Position aktivieren/deaktivieren</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetEnableSize">Knochentransformator: Grösse aktivieren/deaktivieren</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetInputBone">Knochentransformator: Eingabeknochen festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetInputSource">Knochentransformator: Eingabebereich festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetMaximumAngle">Knochentransformator: Maximalwinkel festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetMinimumAngle">Knochentransformator: Mindestwinkel festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetMaximumRotation">Knochentransformator: Maximale Drehung festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetMinimumRotation">Knochentransformator: Mindestrotation festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetMaximumScaling">Knochentransformator: Maximale Skalierung festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetMinimumScaling">Knochentransformator: Minimale Skalierung festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetTargetBone">Knochentransformator: Zielknochen festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetMaximumTranslation">Knochentransformator: Maximale Translation festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetMinimumTranslation">Knochentransformator: Minimale Translation festlegen</translation>
-	<translation name="Animator.Undo.RuleBoneTransformatorSetUseAxis">Knochentransformator: Achse verwenden umschalten</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateBone">Fremdzustand: Regelknochen festlegen</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateDestinationCoordinateFrame">Fremdzustandsregel: Zielkoordinatenrahmen festlegen</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateEnablePosition">Fremdzustandsregel: Position ändern umschalten</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateEnableRotation">Fremdzustandsregel: Rotation ändern umschalten</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateEnableSize">Fremdzustandsregel: Grösse ändern umschalten</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateEnableVertexPositionSet">Fremdzustandsregel: Vertex-Position ändern umschalten</translation>
-	<translation name="Animator.Undo.SetRuleForeignStatePosition">Fremdzustandsregel: Position festlegen</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateRotation">Fremdzustandsregel: Drehung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateScaleVertexPositionSet">Fremdzustandsregel: Vertex-Positionssatz skalieren</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateSize">Fremdzustandsregel: Grösse festlegen</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateSourceCoordinateFrame">Fremdzustandsregel: Quellkoordinatensystem festlegen</translation>
-	<translation name="Animator.Undo.SetRuleForeignStateVertexPositionSet">Fremdzustandsregel: Vertex-Positionssatz festlegen</translation>
-	<translation name="Animator.Undo.RuleGroupSetApplicationType">Regelgruppe: Anwendungstyp festlegen</translation>
-	<translation name="Animator.Undo.RuleGroupToggleEnablePosition">Regelgruppe: Position ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleGroupToggleEnableRotation">Regelgruppe: Drehung ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleGroupToggleEnableSize">Regelgruppe: Grösse ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleGroupToggleEnableVertexPositionSet">Regelgruppe: Vertex-Positionssatz ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleGroupToggleUseCurrentState">Regelgruppe: aktuellen Status verwenden umschalten</translation>
-	<translation name="Animator.Undo.RuleInverseKinematicSetAdjustOrientation">Inverse Kinematik: Ausrichtung anpassen</translation>
-	<translation name="Animator.Undo.SetRuleInverseKinematicGoalOrientation">Inverse Kinematik: Zielausrichtung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleInverseKinematicGoalPosition">Inverse Kinematik: Zielposition festlegen</translation>
-	<translation name="Animator.Undo.SetRuleInverseKinematicLocalPosition">Inverse Kinematik: Lokale Position festlegen</translation>
-	<translation name="Animator.Undo.SetRuleInverseKinematicLocalRotation">Inverse Kinematik: Lokale Rotation festlegen</translation>
-	<translation name="Animator.Undo.RuleInverseKinematicSetReachBone">Inverse Kinematik: Reichweite Knochen festlegen</translation>
-	<translation name="Animator.Undo.RuleInverseKinematicSetReachCenter">Inverse Kinematik: Reichweite Mittelpunkt erreichen</translation>
-	<translation name="Animator.Undo.RuleInverseKinematicSetReachRange">Inverse Kinematik: Reichweite festlegen</translation>
-	<translation name="Animator.Undo.SetRuleInverseKinematicSolverBone">Inverse Kinematik: Zielknochen festlegen</translation>
-	<translation name="Animator.Undo.SetRuleInverseKinematicUseSolverBone">Inverse Kinematik: Zielknochen verwenden</translation>
-	<translation name="Animator.Undo.RuleLimitSetCoordinateFrame">Begrenzung: Koordinatenrahmen festlegen</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMaximumXPosition">Begrenzung: Maximale X-Position ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMinimumXPosition">Begrenzung: Minimale X-Position ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMaximumYPosition">Begrenzung: Maximale Y-Position ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMinimumYPosition">Begrenzung: Minimale Y-Position ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMaximumZPosition">Begrenzung: Maximale Z-Position ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMinimumZPosition">Begrenzung: Minimale Z-Position ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMaximumXRotation">Begrenzung: Maximale X-Rotation ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMinimumXRotation">Begrenzung: Minimale X-Rotation ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMaximumYRotation">Begrenzung: Maximale Y-Rotation ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMinimumYRotation">Begrenzung: Minimale Y-Rotation ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMaximumZRotation">Begrenzung: Maximale Z-Rotation ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMinimumZRotation">Begrenzung: Minimale Z-Rotation ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMaximumXScaling">Begrenzung: Maximale X-Skalierung ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMinimumXScaling">Begrenzung: Minimale X-Skalierung ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMaximumYScaling">Begrenzung: Maximale Y-Skalierung ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMinimumYScaling">Begrenzung: Minimale Y-Skalierung ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMaximumZScaling">Begrenzung: Maximale Z-Skalierung ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMinimumZScaling">Begrenzung: Minimale Z-Skalierung ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMaximumVertexPositionSet">Begrenzung: Maximale Vertex-Positionssatz ändern</translation>
-	<translation name="Animator.Undo.RuleLimitToggleEnableMinimumVertexPositionSet">Begrenzung: Minimale Vertex-Positionssatz ändern</translation>
-	<translation name="Animator.Undo.SetRuleLimitMaximumTranslation">Begrenzung: Maximale Übersetzung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleLimitMinimumTranslation">Begrenzung: Minimale Übersetzung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleLimitMaximumRotation">Begrenzung: Maximale Drehung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleLimitMinimumRotation">Begrenzung: Minimale Drehung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleLimitMaximumScaling">Begrenzung: Maximale Skalierung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleLimitMinimumScaling">Begrenzung: Minimale Skalierung festlegen</translation>
-	<translation name="Animator.Undo.RuleLimitSetTargetBone">Zielknochen für Begrenzung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleLimitMaximumVertexPositionSet">Begrenzung: Maximale Vertex-Positionssatz festlegen</translation>
-	<translation name="Animator.Undo.SetRuleLimitMinimumVertexPositionSet">Begrenzung: Minimale Vertex-Positionssatz festlegen</translation>
-	<translation name="Animator.Undo.RuleMirrorAddMatchName">Spiegeln: Paar hinzufügen</translation>
-	<translation name="Animator.Undo.RuleMirrorRemoveAllMatchNames">Spiegeln: Alle Paare entfernen</translation>
-	<translation name="Animator.Undo.RuleMirrorRemoveMatchName">Spiegeln: Paar entfernen</translation>
-	<translation name="Animator.Undo.RuleMirrorSetAxis">Spiegeln: Achse festlegen</translation>
-	<translation name="Animator.Undo.RuleMirrorToggleEnablePosition">Spiegeln: Position ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleMirrorToggleEnableRotation">Spiegeln: Drehung ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleMirrorToggleEnableSize">Spiegeln: Grösse ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleMirrorToggleEnableVertexPositionSet">Spiegeln: Vertex-Positionssatz ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleMirrorSetMatchName">Spiegeln: Übereinstimmungsnamen festlegen</translation>
-	<translation name="Animator.Undo.RuleMirrorSetMirrorBone">Spiegeln: Knochen festlegen</translation>
-	<translation name="Animator.Undo.RuleSnapshotSetID">Animationszustand: Kennung festlegen</translation>
-	<translation name="Animator.Undo.RuleSnapshotToggleEnablePosition">Animationszustand: Position ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleSnapshotToggleEnableRotation">Animationszustand: Drehung ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleSnapshotToggleEnableSize">Animationszustand: Grösse ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleSnapshotToggleEnableVertexPositionSet">Animationszustand: Vertex-Positionssatz ändern umschalten</translation>
-	<translation name="Animator.Undo.SetRuleSnapshotUseLast">Animationszustand: Letzten Zustand verwenden</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorEnablePosition">Zustandsmaniuplator: Position ändern umschalten</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorEnableRotation">Zustandsmaniuplator: Drehung ändern umschalten</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorEnableSize">Zustandsmaniuplator: Grösse ändern umschalten</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorEnableVertexPositionSet">Zustandsmaniuplator: Vertexposition ändern umschalten</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorMaximum">Zustandsmaniuplator: Maximalwert festlegen</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorMaximumRotation">Zustandsmaniuplator: Maximale Drehung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorMaximumSize">Zustandsmaniuplator: Maximale Grösse festlegen</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorMaximumVertexPositionSet">Zustandsmaniuplator: Maximale Vertex-Positionssatz festlegen</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorMinimum">Zustandsmaniuplator: Minimalwert festlegen</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorMinimumRotation">Zustandsmaniuplator: Minimale Drehung festlegen</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorMinimumSize">Zustandsmaniuplator: Minimale Grösse festlegen</translation>
-	<translation name="Animator.Undo.SetRuleStateManipulatorMinimumVertexPositionSet">Zustandsmaniuplator: Minimale Vertex-Positionssatz festlegen</translation>
-	<translation name="Animator.Undo.RuleSubAnimatorSetConnectionController">Sub-Animator: Verbindungssteuerung festlegen</translation>
-	<translation name="Animator.Undo.RuleSubAnimatorSetPathAnimator">Sub-Animator: Animatorpfad festlegen</translation>
-	<translation name="Animator.Undo.RuleSubAnimatorToggleEnablePosition">Sub-Animator: Position ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleSubAnimatorToggleEnableRotation">Sub-Animator: Drehung ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleSubAnimatorToggleEnableSize">Sub-Animator: Grösse ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleSubAnimatorToggleEnableVertexPositionSet">Sub-Animator: Vertex-Positionseinstellung ändern umschalten</translation>
-	<translation name="Animator.Undo.RuleTrackToSetLockedAxis">Ausrichten: Gesperrte Achse festlegen</translation>
-	<translation name="Animator.Undo.RuleTrackToSetTrackAxis">Ausrichten: Zielachse festlegen</translation>
-	<translation name="Animator.Undo.RuleTrackToSetTrackBone">Ausrichten: Zielknochen festlegen</translation>
-	<translation name="Animator.Undo.RuleTrackToSetUpAxis">Ausrichten: Aufwärtsachse festlegen</translation>
-	<translation name="Animator.Undo.RuleTrackToSetUpTarget">Ausrichten: Zielaufwärtsachse festlegen</translation>
-	<translation name="Animator.Undo.RuleAnimSelectSetMoves">Animationsauswahl: Bewegungen festlegen</translation>
 	
 	<!-- Target Labels -->
 	<translation name="Animator.Target.BlendFactor">Mischfaktor Links</translation>
@@ -1288,15 +800,10 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.Target.ReachCenter.ToolTip">Reichweitenzentrum Links</translation>
 	
 	<!-- Other Strings -->
-	<translation name="Animator.MatchNameType.Begin">Anfang</translation>
-	<translation name="Animator.MatchNameType.End">Ende</translation>
-	<translation name="Animator.MatchNameType.Middle">Mitte</translation>
 	<translation name="Animator.DefaultName.Attachment">Anhang</translation>
 	<translation name="Animator.DefaultName.Controller">Steuerung</translation>
 	<translation name="Animator.DefaultName.Link">Link</translation>
 	<translation name="Animator.Task.SyncGameDefinition">Animator-Editor: Synchronisierung der Spieldefinition</translation>
-	<translation name="Animator.Playground.ControllerValue">Aktueller Wert der Steuerung "{0}"</translation>
-	<translation name="Animator.PanelRuleMirror.AddMatchName">Hinzufügen: {0} '{1}' &lt;-&gt; '{2}'</translation>
 	<translation name="Animator.PanelRuleMirror.ListMatchName">{0}: '{1}' &lt;-&gt; '{2}'</translation>
 	
 	<translation name="Animator.Context.Animator">Animator</translation>

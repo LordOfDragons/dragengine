@@ -914,7 +914,7 @@ void gdeWPPropertyList::SetGameDefinition(gdeGameDefinition *gameDefinition){
 }
 
 igdeUndoSystem *gdeWPPropertyList::GetUndoSystem() const{
-	return pGameDefinition ? pGameDefinition->GetUndoSystem() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetUndoSystem().Pointer() : nullptr;
 }
 
 igdeClipboard &gdeWPPropertyList::GetClipboard() const{
