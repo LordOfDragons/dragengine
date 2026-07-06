@@ -271,7 +271,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\aeIGDEModule.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeAnimator.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeAnimatorNotifier.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeCamera.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeSubAnimator.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animator\attachment\aeAttachment.cpp" />
@@ -309,7 +308,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeTaskSyncGameDefinition.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeView3D.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMain.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMainListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoManager.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLSAnimator.cpp" />
@@ -328,6 +326,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPLink.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRule.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRuleMirror.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRuleSubAnimator.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPShared.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCRuleProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeCLClosestHit.cpp" />
@@ -337,7 +336,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\aeIGDEModule.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeAnimator.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeAnimatorNotifier.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeCamera.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeSubAnimator.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\attachment\aeAttachment.h" />
@@ -375,7 +373,6 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeTaskSyncGameDefinition.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeView3D.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMain.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMainListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoManager.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLSAnimator.h" />

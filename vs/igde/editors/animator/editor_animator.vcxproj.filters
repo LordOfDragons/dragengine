@@ -25,9 +25,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeAnimator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeAnimatorNotifier.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -139,9 +136,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMainListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -196,6 +190,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRuleMirror.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRuleSubAnimator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPShared.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -217,9 +214,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeAnimator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeAnimatorNotifier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeCamera.h">
@@ -331,9 +325,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMainListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.h">
