@@ -31,6 +31,7 @@
 
 #include "igdeNativeFoxResizer.h"
 #include "igdeNativeFoxViewCurveBezier.h"
+#include "../../igdeApplication.h"
 #include "../../igdeUIHelper.h"
 #include "../../curveedit/igdeViewCurveBezier.h"
 #include "../../curveedit/igdeDialogCurveBezierClamp.h"
@@ -1178,58 +1179,61 @@ long igdeNativeFoxViewCurveBezierView::onMiddleMouseUp(FXObject*, FXSelector, vo
 ////////////////////////
 
 void igdeNativeFoxViewCurveBezierView::UpdateParameters(){
-	if(pDirtyGridParams){
-		int wwidth = getWidth();
-		int hheight = getHeight();
-		int realWidth = wwidth - pRulerSize.x - 10;
-		int realHeight = hheight - pRulerSize.y - 10;
-		int minUnitPixelsX = 30;
-		int minUnitPixelsY = 15;
-		float unitSize;
-		
-		pWindowCenter.x = (wwidth + pRulerSize.x) / 2;
-		pWindowCenter.y = (hheight - pRulerSize.y) / 2;
-		
-		if(realWidth < 10){
-			realWidth = 10;
-		}
-		if(realHeight < 10){
-			realHeight = 10;
-		}
-		
-		pGridScale.x = ((float)realWidth / (pGridMax.x - pGridMin.x)) * pGridZoom.x;
-		pGridScale.y = ((float)realHeight / (pGridMax.y - pGridMin.y)) * pGridZoom.y;
-		
-		unitSize = (float)minUnitPixelsX / pGridScale.x;
-		for(pGridUnitMode.x=0; pGridUnitMode.x<SCALE_MODE_COUNT; pGridUnitMode.x++){
-			if(unitSize < vScaleModes[pGridUnitMode.x].unitSize) break;
-		}
-		
-		unitSize = (float)minUnitPixelsY / pGridScale.y;
-		for(pGridUnitMode.y=0; pGridUnitMode.y<SCALE_MODE_COUNT; pGridUnitMode.y++){
-			if(unitSize < vScaleModes[pGridUnitMode.y].unitSize) break;
-		}
-		//printf( "umx=%i('%s',%g) umy=%i('%s',%g)\n", pGridUnitMode.x, vScaleModes[pGridUnitMode.x].rulerFormatString, vScaleModes[pGridUnitMode.x].unitSize, pGridUnitMode.y, vScaleModes[pGridUnitMode.y].rulerFormatString, vScaleModes[pGridUnitMode.y].unitSize );
-		/*
-		pGridUnitsX = ceilf(log2f((float)minUnitPixels / pGridScale.x));
-		pGridUnitsX *= pGridUnitsX;
-		if(pGridUnitsX < 0.0625f){
-			pGridUnitsX = 0.0625f;
- 		}
-		pGridUnitsY = ceilf(log2f((float)minUnitPixels / pGridScale.y));
-		pGridUnitsY *= pGridUnitsY;
-		if(pGridUnitsY < 0.0625f){
-			pGridUnitsY = 0.0625f;
-		}
-		*/
-		//printf( "ux=%g(%g) uy=%g(%g)\n", ( float )minUnitPixels / pGridScale.x, pGridUnitsX, ( float )minUnitPixels / pGridScale.y, pGridUnitsY );
-		
-		// blender:
-		// 1 units => 2 units => 5 units => 10 units
-		// smallest 0.001, largest depending on location (100, 2000)
-		
-		pDirtyGridParams = false;
+	if(!pDirtyGridParams){
+		return;
 	}
+	
+	const int padding = igdeApplication::app().DisplayScaled(10);
+	const int wwidth = getWidth();
+	const int hheight = getHeight();
+	int realWidth = wwidth - pRulerSize.x - padding;
+	int realHeight = hheight - pRulerSize.y - padding;
+	const int minUnitPixelsX = igdeApplication::app().DisplayScaled(30);
+	const int minUnitPixelsY = igdeApplication::app().DisplayScaled(15);
+	float unitSize;
+	
+	pWindowCenter.x = (wwidth + pRulerSize.x) / 2;
+	pWindowCenter.y = (hheight - pRulerSize.y) / 2;
+	
+	if(realWidth < padding){
+		realWidth = padding;
+	}
+	if(realHeight < padding){
+		realHeight = padding;
+	}
+	
+	pGridScale.x = ((float)realWidth / (pGridMax.x - pGridMin.x)) * pGridZoom.x;
+	pGridScale.y = ((float)realHeight / (pGridMax.y - pGridMin.y)) * pGridZoom.y;
+	
+	unitSize = (float)minUnitPixelsX / pGridScale.x;
+	for(pGridUnitMode.x=0; pGridUnitMode.x<SCALE_MODE_COUNT; pGridUnitMode.x++){
+		if(unitSize < vScaleModes[pGridUnitMode.x].unitSize) break;
+	}
+	
+	unitSize = (float)minUnitPixelsY / pGridScale.y;
+	for(pGridUnitMode.y=0; pGridUnitMode.y<SCALE_MODE_COUNT; pGridUnitMode.y++){
+		if(unitSize < vScaleModes[pGridUnitMode.y].unitSize) break;
+	}
+	//printf( "umx=%i('%s',%g) umy=%i('%s',%g)\n", pGridUnitMode.x, vScaleModes[pGridUnitMode.x].rulerFormatString, vScaleModes[pGridUnitMode.x].unitSize, pGridUnitMode.y, vScaleModes[pGridUnitMode.y].rulerFormatString, vScaleModes[pGridUnitMode.y].unitSize );
+	/*
+	pGridUnitsX = ceilf(log2f((float)minUnitPixels / pGridScale.x));
+	pGridUnitsX *= pGridUnitsX;
+	if(pGridUnitsX < 0.0625f){
+		pGridUnitsX = 0.0625f;
+	}
+	pGridUnitsY = ceilf(log2f((float)minUnitPixels / pGridScale.y));
+	pGridUnitsY *= pGridUnitsY;
+	if(pGridUnitsY < 0.0625f){
+		pGridUnitsY = 0.0625f;
+	}
+	*/
+	//printf( "ux=%g(%g) uy=%g(%g)\n", ( float )minUnitPixels / pGridScale.x, pGridUnitsX, ( float )minUnitPixels / pGridScale.y, pGridUnitsY );
+	
+	// blender:
+	// 1 units => 2 units => 5 units => 10 units
+	// smallest 0.001, largest depending on location (100, 2000)
+	
+	pDirtyGridParams = false;
 }
 
 
@@ -1295,7 +1299,7 @@ long igdeNativeFoxViewCurveBezier::onResizerDrag(FXObject*, FXSelector, void *pd
 	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance(pdata);
 	igdeViewCurveBezier &powner = pView->GetOwner();
 	decPoint defaultSize(powner.GetDefaultSize());
-	defaultSize.y = decMath::max(50, defaultSize.y + distance);
+	defaultSize.y = decMath::max(igdeApplication::app().DisplayScaled(50), defaultSize.y + distance);
 	powner.SetDefaultSize(defaultSize);
 	return 0;
 }
