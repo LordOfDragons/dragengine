@@ -650,8 +650,8 @@ pFirstEngineRun(true)
 			igdeContainerSplitted::espRight, igdeApplication::app().DisplayScaled(400));
 		content->AddChild(splitted, igdeContainerBorder::eaCenter);
 		
-		pWPMetaContextList = igdeWPMetaContextList::Ref::New(pEnvironmentIGDE);
-		splitted->AddChild(pWPMetaContextList, igdeContainerSplitted::eaSide);
+		// pWPMetaContextList = igdeWPMetaContextList::Ref::New(pEnvironmentIGDE);
+		// splitted->AddChild(pWPMetaContextList, igdeContainerSplitted::eaSide);
 		
 		pSwiContent = igdeSwitcher::Ref::New(pEnvironmentIGDE);
 		
