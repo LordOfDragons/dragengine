@@ -22,6 +22,8 @@ class RefDeclarationScanner:
         self.repo_root = Path(repo_root) if repo_root else self.scan_dir
         self.classes_with_ref: Set[str] = set()  # Classes that have Ref declaration
         self.class_aliases_by_owner: Dict[str, Set[str]] = {}
+        # Map of alias name -> resolved type name (the template class that provides Ref)
+        self.alias_resolution: Dict[str, str] = {}
         
     def find_cpp_files(self, directory: Path) -> List[Path]:
         """Find all C++ source and header files."""
@@ -59,8 +61,9 @@ class RefDeclarationScanner:
         # Examples:
         #   using Ref = deTObjectReference<ClassName>;
         #   using Ref = std::shared_ptr<ClassName>;
+        #   using Ref = deTObjectReference<igdeMetaContextType<T>>;
         using_pattern = re.compile(
-            r'using\s+Ref\s*=\s*[\w:]+\s*<\s*(\w+)\s*>\s*;',
+            r'using\s+Ref\s*=\s*[\w:]+\s*<(\w+)',
             re.MULTILINE
         )
         
@@ -69,6 +72,40 @@ class RefDeclarationScanner:
             classes.append(class_name)
         
         return classes
+
+    def extract_alias_resolutions(self, file_path: Path) -> Dict[str, str]:
+        """Extract type alias resolutions like 'using MetaContext = igdeMetaContextType<SomeClass>;'.
+        
+        Returns a dict mapping alias name -> resolved template class name.
+        """
+        resolutions = {}
+        
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+        except Exception:
+            return resolutions
+        
+        # Match using declarations: using Alias = TemplateClass<...>;
+        # Examples:
+        #   using MetaContext = igdeMetaContextType<SomeClass>;
+        #   using MetaContext = igdeMetaContextTypeInherit<SomeClass, BaseClass>;
+        #   using MetaContext = igdeMetaContextTypeCustom<SomeClass>;
+        #   using PropertyList = igdeTMetaData<...>;
+        using_alias_pattern = re.compile(
+            r'\busing\s+(\w+)\s*=\s*(\w+)\s*<',
+            re.MULTILINE
+        )
+        
+        for match in using_alias_pattern.finditer(content):
+            alias_name = match.group(1)
+            template_class = match.group(2)
+            # Only track aliases that resolve to known template classes that provide Ref
+            if template_class in ('igdeMetaContextType', 'igdeMetaContextTypeInherit', 
+                                  'igdeMetaContextTypeCustom', 'igdeTMetaData'):
+                resolutions[alias_name] = template_class
+        
+        return resolutions
 
     def extract_class_aliases(self, file_path: Path) -> Dict[str, Set[str]]:
         """Extract alias names declared inside each class/struct in a file."""
@@ -146,8 +183,14 @@ class RefDeclarationScanner:
                 if owner not in self.class_aliases_by_owner:
                     self.class_aliases_by_owner[owner] = set()
                 self.class_aliases_by_owner[owner].update(aliases)
+
+            # Extract alias resolutions (e.g., using MetaContext = igdeMetaContextType<...>)
+            alias_resolutions = self.extract_alias_resolutions(file_path)
+            for alias, template_class in alias_resolutions.items():
+                self.alias_resolution[alias] = template_class
         
         print(f"Found {len(self.classes_with_ref)} classes with Ref declarations")
+        print(f"Found {len(self.alias_resolution)} type alias resolutions")
     
     def find_ref_usage(self, file_path: Path) -> List[Tuple[int, str, str]]:
         """Find uses of 'ClassName::Ref' where ClassName doesn't have Ref declaration."""
@@ -173,12 +216,25 @@ class RefDeclarationScanner:
         
         # Find using declarations in this file
         using_pattern = re.compile(
-            r'using\s+Ref\s*=\s*[\w:]+\s*<\s*(\w+)\s*>\s*;',
+            r'using\s+Ref\s*=\s*[\w:]+\s*<(\w+)',
             re.MULTILINE
         )
         for match in using_pattern.finditer(content):
             local_classes_with_ref.add(match.group(1))
         
+        # Collect local type alias resolutions (e.g., using MetaContext = igdeMetaContextType<...>)
+        local_alias_resolutions = {}
+        using_alias_resolution_pattern = re.compile(
+            r'\busing\s+(\w+)\s*=\s*(\w+)\s*<',
+            re.MULTILINE
+        )
+        for match in using_alias_resolution_pattern.finditer(content):
+            alias_name = match.group(1)
+            template_class = match.group(2)
+            if template_class in ('igdeMetaContextType', 'igdeMetaContextTypeInherit', 
+                                  'igdeMetaContextTypeCustom', 'igdeTMetaData'):
+                local_alias_resolutions[alias_name] = template_class
+
         # Collect local type aliases. These aliases can reference types that already
         # provide Ref, so Alias::Ref should not be flagged as a violation.
         local_type_aliases = set()
@@ -283,6 +339,20 @@ class RefDeclarationScanner:
                 # valid type providing Ref and do not flag it.
                 if class_name in local_type_aliases:
                     continue
+
+                # Check if class_name is an alias that resolves to a template class with Ref
+                # e.g., MetaContext -> igdeMetaContextType, PropertyList -> igdeTMetaData
+                resolved_template = None
+                if class_name in local_alias_resolutions:
+                    resolved_template = local_alias_resolutions[class_name]
+                elif class_name in self.alias_resolution:
+                    resolved_template = self.alias_resolution[class_name]
+                
+                if resolved_template:
+                    # The alias resolves to a template class that provides Ref
+                    # Check if the template class itself has a Ref declaration
+                    if resolved_template in self.classes_with_ref or resolved_template in local_classes_with_ref:
+                        continue  # Valid, the resolved type has Ref
 
                 # In method definitions, nested class aliases can be used unqualified.
                 # Example: void Owner::Method(const PropertyData::Ref &value)
