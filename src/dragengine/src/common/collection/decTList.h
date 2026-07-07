@@ -1365,7 +1365,7 @@ public:
 	void VisitWhileIndexed(Evaluator &evaluator) const{
 		int i;
 		for(i=0; i<pCount; i++){
-			if(!evaluator(pElements[i])){
+			if(!evaluator(i, pElements[i])){
 				return;
 			}
 		}
