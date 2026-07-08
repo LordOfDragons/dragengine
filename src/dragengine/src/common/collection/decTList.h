@@ -2206,6 +2206,15 @@ public:
 		return nlist;
 	}
 	
+	/** \brief New list containing all values of this list followed by another value. */
+	decTList operator+(const T &value) const{
+		decTList nlist(pCount + 1);
+		std::copy_n(pElements, pCount, nlist.pElements);
+		nlist.pCount = pCount;
+		nlist.Add(value);
+		return nlist;
+	}
+	
 	/**
 	 * \brief Element at index.
 	 * 

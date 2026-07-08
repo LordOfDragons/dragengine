@@ -700,12 +700,36 @@ public:
 		return nset;
 	}
 	
+	/** \brief New set containing all elements of this set and another element. */
+	decTSet<T,TP> operator+(const T &element) const{
+		decTSet<T,TP> nset(pCount + 1);
+		std::copy_n(pElements, pCount, nset.pElements);
+		nset.pCount = pCount;
+		
+		nset.Add(element);
+		
+		return nset;
+	}
+	
 	/** \brief New set containing all elements of this set not present in another set. */
 	decTSet<T,TP> operator-(const decTSet<T,TP> &set) const{
 		decTSet<T,TP> nset(pCount);
 		int i;
 		for(i=0; i<pCount; i++){
 			if(!set.Has(pElements[i])){
+				nset.Add(pElements[i]);
+			}
+		}
+		
+		return nset;
+	}
+	
+	/** \brief New set containing all elements of this set not including element. */
+	decTSet<T,TP> operator-(const T &element) const{
+		decTSet<T,TP> nset(pCount);
+		int i;
+		for(i=0; i<pCount; i++){
+			if(pElements[i] != element){
 				nset.Add(pElements[i]);
 			}
 		}
