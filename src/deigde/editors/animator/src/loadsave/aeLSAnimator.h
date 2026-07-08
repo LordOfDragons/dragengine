@@ -135,9 +135,6 @@ private:
 	aeRule::Ref pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animator);
 	bool pLoadRuleCommon(decXmlElementTag *root, aeAnimator &animator, aeRule &rule);
 	void pLoadControllerTarget(decXmlElementTag *root, aeAnimator &animator, igdeMetaPropertyObjectSetStorage<aeLink>::Storage &target);
-	
-	void pLoadSubAnimators(aeAnimator &animator);
-	void pLoadSubAnimators(aeAnimator &animator, const aeRuleGroup &group);
 };
 
 // end of include only once

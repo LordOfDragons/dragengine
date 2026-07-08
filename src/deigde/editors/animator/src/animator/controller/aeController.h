@@ -161,7 +161,6 @@ private:
 	void pReleaseGizmos();
 	void pCreateGizmos();
 	
-	void pNotifyControllerChanged();
 	void pOnLimitsChanged();
 };
 

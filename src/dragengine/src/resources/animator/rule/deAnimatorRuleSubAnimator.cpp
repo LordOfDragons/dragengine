@@ -112,11 +112,9 @@ void deAnimatorRuleSubAnimator::SetMatchingConnections(const deAnimator &animato
 		return;
 	}
 	
-	int i;
-	for(i=0; i<pConnections.GetCount(); i++){
-		pConnections.SetAt(i, animator.GetControllers().IndexOfNamed(
-			pSubAnimator->GetControllers().GetAt(i)->GetName()));
-	}
+	pSubAnimator->GetControllers().VisitIndexed([&](int i, const deAnimatorController &controller){
+		pConnections.SetAt(i, animator.GetControllers().IndexOfNamed(controller.GetName()));
+	});
 }
 
 void deAnimatorRuleSubAnimator::ClearConnections(){

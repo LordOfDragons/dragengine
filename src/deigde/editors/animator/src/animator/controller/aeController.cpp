@@ -69,6 +69,14 @@ mpDefaultVector(windowMain.GetMCAnimatorProperties().controller.defaultVector, p
 	mpName.onValueChanged = [this](){
 		if(pAnimator){
 			pAnimator->SetChanged(true);
+			if(pIndex != -1){
+				// this is only required for sub animators to find the correct controller by name
+				pAnimator->GetEngineAnimator()->GetControllers()[pIndex]->SetName(mpName);
+				
+				deAnimatorInstance &instance = pAnimator->GetEngineAnimatorInstance();
+				instance.GetControllers()[pIndex]->SetName(mpName);
+				instance.NotifyControllerChangedAt(pIndex);
+			}
 		}
 	};
 	
@@ -85,36 +93,43 @@ mpDefaultVector(windowMain.GetMCAnimatorProperties().controller.defaultVector, p
 	};
 	
 	mpCurrentValue.onValueChanged = [this](){
-		if(pIndex != -1){
-			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
+		if(pAnimator && pIndex != -1){
+			deAnimatorInstance &instance = pAnimator->GetEngineAnimatorInstance();
 			instance.GetControllers()[pIndex]->SetCurrentValue(mpCurrentValue);
 			instance.NotifyControllerChangedAt(pIndex);
 		}
 	};
 	
 	mpClamp.onValueChanged = [this](){
-		if(pIndex != -1){
-			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			instance.GetControllers()[pIndex]->SetClamp(mpClamp);
-			instance.NotifyControllerChangedAt(pIndex);
+		if(pAnimator){
+			pAnimator->SetChanged(true);
+			if(pIndex != -1){
+				deAnimatorInstance &instance = pAnimator->GetEngineAnimatorInstance();
+				instance.GetControllers()[pIndex]->SetClamp(mpClamp);
+				instance.NotifyControllerChangedAt(pIndex);
+			}
 		}
-		pNotifyControllerChanged();
 	};
 	
 	mpFrozen.onValueChanged = [this](){
-		if(pIndex != -1){
-			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			instance.GetControllers()[pIndex]->SetFrozen(mpFrozen);
-			instance.NotifyControllerChangedAt(pIndex);
+		if(pAnimator){
+			pAnimator->SetChanged(true);
+			if(pIndex != -1){
+				deAnimatorInstance &instance = pAnimator->GetEngineAnimatorInstance();
+				instance.GetControllers()[pIndex]->SetFrozen(mpFrozen);
+				instance.NotifyControllerChangedAt(pIndex);
+			}
 		}
-		pNotifyControllerChanged();
 	};
 	
 	mpVector.onValueChanged = [this](){
-		if(pIndex != -1){
-			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			instance.GetControllers()[pIndex]->SetVector(mpVector);
-			instance.NotifyControllerChangedAt(pIndex);
+		if(pAnimator){
+			pAnimator->SetChanged(true);
+			if(pIndex != -1){
+				deAnimatorInstance &instance = pAnimator->GetEngineAnimatorInstance();
+				instance.GetControllers()[pIndex]->SetVector(mpVector);
+				instance.NotifyControllerChangedAt(pIndex);
+			}
 		}
 		if(pGizmoIKPosition){
 			pGizmoIKPosition->OnObjectGeometryChanged();
@@ -122,13 +137,17 @@ mpDefaultVector(windowMain.GetMCAnimatorProperties().controller.defaultVector, p
 	};
 	
 	mpLocomotionAttribute.onValueChanged = [this](){
-		pNotifyControllerChanged();
+		if(pAnimator){
+			pAnimator->SetChanged(true);
+		}
 	};
 	
 	mpVectorSimulation.onValueChanged = [this](){
+		if(pAnimator){
+			pAnimator->SetChanged(true);
+		}
 		pReleaseGizmos();
 		pCreateGizmos();
-		pNotifyControllerChanged();
 	};
 	
 	mpDefaultValue.onValueChanged = mpLocomotionAttribute.onValueChanged;
@@ -190,25 +209,32 @@ igdeUndoSystem *aeController::GetUndoSystem() const{
 }
 
 void aeController::SetIndex(int index){
-	if(index != pIndex){
-		pIndex = index;
-		
-		if(index != -1){
-			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			deAnimatorController &controller = instance.GetControllers().GetAt(index);
-			
-			controller.SetName(mpName);
-			controller.SetValueRange(mpMinimumValue, mpMaximumValue);
-			controller.SetCurrentValue(mpCurrentValue);
-			controller.SetFrozen(mpFrozen);
-			controller.SetClamp(mpClamp);
-			controller.SetVector(mpVector);
-			
-			mpCurrentValue = controller.GetCurrentValue();
-			
-			instance.NotifyControllerChangedAt(index);
-		}
+	if(index == pIndex){
+		return;
 	}
+	
+	pIndex = index;
+	
+	if(index == -1){
+		return;
+	}
+	
+	// this is only required for sub animators to find the correct controller by name
+	pAnimator->GetEngineAnimator()->GetControllers()[pIndex]->SetName(mpName);
+	
+	deAnimatorInstance &instance = pAnimator->GetEngineAnimatorInstance();
+	deAnimatorController &controller = instance.GetControllers()[index];
+	
+	controller.SetName(mpName);
+	controller.SetValueRange(mpMinimumValue, mpMaximumValue);
+	controller.SetCurrentValue(mpCurrentValue);
+	controller.SetFrozen(mpFrozen);
+	controller.SetClamp(mpClamp);
+	controller.SetVector(mpVector);
+	
+	mpCurrentValue = controller.GetCurrentValue();
+	
+	instance.NotifyControllerChangedAt(index);
 }
 
 
@@ -514,17 +540,13 @@ void aeController::pCreateGizmos(){
 	}
 }
 
-void aeController::pNotifyControllerChanged(){
+void aeController::pOnLimitsChanged(){
 	if(pAnimator){
 		pAnimator->SetChanged(true);
+		if(pIndex != -1){
+			auto &instance = pAnimator->GetEngineAnimatorInstance();
+			instance->GetControllers()[pIndex]->SetValueRange(mpMinimumValue, mpMaximumValue);
+			instance->NotifyControllerChangedAt(pIndex);
+		}
 	}
-}
-
-void aeController::pOnLimitsChanged(){
-	if(pIndex != -1){
-		auto &instance = pAnimator->GetEngineAnimatorInstance();
-		instance->GetControllers()[pIndex]->SetValueRange(mpMinimumValue, mpMaximumValue);
-		instance->NotifyControllerChangedAt(pIndex);
-	}
-	pNotifyControllerChanged();
 }

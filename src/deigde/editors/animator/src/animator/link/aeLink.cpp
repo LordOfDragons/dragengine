@@ -65,99 +65,71 @@ mpVpsMaximum(windowMain.GetMCAnimatorProperties().link.vertexPositionSetMaximum,
 mpWrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 {
 	mpName.onValueChanged = [&](){
-		if(pAnimator){
-			pAnimator->SetChanged(true);
-		}
+		NotifyLinkChanged();
 	};
 	
 	mpController.onValueChanged = [&](){
 		UpdateController();
-		if(pAnimator){
-			pAnimator->SetChanged(true);
-		}
+		NotifyLinkChanged();
 	};
 	
 	mpRepeat.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetRepeat(mpRepeat);
-			NotifyLinkChanged();
 		}
-		if(pAnimator){
-			pAnimator->SetChanged(true);
-		}
+		NotifyLinkChanged();
 	};
 	
 	mpCurve.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetCurve(mpCurve);
-			NotifyLinkChanged();
 		}
-		if(pAnimator){
-			pAnimator->SetChanged(true);
-		}
+		NotifyLinkChanged();
 	};
 	
 	mpBone.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetBone(mpBone);
-			NotifyLinkChanged();
 		}
-		if(pAnimator){
-			pAnimator->SetChanged(true);
-		}
+		NotifyLinkChanged();
 	};
 	
 	mpBoneParameter.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetBoneParameter(mpBoneParameter);
 			pUpdateBoneLimits();
-			NotifyLinkChanged();
 		}
-		if(pAnimator){
-			pAnimator->SetChanged(true);
-		}
+		NotifyLinkChanged();
 	};
 	
 	mpBoneMinimum.onValueChanged = [&](){
 		if(pEngLink){
 			pUpdateBoneLimits();
-			NotifyLinkChanged();
 		}
-		if(pAnimator){
-			pAnimator->SetChanged(true);
-		}
+		NotifyLinkChanged();
 	};
 	mpBoneMaximum.onValueChanged = mpBoneMinimum.onValueChanged;
 	
 	mpVertexPositionSet.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetVertexPositionSet(mpVertexPositionSet);
-			NotifyLinkChanged();
 		}
-		if(pAnimator){
-			pAnimator->SetChanged(true);
-		}
+		NotifyLinkChanged();
 	};
 	
 	mpVpsMinimum.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetVertexPositionSetValueRange(mpVpsMinimum, mpVpsMaximum);
-			NotifyLinkChanged();
 		}
-		if(pAnimator){
-			pAnimator->SetChanged(true);
-		}
+		NotifyLinkChanged();
 	};
 	mpVpsMaximum.onValueChanged = mpVpsMinimum.onValueChanged;
 	
 	mpWrapY.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetWrapY(mpWrapY);
-			NotifyLinkChanged();
 		}
-		if(pAnimator){
-			pAnimator->SetChanged(true);
-		}
+		NotifyLinkChanged();
 	};
 }
 
@@ -236,9 +208,12 @@ igdeUndoSystem *aeLink::GetUndoSystem() const{
 
 
 void aeLink::NotifyLinkChanged(){
-	if(pEngLink && pAnimator){
-		deAnimator *engAnimator = pAnimator->GetEngineAnimator();
-		engAnimator->NotifyLinkChangedAt(engAnimator->GetLinks().IndexOf(pEngLink));
+	if(pAnimator){
+		pAnimator->SetChanged(true);
+		deAnimator * const engAnimator = pAnimator->GetEngineAnimator();
+		if(engAnimator && pEngLink){
+			engAnimator->NotifyLinkChangedAt(engAnimator->GetLinks().IndexOf(pEngLink));
+		}
 	}
 }
 
@@ -256,8 +231,6 @@ void aeLink::UpdateController(){
 	}
 	
 	pEngLink->SetController(indexController);
-	
-	NotifyLinkChanged();
 }
 
 

@@ -251,5 +251,5 @@ void aeLoadSaveAttachmentConfig::pReadAttachment(const decXmlElementTag &root, a
 		}
 	}
 	
-	animator.mpAttachments = animator.mpAttachments.GetValue() + aeAnimator::AttachmentSet(devctag, attachment);
+	animator.mpAttachments = animator.mpAttachments.GetValue() + attachment;
 }

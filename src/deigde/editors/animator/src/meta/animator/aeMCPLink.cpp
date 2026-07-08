@@ -85,13 +85,13 @@ public:
 	void Undo() override{
 		igdeMetaPropertyListUndo::Undo();
 		pRulesRemoved.Visit([&](const sRuleRemoved &t){
-			*t.target = t.target->GetValue() + igdeMetaPropertyObjectSetStorage<aeLink>::SetType(devctag, t.link);
+			*t.target = t.target->GetValue() + t.link;
 		});
 	}
 	
 	void Redo() override{
 		pRulesRemoved.Visit([&](const sRuleRemoved &t){
-			*t.target = t.target->GetValue() - igdeMetaPropertyObjectSetStorage<aeLink>::SetType(devctag, t.link);
+			*t.target = t.target->GetValue() - t.link;
 		});
 		igdeMetaPropertyListUndo::Redo();
 	}

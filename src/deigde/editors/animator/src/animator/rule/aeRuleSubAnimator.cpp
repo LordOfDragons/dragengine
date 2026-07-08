@@ -343,7 +343,7 @@ void aeRuleSubAnimator::UpdateEngineConnections() const{
 
 void aeRuleSubAnimator::pUpdateEngineConnections(deAnimatorRuleSubAnimator &rule) const{
 	if(mpConnections->IsEmpty()){
-		rule.SetMatchingConnections(*GetAnimator()->GetEngineAnimator());
+		rule.SetMatchingConnections(GetAnimator()->GetEngineAnimator());
 		return;
 	}
 	
