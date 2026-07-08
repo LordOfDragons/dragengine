@@ -57,6 +57,8 @@ public:
 		
 		Slider(igdeMetaPropertySliderBoardWidget &widget, const igdeMetaContext::Ref &context,
 			const igdeLabel::Ref &label, const igdeEditSliderText::Ref &slider);
+		
+	protected:
 		~Slider() override;
 	};
 	
