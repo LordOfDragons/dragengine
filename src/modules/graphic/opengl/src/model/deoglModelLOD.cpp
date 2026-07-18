@@ -96,6 +96,7 @@ pGIBVHLocal(nullptr)
 	pDoubleSided = false;
 	pDecal = false;
 	pVertPosSetPosCount = 0;
+	pTexCoordSetCount = 0;
 	
 	pOctree = nullptr;
 	
@@ -130,6 +131,8 @@ pGIBVHLocal(nullptr)
 		logger.LogInfoFormat("=> max-error: %f\n", pMaxError);
 		#endif
 		
+		pTexCoordSetCount = 0; //decMath::min(pTexCoordSets.GetCount(), 2);
+		
 	}catch(const deException &){
 		pCleanUp();
 		throw;
@@ -153,6 +156,7 @@ pGIBVHLocal(nullptr)
 	pDoubleSided = false;
 	pDecal = false;
 	pVertPosSetPosCount = 0;
+	pTexCoordSetCount = 0;
 	
 	pOctree = nullptr;
 	
@@ -161,6 +165,7 @@ pGIBVHLocal(nullptr)
 	
 	try{
 		LoadFromCache(cacheReader);
+		pTexCoordSetCount = 0; //decMath::min(pTexCoordSets.GetCount(), 2);
 		
 	}catch(...){
 		pCleanUp();
@@ -183,13 +188,13 @@ void deoglModelLOD::PrepareVBOBlock(){
 		return;
 	}
 	
-	deoglRTBufferObject::eSharedVBOLists listType = deoglRTBufferObject::esvbolStaticModel;
+	deoglRTBufferObject::eSharedVBOLists listType = deoglRTBufferObject::esvbolStaticModelWeight;
 	
-	if(pTexCoordSets.GetCount() == 1){
-		listType = deoglRTBufferObject::esvbolStaticModelTCS1;
+	if(pTexCoordSetCount == 1){
+		listType = deoglRTBufferObject::esvbolStaticModelWeightTcs1;
 		
-	}else if(pTexCoordSets.GetCount() >= 2){ // more than 2 not supported yet
-		listType = deoglRTBufferObject::esvbolStaticModelTCS2;
+	}else if(pTexCoordSetCount >= 2){ // more than 2 not supported yet
+		listType = deoglRTBufferObject::esvbolStaticModelWeightTcs2;
 	}
 	
 	deoglRenderThread &renderThread = pModel.GetRenderThread();
@@ -282,9 +287,17 @@ void deoglModelLOD::PrepareVBOBlockWithWeight(){
 		return;
 	}
 	
+	deoglRTBufferObject::eSharedVBOLists listType = deoglRTBufferObject::esvbolStaticModelWeight;
+	
+	if(pTexCoordSetCount == 1){
+		listType = deoglRTBufferObject::esvbolStaticModelWeightTcs1;
+		
+	}else if(pTexCoordSetCount >= 2){ // more than 2 not supported yet
+		listType = deoglRTBufferObject::esvbolStaticModelWeightTcs2;
+	}
+	
 	deoglRenderThread &renderThread = pModel.GetRenderThread();
-	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
-		deoglRTBufferObject::esvbolStaticModelWeight);
+	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(listType);
 	
 	if(pVertices.GetCount() > svbolist.GetMaxPointCount()){
 		renderThread.GetLogger().LogInfoFormat(
@@ -843,15 +856,8 @@ void deoglModelLOD::pCalcTangents(){
 	pTangents.SetRangeAt(0, pTangents.GetCount(), {});
 	pNegateTangents.SetRangeAt(0, pNegateTangents.GetCount(), false);
 	pTexCoordSets.Visit([&](deoglModelLODTexCoordSet &tcs){
-		bool * const tcsNegateTangents = tcs.GetNegateTangents().GetArrayPointer();
-		decVector * const tcsTangents = tcs.GetTangents().GetArrayPointer();
-		const int tcsTangentCount = tcs.GetTangents().GetCount();
-		
-		int j;
-		for(j=0; j<tcsTangentCount; j++){
-			tcsTangents[j].SetZero();
-			tcsNegateTangents[j] = false;
-		}
+		tcs.GetTangents().SetRangeAt(0, tcs.GetTangents().GetCount(), {});
+		tcs.GetNegateTangents().SetRangeAt(0, tcs.GetNegateTangents().GetCount(), false);
 	});
 	
 	// calculate normals and tangents
@@ -1088,18 +1094,18 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 	// add texture coordinate sets and set the texture coordinate count
 	pTexCoords.SetCountDiscard(modelTexCoordCount);
 	for(j=0; j<modelTexCoordCount; j++){
-		pTexCoords[j] = modelTexCoordSets[0].GetTextureCoordinates().GetAt(j);
+		pTexCoords[j] = modelTexCoordSets[0].GetTextureCoordinates()[j];
 	}
 	
 	pTexCoordSets.SetCountDiscard(decMath::max(modelTexCoordSetCount - 1, 0));
-	for(i=0; i<pTexCoordSets.GetCount(); i++){
-		deoglModelLODTexCoordSet &tcs = pTexCoordSets[i];
-		
-		tcs.GetTextureCoordinates().SetCountDiscard(pTexCoordSets.GetCount());
-		for(j=0; j<pTexCoordSets.GetCount(); j++){
-			tcs.GetTextureCoordinates()[j] = modelTexCoordSets[i + 1].GetTextureCoordinates()[j];
+	pTexCoordSets.VisitIndexed([&](int index, deoglModelLODTexCoordSet &tcs){
+		tcs.GetTextureCoordinates().SetCountDiscard(modelTexCoordCount);
+		const auto inTcs = modelTexCoordSets[index + 1].GetTextureCoordinates().GetArrayPointer();
+		auto outTcs = tcs.GetTextureCoordinates().GetArrayPointer();
+		for(j=0; j<modelTexCoordCount; j++){
+			outTcs[j] = inTcs[j];
 		}
-	}
+	});
 	
 	// add faces sorted by textures and group vertices. this can be very slow with a naive
 	// implementation and large models. sortVertices stores the first point an original model
@@ -1351,13 +1357,6 @@ void deoglModelLOD::pWriteVBOData(){
 	DEASSERT_NOTNULL(pVBOBlock)
 	
 	deoglVBOWriterModel writerVBO(pModel.GetRenderThread());
-	int tcsCount;
-	
-	tcsCount = pTexCoordSets.GetCount();
-	if(tcsCount > 2){
-		tcsCount = 2;
-	}
-	
 	writerVBO.Reset(pVBOBlock);
 	
 	pVertices.Visit([&](const oglModelVertex &vertex){
@@ -1366,7 +1365,7 @@ void deoglModelLOD::pWriteVBOData(){
 			pNegateTangents[vertex.tangent], pTexCoords[vertex.texcoord],
 			pPositions[vertex.position].normal);
 		
-		pTexCoordSets.Visit([&](const deoglModelLODTexCoordSet &tcs){
+		pTexCoordSets.Visit(0, pTexCoordSetCount, [&](const deoglModelLODTexCoordSet &tcs){
 			writerVBO.WriteTexCoordSetPoint(tcs.GetTangents()[vertex.tangent],
 				tcs.GetNegateTangents()[vertex.tangent],
 				tcs.GetTextureCoordinates()[vertex.texcoord]);
@@ -1464,7 +1463,6 @@ void deoglModelLOD::pWriteVBODataWithWeight(){
 	DEASSERT_NOTNULL(pVBOBlockWithWeight)
 	
 	deoglVBOWriterModel writerVBO(pModel.GetRenderThread());
-	
 	writerVBO.Reset(pVBOBlockWithWeight);
 	
 	pVertices.Visit([&](const oglModelVertex &vertex){
@@ -1472,6 +1470,12 @@ void deoglModelLOD::pWriteVBODataWithWeight(){
 			pTangents[vertex.tangent], pNegateTangents[vertex.tangent],
 			pTexCoords[vertex.texcoord], pPositions[vertex.position].normal,
 			pPositions[vertex.position].weights);
+		
+		pTexCoordSets.Visit(0, pTexCoordSetCount, [&](const deoglModelLODTexCoordSet &tcs){
+			writerVBO.WriteTexCoordSetPoint(tcs.GetTangents()[vertex.tangent],
+				tcs.GetNegateTangents()[vertex.tangent],
+				tcs.GetTextureCoordinates()[vertex.texcoord]);
+		});
 	});
 	
 // 	int maxCount = 0;

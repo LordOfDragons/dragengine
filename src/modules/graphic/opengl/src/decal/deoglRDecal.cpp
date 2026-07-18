@@ -770,7 +770,7 @@ void deoglRDecal::pCreateMeshComponent(){
 	
 	// copy mesh and project uvs
 	deoglSharedVBOList &svbolist = pRenderThread.GetBufferObject()
-		.GetSharedVBOListForType(deoglRTBufferObject::esvbolStaticModel);
+		.GetSharedVBOListForType(deoglRTBufferObject::esvbolStaticModelWeight);
 	
 	if(pPointCount > svbolist.GetMaxPointCount()){
 		pRenderThread.GetLogger().LogInfoFormat(

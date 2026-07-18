@@ -33,6 +33,7 @@
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLODVertPosSet.h"
+#include "../model/deoglModelLODTexCoordSet.h"
 #include "../model/texture/deoglModelTexture.h"
 #include "../model/face/deoglModelFace.h"
 #include "../rendering/deoglRenderGeometry.h"
@@ -671,17 +672,22 @@ void deoglRComponentLOD::pEnsureVBO(){
 	}
 	
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
-	const int pointCount = pComponent.GetModel()->GetLODAt(pLODIndex).GetVertices().GetCount();
+	const auto &lod = pComponent.GetModel()->GetLODAt(pLODIndex);
+	const int pointCount = lod.GetVertices().GetCount();
+	const int tcsCount = lod.GetTextureCoordSetCount();
 	
 	pVBO = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etGpu);
 	
 	deoglSPBlockSSBO &vbo = pVBO;
 	vbo.SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
-	vbo.SetParameterCount(4);
+	vbo.SetParameterCount(4 + tcsCount);
 	vbo.GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3 position
 	vbo.GetParameterAt(1).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3 realNormal
 	vbo.GetParameterAt(2).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3 normal
 	vbo.GetParameterAt(3).SetAll(deoglSPBParameter::evtFloat, 4, 1, 1); // vec3 tangent
+	for(int i=0; i<tcsCount; i++){
+		vbo.GetParameterAt(4 + i).SetAll(deoglSPBParameter::evtFloat, 4, 1, 1); // vec4 tangentN
+	}
 	vbo.SetElementCount(pointCount);
 	vbo.MapToStd140();
 	vbo.SetBindingPoint(1);
@@ -701,6 +707,8 @@ void deoglRComponentLOD::pBuildVBO(const deoglModelLOD &modelLOD){
 
 void deoglRComponentLOD::pWriteVBOData(const deoglModelLOD &modelLOD){
 	const bool * const negateTangents = modelLOD.GetNegateTangents().GetArrayPointer();
+	const int tcsetCount = modelLOD.GetTextureCoordSetCount();
+	const auto &tcsets = modelLOD.GetTextureCoordSets();
 	const deoglSPBMapBuffer mapped(pVBO);
 	
 	modelLOD.GetVertices().VisitIndexed([&](int i, const oglModelVertex &point){
@@ -709,6 +717,10 @@ void deoglRComponentLOD::pWriteVBOData(const deoglModelLOD &modelLOD){
 		pVBO->SetParameterDataVec3(2, i, pNormals[point.normal]);
 		pVBO->SetParameterDataVec4(3, i, pTangents[point.tangent],
 			negateTangents[point.tangent] ? -1.0f : 1.0f);
+		tcsets.VisitIndexed(0, tcsetCount, [&](int j, const deoglModelLODTexCoordSet &tcs){
+			pVBO->SetParameterDataVec4(4 + j, i, tcs.GetTangents()[point.tangent],
+				tcs.GetNegateTangents()[point.tangent] ? -1.0f : 1.0f);
+		});
 	});
 }
 
@@ -718,6 +730,7 @@ void deoglRComponentLOD::pUpdateVAO(deoglModelLOD &modelLOD){
 	}
 	
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
+	const int tcsetCount = modelLOD.GetTextureCoordSetCount();
 	pVBOBlock = modelLOD.GetVBOBlock();
 	const GLuint vboModel = pVBOBlock->GetVBO()->GetVBO();
 	deoglVBOLayout &vboLayout = pVBOBlock->GetVBO()->GetParentList()->GetLayout();
@@ -730,6 +743,9 @@ void deoglRComponentLOD::pUpdateVAO(deoglModelLOD &modelLOD){
 	pVBOLayout->SetVAOAttributeAt(renderThread, 1, 1); // realNormal(1) => vao(1)
 	pVBOLayout->SetVAOAttributeAt(renderThread, 2, 2); // normal(2) => vao(2)
 	pVBOLayout->SetVAOAttributeAt(renderThread, 3, 3); // tangent(3) => vao(3)
+	for(int i=0; i<tcsetCount; i++){
+		pVBOLayout->SetVAOAttributeAt(renderThread, 4 + i, 4 + i); // tangentN(4+i) => vao(4+i)
+	}
 	
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, vboModel));
 	vboLayout.SetVAOAttributeAt(renderThread, 4, 4, vboLayout.GetStride() * pVBOBlock->GetOffset());
@@ -915,6 +931,7 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents(const deoglModelLOD &model
 	const int positionCount = modelLOD.GetPositions().GetCount();
 	const int tangentCount = modelLOD.GetTangents().GetCount();
 	const int normalCount = modelLOD.GetNormals().GetCount();
+	const int tcsetCount = modelLOD.GetTextureCoordSetCount();
 	const int faceCount = modelLOD.GetFaces().GetCount();
 	oglVector3 edge1, edge2;
 	oglVector3 tangent;
@@ -923,23 +940,19 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents(const deoglModelLOD &model
 	int i;
 	
 	// reset normals and tangents
-	for(i=0; i<positionCount; i++){
-		pRealNormals[i].x = 0.0f;
-		pRealNormals[i].y = 0.0f;
-		pRealNormals[i].z = 0.0f;
-	}
-	for(i=0; i<normalCount; i++){
-		pNormals[i].x = 0.0f;
-		pNormals[i].y = 0.0f;
-		pNormals[i].z = 0.0f;
-	}
-	for(i=0; i<tangentCount; i++){
-		pTangents[i].x = 0.0f;
-		pTangents[i].y = 0.0f;
-		pTangents[i].z = 0.0f;
+	pRealNormals.SetRangeAt(0, positionCount, {0.0f, 0.0f, 0.0f});
+	pNormals.SetRangeAt(0, normalCount, {0.0f, 0.0f, 0.0f});
+	pTangents.SetRangeAt(0, tangentCount, {0.0f, 0.0f, 0.0f});
+	if(tcsetCount > 0){
+		pTangents2.SetRangeAt(0, tangentCount, {0.0f, 0.0f, 0.0f});
+		if(tcsetCount > 1){
+			pTangents3.SetRangeAt(0, tangentCount, {0.0f, 0.0f, 0.0f});
+		}
 	}
 	
 	// calculate normals and tangents
+	decTList<oglVector3> *tcsTangents[] = {&pTangents2, &pTangents3};
+	
 	for(i=0; i<faceCount; i++){
 		const deoglModelFace &face = faces[i];
 		const oglModelVertex &point1 = points[face.GetVertex1()];
@@ -1049,32 +1062,89 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents(const deoglModelLOD &model
 		vt3.x += tangent.x;
 		vt3.y += tangent.y;
 		vt3.z += tangent.z;
+		
+		// additional tcs
+		for(i=0; i<tcsetCount; i++){
+			const auto &tcs = modelLOD.GetTextureCoordSets()[i];
+			const decVector2 &tcsTc1 = tcs.GetTextureCoordinates()[point1.texcoord];
+			const decVector2 &tcsTc2 = tcs.GetTextureCoordinates()[point2.texcoord];
+			const decVector2 &tcsTc3 = tcs.GetTextureCoordinates()[point3.texcoord];
+			
+			// calculate texture coordinate deltas
+			d1 = tcsTc2 - tcsTc1;
+			d2 = tcsTc3 - tcsTc1;
+			
+			// calculate tangent
+			tangent.x = edge1.x * d2.y - edge2.x * d1.y;
+			tangent.y = edge1.y * d2.y - edge2.y * d1.y;
+			tangent.z = edge1.z * d2.y - edge2.z * d1.y;
+			
+			len = sqrtf(tangent.x * tangent.x + tangent.y * tangent.y + tangent.z * tangent.z);
+			if(len != 0.0f){
+				invlen = 1.0f / len;
+				tangent.x *= invlen;
+				tangent.y *= invlen;
+				tangent.z *= invlen;
+				
+			}else{
+				tangent.x = 1.0f;
+				tangent.y = 0.0f;
+				tangent.z = 0.0f;
+			}
+			
+			// add to tangents
+			auto &tt = *tcsTangents[i];
+			oglVector3 &tcsVt1 = tt[point1.tangent];
+			tcsVt1.x += tangent.x;
+			tcsVt1.y += tangent.y;
+			tcsVt1.z += tangent.z;
+			
+			oglVector3 &tcsVt2 = tt[point2.tangent];
+			tcsVt2.x += tangent.x;
+			tcsVt2.y += tangent.y;
+			tcsVt2.z += tangent.z;
+			
+			oglVector3 &tcsVt3 = tt[point3.tangent];
+			tcsVt3.x += tangent.x;
+			tcsVt3.y += tangent.y;
+			tcsVt3.z += tangent.z;
+		}
 	}
 	
 	// shaders do not require normalized normals and tangents but to prevent problems due to
 	// zero length vectors we filter them out now in a fast way
-	for(i=0; i<positionCount; i++){
-		if(pRealNormals[i].x == 0.0f && pRealNormals[i].y == 0.0f && pRealNormals[i].z == 0.0f){
-			pRealNormals[i].x = 0.0f;
-			pRealNormals[i].y = 1.0f;
-			pRealNormals[i].z = 0.0f;
+	pRealNormals.Visit([&](oglVector3 &n){
+		if(n.x == 0.0f && n.y == 0.0f && n.z == 0.0f){
+			n.x = 0.0f;
+			n.y = 1.0f;
+			n.z = 0.0f;
 		}
-	}
+	});
 	
-	for(i=0; i<normalCount; i++){
-		if(pNormals[i].x == 0.0f && pNormals[i].y == 0.0f && pNormals[i].z == 0.0f){
-			pNormals[i].x = 0.0f;
-			pNormals[i].y = 1.0f;
-			pNormals[i].z = 0.0f;
+	pNormals.Visit([&](oglVector3 &n){
+		if(n.x == 0.0f && n.y == 0.0f && n.z == 0.0f){
+			n.x = 0.0f;
+			n.y = 1.0f;
+			n.z = 0.0f;
 		}
-	}
+	});
 	
-	for(i=0; i<tangentCount; i++){
-		if(pTangents[i].x == 0.0f && pTangents[i].y == 0.0f && pTangents[i].z == 0.0f){
-			pTangents[i].x = 1.0f;
-			pTangents[i].y = 0.0f;
-			pTangents[i].z = 0.0f;
+	pTangents.Visit([&](oglVector3 &t){
+		if(t.x == 0.0f && t.y == 0.0f && t.z == 0.0f){
+			t.x = 1.0f;
+			t.y = 0.0f;
+			t.z = 0.0f;
 		}
+	});
+	
+	for(i=0; i<tcsetCount; i++){
+		tcsTangents[i]->Visit([&](oglVector3 &t){
+			if(t.x == 0.0f && t.y == 0.0f && t.z == 0.0f){
+				t.x = 1.0f;
+				t.y = 0.0f;
+				t.z = 0.0f;
+			}
+		});
 	}
 }
 
@@ -1085,6 +1155,7 @@ void deoglRComponentLOD::pPrepareVBOLayout(const deoglModelLOD &modelLOD){
 		return;
 	}
 	
+	const int tcsetCount = modelLOD.GetTextureCoordSetCount();
 	pVBOLayout = new deoglVBOLayout;
  	
  	// the layout of attributes. has to be ssbo compatible:
@@ -1095,8 +1166,10 @@ void deoglRComponentLOD::pPrepareVBOLayout(const deoglModelLOD &modelLOD){
 	// real-normal |     16 | float | x, y, z
 	// normal      |     32 | float | x, y, z
 	// tangent     |     48 | float | x, y, z, w
+	// tangent2    |     64 | float | x, y, z, w
+	// tangent3    |     80 | float | x, y, z, w
 	pVBOLayout->GetAttributes().SetAll(4, {});
-	pVBOLayout->SetStride(64);
+	pVBOLayout->SetStride(64 + tcsetCount * 16);
  	pVBOLayout->SetSize(pVBOLayout->GetStride() * modelLOD.GetVertices().GetCount());
 	pVBOLayout->SetIndexType(deoglVBOLayout::eitUnsignedInt);
 	
@@ -1119,6 +1192,13 @@ void deoglRComponentLOD::pPrepareVBOLayout(const deoglModelLOD &modelLOD){
 	attrTangent.SetComponentCount(4);
 	attrTangent.SetDataType(deoglVBOAttribute::edtFloat);
 	attrTangent.SetOffset(48);
+	
+	for(int i=0; i<tcsetCount; i++){
+		deoglVBOAttribute &attrTangentN = pVBOLayout->GetAttributes()[4 + i];
+		attrTangentN.SetComponentCount(4);
+		attrTangentN.SetDataType(deoglVBOAttribute::edtFloat);
+		attrTangentN.SetOffset(64 + i * 16);
+	}
 }
 
 void deoglRComponentLOD::pUpdateRenderTaskConfig(deoglRenderTaskConfig &config,

@@ -4,22 +4,7 @@ precision HIGHP float;
 precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
-
-struct sModelData{
-	vec3 position;
-	vec3 realNormal;
-	vec3 normal;
-	vec4 tangent;
-	vec2 texCoord;
-	int weights;
-};
-
-struct sTransformedData{
-	vec3 position;
-	vec3 realNormal;
-	vec3 normal;
-	vec4 tangent;
-};
+#include "shared/defren/geometry/model_data.glsl"
 
 UBOLAYOUT_BIND(0) readonly buffer ModelData {
 	sModelData pModelData[];
@@ -27,6 +12,14 @@ UBOLAYOUT_BIND(0) readonly buffer ModelData {
 
 UBOLAYOUT_BIND(1) writeonly restrict buffer TransformedData {
 	sTransformedData pTransformedData[];
+};
+
+UBOLAYOUT_BIND(1) writeonly restrict buffer TransformedDataTcs1 {
+	sTransformedDataTcs1 pTransformedDataTcs1[];
+};
+
+UBOLAYOUT_BIND(1) writeonly restrict buffer TransformedDataTcs2 {
+	sTransformedDataTcs2 pTransformedDataTcs2[];
 };
 
 layout( local_size_x=64 ) in;

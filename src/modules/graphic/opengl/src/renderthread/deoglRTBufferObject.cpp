@@ -384,8 +384,8 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	layoutStaticModel.GetAttributes()[4].SetDataType(deoglVBOAttribute::edtFloat);
 	layoutStaticModel.GetAttributes()[4].SetOffset(64);
 	
-	pSharedVBOListByType[esvbolStaticModel] =
-		pSharedVBOListList->GetWith(layoutStaticModel, GL_STATIC_DRAW);
+	// pSharedVBOListByType[esvbolStaticModel] =
+	// 	pSharedVBOListList->GetWith(layoutStaticModel, GL_STATIC_DRAW);
 	
 	// static model: esvbolStaticModelWeight
 	// supports compute shader use. this requires aligning to vec4 as basic units.
@@ -399,7 +399,7 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// tex-coord   |     64 | float  | u, v
 	// weight      |     72 | iint   | weight
 	deoglVBOLayout layoutStaticModelWeight(layoutStaticModel);
-	layoutStaticModelWeight.GetAttributes().SetAll(6, {});
+	layoutStaticModelWeight.GetAttributes().SetCount(6, {});
 	
 	layoutStaticModelWeight.GetAttributes()[5].SetComponentCount(1);
 	layoutStaticModelWeight.GetAttributes()[5].SetDataType(deoglVBOAttribute::edtIInt);
@@ -418,21 +418,22 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// normal      |     32 | float  | x, y, z
 	// tangent     |     48 | float  | x, y, z, w
 	// tex-coord   |     64 | float  | u, v
-	// tangent2    |     80 | short  | x, y, z, w
+	// weight      |     72 | iint   | weight
+	// tangent2    |     80 | float  | x, y, z, w
 	// tex-coord2  |     96 | float  | u, v
-	deoglVBOLayout layoutStaticModelTCS1(layoutStaticModel);
-	layoutStaticModelTCS1.GetAttributes().SetAll(7, {});
+	deoglVBOLayout layoutStaticModelTCS1(layoutStaticModelWeight);
+	layoutStaticModelTCS1.GetAttributes().SetCount(8, {});
 	layoutStaticModelTCS1.SetStride(112);
 	
-	layoutStaticModelTCS1.GetAttributes()[5].SetComponentCount(4);
-	layoutStaticModelTCS1.GetAttributes()[5].SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModelTCS1.GetAttributes()[5].SetOffset(80);
-	
-	layoutStaticModelTCS1.GetAttributes()[6].SetComponentCount(2);
+	layoutStaticModelTCS1.GetAttributes()[6].SetComponentCount(4);
 	layoutStaticModelTCS1.GetAttributes()[6].SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModelTCS1.GetAttributes()[6].SetOffset(96);
+	layoutStaticModelTCS1.GetAttributes()[6].SetOffset(80);
 	
-	pSharedVBOListByType[esvbolStaticModelTCS1] =
+	layoutStaticModelTCS1.GetAttributes()[7].SetComponentCount(2);
+	layoutStaticModelTCS1.GetAttributes()[7].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModelTCS1.GetAttributes()[7].SetOffset(96);
+	
+	pSharedVBOListByType[esvbolStaticModelWeightTcs1] =
 		pSharedVBOListList->GetWith(layoutStaticModelTCS1, GL_STATIC_DRAW);
 	
 	// static model: esvbolStaticModelTCS2
@@ -445,23 +446,24 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// normal      |     32 | float  | x, y, z
 	// tangent     |     48 | float  | x, y, z, w
 	// tex-coord   |     64 | float  | u, v
-	// tangent2    |     80 | short  | x, y, z, w
+	// weight      |     72 | iint   | weight
+	// tangent2    |     80 | float  | x, y, z, w
 	// tex-coord2  |     96 | float  | u, v
-	// tangent3    |    112 | short  | x, y, z, w
+	// tangent3    |    112 | float  | x, y, z, w
 	// tex-coord3  |    128 | float  | u, v
 	deoglVBOLayout layoutStaticModelTCS2(layoutStaticModelTCS1);
-	layoutStaticModelTCS2.GetAttributes().SetAll(9, {});
+	layoutStaticModelTCS2.GetAttributes().SetCount(10, {});
 	layoutStaticModelTCS2.SetStride(144);
 	
-	layoutStaticModelTCS2.GetAttributes()[7].SetComponentCount(4);
-	layoutStaticModelTCS2.GetAttributes()[7].SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModelTCS2.GetAttributes()[7].SetOffset(112);
-	
-	layoutStaticModelTCS2.GetAttributes()[8].SetComponentCount(2);
+	layoutStaticModelTCS2.GetAttributes()[8].SetComponentCount(4);
 	layoutStaticModelTCS2.GetAttributes()[8].SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModelTCS2.GetAttributes()[8].SetOffset(128);
+	layoutStaticModelTCS2.GetAttributes()[8].SetOffset(112);
 	
-	pSharedVBOListByType[esvbolStaticModelTCS2] =
+	layoutStaticModelTCS2.GetAttributes()[9].SetComponentCount(2);
+	layoutStaticModelTCS2.GetAttributes()[9].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModelTCS2.GetAttributes()[9].SetOffset(128);
+	
+	pSharedVBOListByType[esvbolStaticModelWeightTcs2] =
 		pSharedVBOListList->GetWith(layoutStaticModelTCS2, GL_STATIC_DRAW);
 	
 #if 0
@@ -503,7 +505,7 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// bones       |     80 | iint   | b1, b2, b3, b4
 	// weights     |     96 | float  | w1, w2, w3, w4
 	deoglVBOLayout layoutSimpleModel(layoutStaticModel);
-	layoutSimpleModel.GetAttributes().SetAll(7, {});
+	layoutSimpleModel.GetAttributes().SetCount(7, {});
 	layoutSimpleModel.SetStride(112);
 	
 	layoutSimpleModel.GetAttributes()[5].SetComponentCount(4);

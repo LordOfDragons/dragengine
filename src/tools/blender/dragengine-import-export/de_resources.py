@@ -33,6 +33,21 @@ from .de_math import vector_by_matrix, matrixToEuler, convertMatrix, convertMatr
 from .de_math import vecCross, vecSub, vecMul, vecDot, vecNeg, vecDiv, vecLength, vecAdd, vec2Sub
 from .de_porting import matmul
 
+# pylint: disable=too-few-public-methods
+
+
+class FakeMeshUVLoop:
+    """Fake version of MeshUVLoop for temporary data."""
+    def __init__(self, uv):
+        self.uv = uv
+
+
+class FakeMeshUVLoopLayer:
+    """Fake version of MeshUVLoopLayer for temporary data."""
+    def __init__(self, loop_count):
+        self.name = "default"
+        self.data = [FakeMeshUVLoop((0, 0)) for _ in range(loop_count)]
+
 
 class Armature:
     class Bone:
@@ -453,34 +468,49 @@ class Mesh:
     
     # add texture coordinates sets
     def initAddTexCoordSets(self):
-        if hasattr(self.mesh, "uv_textures"):
-            if not self.mesh.uv_textures:
-                raise 'At least 1 UV-Texture required'
-            if len(self.mesh.uv_textures) == 1:
-                self.texCoordSets.append(Mesh.TexCoordSet(
-                    0, self.mesh.uv_textures[0], self.mesh.uv_layers[0]))
-            else:
-                for i in range(len(self.mesh.uv_textures)):
-                    if self.mesh.uv_textures[i].name == "default":
-                        self.texCoordSets.append(Mesh.TexCoordSet(
-                            0, self.mesh.uv_textures[i], self.mesh.uv_layers[i]))
-                for i in range(len(self.mesh.uv_textures)):
-                    if self.mesh.uv_textures[i].name != "default":
-                        self.texCoordSets.append(Mesh.TexCoordSet(len(self.texCoordSets),
-                            self.mesh.uv_textures[i], self.mesh.uv_layers[i]))
+        if not self.mesh.uv_layers or len(self.mesh.uv_layers) == 0:
+            self.texCoordSets.append(self.createDefaultTCS())
+        elif len(self.mesh.uv_layers) == 1:
+            self.texCoordSets.append(Mesh.TexCoordSet(0, None, self.mesh.uv_layers[0]))
         else:
-            if not self.mesh.uv_layers:
-                raise 'At least 1 UV-Layer required'
-            if len(self.mesh.uv_layers) == 1:
-                self.texCoordSets.append(Mesh.TexCoordSet(0, None, self.mesh.uv_layers[0]))
+            baseUVMapName = self.object.dragengine_baseuvmap
+            baseUVLayer = None
+            if baseUVMapName is not None:
+                baseUVLayer = next((x for x in self.mesh.uv_layers
+                                    if x.name == baseUVMapName), None)
+            if baseUVLayer is None:
+                print(f"Base UV map '{baseUVMapName}' not found in mesh "
+                      f"'{self.mesh.name}'. Using first UV map "
+                      f"'{self.mesh.uv_layers[0].name}' instead.")
+                baseUVLayer = self.mesh.uv_layers[0]
+            
+            self.texCoordSets.append(Mesh.TexCoordSet(0, None, baseUVLayer))
+            
+            for l in (x for x in self.mesh.uv_layers if x != baseUVLayer):
+                self.texCoordSets.append(Mesh.TexCoordSet(len(self.texCoordSets), None, l))
+    
+    def createDefaultTCS(self):
+        uvlayer = FakeMeshUVLoopLayer(len(self.mesh.loops))
+        
+        for face in self.mesh.polygons:
+            vcount = len(face.vertices)
+            if vcount == 3:
+                uvs = [(0, 0), (1, 0), (0, 1)]
+            elif vcount == 4:
+                uvs = [(0, 0), (1, 0), (1, 1), (0, 1)]
             else:
-                for i in range(len(self.mesh.uv_layers)):
-                    if self.mesh.uv_layers[i].name == "default":
-                        self.texCoordSets.append(Mesh.TexCoordSet(0, None, self.mesh.uv_layers[i]))
-                for i in range(len(self.mesh.uv_layers)):
-                    if self.mesh.uv_layers[i].name != "default":
-                        self.texCoordSets.append(Mesh.TexCoordSet(len(self.texCoordSets),
-                            None, self.mesh.uv_layers[i]))
+                uvs = []
+                for i in range(vcount):
+                    angle = 2.0 * math.pi * i / vcount
+                    uvs.append((0.5 + 0.5 * math.cos(angle), 0.5 + 0.5 * math.sin(angle)))
+            
+            for i, loop_index in enumerate(face.loop_indices):
+                if i < len(uvs):
+                    uvlayer.data[loop_index].uv = uvs[i]
+                else:
+                    uvlayer.data[loop_index].uv = (0, 0)
+        
+        return Mesh.TexCoordSet(0, None, uvlayer)
     
     # add vertex position sets
     def initAddVertPosSets(self, baseMesh=None):
@@ -764,27 +794,38 @@ class Mesh:
             for face in self.faces:
                 face.tangents = [normal for normal in face.normals]"""
     
-    # group texture coordinates
     def groupTexCoords(self):
+        """Group texture coordinates by face point."""
         tcequals = self.object.dragengine_tcequals
         invTCEquals = 1.0 / tcequals
         
-        for tcs in self.texCoordSets:
-            mapTexCoords = {}
-            
-            for face in self.faces:
-                texCoords = []
-                for index in face.face.loop_indices:
-                    texCoord = Mesh.TexCoord(tcs.uvlayer.data[index].uv, invTCEquals)
-                    found = mapTexCoords.get(texCoord)
-                    if found:
-                        texCoords.append(found)
-                    else:
-                        texCoord.index = len(tcs.texCoords)
+        baseTcs = self.texCoordSets[0]
+        mapTexCoords: dict[tuple[int, ...], int] = {}
+        
+        for face in self.faces:
+            texCoords: list[list[Mesh.TexCoord]] = [[] for _ in self.texCoordSets]
+            for index in face.face.loop_indices:
+                tckey = []
+                for tcs in self.texCoordSets:
+                    uv = tcs.uvlayer.data[index].uv
+                    tckey.append(int((uv[0] * invTCEquals) + 0.5))
+                    tckey.append(int((uv[1] * invTCEquals) + 0.5))
+                tckey = tuple(tckey)
+                
+                tcindex = mapTexCoords.get(tckey)
+                if tcindex is None:
+                    tcindex = len(baseTcs.texCoords)
+                    for tcs in self.texCoordSets:
+                        uv = tcs.uvlayer.data[index].uv
+                        texCoord = Mesh.TexCoord(uv, invTCEquals)
+                        texCoord.index = tcindex
                         tcs.texCoords.append(texCoord)
-                        mapTexCoords[texCoord] = texCoord
-                        texCoords.append(texCoord)
-                face.texCoordSets.append(texCoords)
+                        texCoords[tcs.index].append(texCoord)
+                    mapTexCoords[tckey] = tcindex
+                else:
+                    for tcs in self.texCoordSets:
+                        texCoords[tcs.index].append(tcs.texCoords[tcindex])
+            face.texCoordSets.extend(texCoords)
     
     # calculate the real positions of vertices
     # NOTE used by de_tool_gbuffernormgen

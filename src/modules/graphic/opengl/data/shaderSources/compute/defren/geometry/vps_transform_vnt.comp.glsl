@@ -4,17 +4,11 @@ precision HIGHP float;
 precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
+#include "shared/defren/geometry/model_data.glsl"
 
 struct sVertexPositionSetData{
 	vec3 position;
 	uint vertex;
-};
-
-struct sTransformedData{
-	vec3 position;
-	vec3 realNormal;
-	vec3 normal;
-	vec4 tangent;
 };
 
 UBOLAYOUT_BIND(0) readonly buffer VertexPositionSetData {
@@ -23,6 +17,14 @@ UBOLAYOUT_BIND(0) readonly buffer VertexPositionSetData {
 
 UBOLAYOUT_BIND(1) restrict buffer TransformedData {
 	sTransformedData pTransformedData[];
+};
+
+UBOLAYOUT_BIND(1) restrict buffer TransformedDataTcs1 {
+	sTransformedDataTcs1 pTransformedDataTcs1[];
+};
+
+UBOLAYOUT_BIND(1) restrict buffer TransformedDataTcs2 {
+	sTransformedDataTcs2 pTransformedDataTcs2[];
 };
 
 layout( local_size_x=64 ) in;
