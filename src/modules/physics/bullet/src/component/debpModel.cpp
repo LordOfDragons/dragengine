@@ -29,6 +29,7 @@
 #include "../coldet/octree/debpDefaultDOctree.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelBone.h>
 #include <dragengine/resources/model/deModelFace.h>
@@ -262,6 +263,80 @@ void debpModel::PrepareShape(){
 	
 	pBulletShape = debpBulletShapeModel::Ref::New(
 		meshShape, ivarray, std::move(vertices), std::move(faces));
+}
+
+
+
+void debpModel::PrepareBoneAutoGenShapes(){
+	if(pBoneAutoGenShapesPrepared){
+		return;
+	}
+	
+	const deModelLOD &lod = pModel.GetLODs().First();
+	const deModelBone::List &bones = pModel.GetBones();
+	if(bones.IsEmpty() || lod.GetVertices().IsEmpty()){
+		pBoneAutoGenShapesPrepared = true;
+		return;
+	}
+	
+	// collect vertices per bone with weights
+	const int boneCount = bones.GetCount();
+	decTList<debpBoneAutoGenShape::WeightList> weights(boneCount, debpBoneAutoGenShape::WeightList());
+	
+	lod.GetVertices().Visit([&](const deModelVertex &vertex){
+		if(vertex.GetWeightSet() == -1){
+			return;
+		}
+		
+		const sWeightSet &weightSet = pWeightSets[vertex.GetWeightSet()];
+		
+		// the idea here is the following. weights of 50% to 100% are used for the main
+		// deformation bone. weights of 25% to 50% are used for the neightbor bones to properly
+		// deform joints. weights below 25% are used to smoothen the deformation. of all these
+		// weights the main deformation bone is the important one for physics to avoid bone
+		// collision shapes overlapping. some overlap though helps to avoid other colliders
+		// slipping in and getting stuck inside joints. for this reason a threshold of 35% is
+		// used to catch extend collision shapes into neighbor collision shapes without bloating
+		// them up too much in size. the threshold is applied to the maximum weight since weights
+		// in models are not required to be normalized
+		
+		float maxWeight = 0.0f;
+		for(int w=0; w<weightSet.count; w++){
+			maxWeight = decMath::max(maxWeight, weightSet.first[w].GetWeight());
+		}
+		
+		const float weightThreshold = maxWeight * 0.35f;
+		
+		for(int w=0; w<weightSet.count; w++){
+			const deModelWeight &modelWeight = weightSet.first[w];
+			
+			const int bone = modelWeight.GetBone();
+			if(bone < 0 || bone >= boneCount){
+				return; // should never happen but better safe than sorry
+			}
+			
+			const float weight = modelWeight.GetWeight();
+			if(weight < weightThreshold){
+				continue;
+			}
+			
+			weights[bone].Add({bones[bone]->GetInverseMatrix() * vertex.GetPosition(), weight});
+		}
+	});
+	
+	// create analytic shapes for each bone
+	pBoneAutoGenShapes.EnlargeCapacity(boneCount);
+	
+	weights.Visit([&](const debpBoneAutoGenShape::WeightList &w){
+		if(w.GetCount() >= 4){
+			pBoneAutoGenShapes.Add(debpBoneAutoGenShape::Create(w));
+			
+		}else{
+			pBoneAutoGenShapes.Add({});
+		}
+	});
+	
+	pBoneAutoGenShapesPrepared = true;
 }
 
 

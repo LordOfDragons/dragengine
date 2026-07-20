@@ -78,7 +78,19 @@ pRootBone(-1),
 pRigMass(0.0f),
 pRigInvMass(0.0f)
 {
-	pCreateBones();
+	pCreateBones(nullptr);
+}
+
+debpColliderBones::debpColliderBones(debpCollider &collider,
+	deColliderComponent *engColliderComponent, const debpModel::AutoGenShapePtrList &autoGenShapes) :
+pCollider(collider),
+pEngColliderRig(engColliderComponent),
+pEngColliderComponent(engColliderComponent),
+pRootBone(-1),
+pRigMass(0.0f),
+pRigInvMass(0.0f)
+{
+	pCreateBones(&autoGenShapes);
 }
 
 debpColliderBones::debpColliderBones(debpCollider &collider, deColliderRig *engColliderRig) :
@@ -89,7 +101,7 @@ pRootBone(-1),
 pRigMass(0.0f),
 pRigInvMass(0.0f)
 {
-	pCreateBones();
+	pCreateBones(nullptr);
 }
 
 debpColliderBones::~debpColliderBones(){
@@ -731,14 +743,15 @@ void debpColliderBones::UpdateDebugDrawersShape(){
 		return;
 	}
 	
-	const deRig * const rig = GetRig();
-	if(!rig){
-		return;
-	}
-	
 	pBonePhysics.Visit([&](debpColliderBone *b){
 		if(b->GetDDSShape()){
-			b->GetDDSShape()->GetShapeList() = rig->GetBoneAt(b->GetIndex())->GetShapes();
+			auto &ddshapes = b->GetDDSShape()->GetShapeList();
+			ddshapes.RemoveAll();
+			b->GetShapes().Visit([&](const debpShape &s){
+				if(s.GetShape()){
+					ddshapes.Add(s.GetShape()->Copy());
+				}
+			});
 		}
 	});
 }
@@ -1018,7 +1031,7 @@ void debpColliderBones::pCleanUp(){
 	}
 }
 
-void debpColliderBones::pCreateBones(){
+void debpColliderBones::pCreateBones(const debpModel::AutoGenShapePtrList *autoGenShapes){
 	const deCollider::eResponseType responseType = pEngColliderRig->GetResponseType();
 	debpCollisionWorld *dynWorld = pCollider.GetDynamicsWorld();
 	const bool enabled = pEngColliderRig->GetEnabled();
@@ -1039,7 +1052,7 @@ void debpColliderBones::pCreateBones(){
 	}
 	
 	// scaling
-	decVector scale(pGetColliderScale());
+	const decVector scale(pGetColliderScale());
 	
 	// prepare bones
 // 	if( component ){
@@ -1048,16 +1061,14 @@ void debpColliderBones::pCreateBones(){
 	
 	// create bones array and set all bones to NULL
 	pBones.EnlargeCapacity(boneCount);
-	int i;
-	for(i=0; i<boneCount; i++){
+	for(int i=0; i<boneCount; i++){
 		pBones.Add({});
 	}
 	
 	// create the individual bones if they have physics properties
 	debpCreateShape createShape;
 	
-	for(i=0; i<boneCount; i++){
-		deColliderBone &colBone = pEngColliderRig->GetBoneAt(i);
+	pEngColliderRig->GetBones().VisitIndexed([&](int i, deColliderBone &colBone){
 		deRigBone &rigBone = rig->GetBoneAt(i);
 		
 		/*
@@ -1074,13 +1085,16 @@ void debpColliderBones::pCreateBones(){
 		// shape definition are most probably controller bones or used for
 		// rendering only and should not clog up the physics system with
 		// unused rigid bodies
-		if(rigBone.GetShapes().GetCount() == 0){
-			continue;
+		const decShape::List &boneShapes = autoGenShapes && autoGenShapes->GetAt(i)
+			? autoGenShapes->GetAt(i)->GetShapes() : rigBone.GetShapes();
+		
+		if(boneShapes.IsEmpty()){
+			return;
 		}
 		
 		// create collider bone
 		pBones.SetAt(i, deTUniqueReference<debpColliderBone>::New(&pCollider, i));
-		debpColliderBone * const b = pBones.GetAt(i);
+		debpColliderBone * const b = pBones[i];
 		pBonePhysics.Add(b);
 		
 		// set the properties of the physics body
@@ -1136,18 +1150,18 @@ void debpColliderBones::pCreateBones(){
 		b->SetColBoneDynamic(colBone.GetDynamic());
 		
 		// initialize from the bone shape if possible
-		pSetBoneShape(i, rigBone, scale);
+		pSetBoneShape(pBones[i], rigBone, boneShapes, scale);
 		
 		// create the collision shapes
 		createShape.Reset();
-		rigBone.GetShapes().Visit([&](decShape &s){
-			s.Visit(createShape);
+		boneShapes.Visit([&](decShape &shape){
+			shape.Visit(createShape);
 			if(createShape.GetCreatedShape()){
 				b->GetShapes().Add(createShape.GetCreatedShape());
 				createShape.SetCreatedShape(nullptr);
 			}
 		});
-	}
+	});
 	
 	if(rig){
 		pCreateConstraints(*rig, scale);
@@ -1161,19 +1175,20 @@ void debpColliderBones::pCreateBones(){
 	UpdateDebugDrawersShape(); // debug if enabled
 }
 
-void debpColliderBones::pSetBoneShape(int index, deRigBone &bone, const decVector &scale){
-	if(bone.GetShapes().IsEmpty()){
+void debpColliderBones::pSetBoneShape(debpColliderBone &colBone, const deRigBone &rigBone,
+const decShape::List &shapes, const decVector &scale){
+	if(shapes.IsEmpty()){
 		return;
 	}
 	
-	debpPhysicsBody *phyBody = pBones[index]->GetPhysicsBody();
+	debpPhysicsBody * const phyBody = colBone.GetPhysicsBody();
 	debpCreateBulletShape createBulletShape;
 	debpShapeSurface shapeSurface;
 	
-	createBulletShape.SetOffset(-bone.GetCentralMassPoint().Multiply(scale));
+	createBulletShape.SetOffset(-rigBone.GetCentralMassPoint().Multiply(scale));
 	createBulletShape.SetScale(scale);
 	
-	bone.GetShapes().VisitIndexed([&](int i, decShape &s){
+	shapes.VisitIndexed([&](int i, decShape &s){
 		createBulletShape.SetShapeIndex(i);
 		s.Visit(createBulletShape);
 		s.Visit(shapeSurface);
@@ -1183,7 +1198,7 @@ void debpColliderBones::pSetBoneShape(int index, deRigBone &bone, const decVecto
 	phyBody->SetShape(createBulletShape.GetBulletShape());
 	phyBody->SetShapeSurface(shapeSurface.GetSurface());
 	
-	//phyBody->SetCcdParameters( createBulletShape.GetCcdThreshold(), createBulletShape.GetCcdRadius() );
+	//phyBody->SetCcdParameters(createBulletShape.GetCcdThreshold(), createBulletShape.GetCcdRadius());
 }
 
 void debpColliderBones::pCreateConstraints(const deRig &rig, const decVector &scale){

@@ -25,6 +25,7 @@
 #ifndef _DEBPSHAPETOVOLUME_H_
 #define _DEBPSHAPETOVOLUME_H_
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/shape/decShapeVisitor.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -33,6 +34,7 @@ class debpDCollisionSphere;
 class debpDCollisionBox;
 class debpDCollisionCylinder;
 class debpDCollisionCapsule;
+class debpDCollisionHull;
 
 
 
@@ -45,13 +47,13 @@ class debpDCollisionCapsule;
  */
 class debpShapeToVolume : public decShapeVisitor{
 private:
-	debpDCollisionSphere *pSphere;
-	debpDCollisionBox *pBox;
-	debpDCollisionCylinder *pCylinder;
-	debpDCollisionCapsule *pCapsule;
+	const deTUniqueReference<debpDCollisionSphere> pSphere;
+	const deTUniqueReference<debpDCollisionBox> pBox;
+	const deTUniqueReference<debpDCollisionCylinder> pCylinder;
+	const deTUniqueReference<debpDCollisionCapsule> pCapsule;
+	const deTUniqueReference<debpDCollisionHull> pHull;
 	debpDCollisionVolume *pVolume;
 	decDMatrix pMatrix;
-	
 	
 	
 public:
@@ -65,7 +67,6 @@ public:
 	/*@}*/
 	
 	
-	
 	/** \name Management */
 	/*@{*/
 	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
@@ -74,7 +75,6 @@ public:
 	
 	debpDCollisionVolume *GetVolumeFor(decShape *shape);
 	/*@}*/
-	
 	
 	
 	/** \name Visiting */
@@ -97,11 +97,6 @@ public:
 	/** \brief Visit hull shape. */
 	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

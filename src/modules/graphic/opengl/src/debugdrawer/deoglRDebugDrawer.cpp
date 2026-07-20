@@ -107,13 +107,15 @@ void deoglRDebugDrawer::SetXRay(bool xray){
 
 
 void deoglRDebugDrawer::UpdateShapes(const deDebugDrawer &debugDrawer){
-	pShapes.SetCount(debugDrawer.GetShapes().GetCount(), {});
+	pShapes.RemoveAll();
 	
-	debugDrawer.GetShapes().VisitIndexed([&](int i, const deDebugDrawerShape &s){
-		pShapes[i].SetMatrix(decMatrix::CreateWorld(s.GetPosition(), s.GetOrientation(), s.GetScale()));
-		pShapes[i].SetEdgeColor(s.GetEdgeColor());
-		pShapes[i].SetFillColor(s.GetFillColor());
-		pShapes[i].SetShapeList(s.GetShapeList());
+	debugDrawer.GetShapes().Visit([&](const deDebugDrawerShape &s){
+		auto shape = deoglDebugDrawerShape::Ref::New(pRenderThread);
+		shape->SetMatrix(decMatrix::CreateWorld(s.GetPosition(), s.GetOrientation(), s.GetScale()));
+		shape->SetEdgeColor(s.GetEdgeColor());
+		shape->SetFillColor(s.GetFillColor());
+		shape->SetShapeList(s.GetShapeList());
+		pShapes.Add(std::move(shape));
 	});
 	
 	pWriteVBOData(debugDrawer);
@@ -123,11 +125,9 @@ void deoglRDebugDrawer::UpdateShapes(const deDebugDrawer &debugDrawer){
 }
 
 
-
 deoglDebugDrawerShape &deoglRDebugDrawer::GetShapeAt(int index){
 	return pShapes[index];
 }
-
 
 
 void deoglRDebugDrawer::UpdateVBO(){

@@ -26,8 +26,9 @@
 #define _DEBPMODEL_H_
 
 #include "debpBulletShapeModel.h"
+#include "debpBoneAutoGenShape.h"
 
-#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsModel.h>
 
@@ -59,6 +60,8 @@ public:
 		int count;
 	};
 	
+	using AutoGenShapeList = decTUniqueList<debpBoneAutoGenShape>;
+	using AutoGenShapePtrList = decTList<const debpBoneAutoGenShape*>;
 	
 	
 private:
@@ -78,6 +81,9 @@ private:
 	decTList<float> pFaceProbabilities;
 	
 	debpBulletShapeModel::Ref pBulletShape;
+	
+	AutoGenShapeList pBoneAutoGenShapes;
+	bool pBoneAutoGenShapesPrepared = false;
 	
 	
 	
@@ -158,6 +164,12 @@ public:
 	
 	/** \brief Prepare shared bullet collision shape if not prepared. */
 	void PrepareShape();
+	
+	/** \brief Prepare auto-generated bone shapes for dynamic collision. */
+	void PrepareBoneAutoGenShapes();
+	
+	/** \brief Allows access to the list of auto-generated shapes for setting up bone physics bodies. */
+	inline const AutoGenShapeList &GetBoneAutoGenShapes() const{ return pBoneAutoGenShapes; }
 	/*@}*/
 	
 	

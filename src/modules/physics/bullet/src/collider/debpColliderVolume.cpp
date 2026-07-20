@@ -165,11 +165,9 @@ void debpColliderVolume::CreateBody(){
 	debpCollisionWorld *dynWorld = GetDynamicsWorld();
 	
 	if(dynWorld){
-		const int constraintCount = GetConstraintCount();
-		int i;
-		for(i=0; i<constraintCount; i++){
-			GetConstraintAt(i)->SetDynamicsWorld(dynWorld);
-		}
+		GetConstraints().Visit([&](debpColliderConstraint &constraint){
+			constraint.SetDynamicsWorld(dynWorld);
+		});
 		
 		GravityChanged();
 		
@@ -182,11 +180,9 @@ void debpColliderVolume::CreateBody(){
 }
 
 void debpColliderVolume::DestroyBody(){
-	const int constraintCount = GetConstraintCount();
-	int i;
-	for(i=0; i<constraintCount; i++){
-		GetConstraintAt(i)->SetDynamicsWorld(NULL);
-	}
+	GetConstraints().Visit([&](debpColliderConstraint &constraint){
+		constraint.SetDynamicsWorld(nullptr);
+	});
 	
 // 	if( pGhostKinematicMovement ){
 // 		pGhostKinematicMovement->SetDynamicsWorld( NULL );
@@ -1084,7 +1080,7 @@ void debpColliderVolume::ConstraintAdded(int index, deColliderConstraint* constr
 {
 	debpCollider::ConstraintAdded(index, constraint);
 	
-	debpColliderConstraint &bpConstraint = *GetConstraintAt(index);
+	debpColliderConstraint &bpConstraint = GetConstraints()[index];
 	bpConstraint.SetDynamicsWorld(GetDynamicsWorld());
 	bpConstraint.SetEnabled(pColliderVolume.GetEnabled());
 	
@@ -1095,7 +1091,7 @@ void debpColliderVolume::ConstraintChanged(int index, deColliderConstraint* cons
 {
 	debpCollider::ConstraintChanged(index, constraint);
 	
-	debpColliderConstraint &bpConstraint = *GetConstraintAt(index);
+	debpColliderConstraint &bpConstraint = GetConstraints()[index];
 	if(pPhyBody != bpConstraint.GetFirstBody()){
 		bpConstraint.SetFirstBody(pPhyBody);
 	}
@@ -1258,7 +1254,7 @@ void debpColliderVolume::ColliderMoveHits(deCollider *engCollider, const decVect
 		debpColliderVolume &colliderVolume = *collider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() > 0){
+		if(sweepCollisionTest.GetShapeList().IsNotEmpty()){
 			const decDVector &from = colliderVolume.GetPosition();
 			const btVector3 btfrom((btScalar)from.x, (btScalar)from.y, (btScalar)from.z);
 			
@@ -1300,7 +1296,7 @@ void debpColliderVolume::ColliderRotateHits(deCollider *engCollider, const decVe
 		debpColliderVolume &colliderVolume = *collider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() > 0){
+		if(sweepCollisionTest.GetShapeList().IsNotEmpty()){
 			const decDVector &position = colliderVolume.GetPosition();
 			const btVector3 btposition((btScalar)position.x, (btScalar)position.y, (btScalar)position.z);
 			
@@ -1344,7 +1340,7 @@ const decVector &rotation, deBaseScriptingCollider *listener){
 		debpColliderVolume &colliderVolume = *collider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() > 0){
+		if(sweepCollisionTest.GetShapeList().IsNotEmpty()){
 			const decDVector &positionFrom = colliderVolume.GetPosition();
 			const btVector3 btPosFrom((btScalar)positionFrom.x, (btScalar)positionFrom.y, (btScalar)positionFrom.z);
 			

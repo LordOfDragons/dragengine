@@ -63,3 +63,6 @@ void debpDCollisionVolumeVisitor::VisitTriangle(debpDCollisionTriangle *triangle
 
 void debpDCollisionVolumeVisitor::VisitFrustum(debpDCollisionFrustum *frustum){
 }
+
+void debpDCollisionVolumeVisitor::VisitHull(debpDCollisionHull *hull){
+}

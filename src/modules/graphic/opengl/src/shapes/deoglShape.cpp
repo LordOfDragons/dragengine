@@ -150,7 +150,7 @@ void deoglShape::SetPointOffsetFaces(int pointOffset){
 }
 
 void deoglShape::SetPointCountFaces(int pointCount){
-	if(pointCount < 0 || (pointCount % 4) > 0){
+	if(pointCount < 0 || (pointCount % 3) > 0){
 		DETHROW(deeInvalidParam);
 	}
 	pPointCountFaces = pointCount;

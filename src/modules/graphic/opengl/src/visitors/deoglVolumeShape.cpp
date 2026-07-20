@@ -33,6 +33,7 @@
 #include "../shapes/deoglShapeSphere.h"
 #include "../shapes/deoglShapeCylinder.h"
 #include "../shapes/deoglShapeCapsule.h"
+#include "../shapes/deoglShapeHull.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 
@@ -110,6 +111,6 @@ void deoglVolumeShape::VisitShapeCapsule(decShapeCapsule &capsule){
 }
 
 void deoglVolumeShape::VisitShapeHull(decShapeHull &hull){
-	// not supported yet
-	VisitShape(hull);
+	// hull shapes have to be handled separately by the visitor users
+	Reset();
 }

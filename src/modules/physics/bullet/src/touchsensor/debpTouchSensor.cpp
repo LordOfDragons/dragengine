@@ -844,7 +844,7 @@ timer.Reset();
 		debpColliderVolume &colliderVolume = *bpCollider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() == 0){
+		if(sweepCollisionTest.GetShapeList().IsEmpty()){
 			return;
 		}
 		
@@ -894,7 +894,7 @@ timer.Reset();
 		debpColliderVolume &colliderVolume = *bpCollider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() > 0){
+		if(sweepCollisionTest.GetShapeList().IsNotEmpty()){
 			const decDVector &position = colliderVolume.GetPosition();
 			const btVector3 btposition((btScalar)position.x,
 				(btScalar)position.y, (btScalar)position.z);
@@ -950,7 +950,7 @@ timer.Reset();
 		debpColliderVolume &colliderVolume = *bpCollider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() > 0){
+		if(sweepCollisionTest.GetShapeList().IsNotEmpty()){
 			const decDVector &positionFrom = colliderVolume.GetPosition();
 			const btVector3 btPosFrom((btScalar)positionFrom.x,
 				(btScalar)positionFrom.y, (btScalar)positionFrom.z);

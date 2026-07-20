@@ -233,11 +233,9 @@ void debpColliderComponent::CreateBody(){
 		return;
 	}
 	
-	int c, constraintCount = GetConstraintCount();
-	
-	for(c=0; c<constraintCount; c++){
-		GetConstraintAt(c)->SetDynamicsWorld(dynWorld);
-	}
+	GetConstraints().Visit([&](debpColliderConstraint &constraint){
+		constraint.SetDynamicsWorld(dynWorld);
+	});
 	
 	/*
 	GetBullet()->LogInfoFormat("component(model='%s',rig='%s')",
@@ -258,11 +256,9 @@ void debpColliderComponent::CreateBody(){
 }
 
 void debpColliderComponent::DestroyBody(){
-	int c, constraintCount = GetConstraintCount();
-	
-	for(c=0; c<constraintCount; c++){
-		GetConstraintAt(c)->SetDynamicsWorld(NULL);
-	}
+	GetConstraints().Visit([&](debpColliderConstraint &constraint){
+		constraint.SetDynamicsWorld(nullptr);
+	});
 	
 	if(pSimplePhyBody){
 		pSimplePhyBody->SetDynamicsWorld(NULL);
@@ -450,7 +446,7 @@ DEBUG_RESET_TIMERS;
 // 		}
 		
 		// this is dirty but i've got no better idea right now
-		if(GetConstraintCount() > 0){
+		if(GetConstraints().IsNotEmpty()){
 			pBones->SetAllBonesDirty();
 		}
 		
@@ -1516,11 +1512,9 @@ void debpColliderComponent::GravityChanged(){
 
 void debpColliderComponent::EnabledChanged(){
 	bool enabled = pColliderComponent.GetEnabled();
-	int c, constraintCount = GetConstraintCount();
-	
-	for(c=0; c<constraintCount; c++){ // is going to change
-		GetConstraintAt(c)->SetEnabled(enabled);
-	}
+	GetConstraints().Visit([&](debpColliderConstraint &constraint){ // is going to change
+		constraint.SetEnabled(enabled);
+	});
 	
 	if(pSimplePhyBody){
 		pSimplePhyBody->SetEnabled(enabled);
@@ -1547,7 +1541,8 @@ void debpColliderComponent::ResponseTypeChanged(){
 			SetUseKinematicSimulation(false);
 			
 		}else if(responseType == deCollider::ertKinematic){
-			if(pTestMode == etmModelStatic || pTestMode == etmModelDynamic){ // tri mesh supports no kinematic!
+			// rig shapes and bone shapes support kinematic, triangle mesh does not
+			if(pTestMode == etmModelStatic || pTestMode == etmModelDynamic){
 				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic);
 				SetUseKinematicSimulation(false);
 				
@@ -1563,7 +1558,9 @@ void debpColliderComponent::ResponseTypeChanged(){
 		
 	}else if(pBones){
 		pBones->UpdatePhysicsType(responseType);
-		SetUseKinematicSimulation(false);
+		
+		// bone shapes and rig shapes support kinematic
+		SetUseKinematicSimulation(responseType == deCollider::ertKinematic);
 	}
 	
 	SetAutoColDetPrepare(CalcAutoColDetPrepare());
@@ -1773,11 +1770,11 @@ void debpColliderComponent::InitWeightAttachment(deColliderAttachment &attachmen
 void debpColliderComponent::ConstraintAdded(int index, deColliderConstraint *constraint){
 	debpCollider::ConstraintAdded(index, constraint);
 	
-	debpColliderConstraint *bpConstraint = GetConstraintAt(index);
+	debpColliderConstraint &bpConstraint = GetConstraints()[index];
 	debpCollisionWorld *dynWorld = GetDynamicsWorld();
 	
-	bpConstraint->SetDynamicsWorld(dynWorld);
-	bpConstraint->SetEnabled(pColliderComponent.GetEnabled());
+	bpConstraint.SetDynamicsWorld(dynWorld);
+	bpConstraint.SetEnabled(pColliderComponent.GetEnabled());
 	
 	ConstraintChanged(index, constraint);
 }
@@ -1785,7 +1782,7 @@ void debpColliderComponent::ConstraintAdded(int index, deColliderConstraint *con
 void debpColliderComponent::ConstraintChanged(int index, deColliderConstraint *constraint){
 	debpCollider::ConstraintChanged(index, constraint);
 	
-	debpColliderConstraint &bpconstr = *GetConstraintAt(index);
+	debpColliderConstraint &bpconstr = GetConstraints()[index];
 	
 	const deCollider * const engTargetCollider = constraint->GetTargetCollider();
 	debpPhysicsBody * const oldBody1 = bpconstr.GetFirstBody();
@@ -2128,7 +2125,7 @@ const decVector &displacement, deBaseScriptingCollider *listener){
 		debpColliderVolume &colliderVolume = *collider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() > 0){
+		if(sweepCollisionTest.GetShapeList().IsNotEmpty()){
 			const decDVector &from = colliderVolume.GetPosition();
 			const btVector3 btfrom((btScalar)from.x, (btScalar)from.y, (btScalar)from.z);
 			
@@ -2169,7 +2166,7 @@ const decVector &rotation, deBaseScriptingCollider *listener){
 		debpColliderVolume &colliderVolume = *collider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() > 0){
+		if(sweepCollisionTest.GetShapeList().IsNotEmpty()){
 			const decDVector &position = colliderVolume.GetPosition();
 			const btVector3 btposition((btScalar)position.x, (btScalar)position.y, (btScalar)position.z);
 			
@@ -2211,7 +2208,7 @@ const decVector &displacement, const decVector &rotation, deBaseScriptingCollide
 		debpColliderVolume &colliderVolume = *collider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() > 0){
+		if(sweepCollisionTest.GetShapeList().IsNotEmpty()){
 			const decDVector &positionFrom = colliderVolume.GetPosition();
 			const btVector3 btPosFrom((btScalar)positionFrom.x, (btScalar)positionFrom.y, (btScalar)positionFrom.z);
 			
@@ -2335,18 +2332,16 @@ void debpColliderComponent::pUpdateBones(){
 	deComponent *component = pColliderComponent.GetComponent();
 	int responseType = pColliderComponent.GetResponseType();
 	bool enabled = pColliderComponent.GetEnabled();
-	int c, constraintCount = GetConstraintCount();
 	debpCollisionWorld *dynWorld = GetDynamicsWorld();
 	debpCreateShape createShape;
 	decVector locPos;
 	decQuaternion locOrient;
 	decMatrix bcMatrix, bcRotMatrix;
-	int b, s;
 	
 	// invalidate constraints
-	for(c=0; c<constraintCount; c++){
-		GetConstraintAt(c)->SetFirstBody(NULL);
-	}
+	GetConstraints().Visit([](debpColliderConstraint &constraint){
+		constraint.SetFirstBody(nullptr);
+	});
 	
 	// free bones if existing
 	if(pBones){
@@ -2387,15 +2382,10 @@ void debpColliderComponent::pUpdateBones(){
 	}
 	
 	// if there are no shapes but bones check if there is at least one bone with a shape
-	bool hasBonesWithShape = false;
-	if(shapeCount == 0){
-		for(b=0; b<boneCount; b++){
-			if(rig->GetBoneAt(b)->GetShapes().GetCount() > 0){
-				hasBonesWithShape = true;
-				break;
-			}
-		}
-	}
+	const bool hasBonesWithShape = shapeCount == 0 && rig
+		&& rig->GetBones().HasMatching([](const deRigBone &bone){
+			return bone.GetShapes().IsNotEmpty();
+		});
 	
 	// set test mode to static or dynamic model depending if the model can deform,
 	// a component is assigned and a rig is assigned to the component
@@ -2403,18 +2393,24 @@ void debpColliderComponent::pUpdateBones(){
 	
 	if(modelCollision){
 		if(model && model->GetCanDeform() && rig){
-			pTestMode = etmModelDynamic;
+			model->PrepareBoneAutoGenShapes();
+			
+			if(model->GetBoneAutoGenShapes().IsNotEmpty()){
+				pTestMode = etmBoneShape;
+				
+			}else if(shapeCount > 0){
+				pTestMode = etmRigShape;
+				
+			}else if(boneCount > 0 && hasBonesWithShape){
+				pTestMode = etmBoneShape;
+				
+			}else{
+				pTestMode = etmModelStatic;
+			}
 			
 		}else{
 			pTestMode = etmModelStatic;
 		}
-	}
-	
-	// Bullet becomes incredibly slow if a dynamic triangle mesh is used. for the time being
-	// this mode is disabled by forcing bones without shapes
-	if(pTestMode == etmModelDynamic && shapeCount == 0 && boneCount == 0){
-		modelCollision  = true; // this forces bones to be created although without a shape
-		//pTestMode = etmModelStatic; // this is not working. as soon as the model moves bullet dies
 	}
 	
 	// create bones. this is done only if there are no rig shapes and there is at least
@@ -2424,6 +2420,17 @@ void debpColliderComponent::pUpdateBones(){
 	if(!modelCollision && shapeCount == 0 && boneCount > 0 && hasBonesWithShape){
 		pBones = new debpColliderBones(*this, &pColliderComponent);
 		pTestMode = etmBoneShape;
+		
+	// if model collision is requested with analytic bone shapes create bone physics bodies
+	}else if(modelCollision && pTestMode == etmBoneShape){
+		// reorder auto gen shapes since we need them in rig bone order not model bone order
+		debpModel::AutoGenShapePtrList agshapes(boneCount);
+		rig->GetBones().VisitIndexed([&](int i, const deRigBone &bone){
+			const int index = model->GetModel().IndexOfBoneNamed(bone.GetName());
+			agshapes.Add(index != -1 ? model->GetBoneAutoGenShapes()[index] : nullptr);
+		});
+		
+		pBones = new debpColliderBones(*this, &pColliderComponent, agshapes);
 		
 	// if there are no bones with shapes but we have a component then this is a simple one.
 	// this can be either a rig with only rig shapes or no rig at all
@@ -2497,12 +2504,11 @@ void debpColliderComponent::pUpdateBones(){
 			createBulletShape.SetOffset(cmp);
 			createBulletShape.SetScale(scale);
 			
-			for(s=0; s<shapeCount; s++){
+			rig->GetShapes().VisitIndexed([&](int s, decShape &shape){
 				createBulletShape.SetShapeIndex(s);
-				decShape * const shape = rig->GetShapes().GetAt(s);
-				shape->Visit(createBulletShape);
-				shape->Visit(shapeSurface);
-			}
+				shape.Visit(createBulletShape);
+				shape.Visit(shapeSurface);
+			});
 			createBulletShape.Finish();
 			pSimplePhyBody->SetShape(createBulletShape.GetBulletShape());
 			pSimplePhyBody->SetShapeSurface(shapeSurface.GetSurface());
@@ -2513,13 +2519,13 @@ void debpColliderComponent::pUpdateBones(){
 			
 			// create the collision shapes
 			createShape.Reset();
-			for(s=0; s<shapeCount; s++){
-				rig->GetShapes().GetAt(s)->Visit(createShape);
+			rig->GetShapes().VisitIndexed([&](int s, decShape &shape){
+				shape.Visit(createShape);
 				if(createShape.GetCreatedShape()){
 					pRigShapes.Add(createShape.GetCreatedShape());
 					createShape.SetCreatedShape(NULL);
 				}
-			}
+			});
 			
 		// nothing. revert to no collision
 		}else{
@@ -2535,10 +2541,9 @@ void debpColliderComponent::pUpdateBones(){
 	}
 	
 	// update constraints
-	constraintCount = GetConstraintCount();
-	for(c=0; c<constraintCount; c++){
-		ConstraintChanged(c, &GetConstraintAt(c)->GetConstraint());
-	}
+	GetConstraints().VisitIndexed([&](int c, debpColliderConstraint &constraint){
+		ConstraintChanged(c, &constraint.GetConstraint());
+	});
 	
 	// update
 	DirtyBones();

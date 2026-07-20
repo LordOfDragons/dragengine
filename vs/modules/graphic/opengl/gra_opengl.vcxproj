@@ -842,6 +842,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeBox.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCapsule.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeHull.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeSphere.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCBuildConstructed.cpp" />
@@ -1489,6 +1490,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeBox.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCapsule.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeHull.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeSphere.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCBuildConstructed.h" />

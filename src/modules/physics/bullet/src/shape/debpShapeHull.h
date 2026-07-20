@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,51 +22,55 @@
  * SOFTWARE.
  */
 
-#ifndef _DEBPBULLETSHAPE_H_
-#define _DEBPBULLETSHAPE_H_
+#ifndef _DEBPSHAPEHULL_H_
+#define _DEBPSHAPEHULL_H_
 
-#include <dragengine/deObject.h>
+#include "debpShape.h"
+#include "../coldet/collision/debpDCollisionHull.h"
 
-class btCollisionShape;
-
+class decShapeHull;
 
 
 /**
- * \brief Wraps a bullet collision shape.
- * 
- * Bullet does not manage the lifetime of create collision shapes. This is
- * done to allow using collision shapes on multiple collision objects. To
- * avoid memory leaking the created collision shapes have to be wrapped
- * into debpBulletShape which is reference counted to properly release the
- * bullet shapes once nobody uses them anymore.
+ * Bullet counterpart of hull shape.
  */
-class debpBulletShape : public deObject{
-private:
-	btCollisionShape *pShape;
+class debpShapeHull : public debpShape{
+public:
+	using Ref = deTObjectReference<debpShapeHull>;
 	
+	
+private:
+	decShapeHull *pSHull;
+	debpDCollisionHull pCHull;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	using Ref = deTObjectReference<debpBulletShape>;
-
-
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create bullet shape wrapper taking ownership of bullet shape. */
-	debpBulletShape(btCollisionShape *shape);
+	/** Create shape. */
+	debpShapeHull(decShapeHull *shape);
 	
 protected:
-	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
-	~debpBulletShape() override;
+	/** Clean up shape. */
+	~debpShapeHull() override;
 	/*@}*/
 	
 	
 public:
-	/** \name Management */
+	/** @name Management */
 	/*@{*/
-	/** \brief Bullet shape. */
-	inline btCollisionShape *GetShape() const{ return pShape; }
+	/** Hull shape. */
+	inline decShapeHull *GetShapeHull() const{ return pSHull; }
+	
+	/** Collision hull. */
+	inline debpDCollisionHull &GetCollisionHull(){ return pCHull; }
+	inline const debpDCollisionHull &GetCollisionHull() const{ return pCHull; }
+	
+	/** Update collision volume using transformation matrix. */
+	void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale) override;
+	
+	/** Print out on console some debugging information about shape. */
+	void PrintDebug(dePhysicsBullet &module) override;
 	/*@}*/
 };
 

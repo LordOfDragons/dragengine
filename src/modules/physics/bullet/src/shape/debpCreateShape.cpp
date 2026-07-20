@@ -22,14 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "debpCreateShape.h"
 #include "debpShapeSphere.h"
 #include "debpShapeBox.h"
 #include "debpShapeCylinder.h"
 #include "debpShapeCapsule.h"
+#include "debpShapeHull.h"
 
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/shape/decShapeSphere.h>
@@ -99,6 +97,5 @@ void debpCreateShape::VisitShapeCapsule(decShapeCapsule &capsule){
 }
 
 void debpCreateShape::VisitShapeHull(decShapeHull &hull){
-	// not supported
-	VisitShape(hull);
+	pShape = debpShapeHull::Ref::New(&hull);
 }

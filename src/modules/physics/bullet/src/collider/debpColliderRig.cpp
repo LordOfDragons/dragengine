@@ -160,11 +160,9 @@ void debpColliderRig::CreateBody(){
 		return;
 	}
 	
-	int c, constraintCount = GetConstraintCount();
-	
-	for(c=0; c<constraintCount; c++){
-		GetConstraintAt(c)->SetDynamicsWorld(dynWorld);
-	}
+	GetConstraints().Visit([&](debpColliderConstraint &constraint){
+		constraint.SetDynamicsWorld(dynWorld);
+	});
 	
 	if(pSimplePhyBody){
 		pSimplePhyBody->SetDynamicsWorld(dynWorld);
@@ -177,11 +175,9 @@ void debpColliderRig::CreateBody(){
 	}
 
 void debpColliderRig::DestroyBody(){
-	int c, constraintCount = GetConstraintCount();
-	
-	for(c=0; c<constraintCount; c++){
-		GetConstraintAt(c)->SetDynamicsWorld(NULL);
-	}
+	GetConstraints().Visit([&](debpColliderConstraint &constraint){
+		constraint.SetDynamicsWorld(nullptr);
+	});
 	
 	if(pSimplePhyBody){
 		pSimplePhyBody->SetDynamicsWorld(NULL);
@@ -323,7 +319,7 @@ void debpColliderRig::PrepareForStep(){
 	RegisterColDetFinish(); // to disable pPreventAttNotify
 	
 	// this is dirty but i've got no better idea right now
-	if(GetConstraintCount() > 0){
+	if(GetConstraints().IsNotEmpty()){
 		pBones->SetAllBonesDirty();
 	}
 	
@@ -844,11 +840,9 @@ void debpColliderRig::GravityChanged(){
 
 void debpColliderRig::EnabledChanged(){
 	const bool enabled = pColliderRig.GetEnabled();
-	int c, constraintCount = GetConstraintCount();
-	
-	for(c=0; c<constraintCount; c++){ // is going to change
-		GetConstraintAt(c)->SetEnabled(enabled);
-	}
+	GetConstraints().Visit([&](debpColliderConstraint &constraint){ // is going to change
+		constraint.SetEnabled(enabled);
+	});
 	
 	if(pSimplePhyBody){
 		pSimplePhyBody->SetEnabled(enabled);
@@ -955,7 +949,7 @@ void debpColliderRig::AttachmentsForceUpdate(){
 void debpColliderRig::ConstraintAdded(int index, deColliderConstraint *constraint){
 	debpCollider::ConstraintAdded(index, constraint);
 	
-	debpColliderConstraint &bpConstraint = *GetConstraintAt(index);
+	debpColliderConstraint &bpConstraint = GetConstraints()[index];
 	bpConstraint.SetDynamicsWorld(GetDynamicsWorld());
 	bpConstraint.SetEnabled(pColliderRig.GetEnabled());
 	
@@ -965,7 +959,7 @@ void debpColliderRig::ConstraintAdded(int index, deColliderConstraint *constrain
 void debpColliderRig::ConstraintChanged(int index, deColliderConstraint *constraint){
 	debpCollider::ConstraintChanged(index, constraint);
 	
-	debpColliderConstraint &bpconstr = *GetConstraintAt(index);
+	debpColliderConstraint &bpconstr = GetConstraints()[index];
 	
 	debpPhysicsBody *oldbody = bpconstr.GetFirstBody();
 	int boneIndex = constraint->GetBone();
@@ -1104,8 +1098,6 @@ void debpColliderRig::pCleanUp(){
 void debpColliderRig::pUpdateBones(){
 	int responseType = pColliderRig.GetResponseType();
 	bool enabled = pColliderRig.GetEnabled();
-	int c, constraintCount = GetConstraintCount();
-	debpColliderConstraint *bpConstraint = NULL;
 	debpCollisionWorld *dynWorld = GetDynamicsWorld();
 	debpCreateShape createShape;
 	int boneCount = 0;
@@ -1116,9 +1108,9 @@ void debpColliderRig::pUpdateBones(){
 	decMatrix bcMatrix, bcRotMatrix;
 	
 	// invalidate constraints
-	for(c=0; c<constraintCount; c++){
-		GetConstraintAt(c)->SetFirstBody(NULL);
-	}
+	GetConstraints().Visit([&](debpColliderConstraint &constraint){
+		constraint.SetFirstBody(nullptr);
+	});
 	
 	// free bones if existing
 	if(pBones){
@@ -1147,14 +1139,10 @@ void debpColliderRig::pUpdateBones(){
 		
 		// update constraints. (what's this doing here? that makes no sense)
 		/*if( pRootBone != -1 ){
-			constraintCount = GetConstraintCount();
-			
-			for(c=0; c<constraintCount; c++){
-				bpConstraint = GetConstraintAt(c);
-				
-				bpConstraint->SetFirstBody(pBones[pRootBone]->GetPhysicsBody());
-				bpConstraint->SetFirstOffset(pBones[pRootBone]->GetOffset().ToVector());
-			}
+			GetConstraints().Visit([&](debpColliderConstraint &constraint){
+				constraint.SetFirstBody(pBones[pRootBone]->GetPhysicsBody());
+				constraint.SetFirstOffset(pBones[pRootBone]->GetOffset().ToVector());
+	});
 		}*/
 		
 	// if there are no bones but we have a rig then this is a simple one
@@ -1225,13 +1213,10 @@ void debpColliderRig::pUpdateBones(){
 		}
 		
 		// update constraints
-		constraintCount = GetConstraintCount();
-		for(c=0; c<constraintCount; c++){
-			bpConstraint = GetConstraintAt(c);
-			
-			bpConstraint->SetFirstBody(pSimplePhyBody);
-			bpConstraint->SetFirstOffset(decVector());
-		}
+		GetConstraints().Visit([&](debpColliderConstraint &constraint){
+			constraint.SetFirstBody(pSimplePhyBody);
+			constraint.SetFirstOffset({});
+		});
 	}
 	
 	DirtyBones();

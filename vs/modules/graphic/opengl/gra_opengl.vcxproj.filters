@@ -1290,6 +1290,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCylinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeHull.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3225,6 +3228,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCylinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeHull.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeManager.h">

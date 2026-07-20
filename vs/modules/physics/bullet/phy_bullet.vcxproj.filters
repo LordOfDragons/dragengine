@@ -69,6 +69,9 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionFrustum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionHull.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionSphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -184,6 +187,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\commands\debpCommandExecuter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBoneAutoGenShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModel.cpp">
@@ -328,6 +334,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeHackBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeHull.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeSphere.cpp">
@@ -1031,6 +1040,9 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionFrustum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionHull.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionSphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1146,6 +1158,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\commands\debpCommandExecuter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBoneAutoGenShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModel.h">
@@ -1295,6 +1310,9 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeHackBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeHull.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeSphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1371,39 +1389,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpWorld.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfig.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigBuiltin.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigEigen.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDErrorMessages.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDMath.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\MultiBodyTree.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDEigenInterface.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDLinearMathInterface.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDMatVec.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3BroadphaseCallback.h">
@@ -2442,6 +2427,39 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\btBulletDynamicsCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfig.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigBuiltin.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigEigen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDErrorMessages.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDMath.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\MultiBodyTree.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDEigenInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDLinearMathInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDMatVec.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

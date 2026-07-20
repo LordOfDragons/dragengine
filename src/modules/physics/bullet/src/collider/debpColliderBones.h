@@ -27,6 +27,7 @@
 
 #include "debpColliderBone.h"
 #include "../debpCollisionObject.h"
+#include "../component/debpModel.h"
 
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTUniqueList.h>
@@ -76,6 +77,10 @@ public:
 	/*@{*/
 	/** Create bones list. */
 	debpColliderBones(debpCollider &collider, deColliderComponent *engColliderComponent);
+	
+	/** Create bones list. */
+	debpColliderBones(debpCollider &collider, deColliderComponent *engColliderComponent,
+		const debpModel::AutoGenShapePtrList &autoGenShapes);
 	
 	/** Create bones list. */
 	debpColliderBones(debpCollider &collider, deColliderRig *engColliderRig);
@@ -252,8 +257,9 @@ public:
 	
 private:
 	void pCleanUp();
-	void pCreateBones();
-	void pSetBoneShape(int index, deRigBone &bone, const decVector &scale);
+	void pCreateBones(const debpModel::AutoGenShapePtrList *autoGenShapes);
+	void pSetBoneShape(debpColliderBone &colBone, const deRigBone &rigBone,
+		const decShape::List &shapes, const decVector &scale);
 	void pCreateConstraints(const deRig &rig, const decVector &scale);
 	void pPreparePhyBones();
 	decVector pGetColliderScale() const;

@@ -31,6 +31,7 @@
 #include "../coldet/collision/debpDCollisionBox.h"
 #include "../coldet/collision/debpDCollisionCylinder.h"
 #include "../coldet/collision/debpDCollisionCapsule.h"
+#include "../coldet/collision/debpDCollisionHull.h"
 
 // predefinitions
 class debpShape;
@@ -39,6 +40,7 @@ class decShapeBox;
 class decShapeSphere;
 class decShapeCylinder;
 class decShapeCapsule;
+class decShapeHull;
 
 
 
@@ -58,6 +60,7 @@ private:
 	debpDCollisionBox pBox;
 	debpDCollisionCylinder pCylinder;
 	debpDCollisionCapsule pCapsule;
+	debpDCollisionHull pHull;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -83,6 +86,8 @@ public:
 	const debpDCollisionCylinder &TransformShapeCylinder(const decShapeCylinder &cylinder, const decDMatrix &transformation);
 	/** Transforms an engine capsule shape. */
 	const debpDCollisionCapsule &TransformShapeCapsule(const decShapeCapsule &capsule, const decDMatrix &transformation);
+	/** Transforms an engine hull shape. */
+	const debpDCollisionHull &TransformShapeHull(const decShapeHull &hull, const decDMatrix &transformation);
 	
 	/** Transforms an engine collision sphere. */
 	const debpDCollisionSphere &TransformCollisionSphere(const debpDCollisionSphere &sphere, const decDMatrix &transformation);
@@ -92,6 +97,8 @@ public:
 	const debpDCollisionCylinder &TransformCollisionCylinder(const debpDCollisionCylinder &cylinder, const decDMatrix &transformation);
 	/** Transforms an engine collision capsule. */
 	const debpDCollisionCapsule &TransformCollisionCapsule(const debpDCollisionCapsule &capsule, const decDMatrix &transformation);
+	/** Transforms an engine collision hull. */
+	const debpDCollisionHull &TransformCollisionHull(const debpDCollisionHull &hull, const decDMatrix &transformation);
 	/*@}*/
 };
 

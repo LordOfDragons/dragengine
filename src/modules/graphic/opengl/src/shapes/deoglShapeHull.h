@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,51 +22,55 @@
  * SOFTWARE.
  */
 
-#ifndef _DEBPBULLETSHAPE_H_
-#define _DEBPBULLETSHAPE_H_
+#ifndef _DEOGLSHAPEHULL_H_
+#define _DEOGLSHAPEHULL_H_
 
-#include <dragengine/deObject.h>
+#include "deoglShape.h"
 
-class btCollisionShape;
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/math/decMath.h>
 
+class deoglRenderThread;
+class deoglConvexHull3D;
 
 
 /**
- * \brief Wraps a bullet collision shape.
- * 
- * Bullet does not manage the lifetime of create collision shapes. This is
- * done to allow using collision shapes on multiple collision objects. To
- * avoid memory leaking the created collision shapes have to be wrapped
- * into debpBulletShape which is reference counted to properly release the
- * bullet shapes once nobody uses them anymore.
+ * Hull Shape.
  */
-class debpBulletShape : public deObject{
+class deoglShapeHull : public deoglShape{
 private:
-	btCollisionShape *pShape;
+	decTList<decVector> pPoints;
+	decTList<int> pIndices;
+	int pPointCountFaces, pPointCountLines;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	using Ref = deTObjectReference<debpBulletShape>;
-
-
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create bullet shape wrapper taking ownership of bullet shape. */
-	debpBulletShape(btCollisionShape *shape);
+	/** Creates a new shape. */
+	explicit deoglShapeHull(deoglRenderThread &renderThread);
 	
-protected:
-	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
-	~debpBulletShape() override;
+	/** Creates a new shape with hull data. */
+	deoglShapeHull(deoglRenderThread &renderThread, const decTList<decVector> &points,
+		const decTList<int> &indices);
+	
+	/** Cleans up the shape. */
+	~deoglShapeHull() override;
 	/*@}*/
 	
 	
-public:
+	
 	/** \name Management */
 	/*@{*/
-	/** \brief Bullet shape. */
-	inline btCollisionShape *GetShape() const{ return pShape; }
+	/** Set hull data. */
+	void SetHullData(const decTList<decVector> &points, const decTList<int> &indices);
+	
+	/** Add lines data. */
+	void AddVBOLines(sVBOData *data) override;
+	
+	/** Add faces data. */
+	void AddVBOFaces(sVBOData *data) override;
 	/*@}*/
 };
 

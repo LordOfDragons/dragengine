@@ -255,7 +255,7 @@ debpWorld *world, deBaseScriptingCollider *listener){
 		debpColliderVolume &colliderVolume = *collider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() == 0){
+		if(sweepCollisionTest.GetShapeList().IsEmpty()){
 			return;
 		}
 		
@@ -292,7 +292,7 @@ debpWorld *world, deBaseScriptingCollider *listener){
 		debpColliderVolume &colliderVolume = *collider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() == 0){
+		if(sweepCollisionTest.GetShapeList().IsEmpty()){
 			return;
 		}
 		
@@ -330,7 +330,7 @@ const decVector &rotation, debpWorld *world, deBaseScriptingCollider *listener){
 		debpColliderVolume &colliderVolume = *collider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if(sweepCollisionTest.GetShapeList().GetCount() == 0){
+		if(sweepCollisionTest.GetShapeList().IsEmpty()){
 			return;
 		}
 		
