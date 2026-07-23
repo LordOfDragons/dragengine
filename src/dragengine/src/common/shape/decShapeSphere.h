@@ -63,6 +63,10 @@ public:
 	/** \brief Create tapered sphere shape. */
 	decShapeSphere(float radius, const decVector2 &axisScaling, const decVector &position);
 	
+	/** \brief Create tapered sphere shape. */
+	decShapeSphere(float radius, const decVector2 &axisScaling, const decVector &position,
+		const decQuaternion &orientation);
+	
 	/** \brief Clean up sphere shape. */
 	~decShapeSphere() override;
 	/*@}*/

@@ -123,6 +123,7 @@ private:
 	igdeAction::Ref pActionRigShowShapes;
 	igdeAction::Ref pActionRigShowConstraints;
 	igdeAction::Ref pActionRigShowPushes;
+	igdeAction::Ref pActionRigGenerateCollisionShapes;
 	
 	igdeAction::Ref pActionBoneAdd;
 	igdeAction::Ref pActionBoneAddSphere;
@@ -137,6 +138,7 @@ private:
 	igdeAction::Ref pActionBoneImport;
 	igdeAction::Ref pActionBoneScaleMass;
 	igdeAction::Ref pActionBoneMassFromVolume;
+	igdeAction::Ref pActionBoneGenerateCollisionShapes;
 	
 	igdeAction::Ref pActionViewShapeXRay;
 	

@@ -67,6 +67,8 @@
 	<translation name="Rig.Action.RigShowConstraints.Description">Show constraints of the entire rig</translation>
 	<translation name="Rig.Action.RigShowPushs">Show Rig Pushs</translation>
 	<translation name="Rig.Action.RigShowPushs.Description">Show pushes of the entire rig</translation>
+	<translation name="Rig.Action.RigGenerateCollisionShapes">Generate Collision Shapes</translation>
+	<translation name="Rig.Action.RigGenerateCollisionShapes.Description">Generate collision shapes for the rig</translation>
 	
 	<!-- Window Main Actions - Bone -->
 	<translation name="Rig.Action.BoneAdd">Add</translation>
@@ -97,6 +99,8 @@
 	<translation name="Rig.Action.BoneMassFromVolume.Description">Set the mass of the bone from the shape volumes</translation>
 	<translation name="Rig.Action.BoneXRayShapes">X-Ray Shapes</translation>
 	<translation name="Rig.Action.BoneXRayShapes.Description">Sets if shapes are visible through geometry</translation>
+	<translation name="Rig.Action.BoneGenerateCollisionShapes">Generate Collision Shapes</translation>
+	<translation name="Rig.Action.BoneGenerateCollisionShapes.Description">Generate collision shapes for the selected bones</translation>
 	
 	<!-- Window Main Actions - View -->
 	<translation name="Rig.Action.ViewRunSimulation">Run Simulation</translation>
@@ -280,8 +284,12 @@
 	<translation name="Rig.PanelShapeSphere.GroupBox.SphereParameters">Sphere Parameters:</translation>
 	<translation name="Rig.PanelShapeSphere.Position">Position:</translation>
 	<translation name="Rig.PanelShapeSphere.Position.ToolTip">Position of the sphere relative to the parent bone.</translation>
+	<translation name="Rig.PanelShapeSphere.Rotation">Rotation:</translation>
+	<translation name="Rig.PanelShapeSphere.Rotation.ToolTip">Rotation of the sphere relative to the parent bone.</translation>
 	<translation name="Rig.PanelShapeSphere.Radius">Radius:</translation>
 	<translation name="Rig.PanelShapeSphere.Radius.ToolTip">Radius of the sphere in meters.</translation>
+	<translation name="Rig.PanelShapeSphere.AxisScaling">Axis Scaling:</translation>
+	<translation name="Rig.PanelShapeSphere.AxisScaling.ToolTip">Axis scaling factors for the sphere to turn it into an ellipsoid.</translation>
 	
 	<!-- Shape Panel - Box -->
 	<translation name="Rig.PanelShapeBox.GroupBox.BoxParameters">Box Parameters:</translation>
@@ -291,6 +299,8 @@
 	<translation name="Rig.PanelShapeBox.Rotation.ToolTip">Rotation of the box.</translation>
 	<translation name="Rig.PanelShapeBox.HalfExtends">Half Extends:</translation>
 	<translation name="Rig.PanelShapeBox.HalfExtends.ToolTip">Half extends of the box.</translation>
+	<translation name="Rig.PanelShapeBox.Tapering">Tapering:</translation>
+	<translation name="Rig.PanelShapeBox.Tapering.ToolTip">Tapering of the box as scaling factors for X and Y axes.</translation>
 	
 	<!-- Shape Panel - Capsule -->
 	<translation name="Rig.PanelShapeCapsule.GroupBox.CapsuleParameters">Capsule Parameters:</translation>
@@ -304,6 +314,10 @@
 	<translation name="Rig.PanelShapeCapsule.TopRadius.ToolTip">Top radius in meters.</translation>
 	<translation name="Rig.PanelShapeCapsule.BottomRadius">Bottom Radius:</translation>
 	<translation name="Rig.PanelShapeCapsule.BottomRadius.ToolTip">Bottom radius in meters.</translation>
+	<translation name="Rig.PanelShapeCapsule.BottomAxisScaling">Bottom Axis Scaling:</translation>
+	<translation name="Rig.PanelShapeCapsule.BottomAxisScaling.ToolTip">Axis scaling factors for the bottom of the capsule.</translation>
+	<translation name="Rig.PanelShapeCapsule.TopAxisScaling">Top Axis Scaling:</translation>
+	<translation name="Rig.PanelShapeCapsule.TopAxisScaling.ToolTip">Axis scaling factors for the top of the capsule.</translation>
 	
 	<!-- Shape Panel - Cylinder -->
 	<translation name="Rig.PanelShapeCylinder.GroupBox.CylinderParameters">Cylinder Parameters:</translation>
@@ -317,6 +331,10 @@
 	<translation name="Rig.PanelShapeCylinder.TopRadius.ToolTip">Top radius in meters.</translation>
 	<translation name="Rig.PanelShapeCylinder.BottomRadius">Bottom Radius:</translation>
 	<translation name="Rig.PanelShapeCylinder.BottomRadius.ToolTip">Bottom radius in meters.</translation>
+	<translation name="Rig.PanelShapeCylinder.BottomAxisScaling">Bottom Axis Scaling:</translation>
+	<translation name="Rig.PanelShapeCylinder.BottomAxisScaling.ToolTip">Axis scaling factors for the bottom of the cylinder.</translation>
+	<translation name="Rig.PanelShapeCylinder.TopAxisScaling">Top Axis Scaling:</translation>
+	<translation name="Rig.PanelShapeCylinder.TopAxisScaling.ToolTip">Axis scaling factors for the top of the cylinder.</translation>
 	
 	<!-- Shape Panel - Hull -->
 	<translation name="Rig.PanelShapeHull.GroupBox.HullParameters">Hull Parameters:</translation>
@@ -429,6 +447,8 @@
 	<translation name="Rig.Undo.BoneToggleIkLockedX">Toggle Bone IK Locked X</translation>
 	<translation name="Rig.Undo.BoneToggleIkLockedY">Toggle Bone IK Locked Y</translation>
 	<translation name="Rig.Undo.BoneToggleIkLockedZ">Toggle Bone IK Locked Z</translation>
+	<translation name="Rig.Undo.BoneGenerateCollisionShapes">Generate Bone Collision Shapes</translation>
+	<translation name="Rig.Undo.RigGenerateCollisionShapes">Generate Rig Collision Shapes</translation>
 	<translation name="Rig.Undo.ConstraintAddBone">Add Bone Constraint</translation>
 	<translation name="Rig.Undo.ConstraintAddRig">Add Rig Constraint</translation>
 	<translation name="Rig.Undo.ConstraintRemove">Remove Constraints</translation>
@@ -454,15 +474,21 @@
 	<translation name="Rig.Undo.ShapeRotate">Rotate Shape</translation>
 	<translation name="Rig.Undo.ShapesRotate">Rotate Shapes</translation>
 	<translation name="Rig.Undo.ShapeBoxSetHalfExtends">Set Box Shape HalfExtends</translation>
+	<translation name="Rig.Undo.ShapeBoxSetTapering">Set Box Shape Tapering</translation>
 	<translation name="Rig.Undo.ShapeCapsuleSetHalfHeight">Set Capsule Shape Half Height</translation>
 	<translation name="Rig.Undo.ShapeCapsuleSetTopRadius">Set Capsule Shape Top Radius</translation>
 	<translation name="Rig.Undo.ShapeCapsuleSetBottomRadius">Set Capsule Shape Bottom Radius</translation>
+	<translation name="Rig.Undo.ShapeCapsuleSetTopAxisScaling">Set Capsule Shape Top Axis Scaling</translation>
+	<translation name="Rig.Undo.ShapeCapsuleSetBottomAxisScaling">Set Capsule Shape Bottom Axis Scaling</translation>
 	<translation name="Rig.Undo.ShapeCylinderSetHalfHeight">Set Cylinder Shape Half Height</translation>
 	<translation name="Rig.Undo.ShapeCylinderSetTopRadius">Set Cylinder Shape Top Radius</translation>
 	<translation name="Rig.Undo.ShapeCylinderSetBottomRadius">Set Cylinder Shape Bottom Radius</translation>
+	<translation name="Rig.Undo.ShapeCylinderSetTopAxisScaling">Set Cylinder Shape Top Axis Scaling</translation>
+	<translation name="Rig.Undo.ShapeCylinderSetBottomAxisScaling">Set Cylinder Shape Bottom Axis Scaling</translation>
 	<translation name="Rig.Undo.ShapeSetPosition">Set Shape Position</translation>
 	<translation name="Rig.Undo.ShapeSetRotation">Set Shape Rotation</translation>
 	<translation name="Rig.Undo.ShapeSphereSetRadius">Set Sphere Shape Radius</translation>
+	<translation name="Rig.Undo.ShapeSphereSetAxisScaling">Set Sphere Shape Axis Scaling</translation>
 	<translation name="Rig.Undo.ShapeHullAddPoint">Shape hull add point</translation>
 	<translation name="Rig.Undo.ShapeHullRemovePoint">Shape hull remove point</translation>
 	<translation name="Rig.Undo.ShapeHullSetPoint">Shape hull set point</translation>

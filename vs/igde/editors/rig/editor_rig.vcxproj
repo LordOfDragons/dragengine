@@ -329,6 +329,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reSelectionShapes.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rigeditor.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneCopyParams.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneGenerateCollisionShapes.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneImportFromFile.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneMassFromVolume.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneMirror.cpp" />
@@ -343,6 +344,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoMove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoRotate.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoScale.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reURigGenerateCollisionShapes.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUAddShape.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUMoveShape.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reURemoveShape.cpp" />
@@ -381,14 +383,20 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\hull\reUShapeHullRemovePoint.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\hull\reUShapeHullSetPoint.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeBoxHalfExtends.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeBoxTapering.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleBottomAxisScaling.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleBottomRadius.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleHalfHeight.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleTopAxisScaling.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleTopRadius.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderBottomAxisScaling.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderBottomRadius.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderHalfHeight.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderTopAxisScaling.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderTopRadius.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeOrientation.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapePosition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeSphereAxisScaling.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeSphereRadius.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUShapeSetProperty.cpp" />
   </ItemGroup>
@@ -453,6 +461,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reSelectionShapes.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rigeditor.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneCopyParams.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneGenerateCollisionShapes.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneImportFromFile.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneMassFromVolume.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneMirror.h" />
@@ -467,6 +476,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoMove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoRotate.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoScale.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reURigGenerateCollisionShapes.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUAddShape.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUMoveShape.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reURemoveShape.h" />
@@ -505,14 +515,20 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\hull\reUShapeHullRemovePoint.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\hull\reUShapeHullSetPoint.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeBoxHalfExtends.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeBoxTapering.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleBottomAxisScaling.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleBottomRadius.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleHalfHeight.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleTopAxisScaling.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleTopRadius.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderBottomAxisScaling.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderBottomRadius.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderHalfHeight.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderTopAxisScaling.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderTopRadius.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeOrientation.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapePosition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeSphereAxisScaling.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeSphereRadius.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUShapeSetProperty.h" />
   </ItemGroup>

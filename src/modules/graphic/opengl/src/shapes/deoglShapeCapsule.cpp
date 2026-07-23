@@ -62,30 +62,36 @@ deoglShapeCapsule::~deoglShapeCapsule(){
 // Management
 ///////////////
 
-void deoglShapeCapsule::CalcMatrices(decMatrix &matrix1, decMatrix &matrix2, const decVector &position,
-const decQuaternion &orientation, float halfHeight, float topRadius, float bottomRadius){
+void deoglShapeCapsule::CalcMatrices(decMatrix &matrix1, decMatrix &matrix2,
+const decVector &position, const decQuaternion &orientation,
+float halfHeight, float topRadius, float bottomRadius,
+const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling){
 	// capsules have a specific property in that their cap half spheres have to be more or less than
 	// a half sphere depending on the difference between the top and the bottom radius. to simulate
 	// this the vertices on the respective half spheres have to be spread or squeezed to achieve
 	// this effect. this can though not be achieved just like that since matrices apply the same
 	// rotation to all transformed points. this effect would require an additional parameter of some
 	// sort. so for the time being this effect is simply ignored
-	const decMatrix baseMatrix = decMatrix::CreateFromQuaternion(orientation) * decMatrix::CreateTranslation(position);
+	const decMatrix baseMatrix(decMatrix::CreateWorld(position, orientation));
 	
-	matrix1 = decMatrix::CreateScale(topRadius, topRadius, topRadius)
-		* decMatrix::CreateTranslation( 0.0f, halfHeight, 0.0f )
-		* baseMatrix;
+	matrix1 = 
+		decMatrix::CreateScale(
+			topRadius * topAxisScaling.x, topRadius, topRadius * topAxisScaling.y).
+		QuickMultiply(decMatrix::CreateTranslation(0.0f, halfHeight, 0.0f)).
+		QuickMultiply(baseMatrix);
 	
-	matrix2 = decMatrix::CreateScale(bottomRadius, bottomRadius, bottomRadius)
-		* decMatrix::CreateTranslation( 0.0f, -halfHeight, 0.0f )
-		* baseMatrix;
+	matrix2 =
+		decMatrix::CreateScale(
+			bottomRadius * bottomAxisScaling.x, bottomRadius, bottomRadius * bottomAxisScaling.y).
+		QuickMultiply(decMatrix::CreateTranslation(0.0f, -halfHeight, 0.0f)).
+		QuickMultiply(baseMatrix);
 }
 
 void deoglShapeCapsule::AddVBOLines(sVBOData *data){
 	const float stepAngleSegment = PI * 2.0f / (float)(SEGMENT_COUNT);
 	const float stepAngleRing = PI / (float)(RING_COUNT + 1);
 	const int splitRing = (RING_COUNT + 1) / 2;
-	float radius, angle, height, x, z;
+	float radius, angle, height;
 	int i, j, base;
 	bool selector;
 	
@@ -115,8 +121,8 @@ void deoglShapeCapsule::AddVBOLines(sVBOData *data){
 	
 	for(i=0; i<SEGMENT_COUNT; i++){
 		angle = stepAngleSegment * (float)i;
-		x = sinf(angle);
-		z = cosf(angle);
+		float x = sinf(angle);
+		float z = cosf(angle);
 		
 		for(j=0; j<RING_COUNT+2; j++){
 			if(j < splitRing + 1){

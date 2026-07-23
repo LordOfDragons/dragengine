@@ -35,6 +35,8 @@
 #include "../../../undosys/properties/shape/reUSetShapeCylinderHalfHeight.h"
 #include "../../../undosys/properties/shape/reUSetShapeCylinderTopRadius.h"
 #include "../../../undosys/properties/shape/reUSetShapeCylinderBottomRadius.h"
+#include "../../../undosys/properties/shape/reUSetShapeCylinderBottomAxisScaling.h"
+#include "../../../undosys/properties/shape/reUSetShapeCylinderTopAxisScaling.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -44,6 +46,8 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>
 
@@ -134,6 +138,46 @@ public:
 	}
 };
 
+class cEditBottomAxisScaling : public igdeEditVector2Listener{
+	reWPPanelShapeCylinder &pPanel;
+public:
+	using Ref = deTObjectReference<cEditBottomAxisScaling>;
+	cEditBottomAxisScaling(reWPPanelShapeCylinder &panel) : pPanel(panel){}
+	
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
+		auto rig = pPanel.GetRig();
+		auto cylinder = (reRigShapeCylinder*)pPanel.GetShape();
+		if(!rig || !cylinder || editVector2->GetVector2().IsEqualTo(cylinder->GetBottomAxisScaling())){
+			return;
+		}
+		
+		auto undo = reUSetShapeCylinderBottomAxisScaling::Ref::New(cylinder, editVector2->GetVector2());
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
+		}
+	}
+};
+
+class cEditTopAxisScaling : public igdeEditVector2Listener{
+	reWPPanelShapeCylinder &pPanel;
+public:
+	using Ref = deTObjectReference<cEditTopAxisScaling>;
+	cEditTopAxisScaling(reWPPanelShapeCylinder &panel) : pPanel(panel){}
+	
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
+		auto rig = pPanel.GetRig();
+		auto cylinder = (reRigShapeCylinder*)pPanel.GetShape();
+		if(!rig || !cylinder || editVector2->GetVector2().IsEqualTo(cylinder->GetTopAxisScaling())){
+			return;
+		}
+		
+		auto undo = reUSetShapeCylinderTopAxisScaling::Ref::New(cylinder, editVector2->GetVector2());
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
+		}
+	}
+};
+
 }
 
 
@@ -157,18 +201,18 @@ reWPPanelShape(wpShapes, reRigShape::estCylinder)
 	
 	helper.EditVector(groupBox, "@Rig.PanelShapeCylinder.Position", "@Rig.PanelShapeCylinder.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	
 	helper.EditVector(groupBox, "@Rig.PanelShapeCylinder.Rotation", "@Rig.PanelShapeCylinder.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
-	
 	helper.EditString(groupBox, "@Rig.PanelShapeCylinder.HalfHeight", "@Rig.PanelShapeCylinder.HalfHeight.ToolTip",
 		pEditHalfHeight, cTextHalfHeight::Ref::New(*this));
-	
 	helper.EditString(groupBox, "@Rig.PanelShapeCylinder.TopRadius", "@Rig.PanelShapeCylinder.TopRadius.ToolTip",
 		pEditTopRadius, cTextTopRadius::Ref::New(*this));
-	
 	helper.EditString(groupBox, "@Rig.PanelShapeCylinder.BottomRadius", "@Rig.PanelShapeCylinder.BottomRadius.ToolTip",
 		pEditBottomRadius, cTextBottomRadius::Ref::New(*this));
+	helper.EditVector2(groupBox, "@Rig.PanelShapeCylinder.TopAxisScaling", "@Rig.PanelShapeCylinder.TopAxisScaling.ToolTip",
+		pEditTopAxisScaling, cEditTopAxisScaling::Ref::New(*this));
+	helper.EditVector2(groupBox, "@Rig.PanelShapeCylinder.BottomAxisScaling", "@Rig.PanelShapeCylinder.BottomAxisScaling.ToolTip",
+		pEditBottomAxisScaling, cEditBottomAxisScaling::Ref::New(*this));
 }
 
 reWPPanelShapeCylinder::~reWPPanelShapeCylinder(){
@@ -190,6 +234,8 @@ void reWPPanelShapeCylinder::UpdateShape(){
 		pEditHalfHeight->SetFloat(cylinder->GetHalfHeight());
 		pEditTopRadius->SetFloat(cylinder->GetTopRadius());
 		pEditBottomRadius->SetFloat(cylinder->GetBottomRadius());
+		pEditBottomAxisScaling->SetVector2(cylinder->GetBottomAxisScaling());
+		pEditTopAxisScaling->SetVector2(cylinder->GetTopAxisScaling());
 		
 	}else{
 		pEditPosition->SetVector(decVector());
@@ -197,5 +243,7 @@ void reWPPanelShapeCylinder::UpdateShape(){
 		pEditHalfHeight->ClearText();
 		pEditTopRadius->ClearText();
 		pEditBottomRadius->ClearText();
+		pEditBottomAxisScaling->SetVector2(decVector2());
+		pEditTopAxisScaling->SetVector2(decVector2());
 	}
 }

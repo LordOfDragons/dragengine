@@ -22,14 +22,19 @@
  * SOFTWARE.
  */
 
-// includes
 #include "deBasePhysicsModel.h"
+
 
 // Class deBasePhysicsModel
 /////////////////////////////
 
-deBasePhysicsModel::deBasePhysicsModel(){
-}
+deBasePhysicsModel::deBasePhysicsModel() = default;
+deBasePhysicsModel::~deBasePhysicsModel() = default;
 
-deBasePhysicsModel::~deBasePhysicsModel(){
+
+// Management
+///////////////
+
+deRig::Ref deBasePhysicsModel::GenerateCollisionShapes(){
+	return {};
 }

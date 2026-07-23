@@ -2393,9 +2393,9 @@ void debpColliderComponent::pUpdateBones(){
 	
 	if(modelCollision){
 		if(model && model->GetCanDeform() && rig){
-			model->PrepareBoneAutoGenShapes();
+			model->PrepareBoneShapes();
 			
-			if(model->GetBoneAutoGenShapes().IsNotEmpty()){
+			if(model->GetBoneShapes().IsNotEmpty()){
 				pTestMode = etmBoneShape;
 				
 			}else if(shapeCount > 0){
@@ -2424,13 +2424,13 @@ void debpColliderComponent::pUpdateBones(){
 	// if model collision is requested with analytic bone shapes create bone physics bodies
 	}else if(modelCollision && pTestMode == etmBoneShape){
 		// reorder auto gen shapes since we need them in rig bone order not model bone order
-		debpModel::AutoGenShapePtrList agshapes(boneCount);
+		debpModel::ShapeListPtrList bonesShapes(boneCount);
 		rig->GetBones().VisitIndexed([&](int i, const deRigBone &bone){
 			const int index = model->GetModel().IndexOfBoneNamed(bone.GetName());
-			agshapes.Add(index != -1 ? model->GetBoneAutoGenShapes()[index] : nullptr);
+			bonesShapes.Add(index != -1 ? model->GetBoneShapes()[index].Pointer() : nullptr);
 		});
 		
-		pBones = new debpColliderBones(*this, &pColliderComponent, agshapes);
+		pBones = new debpColliderBones(*this, &pColliderComponent, bonesShapes);
 		
 	// if there are no bones with shapes but we have a component then this is a simple one.
 	// this can be either a rig with only rig shapes or no rig at all

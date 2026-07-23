@@ -43,6 +43,8 @@ private:
 	float pTopRadius;
 	float pBottomRadius;
 	float pHalfHeight;
+	decVector2 pTopAxisScaling;
+	decVector2 pBottomAxisScaling;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -71,6 +73,18 @@ public:
 	void SetBottomRadius(float radius);
 	/** Sets both radi to the same value. */
 	void SetRadius(float radius);
+	
+	/** Top axis scaling. */
+	inline const decVector2 &GetTopAxisScaling() const{ return pTopAxisScaling; }
+	
+	/** Set top axis scaling. */
+	void SetTopAxisScaling(const decVector2 &axisScaling);
+	
+	/** Bottom axis scaling. */
+	inline const decVector2 &GetBottomAxisScaling() const{ return pBottomAxisScaling; }
+	
+	/** Set bottom axis scaling. */
+	void SetBottomAxisScaling(const decVector2 &axisScaling);
 	
 	/** Creates a copy of this shape. */
 	reRigShape::Ref Duplicate() const override;

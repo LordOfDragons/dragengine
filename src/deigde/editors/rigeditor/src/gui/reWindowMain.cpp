@@ -47,10 +47,12 @@
 #include "../rig/push/reSelectionPushes.h"
 #include "../rig/constraint/reRigConstraint.h"
 #include "../rig/constraint/reSelectionConstraints.h"
+#include "../undosys/gui/reURigGenerateCollisionShapes.h"
 #include "../undosys/gui/bone/reUBoneMirror.h"
 #include "../undosys/gui/bone/reUBoneScaleMass.h"
 #include "../undosys/gui/bone/reUBoneImportFromFile.h"
 #include "../undosys/gui/bone/reUBoneMassFromVolume.h"
+#include "../undosys/gui/bone/reUBoneGenerateCollisionShapes.h"
 #include "../undosys/gui/shape/reUAddShape.h"
 #include "../undosys/gui/shape/reURemoveShape.h"
 #include "../undosys/gui/push/reUAddPush.h"
@@ -90,7 +92,9 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/rig/deRig.h>
-
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/systems/modules/physics/deBasePhysicsModel.h>
 
 
 // Class reWindowMain
@@ -986,6 +990,25 @@ public:
 	}
 };
 
+class cActionRigGenerateCollisionShapes : public cActionBase{
+public:
+	typedef deTObjectReference<cActionRigGenerateCollisionShapes> Ref;
+	cActionRigGenerateCollisionShapes(reWindowMain &window) : cActionBase(window,
+		"@Rig.Action.RigGenerateCollisionShapes", nullptr,
+		"@Rig.Action.RigGenerateCollisionShapes.Description", deInputEvent::ekcG){}
+	
+	igdeUndo::Ref OnAction(reRig *rig) override{
+		if(!rig->GetEngineComponent() || !rig->GetEngineComponent()->GetModel()){
+			return {};
+		}
+		const auto generatedRig = rig->GetEngineComponent()->GetModel()->GetPeerPhysics()->GenerateCollisionShapes();
+		if(!generatedRig){
+			return {};
+		}
+		
+		return reURigGenerateCollisionShapes::Ref::New(rig, generatedRig);
+	}
+};
 
 
 class cActionBoneAdd : public cActionBase{
@@ -1211,6 +1234,26 @@ public:
 	}
 };
 
+class cActionBoneGenerateCollisionShapes : public cActionBaseBone{
+public:
+	typedef deTObjectReference<cActionBoneGenerateCollisionShapes> Ref;
+	cActionBoneGenerateCollisionShapes(reWindowMain &window) : cActionBaseBone(window,
+		"@Rig.Action.BoneGenerateCollisionShapes", nullptr,
+		"@Rig.Action.BoneGenerateCollisionShapes.Description", deInputEvent::ekcG){}
+	
+	igdeUndo::Ref OnActionBone(reRig *rig, reRigBone *bone) override{
+		const auto &selection = rig->GetSelectionBones()->GetBones();
+		if(selection.IsEmpty() || !rig->GetEngineComponent() || !rig->GetEngineComponent()->GetModel()){
+			return {};
+		}
+		const auto generatedRig = rig->GetEngineComponent()->GetModel()->GetPeerPhysics()->GenerateCollisionShapes();
+		if(!generatedRig){
+			return {};
+		}
+		
+		return reUBoneGenerateCollisionShapes::Ref::New(rig, selection, generatedRig);
+	}
+};
 
 
 class cActionViewShapeXRay : public cActionBase{
@@ -1339,6 +1382,7 @@ void reWindowMain::pCreateActions(){
 	pActionRigShowShapes = cActionRigShowShapes::Ref::New(*this);
 	pActionRigShowConstraints = cActionRigShowConstraints::Ref::New(*this);
 	pActionRigShowPushes = cActionRigShowPushes::Ref::New(*this);
+	pActionRigGenerateCollisionShapes = cActionRigGenerateCollisionShapes::Ref::New(*this);
 	
 	pActionBoneAdd = cActionBoneAdd::Ref::New(*this);
 	pActionBoneAddSphere = cActionBoneAddSphere::Ref::New(*this);
@@ -1353,6 +1397,7 @@ void reWindowMain::pCreateActions(){
 	pActionBoneImport = cActionBoneImport::Ref::New(*this);
 	pActionBoneScaleMass = cActionBoneScaleMass::Ref::New(*this);
 	pActionBoneMassFromVolume = cActionBoneMassFromVolume::Ref::New(*this);
+	pActionBoneGenerateCollisionShapes = cActionBoneGenerateCollisionShapes::Ref::New(*this);
 	
 	pActionViewShapeXRay = cActionViewShapeXRay::Ref::New(*this);
 	
@@ -1398,6 +1443,7 @@ void reWindowMain::pCreateActions(){
 	AddUpdateAction(pActionRigShowShapes);
 	AddUpdateAction(pActionRigShowConstraints);
 	AddUpdateAction(pActionRigShowPushes);
+	AddUpdateAction(pActionRigGenerateCollisionShapes);
 	
 	AddUpdateAction(pActionBoneAdd);
 	AddUpdateAction(pActionBoneAddSphere);
@@ -1412,6 +1458,7 @@ void reWindowMain::pCreateActions(){
 	AddUpdateAction(pActionBoneImport);
 	AddUpdateAction(pActionBoneScaleMass);
 	AddUpdateAction(pActionBoneMassFromVolume);
+	AddUpdateAction(pActionBoneGenerateCollisionShapes);
 	
 	AddUpdateAction(pActionViewShapeXRay);
 	
@@ -1552,6 +1599,7 @@ void reWindowMain::pCreateMenuRig(igdeMenuCascade &menu){
 	helper.MenuCommand(menu, pActionRigAddBox);
 	helper.MenuCommand(menu, pActionRigAddCylinder);
 	helper.MenuCommand(menu, pActionRigAddCapsule);
+	helper.MenuCommand(menu, pActionRigGenerateCollisionShapes);
 	
 	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, pActionRigAddConstraint);
@@ -1581,6 +1629,7 @@ void reWindowMain::pCreateMenuBone(igdeMenuCascade &menu){
 	helper.MenuCommand(menu, pActionBoneAddBox);
 	helper.MenuCommand(menu, pActionBoneAddCylinder);
 	helper.MenuCommand(menu, pActionBoneAddCapsule);
+	helper.MenuCommand(menu, pActionBoneGenerateCollisionShapes);
 	
 	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, pActionBoneAddConstraint);

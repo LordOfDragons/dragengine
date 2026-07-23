@@ -189,9 +189,6 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\commands\debpCommandExecuter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBoneAutoGenShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -205,6 +202,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModelOctree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpShapeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\dePhysicsBullet.cpp">
@@ -957,6 +957,30 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\poly34.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\src\VHACD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\src\vhacdICHull.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\src\vhacdManifoldMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\src\vhacdMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\src\vhacdVolume.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\test\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\test\src\main_vhacd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\test\src\oclHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\TaskScheduler\btTaskScheduler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1160,9 +1184,6 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\commands\debpCommandExecuter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBoneAutoGenShape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1176,6 +1197,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModelOctree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpShapeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\dePhysicsBullet.h">
@@ -1389,6 +1413,39 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfig.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigBuiltin.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigEigen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDErrorMessages.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDMath.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\MultiBodyTree.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDEigenInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDLinearMathInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDMatVec.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3BroadphaseCallback.h">
@@ -2321,6 +2378,42 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\poly34.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdCircularList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdICHull.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdManifoldMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdMutex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdSArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdVHACD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdVector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdVolume.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\public\VHACD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\test\inc\oclHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\TaskScheduler\btThreadSupportInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2427,39 +2520,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\btBulletDynamicsCommon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfig.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigBuiltin.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigEigen.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDErrorMessages.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDMath.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\MultiBodyTree.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDEigenInterface.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDLinearMathInterface.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDMatVec.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -195,6 +195,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -212,6 +213,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -231,6 +233,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -250,6 +253,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -269,6 +273,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -289,7 +294,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -313,7 +318,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -339,7 +344,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -368,7 +373,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -394,7 +399,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc;$(SolutionDir)..\src\modules\physics\bullet\Bullet\Extras\VHACD\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -467,12 +472,12 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderRig.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderVolume.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\commands\debpCommandExecuter.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBoneAutoGenShape.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModelScaled.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpComponent.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModelOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpShapeGenerator.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\dePhysicsBullet.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpBulletCompoundShape.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpBulletShape.cpp" />
@@ -723,6 +728,14 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftRigidDynamicsWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftSoftCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\poly34.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\src\VHACD.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\src\vhacdICHull.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\src\vhacdManifoldMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\src\vhacdMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\src\vhacdVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\test\src\main.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\test\src\main_vhacd.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\test\src\oclHelper.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\TaskScheduler\btTaskScheduler.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\TaskScheduler\btThreadSupportPosix.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\TaskScheduler\btThreadSupportWin32.cpp" />
@@ -792,12 +805,12 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderRig.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderVolume.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\commands\debpCommandExecuter.h" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBoneAutoGenShape.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModel.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModelScaled.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpComponent.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModel.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModelOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpShapeGenerator.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\dePhysicsBullet.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpBulletCompoundShape.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpBulletShape.h" />
@@ -869,6 +882,17 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpOverlapFilterCallback.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpSharedCollisionFiltering.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfig.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigBuiltin.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigEigen.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDErrorMessages.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDMath.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\MultiBodyTree.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDEigenInterface.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDLinearMathInterface.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDMatVec.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.hpp" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3BroadphaseCallback.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3DynamicBvh.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3DynamicBvhBroadphase.h" />
@@ -1179,6 +1203,18 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftSoftCollisionAlgorithm.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSparseSDF.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\poly34.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdCircularList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdICHull.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdManifoldMesh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdMesh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdMutex.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdSArray.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdTimer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdVHACD.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdVector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\inc\vhacdVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\public\VHACD.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Extras\VHACD\test\inc\oclHelper.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\TaskScheduler\btThreadSupportInterface.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btAabbUtil2.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btAlignedAllocator.h" />
@@ -1215,16 +1251,5 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btVector3.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\btBulletCollisionCommon.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\btBulletDynamicsCommon.h" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfig.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigBuiltin.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigEigen.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDErrorMessages.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDMath.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\MultiBodyTree.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDEigenInterface.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDLinearMathInterface.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDMatVec.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.hpp" />
   </ItemGroup>
 </Project>

@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "deClassModel.h"
+#include "deClassRig.h"
 #include "../dedsHelpers.h"
 #include "../resources/deClassResourceListener.h"
 #include "../math/deClassVector.h"
@@ -45,6 +46,7 @@
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelVertex.h>
 #include <dragengine/resources/model/deModelVertexPositionSet.h>
+#include <dragengine/systems/modules/physics/deBasePhysicsModel.h>
 
 #include <libdscript/exceptions.h>
 
@@ -72,7 +74,7 @@ void deClassModel::nfLoad::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.model = mdlMgr.LoadModel(rt->GetValue(0)->GetString(), "/");
 }
 
-// static public func void loadAsynchron( String filename, ResourceListener listener )
+// static func void loadAsynchron( String filename, ResourceListener listener )
 deClassModel::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : dsFunction(init.clsMdl,
 "loadAsynchron", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsStr); // filename
@@ -105,7 +107,7 @@ void deClassModel::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 
 
 
-// public func string GetFilename()
+// func string GetFilename()
 deClassModel::nfGetFilename::nfGetFilename(const sInitData &init) : dsFunction(init.clsMdl,
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
@@ -117,7 +119,7 @@ void deClassModel::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
 
 
 
-// public func int getLodCount()
+// func int getLodCount()
 deClassModel::nfGetLodCount::nfGetLodCount(const sInitData &init) : dsFunction(init.clsMdl,
 "getLodCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
@@ -127,7 +129,7 @@ void deClassModel::nfGetLodCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushInt(model.GetLODCount());
 }
 
-// public func int getTextureCount()
+// func int getTextureCount()
 deClassModel::nfGetTextureCount::nfGetTextureCount(const sInitData &init) : dsFunction(init.clsMdl,
 "getTextureCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
@@ -137,7 +139,7 @@ void deClassModel::nfGetTextureCount::RunFunction(dsRunTime *rt, dsValue *myself
 	rt->PushInt(model.GetTextureCount());
 }
 
-// public func String getTextureNameAt( int texture )
+// func String getTextureNameAt( int texture )
 deClassModel::nfGetTextureNameAt::nfGetTextureNameAt(const sInitData &init) : dsFunction(init.clsMdl,
 "getTextureNameAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 	p_AddParameter(init.clsInt); // texture
@@ -149,7 +151,7 @@ void deClassModel::nfGetTextureNameAt::RunFunction(dsRunTime *rt, dsValue *mysel
 	rt->PushString(model.GetTextureAt(texture)->GetName());
 }
 
-// public func int getFaceCount( int lod )
+// func int getFaceCount( int lod )
 deClassModel::nfGetFaceCount::nfGetFaceCount(const sInitData &init) : dsFunction(init.clsMdl,
 "getFaceCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsInt); // lod
@@ -161,7 +163,7 @@ void deClassModel::nfGetFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushInt(model.GetLODAt(lod)->GetFaces().GetCount());
 }
 
-// public func int getVertexCount( int lod )
+// func int getVertexCount( int lod )
 deClassModel::nfGetVertexCount::nfGetVertexCount(const sInitData &init) : dsFunction(init.clsMdl,
 "getVertexCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsInt); // lod
@@ -173,7 +175,7 @@ void deClassModel::nfGetVertexCount::RunFunction(dsRunTime *rt, dsValue *myself)
 	rt->PushInt(model.GetLODAt(lod)->GetVertices().GetCount());
 }
 
-// public func Vector getMinimumExtend()
+// func Vector getMinimumExtend()
 deClassModel::nfGetMinimumExtend::nfGetMinimumExtend(const sInitData &init) :
 dsFunction(init.clsMdl, "getMinimumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
@@ -193,7 +195,7 @@ void deClassModel::nfGetMinimumExtend::RunFunction(dsRunTime *rt, dsValue *mysel
 	ds.GetClassVector()->PushVector(rt, extend);
 }
 
-// public func Vector getMaximumExtend()
+// func Vector getMaximumExtend()
 deClassModel::nfGetMaximumExtend::nfGetMaximumExtend(const sInitData &init) :
 dsFunction(init.clsMdl, "getMaximumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
@@ -215,7 +217,7 @@ void deClassModel::nfGetMaximumExtend::RunFunction(dsRunTime *rt, dsValue *mysel
 
 
 
-// public func int getVertexPositionSetCount()
+// func int getVertexPositionSetCount()
 deClassModel::nfGetVertexPositionSetCount::nfGetVertexPositionSetCount(const sInitData &init) :
 dsFunction(init.clsMdl, "getVertexPositionSetCount",
 DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
@@ -226,7 +228,7 @@ void deClassModel::nfGetVertexPositionSetCount::RunFunction(dsRunTime *rt, dsVal
 	rt->PushInt(model.GetVertexPositionSetCount());
 }
 
-// public func int indexOfVertexPositionSetNamed(String name)
+// func int indexOfVertexPositionSetNamed(String name)
 deClassModel::nfIndexOfVertexPositionSetNamed::nfIndexOfVertexPositionSetNamed(const sInitData &init) :
 dsFunction(init.clsMdl, "indexOfVertexPositionSetNamed",
 DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
@@ -238,7 +240,7 @@ void deClassModel::nfIndexOfVertexPositionSetNamed::RunFunction(dsRunTime *rt, d
 	rt->PushInt(model.IndexOfVertexPositionSetNamed(rt->GetValue(0)->GetString()));
 }
 
-// public func String vertexPositionSetGetNameAt(int index)
+// func String vertexPositionSetGetNameAt(int index)
 deClassModel::nfVertexPositionSetGetNameAt::nfVertexPositionSetGetNameAt(const sInitData &init) :
 dsFunction(init.clsMdl, "vertexPositionSetGetNameAt",
 DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
@@ -251,8 +253,28 @@ void deClassModel::nfVertexPositionSetGetNameAt::RunFunction(dsRunTime *rt, dsVa
 }
 
 
+// func Rig generateCollisionShapes()
+deClassModel::nfGenerateCollisionShapes::nfGenerateCollisionShapes(const sInitData &init) :
+dsFunction(init.clsMdl, "generateCollisionShapes", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
+}
 
-// public func int hashCode()
+void deClassModel::nfGenerateCollisionShapes::RunFunction(dsRunTime *rt, dsValue *myself){
+	const auto &model = dedsGetNativeData<sMdlNatDat>(p_GetNativeData(myself)).model;
+	const auto &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
+	
+	deRig::Ref rig;
+	
+	auto peer = model->GetPeerPhysics();
+	if(peer){
+		rig = peer->GenerateCollisionShapes();
+	}
+	
+	ds.GetClassRig()->PushRig(rt, rig);
+}
+
+
+// func int hashCode()
 deClassModel::nfHashCode::nfHashCode(const sInitData &init) :
 dsFunction(init.clsMdl, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
@@ -264,7 +286,7 @@ void deClassModel::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushInt((int)(intptr_t)nd.model);
 }
 
-// public func bool equals( Object obj )
+// func bool equals( Object obj )
 deClassModel::nfEquals::nfEquals(const sInitData &init) :
 dsFunction(init.clsMdl, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObj); // obj
@@ -327,6 +349,7 @@ void deClassModel::CreateClassMembers(dsEngine *engine){
 	init.clsObj = engine->GetClassObject();
 	init.clsVec = pDS->GetClassVector();
 	init.clsRN = pDS->GetClassResourceListener();
+	init.clsRig = pDS->GetClassRig();
 	
 	// add functions
 	AddFunction(new nfLoad(init));
@@ -346,6 +369,8 @@ void deClassModel::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetVertexPositionSetCount(init));
 	AddFunction(new nfIndexOfVertexPositionSetNamed(init));
 	AddFunction(new nfVertexPositionSetGetNameAt(init));
+	
+	AddFunction(new nfGenerateCollisionShapes(init));
 	
 	AddFunction(new nfEquals(init));
 	AddFunction(new nfHashCode(init));

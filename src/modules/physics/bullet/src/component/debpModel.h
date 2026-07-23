@@ -26,10 +26,10 @@
 #define _DEBPMODEL_H_
 
 #include "debpBulletShapeModel.h"
-#include "debpBoneAutoGenShape.h"
 
 #include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsModel.h>
 
 class deModel;
@@ -60,8 +60,8 @@ public:
 		int count;
 	};
 	
-	using AutoGenShapeList = decTUniqueList<debpBoneAutoGenShape>;
-	using AutoGenShapePtrList = decTList<const debpBoneAutoGenShape*>;
+	using ShapeListList = decTUniqueList<decShape::List>;
+	using ShapeListPtrList = decTList<const decShape::List*>;
 	
 	
 private:
@@ -82,8 +82,10 @@ private:
 	
 	debpBulletShapeModel::Ref pBulletShape;
 	
-	AutoGenShapeList pBoneAutoGenShapes;
-	bool pBoneAutoGenShapesPrepared = false;
+	deTUniqueReference<decShape::List> pModelShapes;
+	ShapeListList pBoneShapes;
+	bool pModelShapesGenerated = false;
+	bool pBoneShapesPrepared = false;
 	
 	
 	
@@ -165,11 +167,21 @@ public:
 	/** \brief Prepare shared bullet collision shape if not prepared. */
 	void PrepareShape();
 	
-	/** \brief Prepare auto-generated bone shapes for dynamic collision. */
-	void PrepareBoneAutoGenShapes();
 	
-	/** \brief Allows access to the list of auto-generated shapes for setting up bone physics bodies. */
-	inline const AutoGenShapeList &GetBoneAutoGenShapes() const{ return pBoneAutoGenShapes; }
+	/** \brief Prepare shapes for static collision. */
+	void PrepareModelShapes();
+	
+	/** \brief Static shapes or nullptr if not prepared. */
+	inline const deTUniqueReference<decShape::List> &GetModelShapes() const{ return pModelShapes; }
+	
+	/** \brief Prepare bone shapes for dynamic collision. */
+	void PrepareBoneShapes();
+	
+	/** \brief Bone shapes or empty if not prepared. */
+	inline const ShapeListList &GetBoneShapes() const{ return pBoneShapes; }
+	
+	/** \brief Generate collision shapes as a rig. */
+	deRig::Ref GenerateCollisionShapes() override;
 	/*@}*/
 	
 	

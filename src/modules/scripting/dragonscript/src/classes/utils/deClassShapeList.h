@@ -95,7 +95,9 @@ private:
 	DEF_NATFUNC(nfGetTypeAt);
 	DEF_NATFUNC(nfGetPositionAt);
 	DEF_NATFUNC(nfGetRadiusAt);
+	DEF_NATFUNC(nfGetAxisScalingAt);
 	DEF_NATFUNC(nfGetHalfExtendsAt);
+	DEF_NATFUNC(nfGetTaperingAt);
 	DEF_NATFUNC(nfGetOrientationAt);
 	DEF_NATFUNC(nfGetHalfHeightAt);
 	DEF_NATFUNC(nfGetTopRadiusAt);
@@ -106,6 +108,8 @@ private:
 	DEF_NATFUNC(nfGetPointAt);
 	
 	DEF_NATFUNC(nfAddSphere);
+	DEF_NATFUNC(nfAddSphere2);
+	DEF_NATFUNC(nfAddSphere3);
 	
 	DEF_NATFUNC(nfAddBox);
 	DEF_NATFUNC(nfAddBox2);

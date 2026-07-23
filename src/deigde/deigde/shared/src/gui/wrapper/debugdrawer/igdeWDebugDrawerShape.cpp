@@ -242,14 +242,19 @@ const decVector &position){
 	AddShape(decShapeSphere::Ref::New(radius, axisScaling, position));
 }
 
+void igdeWDebugDrawerShape::AddSphereShape(float radius, const decVector2 &axisScaling,
+const decVector &position, const decQuaternion &orientation){
+	AddShape(decShapeSphere::Ref::New(radius, axisScaling, position, orientation));
+}
+
 void igdeWDebugDrawerShape::AddBoxShape(const decVector &halfExtends, const decVector &position,
 const decQuaternion &orientation){
 	AddShape(decShapeBox::Ref::New(halfExtends, position, orientation));
 }
 
-void igdeWDebugDrawerShape::AddBoxShape(const decVector &halfExtends, const decVector2 &axiscaling,
+void igdeWDebugDrawerShape::AddBoxShape(const decVector &halfExtends, const decVector2 &tapering,
 const decVector &position, const decQuaternion &orientation){
-	AddShape(decShapeBox::Ref::New(halfExtends, axiscaling, position, orientation));
+	AddShape(decShapeBox::Ref::New(halfExtends, tapering, position, orientation));
 }
 
 void igdeWDebugDrawerShape::AddCylinderShape(float halfHeight, float topRadius, float bottomRadius,

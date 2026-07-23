@@ -199,6 +199,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneCopyParams.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneGenerateCollisionShapes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneImportFromFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -239,6 +242,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reURigGenerateCollisionShapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUAddShape.cpp">
@@ -355,19 +361,34 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeBoxHalfExtends.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeBoxTapering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleBottomAxisScaling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleBottomRadius.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleHalfHeight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleTopAxisScaling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleTopRadius.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderBottomAxisScaling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderBottomRadius.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderHalfHeight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderTopAxisScaling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderTopRadius.cpp">
@@ -377,6 +398,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapePosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeSphereAxisScaling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeSphereRadius.cpp">
@@ -567,6 +591,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneCopyParams.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneGenerateCollisionShapes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneImportFromFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -607,6 +634,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoScale.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reURigGenerateCollisionShapes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUAddShape.h">
@@ -723,19 +753,34 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeBoxHalfExtends.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeBoxTapering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleBottomAxisScaling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleBottomRadius.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleHalfHeight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleTopAxisScaling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleTopRadius.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderBottomAxisScaling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderBottomRadius.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderHalfHeight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderTopAxisScaling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderTopRadius.h">
@@ -745,6 +790,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapePosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeSphereAxisScaling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeSphereRadius.h">

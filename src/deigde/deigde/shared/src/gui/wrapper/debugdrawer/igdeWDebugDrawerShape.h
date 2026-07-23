@@ -155,12 +155,16 @@ public:
 	/** \brief Adds a sphere shape. */
 	void AddSphereShape(float radius, const decVector2 &axisScaling, const decVector &position);
 	
+	/** \brief Adds a sphere shape. */
+	void AddSphereShape(float radius, const decVector2 &axisScaling,
+		const decVector &position, const decQuaternion &orientation);
+	
 	/** \brief Adds a box shape using the given parameters. */
 	void AddBoxShape(const decVector &halfExtends, const decVector &position,
 		const decQuaternion &orientation);
 	
 	/** \brief Adds a box shape using the given parameters. */
-	void AddBoxShape(const decVector &halfExtends, const decVector2 &axiscaling,
+	void AddBoxShape(const decVector &halfExtends, const decVector2 &tapering,
 		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Adds a cylinder shape using the given parameters. */

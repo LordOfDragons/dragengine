@@ -245,12 +245,14 @@ void debpSweepCollisionTest::VisitShape(decShape&){
 
 void debpSweepCollisionTest::VisitShapeSphere(decShapeSphere &sphere){
 	const decVector2 &axisScaling = sphere.GetAxisScaling();
+	const decQuaternion &orientation = sphere.GetOrientation();
 	const decVector position(sphere.GetPosition().Multiply(pScale));
 	const float scaleRadius = (pScale.x + pScale.y + pScale.z) / 3.0f;
 	const float radius = sphere.GetRadius() * scaleRadius;
 	btTransform transform;
 	
-	// determine if the sphere is an ellipsoid. we can't handle this for the time being
+	// determine if the sphere is an ellipsoid. we can't handle this for the time being.
+	// requires using a compound shape with a scaled sphere shape. not sure if bullet supports this
 	const bool isEllipsoid = !axisScaling.IsEqualTo(decVector2(1.0f, 1.0f));
 	
 	if(isEllipsoid){
@@ -259,7 +261,8 @@ void debpSweepCollisionTest::VisitShapeSphere(decShapeSphere &sphere){
 	
 	// create the shape
 	transform.setOrigin(btVector3((btScalar)position.x, (btScalar)position.y, (btScalar)position.z));
-	transform.setRotation(btQuaternion((btScalar)0.0, (btScalar)0.0, (btScalar)0.0, (btScalar)1.0));
+	transform.setRotation(btQuaternion((btScalar)orientation.x, (btScalar)orientation.y,
+		(btScalar)orientation.z, (btScalar)orientation.w));
 	
 	pShapeList.Add(deTUniqueReference<cShape>::New(
 		deTUniqueReference<btSphereShape>::New(radius), transform));

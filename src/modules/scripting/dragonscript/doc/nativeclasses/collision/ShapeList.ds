@@ -95,11 +95,31 @@ class ShapeList
 	end
 	
 	/**
+	 * \brief Axis scaling of shape at index.
+	 * \version 1.34
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.sphere .
+	 */
+	func Vector2 getAxisScalingAt(int index)
+		return null
+	end
+	
+	/**
 	 * \brief Half extends of shape at index.
 	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
 	 * \throws EInvalidParam Shape is not of type ShapeType.box .
 	 */
 	func Vector getHalfExtendsAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Tapering of shape at index.
+	 * \version 1.34
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.box .
+	 */
+	func Vector2 getTaperingAt(int index)
 		return null
 	end
 	
@@ -174,6 +194,14 @@ class ShapeList
 	/*@{*/
 	/** \brief Add sphere shape. */
 	func void addSphere(Vector position, float radius)
+	end
+	
+	/** \brief Add ellipsoid shape. */
+	func void addSphere(Vector position, float radius, Vector2 axisScaling)
+	end
+	
+	/** \brief Add ellipsoid shape. */
+	func void addSphere(Vector position, float radius, Vector2 axisScaling, Quaternion orientation)
 	end
 	/*@}*/
 	

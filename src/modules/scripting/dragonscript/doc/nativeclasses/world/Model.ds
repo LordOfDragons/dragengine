@@ -132,6 +132,23 @@ fixed class Model
 	
 	
 	
+	/** \name Collision Shapes */
+	/*@{*/
+	/**
+	 * \brief Generate collision shapes as rig.
+	 * \version 1.34
+	 * 
+	 * Create rig containing collision shapes generated from the model bone weights.
+	 * 
+	 * \return Rig or \em null if generation is not supported or not possible.
+	 */
+	func Rig generateCollisionShapes()
+		return null
+	end
+	/*@}*/
+	
+	
+	
 	/**
 	 * \brief Model is equal to another object.
 	 * \details Implements Object.equals(Object).

@@ -67,6 +67,8 @@
 	<translation name="Rig.Action.RigShowConstraints.Description">Anzeige der Einschränkungen des gesamten Rigs</translation>
 	<translation name="Rig.Action.RigShowPushs">Rig-Stösse anzeigen</translation>
 	<translation name="Rig.Action.RigShowPushs.Description">Anzeigen der Stösse des gesamten Rigs</translation>
+	<translation name="Rig.Action.RigGenerateCollisionShapes">Kollisionsformen erzeugen</translation>
+	<translation name="Rig.Action.RigGenerateCollisionShapes.Description">Erzeugt Kollisionsformen für das Rig</translation>
 	
 	<!-- Window Main Actions - Bone -->
 	<translation name="Rig.Action.BoneAdd">Hinzufügen</translation>
@@ -97,6 +99,8 @@
 	<translation name="Rig.Action.BoneMassFromVolume.Description">Legt die Masse des Knochens anhand der Formvolumina fest.</translation>
 	<translation name="Rig.Action.BoneXRayShapes">Röntgenformen</translation>
 	<translation name="Rig.Action.BoneXRayShapes.Description">Legt fest, ob Formen durch die Geometrie hindurch sichtbar sind.</translation>
+	<translation name="Rig.Action.BoneGenerateCollisionShapes">Kollisionsformen erzeugen</translation>
+	<translation name="Rig.Action.BoneGenerateCollisionShapes.Description">Erzeugt Kollisionsformen für die ausgewählten Knochen</translation>
 	
 	<!-- Window Main Actions - View -->
 	<translation name="Rig.Action.ViewRunSimulation">Simulation starten</translation>
@@ -280,8 +284,12 @@
 	<translation name="Rig.PanelShapeSphere.GroupBox.SphereParameters">Kugel:</translation>
 	<translation name="Rig.PanelShapeSphere.Position">Position:</translation>
 	<translation name="Rig.PanelShapeSphere.Position.ToolTip">Position der Kugel relativ zum Knochen/Rig.</translation>
+	<translation name="Rig.PanelShapeSphere.Rotation">Drehung:</translation>
+	<translation name="Rig.PanelShapeSphere.Rotation.ToolTip">Drehung der Kugel relativ zum Knochen/Rig.</translation>
 	<translation name="Rig.PanelShapeSphere.Radius">Radius:</translation>
 	<translation name="Rig.PanelShapeSphere.Radius.ToolTip">Radius der Kugel in Metern.</translation>
+	<translation name="Rig.PanelShapeSphere.AxisScaling">Achsen-Skalierung:</translation>
+	<translation name="Rig.PanelShapeSphere.AxisScaling.ToolTip">Achsen-Skalierungsfaktoren für die Kugel, um sie in ein Ellipsoid umzuwandeln.</translation>
 	
 	<!-- Shape Panel - Box -->
 	<translation name="Rig.PanelShapeBox.GroupBox.BoxParameters">Kasten:</translation>
@@ -291,6 +299,8 @@
 	<translation name="Rig.PanelShapeBox.Rotation.ToolTip">Drehung des Kastens relativ zum Knochen/Rig.</translation>
 	<translation name="Rig.PanelShapeBox.HalfExtends">Halbe Länge:</translation>
 	<translation name="Rig.PanelShapeBox.HalfExtends.ToolTip">Die Hälfte der Länge des Kastens.</translation>
+	<translation name="Rig.PanelShapeBox.Tapering">Verjüngung:</translation>
+	<translation name="Rig.PanelShapeBox.Tapering.ToolTip">Verjüngung des Kastens als Skalierungsfaktoren für die X- und Y-Achsen.</translation>
 	
 	<!-- Shape Panel - Capsule -->
 	<translation name="Rig.PanelShapeCapsule.GroupBox.CapsuleParameters">Kapsel:</translation>
@@ -304,6 +314,10 @@
 	<translation name="Rig.PanelShapeCapsule.TopRadius.ToolTip">Oberer Radius in Metern.</translation>
 	<translation name="Rig.PanelShapeCapsule.BottomRadius">Radius Unten:</translation>
 	<translation name="Rig.PanelShapeCapsule.BottomRadius.ToolTip">Unterer Radius in Metern.</translation>
+	<translation name="Rig.PanelShapeCapsule.BottomAxisScaling">Achsen-Skalierung Unten:</translation>
+	<translation name="Rig.PanelShapeCapsule.BottomAxisScaling.ToolTip">Achsen-Skalierungsfaktoren für den unteren Teil der Kapsel.</translation>
+	<translation name="Rig.PanelShapeCapsule.TopAxisScaling">Achsen-Skalierung Oben:</translation>
+	<translation name="Rig.PanelShapeCapsule.TopAxisScaling.ToolTip">Achsen-Skalierungsfaktoren für den oberen Teil der Kapsel.</translation>
 	
 	<!-- Shape Panel - Cylinder -->
 	<translation name="Rig.PanelShapeCylinder.GroupBox.CylinderParameters">Zylinder:</translation>
@@ -317,6 +331,10 @@
 	<translation name="Rig.PanelShapeCylinder.TopRadius.ToolTip">Oberer Radius in Metern.</translation>
 	<translation name="Rig.PanelShapeCylinder.BottomRadius">Radius Unten:</translation>
 	<translation name="Rig.PanelShapeCylinder.BottomRadius.ToolTip">Unterer Radius in Metern.</translation>
+	<translation name="Rig.PanelShapeCylinder.BottomAxisScaling">Achsen-Skalierung Unten:</translation>
+	<translation name="Rig.PanelShapeCylinder.BottomAxisScaling.ToolTip">Achsen-Skalierungsfaktoren für den unteren Teil des Zylinders.</translation>
+	<translation name="Rig.PanelShapeCylinder.TopAxisScaling">Achsen-Skalierung Oben:</translation>
+	<translation name="Rig.PanelShapeCylinder.TopAxisScaling.ToolTip">Achsen-Skalierungsfaktoren für den oberen Teil des Zylinders.</translation>
 	
 	<!-- Shape Panel - Hull -->
 	<translation name="Rig.PanelShapeHull.GroupBox.HullParameters">Hülle:</translation>
@@ -429,6 +447,8 @@
 	<translation name="Rig.Undo.BoneToggleIkLockedX">Knochen: IK-Sperre für X umschalten</translation>
 	<translation name="Rig.Undo.BoneToggleIkLockedY">Knochen: IK-Sperre für Y umschalten</translation>
 	<translation name="Rig.Undo.BoneToggleIkLockedZ">Knochen: IK-Sperre für Z umschalten</translation>
+	<translation name="Rig.Undo.BoneGenerateCollisionShapes">Knochen-Kollisionsformen generieren</translation>
+	<translation name="Rig.Undo.RigGenerateCollisionShapes">Rig-Kollisionsformen generieren</translation>
 	<translation name="Rig.Undo.ConstraintAddBone">Knochenbeschränkung hinzufügen</translation>
 	<translation name="Rig.Undo.ConstraintAddRig">Rig-Beschränkung hinzufügen</translation>
 	<translation name="Rig.Undo.ConstraintRemove">Beschränkung entfernen</translation>
@@ -454,15 +474,21 @@
 	<translation name="Rig.Undo.ShapeRotate">Form drehen</translation>
 	<translation name="Rig.Undo.ShapesRotate">Formen drehen</translation>
 	<translation name="Rig.Undo.ShapeBoxSetHalfExtends">Kastenform: Halbausdehnungen festlegen</translation>
+	<translation name="Rig.Undo.ShapeBoxSetTapering">Kastenform: Verjüngung festlegen</translation>
 	<translation name="Rig.Undo.ShapeCapsuleSetHalfHeight">Kapselform: Halbe Höhe festlegen</translation>
 	<translation name="Rig.Undo.ShapeCapsuleSetTopRadius">Kapselform: Oberen Radius festlegen</translation>
 	<translation name="Rig.Undo.ShapeCapsuleSetBottomRadius">Kapselform: Unteren Radius festlegen</translation>
+	<translation name="Rig.Undo.ShapeCapsuleSetTopAxisScaling">Kapselform: Oberen Achsenmaßstab festlegen</translation>
+	<translation name="Rig.Undo.ShapeCapsuleSetBottomAxisScaling">Kapselform: Unteren Achsenmaßstab festlegen</translation>
 	<translation name="Rig.Undo.ShapeCylinderSetHalfHeight">Zylinderform: Halbe Höhe festlegen</translation>
 	<translation name="Rig.Undo.ShapeCylinderSetTopRadius">Zylinderform: Oberen Radius festlegen</translation>
 	<translation name="Rig.Undo.ShapeCylinderSetBottomRadius">Zylinderform: Unteren Radius festlegen</translation>
+	<translation name="Rig.Undo.ShapeCylinderSetTopAxisScaling">Zylinderform: Oberen Achsenmaßstab festlegen</translation>
+	<translation name="Rig.Undo.ShapeCylinderSetBottomAxisScaling">Zylinderform: Unteren Achsenmaßstab festlegen</translation>
 	<translation name="Rig.Undo.ShapeSetPosition">Form: Position festlegen</translation>
 	<translation name="Rig.Undo.ShapeSetRotation">Form: Drehung festlegen</translation>
 	<translation name="Rig.Undo.ShapeSphereSetRadius">Kugelform: Radius festlegen</translation>
+	<translation name="Rig.Undo.ShapeSphereSetAxisScaling">Kugelform: Achsenmaßstab festlegen</translation>
 	<translation name="Rig.Undo.ShapeHullAddPoint">Hüllenform: Punkt hinzufügen</translation>
 	<translation name="Rig.Undo.ShapeHullRemovePoint">Hüllenform: Punkt entfernen</translation>
 	<translation name="Rig.Undo.ShapeHullSetPoint">Hüllenform: Punkt festlegen</translation>

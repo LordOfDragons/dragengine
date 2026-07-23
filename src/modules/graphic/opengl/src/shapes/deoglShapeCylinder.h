@@ -48,7 +48,8 @@ public:
 	/*@{*/
 	/** Calculate matrices for cylinder parameters. */
 	void CalcMatrices(decMatrix &matrix1, decMatrix &matrix2, const decVector &position,
-	const decQuaternion &orientation, float halfHeight, float topRadius, float bottomRadius);
+		const decQuaternion &orientation, float halfHeight, float topRadius, float bottomRadius,
+		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling);
 	
 	/** Add lines data. */
 	void AddVBOLines(sVBOData *data) override;

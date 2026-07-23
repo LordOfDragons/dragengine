@@ -81,7 +81,9 @@ void reCreateRigShape::VisitShapeSphere(decShapeSphere &sphere){
 	
 	const reRigShapeSphere::Ref rigSphere(reRigShapeSphere::Ref::New(pEngine));
 	rigSphere->SetPosition(sphere.GetPosition());
+	rigSphere->SetOrientation(sphere.GetOrientation().GetEulerAngles() * RAD2DEG);
 	rigSphere->SetRadius(sphere.GetRadius());
+	rigSphere->SetAxisScaling(sphere.GetAxisScaling());
 	
 	pRigShape = rigSphere;
 }
@@ -91,8 +93,9 @@ void reCreateRigShape::VisitShapeBox(decShapeBox &box){
 	
 	const reRigShapeBox::Ref rigBox(reRigShapeBox::Ref::New(pEngine));
 	rigBox->SetPosition(box.GetPosition());
-	rigBox->SetOrientation(decMatrix::CreateFromQuaternion(box.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	rigBox->SetOrientation(box.GetOrientation().GetEulerAngles() * RAD2DEG);
 	rigBox->SetHalfExtends(box.GetHalfExtends());
+	rigBox->SetTapering(box.GetTapering());
 	
 	pRigShape = rigBox;
 }
@@ -102,10 +105,12 @@ void reCreateRigShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	
 	const reRigShapeCylinder::Ref rigCylinder(reRigShapeCylinder::Ref::New(pEngine));
 	rigCylinder->SetPosition(cylinder.GetPosition());
-	rigCylinder->SetOrientation(decMatrix::CreateFromQuaternion(cylinder.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	rigCylinder->SetOrientation(cylinder.GetOrientation().GetEulerAngles() * RAD2DEG);
 	rigCylinder->SetHalfHeight(cylinder.GetHalfHeight());
 	rigCylinder->SetTopRadius(cylinder.GetTopRadius());
 	rigCylinder->SetBottomRadius(cylinder.GetBottomRadius());
+	rigCylinder->SetTopAxisScaling(cylinder.GetTopAxisScaling());
+	rigCylinder->SetBottomAxisScaling(cylinder.GetBottomAxisScaling());
 	
 	pRigShape = rigCylinder;
 }
@@ -115,10 +120,12 @@ void reCreateRigShape::VisitShapeCapsule(decShapeCapsule &capsule){
 	
 	const reRigShapeCapsule::Ref rigCapsule(reRigShapeCapsule::Ref::New(pEngine));
 	rigCapsule->SetPosition(capsule.GetPosition());
-	rigCapsule->SetOrientation(decMatrix::CreateFromQuaternion(capsule.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	rigCapsule->SetOrientation(capsule.GetOrientation().GetEulerAngles() * RAD2DEG);
 	rigCapsule->SetHalfHeight(capsule.GetHalfHeight());
 	rigCapsule->SetTopRadius(capsule.GetTopRadius());
 	rigCapsule->SetBottomRadius(capsule.GetBottomRadius());
+	rigCapsule->SetTopAxisScaling(capsule.GetTopAxisScaling());
+	rigCapsule->SetBottomAxisScaling(capsule.GetBottomAxisScaling());
 	
 	pRigShape = rigCapsule;
 }
@@ -128,7 +135,7 @@ void reCreateRigShape::VisitShapeHull(decShapeHull &hull){
 	
 	const reRigShapeHull::Ref rigHull(reRigShapeHull::Ref::New(pEngine));
 	rigHull->SetPosition(hull.GetPosition());
-	rigHull->SetOrientation(decMatrix::CreateFromQuaternion(hull.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	rigHull->SetOrientation(hull.GetOrientation().GetEulerAngles() * RAD2DEG);
 	hull.GetPoints().Visit([&](const decVector &point){
 		rigHull->AddPoint(point);
 	});

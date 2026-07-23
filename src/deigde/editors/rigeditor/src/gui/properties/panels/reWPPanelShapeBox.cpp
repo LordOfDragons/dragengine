@@ -33,6 +33,7 @@
 #include "../../../rig/reRig.h"
 #include "../../../rig/shape/reRigShapeBox.h"
 #include "../../../undosys/properties/shape/reUSetShapeBoxHalfExtends.h"
+#include "../../../undosys/properties/shape/reUSetShapeBoxTapering.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -41,6 +42,8 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>
 
@@ -78,6 +81,26 @@ public:
 	}
 };
 
+class cEditTapering : public igdeEditVector2Listener{
+	reWPPanelShapeBox &pPanel;
+public:
+	using Ref = deTObjectReference<cEditTapering>;
+	cEditTapering(reWPPanelShapeBox &panel) : pPanel(panel){}
+	
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
+		auto rig = pPanel.GetRig();
+		auto box = dynamic_cast<reRigShapeBox*>(pPanel.GetShape());
+		if(!rig || !box || editVector2->GetVector2().IsEqualTo(box->GetTapering())){
+			return;
+		}
+		
+		auto undo = reUSetShapeBoxTapering::Ref::New(box, editVector2->GetVector2());
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
+		}
+	}
+};
+
 }
 
 
@@ -101,12 +124,12 @@ reWPPanelShape(wpShapes, reRigShape::estBox)
 	
 	helper.EditVector(groupBox, "@Rig.PanelShapeBox.Position", "@Rig.PanelShapeBox.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	
 	helper.EditVector(groupBox, "@Rig.PanelShapeBox.Rotation", "@Rig.PanelShapeBox.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
-	
 	helper.EditVector(groupBox, "@Rig.PanelShapeBox.HalfExtends", "@Rig.PanelShapeBox.HalfExtends.ToolTip",
 		pEditHalfExtends, cEditHalfExtends::Ref::New(*this));
+	helper.EditVector2(groupBox, "@Rig.PanelShapeBox.Tapering", "@Rig.PanelShapeBox.Tapering.ToolTip",
+		pEditTapering, cEditTapering::Ref::New(*this));
 }
 
 reWPPanelShapeBox::~reWPPanelShapeBox(){
@@ -126,15 +149,18 @@ void reWPPanelShapeBox::UpdateShape(){
 		pEditPosition->SetVector(box->GetPosition());
 		pEditRotation->SetVector(box->GetOrientation());
 		pEditHalfExtends->SetVector(box->GetHalfExtends());
+		pEditTapering->SetVector2(box->GetTapering());
 		
 	}else{
 		pEditPosition->SetVector(decVector());
 		pEditRotation->SetVector(decVector());
 		pEditHalfExtends->SetVector(decVector());
+		pEditTapering->SetVector2(decVector2());
 	}
 	
 	const bool enabled = box != nullptr;
 	pEditPosition->SetEnabled(enabled);
 	pEditRotation->SetEnabled(enabled);
 	pEditHalfExtends->SetEnabled(enabled);
+	pEditTapering->SetEnabled(enabled);
 }

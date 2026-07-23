@@ -29,6 +29,7 @@
 
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 
 class reRigShapeSphere;
 
@@ -43,7 +44,9 @@ public:
 	
 private:
 	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
 	igdeTextField::Ref pEditRadius;
+	igdeEditVector2::Ref pEditAxisScaling;
 	
 	
 	

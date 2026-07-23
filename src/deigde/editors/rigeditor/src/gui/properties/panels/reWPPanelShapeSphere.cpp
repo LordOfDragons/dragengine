@@ -33,6 +33,7 @@
 #include "../../../rig/reRig.h"
 #include "../../../rig/shape/reRigShapeSphere.h"
 #include "../../../undosys/properties/shape/reUSetShapeSphereRadius.h"
+#include "../../../undosys/properties/shape/reUSetShapeSphereAxisScaling.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -41,6 +42,8 @@
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>
 
@@ -78,6 +81,26 @@ public:
 	}
 };
 
+class cEditAxisScaling : public igdeEditVector2Listener{
+	reWPPanelShapeSphere &pPanel;
+public:
+	using Ref = deTObjectReference<cEditAxisScaling>;
+	cEditAxisScaling(reWPPanelShapeSphere &panel) : pPanel(panel){}
+	
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
+		auto rig = pPanel.GetRig();
+		auto sphere = (reRigShapeSphere*)pPanel.GetShape();
+		if(!rig || !sphere || editVector2->GetVector2().IsEqualTo(sphere->GetAxisScaling())){
+			return;
+		}
+		
+		auto undo = reUSetShapeSphereAxisScaling::Ref::New(sphere, editVector2->GetVector2());
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
+		}
+	}
+};
+
 }
 
 
@@ -98,12 +121,14 @@ reWPPanelShape(wpShapes, reRigShape::estSphere)
 	
 	
 	helper.GroupBox(*this, groupBox, "@Rig.PanelShapeSphere.GroupBox.SphereParameters");
-	
 	helper.EditVector(groupBox, "@Rig.PanelShapeSphere.Position", "@Rig.PanelShapeSphere.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	
+	helper.EditVector(groupBox, "@Rig.PanelShapeSphere.Rotation", "@Rig.PanelShapeSphere.Rotation.ToolTip",
+		pEditRotation, cEditRotation::Ref::New(*this));
 	helper.EditString(groupBox, "@Rig.PanelShapeSphere.Radius", "@Rig.PanelShapeSphere.Radius.ToolTip",
 		pEditRadius, cTextRadius::Ref::New(*this));
+	helper.EditVector2(groupBox, "@Rig.PanelShapeSphere.AxisScaling", "@Rig.PanelShapeSphere.AxisScaling.ToolTip",
+		pEditAxisScaling, cEditAxisScaling::Ref::New(*this));
 }
 
 reWPPanelShapeSphere::~reWPPanelShapeSphere(){
@@ -121,14 +146,20 @@ void reWPPanelShapeSphere::UpdateShape(){
 	
 	if(sphere){
 		pEditPosition->SetVector(sphere->GetPosition());
+		pEditRotation->SetVector(sphere->GetOrientation());
 		pEditRadius->SetFloat(sphere->GetRadius());
+		pEditAxisScaling->SetVector2(sphere->GetAxisScaling());
 		
 	}else{
 		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
 		pEditRadius->ClearText();
+		pEditAxisScaling->SetVector2(decVector2(1.0f, 1.0f));
 	}
 	
 	const bool enabled = sphere != nullptr;
 	pEditPosition->SetEnabled(enabled);
+	pEditRotation->SetEnabled(enabled);
 	pEditRadius->SetEnabled(enabled);
+	pEditAxisScaling->SetEnabled(enabled);
 }

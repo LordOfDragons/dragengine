@@ -26,6 +26,7 @@
 #define _DEBASEPHYSICSMODEL_H_
 
 #include "../../../dragengine_export.h"
+#include "../../../resources/rig/deRig.h"
 
 
 /**
@@ -40,6 +41,19 @@ public:
 	
 	/** \brief Clean up peer. */
 	virtual ~deBasePhysicsModel();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Generate collision shapes as a rig if supported by the physics module.
+	 * 
+	 * Creates a rig containing collision shapes generated from the model. Default implementation
+	 * returns null reference.
+	 */
+	virtual deRig::Ref GenerateCollisionShapes();
 	/*@}*/
 };
 

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "reRigShapeCylinder.h"
 #include "../reRig.h"
 #include "../bone/reRigBone.h"
@@ -48,15 +44,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigShapeCylinder::reRigShapeCylinder(deEngine *engine) : reRigShape(engine, estCylinder){
-	pTopRadius = 0.5f;
-	pBottomRadius = 0.5f;
-	pHalfHeight = 0.5f;
+reRigShapeCylinder::reRigShapeCylinder(deEngine *engine) :
+reRigShape(engine, estCylinder),
+pTopRadius(0.5f),
+pBottomRadius(0.5f),
+pHalfHeight(0.5f),
+pTopAxisScaling(1.0f, 1.0f),
+pBottomAxisScaling(1.0f, 1.0f){
 }
 
-reRigShapeCylinder::~reRigShapeCylinder(){
-}
-
+reRigShapeCylinder::~reRigShapeCylinder() = default;
 
 
 // Management
@@ -83,13 +80,33 @@ void reRigShapeCylinder::SetBottomRadius(float bottomRadius){
 	}
 }
 
+void reRigShapeCylinder::SetTopAxisScaling(const decVector2 &axisScaling){
+	if(axisScaling.IsEqualTo(pTopAxisScaling)){
+		return;
+	}
+	
+	pTopAxisScaling = axisScaling;
+	NotifyShapeChanged();
+}
+
+void reRigShapeCylinder::SetBottomAxisScaling(const decVector2 &axisScaling){
+	if(axisScaling.IsEqualTo(pBottomAxisScaling)){
+		return;
+	}
+
+	pBottomAxisScaling = axisScaling;
+	NotifyShapeChanged();
+}
+
 reRigShape::Ref reRigShapeCylinder::Duplicate() const{
 	const reRigShapeCylinder::Ref shape(reRigShapeCylinder::Ref::New(GetEngine()));
 	shape->SetPosition(GetPosition());
 	shape->SetOrientation(GetOrientation());
-	shape->SetHalfHeight(GetHalfHeight());
-	shape->SetTopRadius(GetTopRadius());
-	shape->SetBottomRadius(GetBottomRadius());
+	shape->SetHalfHeight(pHalfHeight);
+	shape->SetTopRadius(pTopRadius);
+	shape->SetBottomRadius(pBottomRadius);
+	shape->SetTopAxisScaling(pTopAxisScaling);
+	shape->SetBottomAxisScaling(pBottomAxisScaling);
 	return shape;
 }
 
@@ -102,5 +119,6 @@ void reRigShapeCylinder::Scale(float scale){
 
 decShape::Ref reRigShapeCylinder::CreateShape(){
 	return decShapeCylinder::Ref::New(pHalfHeight, pTopRadius, pBottomRadius,
-		GetPosition(), decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
+		pTopAxisScaling, pBottomAxisScaling, GetPosition(),
+		decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
 }

@@ -80,7 +80,7 @@ public:
 	
 	/** Create bones list. */
 	debpColliderBones(debpCollider &collider, deColliderComponent *engColliderComponent,
-		const debpModel::AutoGenShapePtrList &autoGenShapes);
+		const debpModel::ShapeListPtrList &bonesShapes);
 	
 	/** Create bones list. */
 	debpColliderBones(debpCollider &collider, deColliderRig *engColliderRig);
@@ -257,7 +257,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pCreateBones(const debpModel::AutoGenShapePtrList *autoGenShapes);
+	void pCreateBones(const debpModel::ShapeListPtrList *bonesShapes);
 	void pSetBoneShape(debpColliderBone &colBone, const deRigBone &rigBone,
 		const decShape::List &shapes, const decVector &scale);
 	void pCreateConstraints(const deRig &rig, const decVector &scale);

@@ -29,6 +29,7 @@
 
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 
 class reRigShapeCylinder;
 
@@ -47,6 +48,8 @@ private:
 	igdeTextField::Ref pEditHalfHeight;
 	igdeTextField::Ref pEditTopRadius;
 	igdeTextField::Ref pEditBottomRadius;
+	igdeEditVector2::Ref pEditBottomAxisScaling;
+	igdeEditVector2::Ref pEditTopAxisScaling;
 	
 	
 	

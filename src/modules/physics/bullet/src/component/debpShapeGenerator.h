@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEBPBONEAUTOGENSHAPE_H_
-#define _DEBPBONEAUTOGENSHAPE_H_
+#ifndef _DEBPSHAPEGENERATOR_H_
+#define _DEBPSHAPEGENERATOR_H_
 
 #include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTList.h>
@@ -33,14 +33,12 @@
 
 
 /**
- * Automatically generated shape for bone.
- * 
- * Bone collision volume using analytic shapes fitted by bone influenced vertices.
+ * Generate analytic collision volumes fitted to vertex clusters.
  */
-class debpBoneAutoGenShape{
+class debpShapeGenerator{
 public:
 	/** Type holding strong reference. */
-	using Ref = deTUniqueReference<debpBoneAutoGenShape>;
+	using Ref = deTUniqueReference<debpShapeGenerator>;
 	
 	/** Weight. */
 	struct Weight{
@@ -49,83 +47,99 @@ public:
 	};
 	using WeightList = decTList<Weight>;
 	
-	/** Analytic shape types. */
+	/** Shape list reference. */
+	using ShapeListRef = deTUniqueReference<decShape::List>;
+	
+	
+private:
 	enum class ShapeType{
 		none,
 		sphere,
+		ellipsoid,
 		box,
 		capsule,
-		taperedCapsule,
 		taperedBox,
+		taperedCapsule,
 		convexHull
 	};
 	
-	/** For internal use only. */
 	struct ShapeParams{
 		ShapeType type = ShapeType::none;
 		decVector center;
 		decQuaternion orientation, conjOrientation;
 		
 		float radius = 0.0f; // sphere
+		decVector2 axisScaling{1.0f, 1.0f}; // tapered sphere, tapered box
 		decVector halfExtents; // box
-		decVector topHalfExtents; // tapered box
 		float halfHeight = 0.0f; // capsule
 		float radiusTop = 0.0f; // tapered capsule
 		float radiusBottom = 0.0f; // tapered capsule
+		decVector2 topAxisScaling{1.0f, 1.0f}; // tapered capsule
+		decVector2 bottomAxisScaling{1.0f, 1.0f}; // tapered capsule
 		decTList<decVector> hullVertices; // convex hull
 	};
 	
+	class FittingParams{
+	public:
+		const WeightList &weights;
+		float totalWeight;
+		decVector center;
+		decMatrix covariance;
+		decMatrix eigenvectors;
+		decVector eigenvalues;
+		decVector majorAxis, minorAxis;
+		decQuaternion orientation, conjOrientation;
+		decMatrix matrix, invMatrix;
+		decTList<decVector> vertices;
+		decVector minExtents, maxExtents, extends, halfExtents;
+		
+		explicit FittingParams(const WeightList &weights);
+	};
 	
-private:
-	static float pMinRadius, pMinHalfExtents, pPreferBoxVolRatio, pUseTaperedRatio;
 	
-	ShapeParams pParams;
-	decShape::List pShapes;
+	float pMinRadius;
+	float pMinHalfExtents;
+	float pMinHalfHeight;
+	float pPreferBoxVolRatio;
+	float pUseTaperedRatio;
+	float pUseAxisScalingRatio;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create automatically generated shape. */
-	debpBoneAutoGenShape(const ShapeParams &params);
+	debpShapeGenerator();
 	/*@}*/
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
-	/** Shape parameters. */
-	inline const ShapeParams &GetParams() const{ return pParams; }
-	
-	/** Shape type. */
-	inline ShapeType GetShapeType() const{ return pParams.type; }
-	
-	/** Shapes. */
-	inline const decShape::List &GetShapes() const{ return pShapes; }
-	
-	
 	/**
 	 * Create best matching analytic shape from bone vertices. Positions are in bone space.
-	 * Returns null if bone has too few vertices.
+	 * Returns nullptr if bone has too few vertices.
 	 */
-	static Ref Create(const WeightList &weights);
+	ShapeListRef Create(const WeightList &weights);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateShapes();
+	bool pPrepareFittingParams(FittingParams &fparams);
 	
-	static ShapeParams pFitSphere(const WeightList &weights);
-	static ShapeParams pFitCapsule(const WeightList &weights);
-	static ShapeParams pFitTaperedCapsule(const WeightList &weights);
-	static ShapeParams pFitBox(const WeightList &weights);
-	static ShapeParams pFitConvexHull(const WeightList &weights);
+	ShapeParams pFitSphere(const FittingParams &fparams);
+	ShapeParams pFitCapsule(const FittingParams &fparams);
+	ShapeParams pFitTaperedCapsule(const FittingParams &fparams);
+	ShapeParams pFitBox(const FittingParams &fparams);
+	ShapeParams pFitConvexHull(const FittingParams &fparams);
 	
-	static ShapeType pSelectBestShape(const WeightList &weights, const ShapeParams &capsule,
+	ShapeType pSelectBestShape(const FittingParams &fparams, const ShapeParams &capsule,
 		const ShapeParams &box, const ShapeParams &convexHull);
 	
-	static float pComputeFitError(const ShapeParams &params, const WeightList &weights);
+	float pComputeFitError(const ShapeParams &params, const FittingParams &fparams);
+	
+	decMatrix pCalcCovariance(const WeightList &weights, const decVector &center, float totalWeight);
+	decMatrix pCalcEigenvectors(const decMatrix &matrix, decVector &eigenvalues);
 };
 
 #endif

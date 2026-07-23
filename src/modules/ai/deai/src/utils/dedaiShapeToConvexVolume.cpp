@@ -131,9 +131,8 @@ void dedaiShapeToConvexVolume::VisitShapeSphere(decShapeSphere &sphere){
 	const decVector2 &axisScaling = sphere.GetAxisScaling();
 	const float stepAngleSegment = PI * 2.0f / (float)(pSphereSegmentCount);
 	const float stepAngleRing = PI / (float)(pSphereRingCount + 1);
-	const decMatrix matrix = decMatrix::CreateScale(radius * axisScaling.x, radius, radius * axisScaling.y)
-		* decMatrix::CreateWorld( sphere.GetPosition(), sphere.GetOrientation() );
-	float angle, radiusRing, heightRing;
+	const decMatrix matrix(decMatrix::CreateWorld(sphere.GetPosition(), sphere.GetOrientation(),
+		decVector(radius * axisScaling.x, radius, radius * axisScaling.y)));
 	int i, j, base;
 	
 	decConvexVolume::Ref volume = CreateVolume();
@@ -142,9 +141,9 @@ void dedaiShapeToConvexVolume::VisitShapeSphere(decShapeSphere &sphere){
 	volume->AddVertex(matrix.Transform(0.0f, 1.0f, 0.0f)); // top pole
 	
 	for(i=0; i<pSphereRingCount; i++){
-		angle = stepAngleRing * (float)(i + 1); // first ring is actually at i=1
-		radiusRing = sinf(angle);
-		heightRing = cosf(angle);
+		float angle = stepAngleRing * (float)(i + 1); // first ring is actually at i=1
+		float radiusRing = sinf(angle);
+		float heightRing = cosf(angle);
 		
 		for(j=0; j<pSphereSegmentCount; j++){
 			angle = stepAngleSegment * (float)j;

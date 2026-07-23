@@ -52,8 +52,8 @@
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
+#include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -141,6 +141,18 @@ public:
 	cShapeValueVector(meWPSObjectShape &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector*){
+		pPanel.OnShapeChanged();
+	}
+};
+
+class cShapeValueVector2 : public igdeEditVector2Listener{
+	meWPSObjectShape &pPanel;
+	
+public:
+	typedef deTObjectReference<cShapeValueVector2> Ref;
+	cShapeValueVector2(meWPSObjectShape &panel) : pPanel(panel){}
+	
+	void OnVector2Changed(igdeEditVector2*) override{
 		pPanel.OnShapeChanged();
 	}
 };
@@ -448,38 +460,42 @@ void meWPSObjectShape::UpdateShapeNone(){
 void meWPSObjectShape::UpdateShapeSphere(const decShapeSphere &sphere){
 	const igdeUIHelper::EnableBoolGuard guard(pPreventUpdate);
 	pEditSpherePosition->SetVector(sphere.GetPosition());
+	pEditSphereRotation->SetVector(sphere.GetOrientation().GetEulerAngles() * RAD2DEG);
 	pEditSphereRadius->SetFloat(sphere.GetRadius());
+	pEditSphereAxisScaling->SetVector2(sphere.GetAxisScaling());
 	pSwitcherShapeType->SetCurrent(espSphere);
 }
 
 void meWPSObjectShape::UpdateShapeBox(const decShapeBox &box){
 	const igdeUIHelper::EnableBoolGuard guard(pPreventUpdate);
 	pEditBoxPosition->SetVector(box.GetPosition());
-	pEditBoxRotation->SetVector(decMatrix::CreateFromQuaternion(
-		box.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	pEditBoxRotation->SetVector(box.GetOrientation().GetEulerAngles() * RAD2DEG);
 	pEditBoxExtends->SetVector(box.GetHalfExtends());
+	pEditBoxTapering->SetVector2(box.GetTapering());
 	pSwitcherShapeType->SetCurrent(espBox);
 }
 
 void meWPSObjectShape::UpdateShapeCylinder(const decShapeCylinder &cylinder){
 	const igdeUIHelper::EnableBoolGuard guard(pPreventUpdate);
 	pEditCylinderPosition->SetVector(cylinder.GetPosition());
-	pEditCylinderRotation->SetVector(decMatrix::CreateFromQuaternion(
-		cylinder.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	pEditCylinderRotation->SetVector(cylinder.GetOrientation().GetEulerAngles() * RAD2DEG);
 	pEditCylinderHeight->SetFloat(cylinder.GetHalfHeight());
 	pEditCylinderRadiusTop->SetFloat(cylinder.GetTopRadius());
 	pEditCylinderRadiusBottom->SetFloat(cylinder.GetBottomRadius());
+	pEditCylinderTopAxisScaling->SetVector2(cylinder.GetTopAxisScaling());
+	pEditCylinderBottomAxisScaling->SetVector2(cylinder.GetBottomAxisScaling());
 	pSwitcherShapeType->SetCurrent(espCylinder);
 }
 
 void meWPSObjectShape::UpdateShapeCapsule(const decShapeCapsule &capsule){
 	const igdeUIHelper::EnableBoolGuard guard(pPreventUpdate);
 	pEditCapsulePosition->SetVector(capsule.GetPosition());
-	pEditCapsuleRotation->SetVector(decMatrix::CreateFromQuaternion(
-			capsule.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	pEditCapsuleRotation->SetVector(capsule.GetOrientation().GetEulerAngles() * RAD2DEG);
 	pEditCapsuleHeight->SetFloat(capsule.GetHalfHeight());
 	pEditCapsuleRadiusTop->SetFloat(capsule.GetTopRadius());
 	pEditCapsuleRadiusBottom->SetFloat(capsule.GetBottomRadius());
+	pEditCapsuleTopAxisScaling->SetVector2(capsule.GetTopAxisScaling());
+	pEditCapsuleBottomAxisScaling->SetVector2(capsule.GetBottomAxisScaling());
 	pSwitcherShapeType->SetCurrent(espCapsule);
 }
 
@@ -506,21 +522,23 @@ void meWPSObjectShape::OnShapeChanged(){
 		return;
 	}
 	
-	igdeUndo::Ref undo;
 	decShape::Ref shape;
 	
 	switch(activePanel){
 	case espSphere:
 		shape = decShapeSphere::Ref::New(
 			decMath::max(pEditSphereRadius->GetFloat(), 0.001f),
-			pEditSpherePosition->GetVector());
+			pEditSphereAxisScaling->GetVector2().Largest({0.001f, 0.001f}),
+			pEditSpherePosition->GetVector(),
+			decQuaternion::CreateFromEuler(pEditSphereRotation->GetVector() * DEG2RAD));
 		break;
 		
 	case espBox:
 		shape = decShapeBox::Ref::New(
-			decVector(0.001f, 0.001f, 0.001f).Largest(pEditBoxExtends->GetVector()),
+			pEditBoxExtends->GetVector().Largest({0.001f, 0.001f, 0.001f}),
+			pEditBoxTapering->GetVector2().Largest({0.0f, 0.0f}),
 			pEditBoxPosition->GetVector(),
-			decMatrix::CreateRotation(pEditBoxRotation->GetVector() * DEG2RAD).ToQuaternion());
+			decQuaternion::CreateFromEuler(pEditBoxRotation->GetVector() * DEG2RAD));
 		break;
 		
 	case espCylinder:
@@ -528,8 +546,10 @@ void meWPSObjectShape::OnShapeChanged(){
 			decMath::max(pEditCylinderHeight->GetFloat(), 0.001f),
 			decMath::max(pEditCylinderRadiusTop->GetFloat(), 0.001f),
 			decMath::max(pEditCylinderRadiusBottom->GetFloat(), 0.001f),
+			pEditCylinderTopAxisScaling->GetVector2().Largest({0.0f, 0.0f}),
+			pEditCylinderBottomAxisScaling->GetVector2().Largest({0.0f, 0.0f}),
 			pEditCylinderPosition->GetVector(),
-			decMatrix::CreateRotation(pEditCylinderRotation->GetVector() * DEG2RAD).ToQuaternion());
+			decQuaternion::CreateFromEuler(pEditCylinderRotation->GetVector() * DEG2RAD));
 		break;
 		
 	case espCapsule:
@@ -537,17 +557,18 @@ void meWPSObjectShape::OnShapeChanged(){
 			decMath::max(pEditCapsuleHeight->GetFloat(), 0.001f),
 			decMath::max(pEditCapsuleRadiusTop->GetFloat(), 0.001f),
 			decMath::max(pEditCapsuleRadiusBottom->GetFloat(), 0.001f),
+			pEditCapsuleTopAxisScaling->GetVector2().Largest({0.0f, 0.0f}),
+			pEditCapsuleBottomAxisScaling->GetVector2().Largest({0.0f, 0.0f}),
 			pEditCapsulePosition->GetVector(),
-			decMatrix::CreateRotation(pEditCapsuleRotation->GetVector() * DEG2RAD).ToQuaternion());
+			decQuaternion::CreateFromEuler(pEditCapsuleRotation->GetVector() * DEG2RAD));
 		break;
 		
 	default:
 		return;
 	}
 	
-	undo = meUObjectShapeReplace::Ref::New(object, activeProperty, shapeIndex, *shape);
-	
-	pWorld->GetUndoSystem()->Add(undo);
+	pWorld->GetUndoSystem()->Add(meUObjectShapeReplace::Ref::New(
+		object, activeProperty, shapeIndex, shape));
 }
 
 
@@ -570,34 +591,44 @@ void meWPSObjectShape::pCreateShapePanels(){
 	
 	// sphere
 	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Sphere");
-	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionSphere", "@World.WPSObjectShape.PositionOfSphere.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSObjectShape.Position", "@World.WPSObjectShape.PositionOfSphere.ToolTip",
 		pEditSpherePosition, cShapeValueVector::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WVNodePropCount.Radius", "@World.WPSObjectShape.RadiusOfSphere.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSObjectShape.Rotation", "@World.WPSObjectShape.RotationOfSphere.ToolTip",
+		pEditSphereRotation, cShapeValueVector::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.Radius", "@World.WPSObjectShape.RadiusOfSphere.ToolTip",
 		pEditSphereRadius, cShapeValueFloat::Ref::New(*this));
+	helper.EditVector2(groupBox, "@World.WPSObjectShape.AxisScaling", "@World.WPSObjectShape.AxisScalingOfSphere.ToolTip",
+		pEditSphereAxisScaling, cShapeValueVector2::Ref::New(*this));
 	
 	
 	// box
 	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Box");
-	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionBox", "@World.WPSObjectShape.PositionOfBox.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSObjectShape.Position", "@World.WPSObjectShape.PositionOfBox.ToolTip",
 		pEditBoxPosition, cShapeValueVector::Ref::New(*this));
-	helper.EditVector(groupBox, "@World.WPSObjectShape.RotationBox", "@World.WPSObjectShape.RotationOfBox.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSObjectShape.Rotation", "@World.WPSObjectShape.RotationOfBox.ToolTip",
 		pEditBoxRotation, cShapeValueVector::Ref::New(*this));
 	helper.EditVector(groupBox, "@World.WPSObjectShape.Extends", "@World.WPSObjectShape.ExtendsOfBox.ToolTip",
 		pEditBoxExtends, cShapeValueVector::Ref::New(*this));
+	helper.EditVector2(groupBox, "@World.WPSObjectShape.Tapering", "@World.WPSObjectShape.TaperingOfBox.ToolTip",
+		pEditBoxTapering, cShapeValueVector2::Ref::New(*this));
 	
 	
 	// cylinder
 	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Cylinder");
-	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionCylinder", "@World.WPSObjectShape.PositionOfCylinder.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSObjectShape.Position", "@World.WPSObjectShape.PositionOfCylinder.ToolTip",
 		pEditCylinderPosition, cShapeValueVector::Ref::New(*this));
-	helper.EditVector(groupBox, "@World.WPSObjectShape.RotationCylinder", "@World.WPSObjectShape.RotationOfCylinder.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSObjectShape.Rotation", "@World.WPSObjectShape.RotationOfCylinder.ToolTip",
 		pEditCylinderRotation, cShapeValueVector::Ref::New(*this));
 	helper.EditFloat(groupBox, "@World.WPSObjectShape.Height", "@World.WPSObjectShape.HeightOfCylinder.ToolTip",
 		pEditCylinderHeight, cShapeValueFloat::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusTop", "@World.WPSObjectShape.TopRadiusOfCylinder.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusTop", "@World.WPSObjectShape.RadiusTopOfCylinder.ToolTip",
 		pEditCylinderRadiusTop, cShapeValueFloat::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusBottom", "@World.WPSObjectShape.BottomRadiusOfCylinder.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusBottom", "@World.WPSObjectShape.RadiusBottomOfCylinder.ToolTip",
 		pEditCylinderRadiusBottom, cShapeValueFloat::Ref::New(*this));
+	helper.EditVector2(groupBox, "@World.WPSObjectShape.TopAxisScaling", "@World.WPSObjectShape.TopAxisScalingOfCylinder.ToolTip",
+		pEditCylinderTopAxisScaling, cShapeValueVector2::Ref::New(*this));
+	helper.EditVector2(groupBox, "@World.WPSObjectShape.BottomAxisScaling", "@World.WPSObjectShape.BottomAxisScalingOfCylinder.ToolTip",
+		pEditCylinderBottomAxisScaling, cShapeValueVector2::Ref::New(*this));
 	
 	
 	// capsule
@@ -608,10 +639,14 @@ void meWPSObjectShape::pCreateShapePanels(){
 		pEditCapsuleRotation, cShapeValueVector::Ref::New(*this));
 	helper.EditFloat(groupBox, "@World.WPSObjectShape.Height", "@World.WPSObjectShape.HeightOfCapsule.ToolTip",
 		pEditCapsuleHeight, cShapeValueFloat::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusTop", "@World.WPSObjectShape.TopRadiusOfCapsule.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusTop", "@World.WPSObjectShape.RadiusTopOfCapsule.ToolTip",
 		pEditCapsuleRadiusTop, cShapeValueFloat::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusBottom", "@World.WPSObjectShape.BottomRadiusOfCapsule.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusBottom", "@World.WPSObjectShape.RadiusBottomOfCapsule.ToolTip",
 		pEditCapsuleRadiusBottom, cShapeValueFloat::Ref::New(*this));
+	helper.EditVector2(groupBox, "@World.WPSObjectShape.TopAxisScaling", "@World.WPSObjectShape.TopAxisScalingOfCapsule.ToolTip",
+		pEditCapsuleTopAxisScaling, cShapeValueVector2::Ref::New(*this));
+	helper.EditVector2(groupBox, "@World.WPSObjectShape.BottomAxisScaling", "@World.WPSObjectShape.BottomAxisScalingOfCapsule.ToolTip",
+		pEditCapsuleBottomAxisScaling, cShapeValueVector2::Ref::New(*this));
 }
 
 void meWPSObjectShape::pDisplayPropertyInfo(){

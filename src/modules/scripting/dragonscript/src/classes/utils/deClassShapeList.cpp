@@ -63,7 +63,7 @@ struct sShaListNatDat{
 // Constructors, Destructors
 //////////////////////////////
 
-// public func new()
+// func new()
 deClassShapeList::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsShaList,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -71,7 +71,7 @@ void deClassShapeList::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	dedsNewNativeData<sShaListNatDat>(p_GetNativeData(myself));
 }
 
-// public func new( ShapeList shapeList )
+// func new( ShapeList shapeList )
 deClassShapeList::nfNew2::nfNew2(const sInitData &init) : dsFunction(init.clsShaList,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsShaList); // shapeList
@@ -84,7 +84,7 @@ void deClassShapeList::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.shapeList = clsShaList.GetShapeList(rt->GetValue(0)->GetRealObject());
 }
 
-// public func destructor()
+// func destructor()
 deClassShapeList::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsShaList,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -101,7 +101,7 @@ void deClassShapeList::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 // Management
 ///////////////
 
-// public func int getCount()
+// func int getCount()
 deClassShapeList::nfGetCount::nfGetCount(const sInitData &init) : dsFunction(init.clsShaList,
 "getCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
@@ -110,7 +110,7 @@ void deClassShapeList::nfGetCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushInt(shapeList.GetCount());
 }
 
-// public func bool empty()
+// func bool empty()
 deClassShapeList::nfEmpty::nfEmpty(const sInitData &init) : dsFunction(init.clsShaList,
 "empty", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
@@ -119,7 +119,7 @@ void deClassShapeList::nfEmpty::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushBool(shapeList.GetCount() == 0);
 }
 
-// public func bool notEmpty()
+// func bool notEmpty()
 deClassShapeList::nfNotEmpty::nfNotEmpty(const sInitData &init) : dsFunction(init.clsShaList,
 "notEmpty", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
@@ -128,7 +128,7 @@ void deClassShapeList::nfNotEmpty::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushBool(shapeList.GetCount() > 0);
 }
 
-// public func void removeAllShapes()
+// func void removeAllShapes()
 deClassShapeList::nfRemoveAllShapes::nfRemoveAllShapes(const sInitData &init) : dsFunction(init.clsShaList,
 "removeAllShapes", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -139,7 +139,7 @@ void deClassShapeList::nfRemoveAllShapes::RunFunction(dsRunTime*, dsValue *mysel
 
 
 
-// public func ShapeType getTypeAt( int index )
+// func ShapeType getTypeAt( int index )
 deClassShapeList::nfGetTypeAt::nfGetTypeAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getTypeAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeType){
@@ -153,7 +153,7 @@ void deClassShapeList::nfGetTypeAt::RunFunction(dsRunTime *rt, dsValue *myself){
 		->GetVariable(identify.GetType() - 1)->GetStaticValue());
 }
 
-// public func Vector getPositionAt( int index )
+// func Vector getPositionAt( int index )
 deClassShapeList::nfGetPositionAt::nfGetPositionAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getPositionAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
@@ -165,7 +165,7 @@ void deClassShapeList::nfGetPositionAt::RunFunction(dsRunTime *rt, dsValue *myse
 	ds.GetClassVector()->PushVector(rt, shapeList.GetAt(rt->GetValue(0)->GetInt())->GetPosition());
 }
 
-// public func Quaternion getOrientationAt( int index )
+// func Quaternion getOrientationAt( int index )
 deClassShapeList::nfGetOrientationAt::nfGetOrientationAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getOrientationAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
@@ -177,7 +177,7 @@ void deClassShapeList::nfGetOrientationAt::RunFunction(dsRunTime *rt, dsValue *m
 	ds.GetClassQuaternion()->PushQuaternion(rt, shapeList.GetAt(rt->GetValue(0)->GetInt())->GetOrientation());
 }
 
-// public func float getRadiusAt( int index )
+// func float getRadiusAt( int index )
 deClassShapeList::nfGetRadiusAt::nfGetRadiusAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getRadiusAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
@@ -190,7 +190,22 @@ void deClassShapeList::nfGetRadiusAt::RunFunction(dsRunTime *rt, dsValue *myself
 	rt->PushFloat(identify.CastToSphere().GetRadius());
 }
 
-// public func Vector getHalfExtendsAt( int index )
+// func Vector2 getAxisScalingAt(int index)
+deClassShapeList::nfGetAxisScalingAt::nfGetAxisScalingAt(const sInitData &init) :
+dsFunction(init.clsShaList, "getAxisScalingAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2){
+	p_AddParameter(init.clsInt); // index
+}
+void deClassShapeList::nfGetAxisScalingAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decShape::List &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
+	const decVector2 &axisScaling = identify.CastToSphere().GetAxisScaling();
+	const deScriptingDragonScript &ds = *((static_cast<deClassShapeList*>(GetOwnerClass()))->GetDS());
+	ds.GetClassVector2()->PushVector2(rt, axisScaling);
+}
+
+// func Vector getHalfExtendsAt( int index )
 deClassShapeList::nfGetHalfExtendsAt::nfGetHalfExtendsAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getHalfExtendsAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
@@ -204,7 +219,22 @@ void deClassShapeList::nfGetHalfExtendsAt::RunFunction(dsRunTime *rt, dsValue *m
 	ds.GetClassVector()->PushVector(rt, identify.CastToBox().GetHalfExtends());
 }
 
-// public func float getHalfHeightAt( int index )
+// func Vector2 getTaperingAt(int index)
+deClassShapeList::nfGetTaperingAt::nfGetTaperingAt(const sInitData &init) :
+dsFunction(init.clsShaList, "getTaperingAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2){
+	p_AddParameter(init.clsInt); // index
+}
+void deClassShapeList::nfGetTaperingAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decShape::List &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
+	const decVector2 &tapering = identify.CastToBox().GetTapering();
+	const deScriptingDragonScript &ds = *((static_cast<deClassShapeList*>(GetOwnerClass()))->GetDS());
+	ds.GetClassVector2()->PushVector2(rt, tapering);
+}
+
+// func float getHalfHeightAt( int index )
 deClassShapeList::nfGetHalfHeightAt::nfGetHalfHeightAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getHalfHeightAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
@@ -228,7 +258,7 @@ void deClassShapeList::nfGetHalfHeightAt::RunFunction(dsRunTime *rt, dsValue *my
 	}
 }
 
-// public func float getTopRadiusAt( int index )
+// func float getTopRadiusAt( int index )
 deClassShapeList::nfGetTopRadiusAt::nfGetTopRadiusAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getTopRadiusAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
@@ -252,7 +282,7 @@ void deClassShapeList::nfGetTopRadiusAt::RunFunction(dsRunTime *rt, dsValue *mys
 	}
 }
 
-// public func float getBottomRadiusAt( int index )
+// func float getBottomRadiusAt( int index )
 deClassShapeList::nfGetBottomRadiusAt::nfGetBottomRadiusAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getBottomRadiusAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
@@ -276,7 +306,7 @@ void deClassShapeList::nfGetBottomRadiusAt::RunFunction(dsRunTime *rt, dsValue *
 	}
 }
 
-// public func Vector2 getTopAxisScalingAt( int index )
+// func Vector2 getTopAxisScalingAt( int index )
 deClassShapeList::nfGetTopAxisScalingAt::nfGetTopAxisScalingAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getTopAxisScalingAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2){
@@ -301,7 +331,7 @@ void deClassShapeList::nfGetTopAxisScalingAt::RunFunction(dsRunTime *rt, dsValue
 	}
 }
 
-// public func Vector2 getBottomAxisScalingAt( int index )
+// func Vector2 getBottomAxisScalingAt( int index )
 deClassShapeList::nfGetBottomAxisScalingAt::nfGetBottomAxisScalingAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getBottomAxisScalingAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2){
@@ -326,7 +356,7 @@ void deClassShapeList::nfGetBottomAxisScalingAt::RunFunction(dsRunTime *rt, dsVa
 	}
 }
 
-// public func int getPointCountAt( int index )
+// func int getPointCountAt( int index )
 deClassShapeList::nfGetPointCountAt::nfGetPointCountAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getPointCountAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
@@ -339,7 +369,7 @@ void deClassShapeList::nfGetPointCountAt::RunFunction(dsRunTime *rt, dsValue *my
 	rt->PushInt(identify.CastToHull().GetPoints().GetCount());
 }
 
-// public func Vector getPointAt( int shape, int point )
+// func Vector getPointAt( int shape, int point )
 deClassShapeList::nfGetPointAt::nfGetPointAt(const sInitData &init) :
 dsFunction(init.clsShaList, "getPointAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
@@ -356,7 +386,7 @@ void deClassShapeList::nfGetPointAt::RunFunction(dsRunTime *rt, dsValue *myself)
 
 
 
-// public func void addSphere( Vector position, float radius )
+// func void addSphere( Vector position, float radius )
 deClassShapeList::nfAddSphere::nfAddSphere(const sInitData &init) : dsFunction(init.clsShaList,
 "addSphere", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // position
@@ -372,9 +402,47 @@ void deClassShapeList::nfAddSphere::RunFunction(dsRunTime *rt, dsValue *myself){
 		decShapeSphere::Ref::New(radius, position));
 }
 
+// func void addSphere(Vector position, float radius, Vector2 axisScaling)
+deClassShapeList::nfAddSphere2::nfAddSphere2(const sInitData &init) : dsFunction(init.clsShaList,
+ "addSphere", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // position
+	p_AddParameter(init.clsFlt); // radius
+	p_AddParameter(init.clsVec2); // axisScaling
+}
+void deClassShapeList::nfAddSphere2::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = *((static_cast<deClassShapeList*>(GetOwnerClass()))->GetDS());
+	
+	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
+	const float radius = rt->GetValue(1)->GetFloat();
+	const decVector2 &axisScaling = ds.GetClassVector2()->GetVector2(rt->GetValue(2)->GetRealObject());
+	
+	dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(
+		decShapeSphere::Ref::New(radius, axisScaling, position));
+}
+
+// func void addSphere(Vector position, float radius, Vector2 axisScaling, Quaternion orientation)
+deClassShapeList::nfAddSphere3::nfAddSphere3(const sInitData &init) : dsFunction(init.clsShaList,
+ "addSphere", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // position
+	p_AddParameter(init.clsFlt); // radius
+	p_AddParameter(init.clsVec2); // axisScaling
+	p_AddParameter(init.clsQuat); // orientation
+}
+void deClassShapeList::nfAddSphere3::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = *((static_cast<deClassShapeList*>(GetOwnerClass()))->GetDS());
+	
+	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
+	const float radius = rt->GetValue(1)->GetFloat();
+	const decVector2 &axisScaling = ds.GetClassVector2()->GetVector2(rt->GetValue(2)->GetRealObject());
+	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(3)->GetRealObject());
+	
+	dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(
+		decShapeSphere::Ref::New(radius, axisScaling, position, orientation));
+}
 
 
-// public func void addBox( Vector center, Vector extends )
+
+// func void addBox( Vector center, Vector extends )
 deClassShapeList::nfAddBox::nfAddBox(const sInitData &init) : dsFunction(init.clsShaList,
 "addBox", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // center
@@ -390,7 +458,7 @@ void deClassShapeList::nfAddBox::RunFunction(dsRunTime *rt, dsValue *myself){
 		decShapeBox::Ref::New(extends, center));
 }
 
-// public func void addBox( Vector center, Vector extends, Quaternion orientation )
+// func void addBox( Vector center, Vector extends, Quaternion orientation )
 deClassShapeList::nfAddBox2::nfAddBox2(const sInitData &init) : dsFunction(init.clsShaList,
 "addBox", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // center
@@ -408,7 +476,7 @@ void deClassShapeList::nfAddBox2::RunFunction(dsRunTime *rt, dsValue *myself){
 		decShapeBox::Ref::New(extends, center, orientation));
 }
 
-// public func void addBox( Vector center, Vector extends, Vector2 tapering )
+// func void addBox( Vector center, Vector extends, Vector2 tapering )
 deClassShapeList::nfAddBox3::nfAddBox3(const sInitData &init) :
 dsFunction(init.clsShaList, "addBox", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // center
@@ -427,7 +495,7 @@ void deClassShapeList::nfAddBox3::RunFunction(dsRunTime *rt, dsValue *myself){
 		decShapeBox::Ref::New(extends, tapering, center));
 }
 
-// public func void addBox( Vector center, Vector extends, Vector2 tapering, Quaternion orientation )
+// func void addBox( Vector center, Vector extends, Vector2 tapering, Quaternion orientation )
 deClassShapeList::nfAddBox4::nfAddBox4(const sInitData &init) :
 dsFunction(init.clsShaList, "addBox", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // center
@@ -450,7 +518,7 @@ void deClassShapeList::nfAddBox4::RunFunction(dsRunTime *rt, dsValue *myself){
 
 
 
-// public func void addCylinder( float halfHeight, float radius )
+// func void addCylinder( float halfHeight, float radius )
 deClassShapeList::nfAddCylinder::nfAddCylinder(const sInitData &init) : dsFunction(init.clsShaList,
 "addCylinder", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // halfHeight
@@ -465,7 +533,7 @@ void deClassShapeList::nfAddCylinder::RunFunction(dsRunTime *rt, dsValue *myself
 		decShapeCylinder::Ref::New(halfHeight, radius));
 }
 
-// public func void addCylinder( float halfHeight, float radius, Vector position )
+// func void addCylinder( float halfHeight, float radius, Vector position )
 deClassShapeList::nfAddCylinder2::nfAddCylinder2(const sInitData &init) : dsFunction(init.clsShaList,
 "addCylinder", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // halfHeight
@@ -483,7 +551,7 @@ void deClassShapeList::nfAddCylinder2::RunFunction(dsRunTime *rt, dsValue *mysel
 		decShapeCylinder::Ref::New(halfHeight, radius, position));
 }
 
-// public func void addCylinder( float halfHeight, float radius, Vector position, Quaternion orientation )
+// func void addCylinder( float halfHeight, float radius, Vector position, Quaternion orientation )
 deClassShapeList::nfAddCylinder3::nfAddCylinder3(const sInitData &init) : dsFunction(init.clsShaList,
 "addCylinder", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // halfHeight
@@ -503,7 +571,7 @@ void deClassShapeList::nfAddCylinder3::RunFunction(dsRunTime *rt, dsValue *mysel
 		decShapeCylinder::Ref::New(halfHeight, radius, position, orientation));
 }
 
-// public func void addCylinder( float halfHeight, float topRadius, float bottomRadius )
+// func void addCylinder( float halfHeight, float topRadius, float bottomRadius )
 deClassShapeList::nfAddCylinder4::nfAddCylinder4(const sInitData &init) : dsFunction(init.clsShaList,
 "addCylinder", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // halfHeight
@@ -520,7 +588,7 @@ void deClassShapeList::nfAddCylinder4::RunFunction(dsRunTime *rt, dsValue *mysel
 		decShapeCylinder::Ref::New(halfHeight, radius, bottomRadius));
 }
 
-// public func void addCylinder( float halfHeight, float topRadius,
+// func void addCylinder( float halfHeight, float topRadius,
 // float bottomRadius, Vector position )
 deClassShapeList::nfAddCylinder5::nfAddCylinder5(const sInitData &init) : dsFunction(init.clsShaList,
 "addCylinder", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -541,7 +609,7 @@ void deClassShapeList::nfAddCylinder5::RunFunction(dsRunTime *rt, dsValue *mysel
 		decShapeCylinder::Ref::New(halfHeight, radius, bottomRadius, position));
 }
 
-// public func void addCylinder( float halfHeight, float topRadius,
+// func void addCylinder( float halfHeight, float topRadius,
 // float bottomRadius, Vector position, Quaternion orientation )
 deClassShapeList::nfAddCylinder6::nfAddCylinder6(const sInitData &init) : dsFunction(init.clsShaList,
 "addCylinder", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -564,7 +632,7 @@ void deClassShapeList::nfAddCylinder6::RunFunction(dsRunTime *rt, dsValue *mysel
 		decShapeCylinder::Ref::New(halfHeight, radius, bottomRadius, position, orientation));
 }
 
-// public func void addCylinder( float halfHeight, float topRadius, float bottomRadius,
+// func void addCylinder( float halfHeight, float topRadius, float bottomRadius,
 // Vector2 topAxisScaling, Vector2 bottomAxisScaling )
 deClassShapeList::nfAddCylinder7::nfAddCylinder7(const sInitData &init) : dsFunction(init.clsShaList,
 "addCylinder", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -587,7 +655,7 @@ void deClassShapeList::nfAddCylinder7::RunFunction(dsRunTime *rt, dsValue *mysel
 		decShapeCylinder::Ref::New(halfHeight, radius, bottomRadius, topAxisScaling, bottomAxisScaling));
 }
 
-// public func void addCylinder( float halfHeight, float topRadius, float bottomRadius,
+// func void addCylinder( float halfHeight, float topRadius, float bottomRadius,
 // Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position )
 deClassShapeList::nfAddCylinder8::nfAddCylinder8(const sInitData &init) : dsFunction(init.clsShaList,
 "addCylinder", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -613,7 +681,7 @@ void deClassShapeList::nfAddCylinder8::RunFunction(dsRunTime *rt, dsValue *mysel
 			topAxisScaling, bottomAxisScaling, position));
 }
 
-// public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling,
+// func void addCylinder( float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling,
 // Vector2 bottomAxisScaling, Vector position, Quaternion orientation )
 deClassShapeList::nfAddCylinder9::nfAddCylinder9(const sInitData &init) : dsFunction(init.clsShaList,
 "addCylinder", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -643,7 +711,7 @@ void deClassShapeList::nfAddCylinder9::RunFunction(dsRunTime *rt, dsValue *mysel
 
 
 
-// public func void addCapsule( float halfHeight, float radius )
+// func void addCapsule( float halfHeight, float radius )
 deClassShapeList::nfAddCapsule::nfAddCapsule(const sInitData &init) : dsFunction(init.clsShaList,
 "addCapsule", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // halfHeight
@@ -658,7 +726,7 @@ void deClassShapeList::nfAddCapsule::RunFunction(dsRunTime *rt, dsValue *myself)
 		decShapeCapsule::Ref::New(halfHeight, radius));
 }
 
-// public func void addCapsule( float halfHeight, float radius, Vector position )
+// func void addCapsule( float halfHeight, float radius, Vector position )
 deClassShapeList::nfAddCapsule2::nfAddCapsule2(const sInitData &init) : dsFunction(init.clsShaList,
 "addCapsule", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // halfHeight
@@ -676,7 +744,7 @@ void deClassShapeList::nfAddCapsule2::RunFunction(dsRunTime *rt, dsValue *myself
 		decShapeCapsule::Ref::New(halfHeight, radius, position));
 }
 
-// public func void addCapsule( float halfHeight, float radius, Vector position, Quaternion orientation )
+// func void addCapsule( float halfHeight, float radius, Vector position, Quaternion orientation )
 deClassShapeList::nfAddCapsule3::nfAddCapsule3(const sInitData &init) : dsFunction(init.clsShaList,
 "addCapsule", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // halfHeight
@@ -696,7 +764,7 @@ void deClassShapeList::nfAddCapsule3::RunFunction(dsRunTime *rt, dsValue *myself
 		decShapeCapsule::Ref::New(halfHeight, radius, position, orientation));
 }
 
-// public func void addCapsule( float halfHeight, float topRadius, float bottomRadius )
+// func void addCapsule( float halfHeight, float topRadius, float bottomRadius )
 deClassShapeList::nfAddCapsule4::nfAddCapsule4(const sInitData &init) : dsFunction(init.clsShaList,
 "addCapsule", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // halfHeight
@@ -713,7 +781,7 @@ void deClassShapeList::nfAddCapsule4::RunFunction(dsRunTime *rt, dsValue *myself
 		decShapeCapsule::Ref::New(halfHeight, radius, bottomRadius));
 }
 
-// public func void addCapsule( float halfHeight, float topRadius,
+// func void addCapsule( float halfHeight, float topRadius,
 // float bottomRadius, Vector position )
 deClassShapeList::nfAddCapsule5::nfAddCapsule5(const sInitData &init) : dsFunction(init.clsShaList,
 "addCapsule", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -734,7 +802,7 @@ void deClassShapeList::nfAddCapsule5::RunFunction(dsRunTime *rt, dsValue *myself
 		decShapeCapsule::Ref::New(halfHeight, radius, bottomRadius, position));
 }
 
-// public func void addCapsule( float halfHeight, float topRadius,
+// func void addCapsule( float halfHeight, float topRadius,
 // float bottomRadius, Vector position, Quaternion orientation )
 deClassShapeList::nfAddCapsule6::nfAddCapsule6(const sInitData &init) : dsFunction(init.clsShaList,
 "addCapsule", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -757,7 +825,7 @@ void deClassShapeList::nfAddCapsule6::RunFunction(dsRunTime *rt, dsValue *myself
 		decShapeCapsule::Ref::New(halfHeight, radius, bottomRadius, position, orientation));
 }
 
-// public func void addCapsule( float halfHeight, float topRadius, float bottomRadius,
+// func void addCapsule( float halfHeight, float topRadius, float bottomRadius,
 // Vector2 topAxisScaling, Vector2 bottomAxisScaling )
 deClassShapeList::nfAddCapsule7::nfAddCapsule7(const sInitData &init) : dsFunction(init.clsShaList,
 "addCapsule", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -780,7 +848,7 @@ void deClassShapeList::nfAddCapsule7::RunFunction(dsRunTime *rt, dsValue *myself
 		decShapeCapsule::Ref::New(halfHeight, radius, bottomRadius, topAxisScaling, bottomAxisScaling));
 }
 
-// public func void addCapsule( float halfHeight, float topRadius, float bottomRadius,
+// func void addCapsule( float halfHeight, float topRadius, float bottomRadius,
 // Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position )
 deClassShapeList::nfAddCapsule8::nfAddCapsule8(const sInitData &init) : dsFunction(init.clsShaList,
 "addCapsule", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -806,7 +874,7 @@ void deClassShapeList::nfAddCapsule8::RunFunction(dsRunTime *rt, dsValue *myself
 			topAxisScaling, bottomAxisScaling, position));
 }
 
-// public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling,
+// func void addCapsule( float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling,
 // Vector2 bottomAxisScaling, Vector position, Quaternion orientation )
 deClassShapeList::nfAddCapsule9::nfAddCapsule9(const sInitData &init) : dsFunction(init.clsShaList,
 "addCapsule", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -836,7 +904,7 @@ void deClassShapeList::nfAddCapsule9::RunFunction(dsRunTime *rt, dsValue *myself
 
 
 
-// public func void addHull( Array points )
+// func void addHull( Array points )
 deClassShapeList::nfAddHull::nfAddHull(const sInitData &init) : dsFunction(init.clsShaList,
 "addHull", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsArray); // points
@@ -847,7 +915,7 @@ void deClassShapeList::nfAddHull::RunFunction(dsRunTime *rt, dsValue *myself){
 	dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(std::move(hull));
 }
 
-// public func void addHull( Array points, Vector position )
+// func void addHull( Array points, Vector position )
 deClassShapeList::nfAddHull2::nfAddHull2(const sInitData &init) : dsFunction(init.clsShaList,
 "addHull", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsArray); // points
@@ -863,7 +931,7 @@ void deClassShapeList::nfAddHull2::RunFunction(dsRunTime *rt, dsValue *myself){
 	dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(std::move(hull));
 }
 
-// public func void addHull( Array points, Vector position, Quaternion orientation )
+// func void addHull( Array points, Vector position, Quaternion orientation )
 deClassShapeList::nfAddHull3::nfAddHull3(const sInitData &init) : dsFunction(init.clsShaList,
 "addHull", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsArray); // points
@@ -903,6 +971,7 @@ public:
 	void VisitShapeSphere(decShapeSphere &sphere) override{
 		pWriter.WriteByte(typeShere);
 		pWriter.WriteVector(sphere.GetPosition());
+		pWriter.WriteQuaternion(sphere.GetOrientation());
 		pWriter.WriteFloat(sphere.GetRadius());
 		pWriter.WriteVector2(sphere.GetAxisScaling());
 	}
@@ -948,7 +1017,7 @@ public:
 	}
 };
 
-// static public func ShapeList readFromFile( FileReader reader )
+// static func ShapeList readFromFile( FileReader reader )
 deClassShapeList::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFunction(init.clsShaList,
 "readFromFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsShaList){
 	p_AddParameter(init.clsFileReader); // reader
@@ -961,8 +1030,10 @@ void deClassShapeList::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue*){
 		DSTHROW(dueNullPointer);
 	}
 	
-	switch(reader->ReadByte()){ // version
-	case 0:{
+	const int version = reader->ReadByte();
+	switch(version){
+	case 0:
+	case 1:{
 		const int count = reader->ReadUShort();
 		decShape::List shapeList;
 		
@@ -970,9 +1041,13 @@ void deClassShapeList::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue*){
 			switch(reader->ReadByte()){
 			case VisitorWriteShapes::typeShere:{
 				const decVector position(reader->ReadVector());
+				decQuaternion orientation;
+				if(version >= 1){
+					orientation = reader->ReadQuaternion();
+				}
 				const float radius = reader->ReadFloat();
 				const decVector2 axisScaling(reader->ReadVector2());
-				shapeList.Add(decShapeSphere::Ref::New(radius, axisScaling, position));
+				shapeList.Add(decShapeSphere::Ref::New(radius, axisScaling, position, orientation));
 				}break;
 				
 			case VisitorWriteShapes::typeBox:{
@@ -1029,7 +1104,7 @@ void deClassShapeList::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue*){
 	}
 }
 
-// public func void writeToFile( FileWriter writer )
+// func void writeToFile( FileWriter writer )
 deClassShapeList::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunction(init.clsShaList,
 "writeToFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFileWriter); // writer
@@ -1048,7 +1123,7 @@ void deClassShapeList::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself
 	VisitorWriteShapes visitor(*writer);
 	int i;
 	
-	writer->WriteByte(0); // version
+	writer->WriteByte(1); // version
 	writer->WriteUShort((unsigned short)count);
 	for(i=0; i<count; i++){
 		shapeList.GetAt(i)->Visit(visitor);
@@ -1060,7 +1135,7 @@ void deClassShapeList::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself
 // Special
 ////////////
 
-// public func int hashCode()
+// func int hashCode()
 deClassShapeList::nfHashCode::nfHashCode(const sInitData &init) :
 dsFunction(init.clsShaList, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
@@ -1071,7 +1146,7 @@ void deClassShapeList::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushInt((int)(intptr_t)&shapeList);
 }
 
-// public func bool equals( Object object )
+// func bool equals( Object object )
 deClassShapeList::nfEquals::nfEquals(const sInitData &init) :
 dsFunction(init.clsShaList, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObj); // object
@@ -1157,7 +1232,9 @@ void deClassShapeList::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetTypeAt(init));
 	AddFunction(new nfGetPositionAt(init));
 	AddFunction(new nfGetRadiusAt(init));
+	AddFunction(new nfGetAxisScalingAt(init));
 	AddFunction(new nfGetHalfExtendsAt(init));
+	AddFunction(new nfGetTaperingAt(init));
 	AddFunction(new nfGetOrientationAt(init));
 	AddFunction(new nfGetHalfHeightAt(init));
 	AddFunction(new nfGetTopRadiusAt(init));
@@ -1168,6 +1245,8 @@ void deClassShapeList::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetPointAt(init));
 	
 	AddFunction(new nfAddSphere(init));
+	AddFunction(new nfAddSphere2(init));
+	AddFunction(new nfAddSphere3(init));
 	
 	AddFunction(new nfAddBox(init));
 	AddFunction(new nfAddBox2(init));

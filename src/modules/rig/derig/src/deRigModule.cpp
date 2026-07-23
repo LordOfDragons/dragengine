@@ -514,9 +514,9 @@ void deRigModule::pParseBoneIK(decXmlElementTag *root, float &lower, float &uppe
 }
 
 void deRigModule::pParseSphere(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties){
-	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decString property;
+	decVector2 vector2;
 	decVector vector;
 	int i;
 	
@@ -535,8 +535,13 @@ void deRigModule::pParseSphere(decXmlElementTag *root, decShape::List &shapes, d
 				pParseVector(tag, vector);
 				sphere->SetPosition(vector);
 				
+			}else if(strcmp(tag->GetName(), "rotation") == 0){
+				vector.SetZero();
+				pParseVector(tag, vector);
+				sphere->SetOrientation(decQuaternion::CreateFromEuler(vector * DEG2RAD));
+				
 			}else if(strcmp(tag->GetName(), "radius") == 0){
-				cdata = tag->GetFirstData();
+				auto cdata = tag->GetFirstData();
 				
 				if(cdata){
 					sphere->SetRadius(strtof(cdata->GetData(), nullptr));
@@ -545,8 +550,13 @@ void deRigModule::pParseSphere(decXmlElementTag *root, decShape::List &shapes, d
 					sphere->SetRadius(0.0f);
 				}
 				
+			}else if(tag->GetName() == "axisScaling"){
+				vector2.Set(1.0f, 1.0f);
+				pParseVector2(tag, vector2);
+				sphere->SetAxisScaling(vector2);
+				
 			}else if(strcmp(tag->GetName(), "property") == 0){
-				cdata = tag->GetFirstData();
+				auto cdata = tag->GetFirstData();
 				
 				if(cdata){
 					property = cdata->GetData();
@@ -563,9 +573,9 @@ void deRigModule::pParseSphere(decXmlElementTag *root, decShape::List &shapes, d
 }
 
 void deRigModule::pParseCylinder(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties){
-	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decString property;
+	decVector2 vector2;
 	decVector vector;
 	int i;
 	
@@ -574,30 +584,18 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShape::List &shapes,
 	for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
 			if(tag){
-				/*if( strcmp( tag->GetName(), "center" ) == 0 ){ // DEPRECATED
+				if(strcmp(tag->GetName(), "position") == 0){
 					vector.Set(0.0f, 0.0f, 0.0f);
 					pParseVector(tag, vector);
 					cylinder->SetPosition(vector);
-					
-				}else */if(strcmp(tag->GetName(), "position") == 0){
-					vector.Set(0.0f, 0.0f, 0.0f);
-					pParseVector(tag, vector);
-					cylinder->SetPosition(vector);
-					
-				/*}else if( strcmp( tag->GetName(), "direction" ) == 0 ){ // DEPRECATED
-					
-				}else if(strcmp(tag->GetName(), "orientation") == 0){ // DEPRECATED
-					vector.Set(0.0f, 0.0f, 0.0f);
-					pParseVector(tag, vector);
-					cylinder->SetOrientation(decMatrix::CreateRotation(vector * DEG2RAD).ToQuaternion());*/
 					
 				}else if(strcmp(tag->GetName(), "rotation") == 0){
 					vector.Set(0.0f, 0.0f, 0.0f);
 					pParseVector(tag, vector);
-					cylinder->SetOrientation(decMatrix::CreateRotation(vector * DEG2RAD).ToQuaternion());
+					cylinder->SetOrientation(decQuaternion::CreateFromEuler(vector * DEG2RAD));
 					
 				}else if(strcmp(tag->GetName(), "radius") == 0){
-					cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						cylinder->SetRadius(strtof(cdata->GetData(), nullptr));
@@ -607,7 +605,7 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShape::List &shapes,
 					}
 					
 				}else if(strcmp(tag->GetName(), "topRadius") == 0){
-					cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						cylinder->SetTopRadius(strtof(cdata->GetData(), nullptr));
@@ -617,7 +615,7 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShape::List &shapes,
 					}
 					
 				}else if(strcmp(tag->GetName(), "bottomRadius") == 0){
-					cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						cylinder->SetBottomRadius(strtof(cdata->GetData(), nullptr));
@@ -627,7 +625,7 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShape::List &shapes,
 					}
 					
 				}else if(strcmp(tag->GetName(), "halfHeight") == 0){
-					cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						cylinder->SetHalfHeight(strtof(cdata->GetData(), nullptr));
@@ -636,12 +634,18 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShape::List &shapes,
 						cylinder->SetHalfHeight(0.0f);
 					}
 					
-				/*}else if( strcmp( tag->GetName(), "angle" ) == 0 ){ // DEPRECATED
-					//cone->SetAngle( strtof( tag->GetFirstData()->GetData(), NULL ) );
-					// useless... if we have a radius already an angle is not any more infos*/
+				}else if(tag->GetName() == "topAxisScaling"){
+					vector2.Set(1.0f, 1.0f);
+					pParseVector2(tag, vector2);
+					cylinder->SetTopAxisScaling(vector2);
+					
+				}else if(tag->GetName() == "bottomAxisScaling"){
+					vector2.Set(1.0f, 1.0f);
+					pParseVector2(tag, vector2);
+					cylinder->SetBottomAxisScaling(vector2);
 					
 				}else if(strcmp(tag->GetName(), "property") == 0){
-					cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						property = cdata->GetData();
@@ -658,9 +662,9 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShape::List &shapes,
 }
 
 void deRigModule::pParseCapsule(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties){
-	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decString property;
+	decVector2 vector2;
 	decVector vector;
 	int i;
 	
@@ -669,28 +673,18 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShape::List &shapes, 
 	for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
 			if(tag){
-				/*if( strcmp( tag->GetName(), "center" ) == 0 ){ // DEPRECATED
+				if(strcmp(tag->GetName(), "position") == 0){
 					vector.Set(0.0f, 0.0f, 0.0f);
 					pParseVector(tag, vector);
 					capsule->SetPosition(vector);
-					
-				}else */if(strcmp(tag->GetName(), "position") == 0){
-					vector.Set(0.0f, 0.0f, 0.0f);
-					pParseVector(tag, vector);
-					capsule->SetPosition(vector);
-					
-				/*}else if( strcmp( tag->GetName(), "orientation" ) == 0 ){ // DEPRECATED
-					vector.Set(0.0f, 0.0f, 0.0f);
-					pParseVector(tag, vector);
-					capsule->SetOrientation(decMatrix::CreateRotation(vector * DEG2RAD).ToQuaternion());*/
 					
 				}else if(strcmp(tag->GetName(), "rotation") == 0){
 					vector.Set(0.0f, 0.0f, 0.0f);
 					pParseVector(tag, vector);
-					capsule->SetOrientation(decMatrix::CreateRotation(vector * DEG2RAD).ToQuaternion());
+					capsule->SetOrientation(decQuaternion::CreateFromEuler(vector * DEG2RAD));
 					
 				}else if(strcmp(tag->GetName(), "radius") == 0){
-					cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						capsule->SetRadius(strtof(cdata->GetData(), nullptr));
@@ -700,7 +694,7 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShape::List &shapes, 
 					}
 					
 				}else if(strcmp(tag->GetName(), "topRadius") == 0){
-					cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						capsule->SetTopRadius(strtof(cdata->GetData(), nullptr));
@@ -710,7 +704,7 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShape::List &shapes, 
 					}
 					
 				}else if(strcmp(tag->GetName(), "bottomRadius") == 0){
-					cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						capsule->SetBottomRadius(strtof(cdata->GetData(), nullptr));
@@ -720,7 +714,7 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShape::List &shapes, 
 					}
 					
 				}else if(strcmp(tag->GetName(), "halfHeight") == 0){
-					cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						capsule->SetHalfHeight(strtof(cdata->GetData(), nullptr));
@@ -729,8 +723,18 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShape::List &shapes, 
 						capsule->SetHalfHeight(0.0f);
 					}
 					
+				}else if(tag->GetName() == "topAxisScaling"){
+					vector2.Set(1.0f, 1.0f);
+					pParseVector2(tag, vector2);
+					capsule->SetTopAxisScaling(vector2);
+					
+				}else if(tag->GetName() == "bottomAxisScaling"){
+					vector2.Set(1.0f, 1.0f);
+					pParseVector2(tag, vector2);
+					capsule->SetBottomAxisScaling(vector2);
+					
 				}else if(strcmp(tag->GetName(), "property") == 0){
-					cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						property = cdata->GetData();
@@ -749,6 +753,7 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShape::List &shapes, 
 void deRigModule::pParseBox(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties){
 	decXmlElementTag *tag;
 	decString property;
+	decVector2 vector2;
 	decVector vector;
 	int i;
 	
@@ -757,47 +762,28 @@ void deRigModule::pParseBox(decXmlElementTag *root, decShape::List &shapes, decS
 	for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
 			if(tag){
-				/*if( strcmp( tag->GetName(), "center" ) == 0 ){ // DEPRECATED
-					vector.Set(0.0f, 0.0f, 0.0f);
+				if(strcmp(tag->GetName(), "position") == 0){
+					vector.SetZero();
 					pParseVector(tag, vector);
 					box->SetPosition(vector);
-					
-				}else */if(strcmp(tag->GetName(), "position") == 0){
-					vector.Set(0.0f, 0.0f, 0.0f);
-					pParseVector(tag, vector);
-					box->SetPosition(vector);
-					
-				/*}else if( strcmp( tag->GetName(), "halfSize" ) == 0 ){ // DEPRECATED
-					box->SetHalfExtends(
-						decVector(pGetAttributeFloat(tag, "x"),
-						pGetAttributeFloat(tag, "y"),
-						pGetAttributeFloat(tag, "z")));*/
 					
 				}else if(strcmp(tag->GetName(), "halfExtends") == 0){
-					vector.Set(0.0f, 0.0f, 0.0f);
+					vector.SetZero();
 					pParseVector(tag, vector);
 					box->SetHalfExtends(vector);
 					
-				/*}else if( strcmp( tag->GetName(), "orientation" ) == 0 ){ // DEPRECATED
-					if(pFindAttribute(tag, "x")){ // DEPRECATED
-						matrix.SetRotation(pGetAttributeFloat(tag, "x") * DEG2RAD,
-							pGetAttributeFloat(tag, "y") * DEG2RAD,
-							pGetAttributeFloat(tag, "z") * DEG2RAD);
-						box->SetOrientation(matrix.ToQuaternion());
-						
-					}else{
-						vector.Set(0.0f, 0.0f, 0.0f);
-						pParseVector(tag, vector);
-						box->SetOrientation(decMatrix::CreateRotation(vector * DEG2RAD).ToQuaternion());
-					}*/
-					
 				}else if(strcmp(tag->GetName(), "rotation") == 0){
-					vector.Set(0.0f, 0.0f, 0.0f);
+					vector.SetZero();
 					pParseVector(tag, vector);
-					box->SetOrientation(decMatrix::CreateRotation(vector * DEG2RAD).ToQuaternion());
+					box->SetOrientation(decQuaternion::CreateFromEuler(vector * DEG2RAD));
+					
+				}else if(tag->GetName() == "tapering"){
+					vector2.Set(1.0f, 1.0f);
+					pParseVector2(tag, vector2);
+					box->SetTapering(vector2);
 					
 				}else if(strcmp(tag->GetName(), "property") == 0){
-					const decXmlCharacterData * const cdata = tag->GetFirstData();
+					auto cdata = tag->GetFirstData();
 					
 					if(cdata){
 						property = cdata->GetData();
@@ -837,17 +823,17 @@ void deRigModule::pParseHull(decXmlElementTag *root, decShape::List &shapes, dec
 			}
 			
 			if(tag->GetName() == "position"){
-				vector.Set(0.0f, 0.0f, 0.0f);
+				vector.SetZero();
 				pParseVector(tag, vector);
 				hull->SetPosition(vector);
 				
 			}else if(tag->GetName() == "halfExtends"){
-				vector.Set(0.0f, 0.0f, 0.0f);
+				vector.SetZero();
 				pParseVector(tag, vector);
-				hull->SetOrientation(decMatrix::CreateRotation(vector * DEG2RAD).ToQuaternion());
+				hull->SetOrientation(decQuaternion::CreateFromEuler(vector * DEG2RAD));
 				
 			}else if(tag->GetName() == "point"){
-				vector.Set(0.0f, 0.0f, 0.0f);
+				vector.SetZero();
 				pParseVector(tag, vector);
 				hull->SetPointAt(pointIndex++, vector);
 				
@@ -1184,6 +1170,15 @@ void deRigModule::pParseVector(decXmlElementTag *root, decVector &vector){
 			}
 		}
 	}*/
+}
+
+void deRigModule::pParseVector2(decXmlElementTag *root, decVector2 &vector){
+	if(pFindAttribute(root, "x")){
+		vector.x = pGetAttributeFloat(root, "x");
+	}
+	if(pFindAttribute(root, "y")){
+		vector.y = pGetAttributeFloat(root, "y");
+	}
 }
 
 

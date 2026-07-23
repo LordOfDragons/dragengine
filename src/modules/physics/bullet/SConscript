@@ -39,6 +39,8 @@ envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
 # update the compile flags
 envModule.Append(CPPFLAGS = ['-I{}/src'.format(pathSConscript)])
 envModule.Append(CPPFLAGS = ['-I{}/Bullet'.format(pathSConscript)])
+envModule.Append(CPPFLAGS = ['-I{}/Bullet/Extras/VHACD/inc'.format(pathSConscript)])
+envModule.Append(CPPFLAGS = ['-I{}/Bullet/Extras/VHACD/public'.format(pathSConscript)])
 
 #envModule.Append(CPPFLAGS = ['-O0'])
 

@@ -82,7 +82,7 @@ pRigInvMass(0.0f)
 }
 
 debpColliderBones::debpColliderBones(debpCollider &collider,
-	deColliderComponent *engColliderComponent, const debpModel::AutoGenShapePtrList &autoGenShapes) :
+	deColliderComponent *engColliderComponent, const debpModel::ShapeListPtrList &bonesShapes) :
 pCollider(collider),
 pEngColliderRig(engColliderComponent),
 pEngColliderComponent(engColliderComponent),
@@ -90,7 +90,7 @@ pRootBone(-1),
 pRigMass(0.0f),
 pRigInvMass(0.0f)
 {
-	pCreateBones(&autoGenShapes);
+	pCreateBones(&bonesShapes);
 }
 
 debpColliderBones::debpColliderBones(debpCollider &collider, deColliderRig *engColliderRig) :
@@ -1031,7 +1031,7 @@ void debpColliderBones::pCleanUp(){
 	}
 }
 
-void debpColliderBones::pCreateBones(const debpModel::AutoGenShapePtrList *autoGenShapes){
+void debpColliderBones::pCreateBones(const debpModel::ShapeListPtrList *bonesShapes){
 	const deCollider::eResponseType responseType = pEngColliderRig->GetResponseType();
 	debpCollisionWorld *dynWorld = pCollider.GetDynamicsWorld();
 	const bool enabled = pEngColliderRig->GetEnabled();
@@ -1085,8 +1085,8 @@ void debpColliderBones::pCreateBones(const debpModel::AutoGenShapePtrList *autoG
 		// shape definition are most probably controller bones or used for
 		// rendering only and should not clog up the physics system with
 		// unused rigid bodies
-		const decShape::List &boneShapes = autoGenShapes && autoGenShapes->GetAt(i)
-			? autoGenShapes->GetAt(i)->GetShapes() : rigBone.GetShapes();
+		const decShape::List &boneShapes = bonesShapes && bonesShapes->GetAt(i)
+			? *bonesShapes->GetAt(i) : rigBone.GetShapes();
 		
 		if(boneShapes.IsEmpty()){
 			return;

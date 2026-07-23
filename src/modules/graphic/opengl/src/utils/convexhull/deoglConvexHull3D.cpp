@@ -29,7 +29,7 @@
 #include "../../../convexhull3d/convhull_3d.h"
 
 #include <dragengine/common/exceptions.h>
-
+#include <dragengine/common/math/decMath.h>
 
 
 // Class deoglConvexHull3D
@@ -54,7 +54,6 @@ void deoglConvexHull3D::RemoveAllPoints(){
 }
 
 
-
 void deoglConvexHull3D::CalculateHull(){
 	pHullIndices.SetCountDiscard(0);
 	
@@ -62,20 +61,95 @@ void deoglConvexHull3D::CalculateHull(){
 		return;
 	}
 	
-	decTList<ch_vertex> vertices(pPoints.GetCount());
-	int i;
-	for(i=0; i<pPoints.GetCount(); i++){
-		vertices.Add({pPoints[i].x, pPoints[i].y, pPoints[i].z});
+	// find non-duplicate points
+	decTList<decVector> uniquePoints(pPoints.GetCount());
+	pPoints.Visit([&](const decVector &point){
+		if(!uniquePoints.HasMatching([&](const decVector &p){
+			return p.IsEqualTo(point);
+		})){
+			uniquePoints.Add(point);
+		}
+	});
+	
+	// check for degenerate cases (all collinear or coplanar)
+	if(pArePointsCoplanar(uniquePoints)){
+		return;
 	}
 	
+	decTList<ch_vertex> vertices(uniquePoints.GetCount());
+	uniquePoints.Visit([&](const decVector &point){
+		vertices.Add({point.x, point.y, point.z});
+	});
+	
 	int *faceIndices = nullptr;
-	int nFaces;
-	convhull_3d_build(vertices.GetArrayPointer(), pPoints.GetCount(), &faceIndices, &nFaces);
+	int nFaces = 0;
+	convhull_3d_build(vertices.GetArrayPointer(), vertices.GetCount(), &faceIndices, &nFaces);
 	
 	pHullIndices.EnlargeCapacity(nFaces * 3);
-	for(i=0; i<nFaces*3; i++){
+	for(int i=0; i<nFaces*3; i++){
 		pHullIndices.Add(faceIndices[i]);
 	}
 	
 	free(faceIndices);
+}
+
+
+// Private Functions
+//////////////////////
+
+bool deoglConvexHull3D::pArePointsCoplanar(const decTList<decVector> &points) const{
+	if(points.GetCount() < 4){
+		return true; // always coplanar
+	}
+	
+	// use first 3 non-collinear points to define a plane
+	const float tolerance = 1e-4f;
+	decVector p0(points[0]);
+	
+	// find second point that is not too close to the first one
+	decVector p1(p0);
+	int i;
+	
+	for(i=1; i<points.GetCount(); i++){
+		if(!p0.IsEqualTo(points[i])){
+			p1 = points[i];
+			break;
+		}
+	}
+	if(i >= points.GetCount()){
+		return true; // all points are duplicates
+	}
+	
+	// find third point that is not collinear with first two points
+	const decVector edge1(p1 - p0);
+	decVector p2(p0);
+	
+	for(i=i+1; i<points.GetCount(); i++){
+		if((edge1 % (points[i] - p0)).Length() > tolerance){
+			p2 = points[i];
+			break;
+		}
+	}
+	if(i >= points.GetCount()){
+		return true; // all points are collinear
+	}
+	
+	// check if all remaining points are coplanar with p0, p1 and p2
+	const decVector edge2(p2 - p0);
+	decVector normal(edge1 % edge2);
+	
+	if(normal.Length() < tolerance){
+		return true; // plane normal is degenerated
+	}
+	
+	normal.Normalize();
+	const float d = normal * p0;
+	
+	for(int j=3; j < points.GetCount(); j++){
+		if(fabsf((normal * points[j]) - d) > tolerance){
+			return false; // foundpoint is not on the plane
+		}
+	}
+	
+	return true;
 }

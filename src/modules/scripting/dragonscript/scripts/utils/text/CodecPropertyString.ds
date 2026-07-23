@@ -54,10 +54,13 @@ pin Dragengine.Scenery
  * | Shape Type | Parameter Name | Values | Description |
  * | ---------- | -------------- | ------ | ----------- |
  * | sphere | position | x, y, z | Position of center of shape |
+ * | sphere | rotation | x, y, z | Rotation of sphere in degrees applied in the order Z-Axis then X-Axis then Y-Axis |
  * | sphere | radius | radius | Radius of sphere |
+ * | sphere | axisScaling | x, y | Axis scaling of sphere to create ellipsoid |
  * | box | position | x, y, z | Position of center of box |
  * | box | rotation | x, y, z | Rotation of box in degrees applied in the order Z-Axis then X-Axis then Y-Axis |
  * | box | extends | x, y, z | Extends from center to box border. These are half the dimension of the box |
+ * | box | tapering | x, y | Tapering of box scaling the top side. |
  * | cylinder | position | x, y, z | Position of center of cylinder |
  * | cylinder | rotation | x, y, z | Rotation of cylinder in degrees applied in the order Z-Axis then X-Axis then Y-Axis |
  * | cylinder | height | height | Height of cylinder from center to the top respective bottom |
@@ -496,42 +499,9 @@ class CodecPropertyString
 			
 			if tokenShapeType.equals("sphere")
 				var Vector position = Vector.new()
-				var float radius = 1.0
-				
-				for j = 1 to tokenParamCount
-					var Array tokenValueList = (tokenParamList.getAt(j) cast String).splitExact(pShapeValueSeparator)
-					var String tokenParamName = tokenValueList.getAt(0) cast String
-					var int tokenValueCount = tokenValueList.getCount()
-					
-					if tokenParamName.equals("position")
-						if tokenValueCount != 4
-							throw EInvalidParam.new()
-						end
-						
-						x = (tokenValueList.getAt(1) cast String).toFloat()
-						y = (tokenValueList.getAt(2) cast String).toFloat()
-						z = (tokenValueList.getAt(3) cast String).toFloat()
-						position = Vector.new(x, y, z)
-						
-					elif tokenParamName.equals("radius")
-						if tokenValueCount != 2
-							throw EInvalidParam.new()
-						end
-						
-						radius = (tokenValueList.getAt(1) cast String).toFloat()
-						
-					else
-						throw EInvalidParam.new()
-					end
-				end
-				
-				//BaseGameApp.getApp().getConsole().addMessage("sphere: position=" + position + " radius=" + radius + "\n")
-				shapeList.addSphere(position, radius)
-				
-			elif tokenShapeType.equals("box")
 				var Quaternion orientation = Quaternion.new()
-				var Vector position = Vector.new()
-				var Vector bextends = Vector.new()
+				var float radius = 1
+				var Vector2 axisScaling = Vector2.new(1, 1)
 				
 				for j = 1 to tokenParamCount
 					var Array tokenValueList = (tokenParamList.getAt(j) cast String).splitExact(pShapeValueSeparator)
@@ -556,7 +526,62 @@ class CodecPropertyString
 						x = (tokenValueList.getAt(1) cast String).toFloat()
 						y = (tokenValueList.getAt(2) cast String).toFloat()
 						z = (tokenValueList.getAt(3) cast String).toFloat()
-						orientation = Matrix.newRotation(x, y, z).toQuaternion()
+						orientation = Quaternion.newFromEuler(x, y, z)
+						
+					elif tokenParamName.equals("radius")
+						if tokenValueCount != 2
+							throw EInvalidParam.new()
+						end
+						
+						radius = (tokenValueList.getAt(1) cast String).toFloat()
+						
+					elif tokenParamName.equals("axisScaling")
+						if tokenValueCount != 3
+							throw EInvalidParam.new()
+						end
+						
+						x = (tokenValueList.getAt(1) cast String).toFloat()
+						y = (tokenValueList.getAt(2) cast String).toFloat()
+						axisScaling = Vector2.new(x, y)
+						
+					else
+						throw EInvalidParam.new()
+					end
+				end
+				
+				//BaseGameApp.getApp().getConsole().addMessage("sphere: position=" + position + " radius=" + radius + "\n")
+				shapeList.addSphere(position, radius, axisScaling, orientation)
+				
+			elif tokenShapeType.equals("box")
+				var Quaternion orientation = Quaternion.new()
+				var Vector position = Vector.new()
+				var Vector bextends = Vector.new()
+				var Vector2 tapering = Vector2.new(1, 1)
+				
+				for j = 1 to tokenParamCount
+					var Array tokenValueList = (tokenParamList.getAt(j) cast String).splitExact(pShapeValueSeparator)
+					var String tokenParamName = tokenValueList.getAt(0) cast String
+					var int tokenValueCount = tokenValueList.getCount()
+					
+					if tokenParamName.equals("position")
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = (tokenValueList.getAt(1) cast String).toFloat()
+						y = (tokenValueList.getAt(2) cast String).toFloat()
+						z = (tokenValueList.getAt(3) cast String).toFloat()
+						position = Vector.new(x, y, z)
+						
+					elif tokenParamName.equals("rotation")
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = (tokenValueList.getAt(1) cast String).toFloat()
+						y = (tokenValueList.getAt(2) cast String).toFloat()
+						z = (tokenValueList.getAt(3) cast String).toFloat()
+						orientation = Quaternion.newFromEuler(x, y, z)
 						
 					elif tokenParamName.equals("extends")
 						if tokenValueCount != 4
@@ -568,22 +593,31 @@ class CodecPropertyString
 						z = (tokenValueList.getAt(3) cast String).toFloat()
 						bextends = Vector.new(x, y, z)
 						
+					elif tokenParamName.equals("tapering")
+						if tokenValueCount != 3
+							throw EInvalidParam.new()
+						end
+						
+						x = (tokenValueList.getAt(1) cast String).toFloat()
+						y = (tokenValueList.getAt(2) cast String).toFloat()
+						tapering = Vector2.new(x, y)
+						
 					else
 						throw EInvalidParam.new()
 					end
 				end
 				
 				//BaseGameApp.getApp().getConsole().addMessage("box: position=" + position + " extends=" + bextends + " orientation=" + orientation + "\n")
-				shapeList.addBox(position, bextends, orientation)
+				shapeList.addBox(position, bextends, tapering, orientation)
 				
 			elif tokenShapeType.equals("cylinder")
-				var Vector2 bottomAxisScaling = Vector2.new(1.0, 1.0)
-				var Vector2 topAxisScaling = Vector2.new(1.0, 1.0)
+				var Vector2 bottomAxisScaling = Vector2.new(1, 1)
+				var Vector2 topAxisScaling = Vector2.new(1, 1)
 				var Quaternion orientation = Quaternion.new()
 				var Vector position = Vector.new()
-				var float bottomRadius = 1.0
-				var float topRadius = 1.0
-				var float height = 1.0
+				var float bottomRadius = 1
+				var float topRadius = 1
+				var float height = 1
 				
 				for j = 1 to tokenParamCount
 					var Array tokenValueList = (tokenParamList.getAt(j) cast String).splitExact(pShapeValueSeparator)
@@ -648,17 +682,17 @@ class CodecPropertyString
 					end
 				end
 				
-				shapeList.addCylinder(height * 0.5, topRadius, bottomRadius, \
+				shapeList.addCylinder(height * 0.5, topRadius, bottomRadius,\
 					topAxisScaling, bottomAxisScaling, position, orientation)
 				
 			elif tokenShapeType.equals("capsule")
-				var Vector2 bottomAxisScaling = Vector2.new(1.0, 1.0)
-				var Vector2 topAxisScaling = Vector2.new(1.0, 1.0)
+				var Vector2 bottomAxisScaling = Vector2.new(1, 1)
+				var Vector2 topAxisScaling = Vector2.new(1, 1)
 				var Quaternion orientation = Quaternion.new()
 				var Vector position = Vector.new()
-				var float bottomRadius = 1.0
-				var float topRadius = 1.0
-				var float height = 1.0
+				var float bottomRadius = 1
+				var float topRadius = 1
+				var float height = 1
 				
 				for j = 1 to tokenParamCount
 					var Array tokenValueList = (tokenParamList.getAt(j) cast String).splitExact(pShapeValueSeparator)
@@ -723,7 +757,7 @@ class CodecPropertyString
 					end
 				end
 				
-				shapeList.addCapsule(height * 0.5, topRadius, bottomRadius, \
+				shapeList.addCapsule(height * 0.5, topRadius, bottomRadius,\
 					topAxisScaling, bottomAxisScaling, position, orientation)
 				
 			elif tokenShapeType.equals("hull")
@@ -962,29 +996,32 @@ class CodecPropertyString
 				s2 = s2 + ":position," + v.getX() + "," + v.getY() + "," + v.getZ()
 			end
 			
-			if shapeType != ShapeType.sphere
-				v = list.getOrientationAt(i).getEulerAngles()
-				if not v.isEqualTo(vIsZero, vecThreshold)
-					s2 = s2 + ":rotation," + v.getX() + "," + v.getY() + "," + v.getZ()
-				end
+			v = list.getOrientationAt(i).getEulerAngles()
+			if not v.isEqualTo(vIsZero, vecThreshold)
+				s2 = s2 + ":rotation," + v.getX() + "," + v.getY() + "," + v.getZ()
 			end
 			
 			select shapeType
 			case ShapeType.sphere
 				s2 = "sphere" + s2 + ":radius," + list.getRadiusAt(i)
 				
+				v2 = list.getAxisScalingAt(i)
+				if not v2.isEqualTo(v2IsOne, vecThreshold)
+					s2 = s2 + ":axisScaling," + v2.getX() + "," + v2.getY()
+				end
+				
 			case ShapeType.box
 				v = list.getHalfExtendsAt(i)
 				s2 = "box" + s2 + ":extends," + v.getX() + "," + v.getY() + "," + v.getZ()
 				
+				v2 = list.getTaperingAt(i)
+				if not v2.isEqualTo(v2IsOne, vecThreshold)
+					s2 = s2 + ":tapering," + v2.getX() + "," + v2.getY()
+				end
+				
 			case ShapeType.cylinder
 			case ShapeType.capsule
-				if shapeType == ShapeType.cylinder
-					s2 = "cylinder" + s2
-					
-				else
-					s2 = "capsule" + s2
-				end
+				s2 = (shapeType == ShapeType.cylinder if "cylinder" else "capsule") + s2
 				
 				s2 = s2 + ":height," + list.getHalfHeightAt(i) \
 					+ ":radius," + list.getTopRadiusAt(i) + "," + list.getBottomRadiusAt(i)

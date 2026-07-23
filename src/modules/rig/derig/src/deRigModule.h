@@ -85,6 +85,7 @@ private:
 	void pParseBox(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties);
 	void pParseHull(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties);
 	void pParseVector(decXmlElementTag *root, decVector &vector);
+	void pParseVector2(decXmlElementTag *root, decVector2 &vector);
 	void pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone *bone, dermName::List &boneNameList);
 	void pParseConstraintDof(const decXmlElementTag &root, deColliderConstraintDof &dof, bool linearConstraint);
 	void pParseConstraintLimits(decXmlElementTag *root, deRigConstraint *constraint);
