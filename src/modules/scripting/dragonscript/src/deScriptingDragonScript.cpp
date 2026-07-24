@@ -254,6 +254,7 @@
 #include "classes/world/deClassModelBuilder.h"
 #include "classes/world/deClassRig.h"
 #include "classes/world/deClassRigBuilder.h"
+#include "classes/world/deClassScene.h"
 #include "classes/world/deClassSkin.h"
 #include "classes/world/deClassSkinBuilder.h"
 #include "classes/world/deClassWorld.h"
@@ -483,10 +484,12 @@ pClsRigBuilder(nullptr),
 pClsRTM(nullptr),
 pClsSvrL(nullptr),
 pClsSA(nullptr),
-pClsShaList(nullptr),
+pClsScene(nullptr),
+pClsScrSys(nullptr),
 pClsService(nullptr),
 pClsServiceListener(nullptr),
 pClsServiceObject(nullptr),
+pClsShaList(nullptr),
 pClsSvr(nullptr),
 pClsSkin(nullptr),
 pClsSkinBuilder(nullptr),
@@ -1390,6 +1393,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass(pClsModelBuilder = new deClassModelBuilder(*this));
 		package->AddHostClass(pClsRig = new deClassRig(this));
 		package->AddHostClass(pClsRigBuilder = new deClassRigBuilder(*this));
+		package->AddHostClass(pClsScene = new deClassScene(*this));
 		package->AddHostClass(pClsRTM = new deClassRuntimeMeter(this));
 		package->AddHostClass(pClsAnim = new deClassAnimation(*engine, *this));
 		package->AddHostClass(pClsAnimBuilder = new deClassAnimationBuilder(*this));

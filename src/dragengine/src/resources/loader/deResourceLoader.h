@@ -62,6 +62,7 @@ class deVirtualFileSystem;
  * - Model
  * - OcclusionMesh
  * - Rig
+ * - Scene
  * - Skin
  * - Sound
  * - Video
@@ -98,7 +99,10 @@ public:
 		ertSound,
 		
 		/** \brief Video. */
-		ertVideo
+		ertVideo,
+		
+		/** \brief Scene. */
+		ertScene
 	};
 	
 	
