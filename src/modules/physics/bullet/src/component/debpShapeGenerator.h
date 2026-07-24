@@ -25,7 +25,7 @@
 #ifndef _DEBPSHAPEGENERATOR_H_
 #define _DEBPSHAPEGENERATOR_H_
 
-#include <dragengine/deTUniqueReference.h>
+#include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShape.h>
@@ -52,7 +52,6 @@ public:
 	
 private:
 	enum class ShapeType{
-		none,
 		sphere,
 		ellipsoid,
 		box,
@@ -64,8 +63,10 @@ private:
 		convexHull
 	};
 	
-	class FittingParams{
+	class FittingParams : public deObject{
 	public:
+		using Ref = deTObjectReference<FittingParams>;
+		
 		const WeightList &weights;
 		float convexHullThreshold;
 		float totalWeight;
@@ -84,9 +85,12 @@ private:
 		FittingParams(const FittingParams &fparams);
 	};
 	
-	struct ShapeParams{
-		const FittingParams *fparams = nullptr;
-		ShapeType type = ShapeType::none;
+	class ShapeParams : public deObject{
+	public:
+		using Ref = deTObjectReference<ShapeParams>;
+		
+		FittingParams::Ref fparams;
+		ShapeType type = ShapeType::sphere;
 		decVector center;
 		decQuaternion orientation, conjOrientation;
 		
@@ -102,8 +106,8 @@ private:
 	};
 	
 	struct SelectShapeResult{
-		ShapeType type = ShapeType::none;
-		ShapeType fallbackType = ShapeType::none;
+		ShapeParams::Ref best;
+		ShapeParams::Ref fallback;
 		float maxError = 0.0f;
 		float avgError = 0.0f;
 	};
@@ -123,6 +127,7 @@ private:
 	float pUseConvexHullThreshold;
 	float pUseConvexHullThresholdPower;
 	float pMinUseConvexHullThreshold;
+	bool pTestCardinalAxes;
 	
 	
 public:
@@ -151,18 +156,18 @@ private:
 	void pPrepareFittingParamsEigen(FittingParams &fparams);
 	void pPrepareFittingParamsShared(FittingParams &fparams);
 	
-	ShapeParams pFitSphere(const FittingParams &fparams);
-	ShapeParams pFitCapsule(const FittingParams &fparams);
-	ShapeParams pFitTaperedCapsule(const FittingParams &fparams);
-	ShapeParams pFitCylinder(const FittingParams &fparams);
-	ShapeParams pFitTaperedCylinder(const FittingParams &fparams);
-	ShapeParams pFitBox(const FittingParams &fparams);
-	ShapeParams pFitConvexHull(const FittingParams &fparams);
+	ShapeParams::Ref pFitSphere(const FittingParams::Ref &fparams);
+	ShapeParams::Ref pFitCapsule(const FittingParams::Ref &fparams);
+	ShapeParams::Ref pFitTaperedCapsule(const FittingParams::Ref &fparams);
+	ShapeParams::Ref pFitCylinder(const FittingParams::Ref &fparams);
+	ShapeParams::Ref pFitTaperedCylinder(const FittingParams::Ref &fparams);
+	ShapeParams::Ref pFitBox(const FittingParams::Ref &fparams);
+	ShapeParams::Ref pFitConvexHull(const FittingParams::Ref &fparams);
 	
-	ShapeParams pUseBetter(const ShapeParams &params1, const ShapeParams &params2);
+	ShapeParams::Ref pUseBetter(const ShapeParams::Ref &params1, const ShapeParams::Ref &params2);
 	
-	SelectShapeResult pSelectBestShape(const ShapeParams &capsule,
-		const ShapeParams &cylinder, const ShapeParams &box);
+	SelectShapeResult pSelectBestShape(const ShapeParams::Ref &capsule,
+		const ShapeParams::Ref &cylinder, const ShapeParams::Ref &box);
 	
 	FitErrorResult pComputeFitError(const ShapeParams &params);
 	
