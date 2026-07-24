@@ -317,30 +317,89 @@ void debpCreateBulletShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	const decQuaternion &orientation = cylinder.GetOrientation();
 	const float halfHeight = cylinder.GetHalfHeight();
 	const float topRadius = cylinder.GetTopRadius();
-	//float bottomRadius = cylinder->GetBottomRadius();
+	const float bottomRadius = cylinder.GetBottomRadius();
+	const decVector2 &topAxisScaling = cylinder.GetTopAxisScaling();
+	const decVector2 &bottomAxisScaling = cylinder.GetBottomAxisScaling();
+	const bool hasNoShape = pBulletShape.IsNull();
 	debpBulletShape::Ref bulletShapeCylinder;
-	bool hasNoShape = pBulletShape.IsNull();
-	btCylinderShape *cylinderShape = nullptr;
 	bool needsTransform = false;
+	float ccdRadius = halfHeight + topRadius + bottomRadius;
 	
-	float ccdRadius = halfHeight + topRadius;
+	const bool hasTopScaling = !topAxisScaling.IsEqualTo({1.0f, 1.0f});
+	const bool hasBottomScaling = !bottomAxisScaling.IsEqualTo({1.0f, 1.0f});
+	void * const userPointer = (void*)(intptr_t)(pShapeIndex + 1);
 	
-	btVector3 bthe(topRadius, halfHeight, topRadius);
-	
-	cylinderShape = new btCylinderShape(bthe);
-	if(pNoMargin){
-		cylinderShape->setMargin(BT_ZERO);
+	if(hasTopScaling || hasBottomScaling){
+		// create convex hull approximation for scaled cylinders
+		// with 16 points per circle and 2 circles this results in 32 hull points
+		auto hullShape = new btConvexHullShape();
+		
+		const int pointsPerCircle = 16;
+		
+		const decVector2 rt(topAxisScaling * topRadius);
+		const decVector2 rb(bottomAxisScaling * bottomRadius);
+		
+		// add points for top circle
+		for(int i=0; i<pointsPerCircle; i++){
+			const float angle = (TWO_PI * (float)i) / (float)pointsPerCircle;
+			const float c = cosf(angle);
+			const float s = sinf(angle);
+			
+			hullShape->addPoint({rt.x * c, halfHeight, rt.y * s});
+		}
+		
+		// add points for bottom circle
+		for(int i=0; i<pointsPerCircle; i++){
+			const float angle = (TWO_PI * (float)i) / (float)pointsPerCircle;
+			const float c = cosf(angle);
+			const float s = sinf(angle);
+			
+			hullShape->addPoint({rb.x * c, -halfHeight, rb.y * s});
+		}
+		
+		// finish the shape
+		hullShape->recalcLocalAabb();
+		
+		if(pNoMargin){
+			hullShape->setMargin(BT_ZERO);
+		}
+		hullShape->setUserPointer(userPointer);
+		
+		bulletShapeCylinder = debpBulletShape::Ref::New(hullShape);
+		
+		// update CCD radius
+		ccdRadius = decMath::min(ccdRadius, topRadius * topAxisScaling.x * 0.5f,
+			topRadius * topAxisScaling.y * 0.5f);
+		ccdRadius = decMath::min(ccdRadius, bottomRadius * bottomAxisScaling.x * 0.5f,
+			bottomRadius * bottomAxisScaling.y * 0.5f);
+		
+	}else if(fabsf(topRadius - bottomRadius) > 0.001f){
+		const btVector3 positions[2]{{0.0f, halfHeight, 0.0f}, {0.0f, -halfHeight, 0.0f}};
+		const btScalar radi[2]{topRadius, bottomRadius};
+		
+		auto cylinderShape = new btMultiSphereShape(positions, &radi[0], 2);
+		if(pNoMargin){
+			cylinderShape->setMargin(BT_ZERO);
+		}
+		cylinderShape->setUserPointer(userPointer);
+		
+		bulletShapeCylinder = debpBulletShape::Ref::New(cylinderShape);
+		
+	}else{
+		auto cylinderShape = new btCylinderShape(btVector3(topRadius, halfHeight, topRadius));
+		if(pNoMargin){
+			cylinderShape->setMargin(BT_ZERO);
+		}
+		cylinderShape->setUserPointer(userPointer);
+		
+		bulletShapeCylinder = debpBulletShape::Ref::New(cylinderShape);
 	}
-	cylinderShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-	
-	bulletShapeCylinder = debpBulletShape::Ref::New(cylinderShape);
 	
 	if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
 	if(!position.IsZero()) needsTransform = true;
 	
 #ifdef DEBUGGING
-printf("debpCreateBulletShape.VisitShapeCylinder: he=(%g,%g,%g)\n", cylinderShape->getHalfExtentsWithMargin().getX(),
-cylinderShape->getHalfExtentsWithMargin().getY(), cylinderShape->getHalfExtentsWithMargin().getZ());
+printf("debpCreateBulletShape.VisitShapeCylinder: tr=%g br=%g he=%g\n", topRadius, bottomRadius, halfHeight);
 #endif
 	if(needsTransform){
 		const btTransform transform(
@@ -352,10 +411,12 @@ cylinderShape->getHalfExtentsWithMargin().getY(), cylinderShape->getHalfExtentsW
 		pAddCollisionShape(bulletShapeCylinder);
 	}
 	
-	float smallestHalfExtends = decMath::min(halfHeight, topRadius);
+	float smallestHalfExtends = decMath::min(halfHeight, topRadius, bottomRadius);
 	smallestHalfExtends *= 0.25f; // 0.25 is a little ratio to improve detection (does it really improve anymore?)
 	
-	if(hasNoShape || ccdRadius < pCcdRadius) pCcdRadius = ccdRadius;
+	if(hasNoShape || ccdRadius < pCcdRadius){
+		pCcdRadius = ccdRadius;
+	}
 	if(hasNoShape || smallestHalfExtends < pCcdThreshold){
 		pCcdThreshold = smallestHalfExtends;
 	}

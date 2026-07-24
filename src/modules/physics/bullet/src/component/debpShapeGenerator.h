@@ -50,7 +50,6 @@ public:
 	/** Shape list reference. */
 	using ShapeListRef = deTUniqueReference<decShape::List>;
 	
-	
 private:
 	enum class ShapeType{
 		none,
@@ -60,10 +59,33 @@ private:
 		capsule,
 		taperedBox,
 		taperedCapsule,
+		cylinder,
+		taperedCylinder,
 		convexHull
 	};
 	
+	class FittingParams{
+	public:
+		const WeightList &weights;
+		float convexHullThreshold;
+		float totalWeight;
+		float volume;
+		decVector center;
+		decMatrix covariance;
+		decMatrix eigenvectors;
+		decVector eigenvalues;
+		decVector majorAxis, minorAxis;
+		decQuaternion orientation, conjOrientation;
+		decMatrix matrix, invMatrix;
+		decTList<decVector> vertices;
+		decVector minExtents, maxExtents, extents, halfExtents;
+		
+		explicit FittingParams(const WeightList &weights);
+		FittingParams(const FittingParams &fparams);
+	};
+	
 	struct ShapeParams{
+		const FittingParams *fparams = nullptr;
 		ShapeType type = ShapeType::none;
 		decVector center;
 		decQuaternion orientation, conjOrientation;
@@ -79,21 +101,16 @@ private:
 		decTList<decVector> hullVertices; // convex hull
 	};
 	
-	class FittingParams{
-	public:
-		const WeightList &weights;
-		float totalWeight;
-		decVector center;
-		decMatrix covariance;
-		decMatrix eigenvectors;
-		decVector eigenvalues;
-		decVector majorAxis, minorAxis;
-		decQuaternion orientation, conjOrientation;
-		decMatrix matrix, invMatrix;
-		decTList<decVector> vertices;
-		decVector minExtents, maxExtents, extends, halfExtents;
-		
-		explicit FittingParams(const WeightList &weights);
+	struct SelectShapeResult{
+		ShapeType type = ShapeType::none;
+		ShapeType fallbackType = ShapeType::none;
+		float maxError = 0.0f;
+		float avgError = 0.0f;
+	};
+	
+	struct FitErrorResult{
+		float maxError = 0.0f;
+		float avgError = 0.0f;
 	};
 	
 	
@@ -103,6 +120,9 @@ private:
 	float pPreferBoxVolRatio;
 	float pUseTaperedRatio;
 	float pUseAxisScalingRatio;
+	float pUseConvexHullThreshold;
+	float pUseConvexHullThresholdPower;
+	float pMinUseConvexHullThreshold;
 	
 	
 public:
@@ -117,26 +137,34 @@ public:
 	/*@{*/
 	/**
 	 * Create best matching analytic shape from bone vertices. Positions are in bone space.
-	 * Returns nullptr if bone has too few vertices.
+	 * Error margin indicates the error in meters to use to choose between analytic and convex
+	 * hull shapes. Returns nullptr if bone has too few vertices.
 	 */
-	ShapeListRef Create(const WeightList &weights);
+	ShapeListRef Create(const WeightList &weights, float convexHullThreshold);
 	/*@}*/
 	
 	
 	
 private:
-	bool pPrepareFittingParams(FittingParams &fparams);
+	void pPrepareFittingParamsBasic(FittingParams &fparams);
+	void pPrepareFittingParamsAxis(FittingParams &fparams);
+	void pPrepareFittingParamsEigen(FittingParams &fparams);
+	void pPrepareFittingParamsShared(FittingParams &fparams);
 	
 	ShapeParams pFitSphere(const FittingParams &fparams);
 	ShapeParams pFitCapsule(const FittingParams &fparams);
 	ShapeParams pFitTaperedCapsule(const FittingParams &fparams);
+	ShapeParams pFitCylinder(const FittingParams &fparams);
+	ShapeParams pFitTaperedCylinder(const FittingParams &fparams);
 	ShapeParams pFitBox(const FittingParams &fparams);
 	ShapeParams pFitConvexHull(const FittingParams &fparams);
 	
-	ShapeType pSelectBestShape(const FittingParams &fparams, const ShapeParams &capsule,
-		const ShapeParams &box, const ShapeParams &convexHull);
+	ShapeParams pUseBetter(const ShapeParams &params1, const ShapeParams &params2);
 	
-	float pComputeFitError(const ShapeParams &params, const FittingParams &fparams);
+	SelectShapeResult pSelectBestShape(const ShapeParams &capsule,
+		const ShapeParams &cylinder, const ShapeParams &box);
+	
+	FitErrorResult pComputeFitError(const ShapeParams &params);
 	
 	decMatrix pCalcCovariance(const WeightList &weights, const decVector &center, float totalWeight);
 	decMatrix pCalcEigenvectors(const decMatrix &matrix, decVector &eigenvalues);

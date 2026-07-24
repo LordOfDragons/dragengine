@@ -62,7 +62,10 @@ pBullet(bullet),
 pModel(model),
 pOctree(NULL),
 pCanDeform(false),
-pHasWeightlessExtends(false)
+pHasWeightlessExtends(false),
+pModelShapeConvexHullThreshold(0.0f),
+pBoneShapesConvexHullThreshold(0.0f),
+pBoneShapesWeightThreshold(0.0f)
 {
 	(void)pBullet;
 	
@@ -274,8 +277,9 @@ void debpModel::PrepareShape(){
 }
 
 
-void debpModel::PrepareModelShapes(){
-	if(pModelShapesGenerated){
+void debpModel::PrepareModelShapes(float convexHullThreshold){
+	if(pModelShapesGenerated
+	&& fabsf(pModelShapeConvexHullThreshold - convexHullThreshold) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -283,6 +287,8 @@ void debpModel::PrepareModelShapes(){
 	const deModelLOD &lod = pModel.GetLODs().First();
 	const int faceCount = lod.GetFaces().GetCount();
 	if(faceCount == 0){
+		pModelShapes.Clear();
+		pModelShapeConvexHullThreshold = convexHullThreshold;
 		pModelShapesGenerated = true;
 		return;
 	}
@@ -306,6 +312,8 @@ void debpModel::PrepareModelShapes(){
 	});
 	
 	if(vertices.GetCount() < 12){ // less than 4 vertices
+		pModelShapes.Clear();
+		pModelShapeConvexHullThreshold = convexHullThreshold;
 		pModelShapesGenerated = true;
 		return;
 	}
@@ -327,6 +335,8 @@ void debpModel::PrepareModelShapes(){
 	});
 	
 	if(indices.GetCount() < 9){ // less than 3 triangles
+		pModelShapes.Clear();
+		pModelShapeConvexHullThreshold = convexHullThreshold;
 		pModelShapesGenerated = true;
 		return;
 	}
@@ -348,6 +358,8 @@ void debpModel::PrepareModelShapes(){
 	
 	auto vhacd = AutoReleaseVHACD(VHACD::CreateVHACD());
 	if(!vhacd){
+		pModelShapes.Clear();
+		pModelShapeConvexHullThreshold = convexHullThreshold;
 		pModelShapesGenerated = true;
 		return;
 	}
@@ -369,6 +381,8 @@ void debpModel::PrepareModelShapes(){
 	
 	if(!vhacd->Compute(vertices.GetArrayPointer(), 3, vertices.GetCount() / 3,
 	indices.GetArrayPointer(), 3, indices.GetCount() / 3, params)){
+		pModelShapes.Clear();
+		pModelShapeConvexHullThreshold = convexHullThreshold;
 		pModelShapesGenerated = true;
 		return;
 	}
@@ -376,6 +390,8 @@ void debpModel::PrepareModelShapes(){
 	// process convex hulls
 	debpShapeGenerator generator;
 	unsigned int hullCount = vhacd->GetNConvexHulls();
+	
+	pModelShapes = deTUniqueReference<decShape::List>::New();
 	
 	for(unsigned int h=0; h<hullCount; h++){
 		VHACD::IVHACD::ConvexHull hull;
@@ -390,28 +406,31 @@ void debpModel::PrepareModelShapes(){
 			weights.Add({{(float)p[0], (float)p[1], (float)p[2]}, 1.0f});
 		}
 		
-		auto shapes = generator.Create(weights);
+		auto shapes = generator.Create(weights, convexHullThreshold);
 		if(shapes){
 			shapes->Visit([&](const decShape::Ref &shape){
-				if(!pModelShapes){
-					pModelShapes = deTUniqueReference<decShape::List>::New();
-				}
 				pModelShapes->Add(std::move(shape->Copy()));
 			});
 		}
 	}
 	
 	pModelShapesGenerated = true;
+	pModelShapeConvexHullThreshold = convexHullThreshold;
 }
 
-void debpModel::PrepareBoneShapes(){
-	if(pBoneShapesPrepared){
+void debpModel::PrepareBoneShapes(float convexHullThreshold, float weightThreshold){
+	if(pBoneShapesPrepared
+		&& fabsf(pBoneShapesConvexHullThreshold - convexHullThreshold) < FLOAT_SAFE_EPSILON
+		&& fabsf(pBoneShapesWeightThreshold - weightThreshold) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	const deModelLOD &lod = pModel.GetLODs().First();
 	const deModelBone::List &bones = pModel.GetBones();
 	if(bones.IsEmpty() || lod.GetVertices().IsEmpty()){
+		pBoneShapes.RemoveAll();
+		pBoneShapesConvexHullThreshold = convexHullThreshold;
+		pBoneShapesWeightThreshold = weightThreshold;
 		pBoneShapesPrepared = true;
 		return;
 	}
@@ -426,6 +445,9 @@ void debpModel::PrepareBoneShapes(){
 		}
 		
 		const sWeightSet &weightSet = pWeightSets[vertex.GetWeightSet()];
+		if(weightSet.count < 1){
+			return;
+		}
 		
 		// the idea here is the following. weights of 50% to 100% are used for the main
 		// deformation bone. weights of 25% to 50% are used for the neightbor bones to properly
@@ -437,42 +459,53 @@ void debpModel::PrepareBoneShapes(){
 		// them up too much in size. the threshold is applied to the maximum weight since weights
 		// in models are not required to be normalized
 		
-		float maxWeight = 0.0f;
-		for(int w=0; w<weightSet.count; w++){
-			maxWeight = decMath::max(maxWeight, weightSet.first[w].GetWeight());
-		}
-		
-		const float weightThreshold = maxWeight * 0.35f;
-		
-		for(int w=0; w<weightSet.count; w++){
-			const deModelWeight &modelWeight = weightSet.first[w];
-			
-			const int bone = modelWeight.GetBone();
-			if(bone < 0 || bone >= boneCount){
-				return; // should never happen but better safe than sorry
+		if(weightSet.count > 1){
+			float maxWeight = 0.0f;
+			for(int w=0; w<weightSet.count; w++){
+				maxWeight = decMath::max(maxWeight, weightSet.first[w].GetWeight());
 			}
 			
-			const float weight = modelWeight.GetWeight();
-			if(weight < weightThreshold){
-				continue;
+			const float wsWeightThreshold = maxWeight * weightThreshold;
+			
+			for(int w=0; w<weightSet.count; w++){
+				const deModelWeight &modelWeight = weightSet.first[w];
+				
+				const int bone = modelWeight.GetBone();
+				if(bone < 0 || bone >= boneCount){
+					continue;
+				}
+				
+				const float weight = modelWeight.GetWeight();
+				if(weight < wsWeightThreshold){
+					continue;
+				}
+				
+				weights[bone].Add({bones[bone]->GetInverseMatrix() * vertex.GetPosition(), weight});
 			}
 			
-			weights[bone].Add({bones[bone]->GetInverseMatrix() * vertex.GetPosition(), weight});
+		}else{
+			const int bone = weightSet.first->GetBone();
+			if(bone >= 0 && bone < boneCount){
+				weights[bone].Add({bones[bone]->GetInverseMatrix() * vertex.GetPosition(), 1.0f});
+			}
 		}
 	});
 	
 	// create analytic shapes for each bone
+	pBoneShapes.RemoveAll();
 	pBoneShapes.EnlargeCapacity(boneCount);
 	
 	debpShapeGenerator generator;
 	weights.Visit([&](const debpShapeGenerator::WeightList &w){
-		pBoneShapes.Add(w.GetCount() >= 4 ? generator.Create(w) : debpShapeGenerator::ShapeListRef());
+		pBoneShapes.Add(generator.Create(w, convexHullThreshold));
 	});
 	
+	pBoneShapesConvexHullThreshold = convexHullThreshold;
+	pBoneShapesWeightThreshold = weightThreshold;
 	pBoneShapesPrepared = true;
 }
 
-deRig::Ref debpModel::GenerateCollisionShapes(){
+deRig::Ref debpModel::GenerateCollisionShapes(float convexHullThreshold, float weightThreshold){
 	class cRigBuilder : public deRigBuilder{
 	public:
 		debpModel &pModel;
@@ -516,10 +549,10 @@ deRig::Ref debpModel::GenerateCollisionShapes(){
 	};
 	
 	if(pModel.GetBones().IsNotEmpty()){
-		PrepareBoneShapes();
+		PrepareBoneShapes(convexHullThreshold, weightThreshold);
 		
 	}else{
-		PrepareModelShapes();
+		PrepareModelShapes(convexHullThreshold);
 	}
 	
 	cRigBuilder builder(*this);

@@ -69,6 +69,9 @@
 	<translation name="Rig.Action.RigShowPushs.Description">Anzeigen der Stösse des gesamten Rigs</translation>
 	<translation name="Rig.Action.RigGenerateCollisionShapes">Kollisionsformen erzeugen</translation>
 	<translation name="Rig.Action.RigGenerateCollisionShapes.Description">Erzeugt Kollisionsformen für das Rig</translation>
+	<translation name="Rig.Dialog.GenerateCollisionShapes.Title">Kollisionsformen erzeugen</translation>
+	<translation name="Rig.Dialog.GenerateCollisionShapes.Message">Geben Sie den Multiplikator für den Schwellenwert der konvexen Hülle ein. 0 erzeugt nur konvexe Hüllen. 1 verwendet den Standardwert. Größere Werte erhöhen die Anzahl der analytischen Formen.</translation>
+	<translation name="Rig.Dialog.GenerateCollisionShapes2.Message">Geben Sie den Multiplikator für den Gewichtsschwellenwert ein. 0.45 ist der Standardwert.</translation>
 	
 	<!-- Window Main Actions - Bone -->
 	<translation name="Rig.Action.BoneAdd">Hinzufügen</translation>

@@ -35,6 +35,6 @@ deBasePhysicsModel::~deBasePhysicsModel() = default;
 // Management
 ///////////////
 
-deRig::Ref deBasePhysicsModel::GenerateCollisionShapes(){
+deRig::Ref deBasePhysicsModel::GenerateCollisionShapes(float, float){
 	return {};
 }

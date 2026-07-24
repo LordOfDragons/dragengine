@@ -1020,6 +1020,7 @@ bool debpColliderBones::UpdateStaticCollisionTests(){
 
 // Private functions
 //////////////////////
+
 void debpColliderBones::pCleanUp(){
 	debpWorld * const world = pCollider.GetParentWorld();
 	if(world){

@@ -1001,7 +1001,14 @@ public:
 		if(!rig->GetEngineComponent() || !rig->GetEngineComponent()->GetModel()){
 			return {};
 		}
-		const auto generatedRig = rig->GetEngineComponent()->GetModel()->GetPeerPhysics()->GenerateCollisionShapes();
+		
+		if(!igdeCommonDialogs::GetFloat(pWindow, "@Rig.Dialog.GenerateCollisionShapes.Title",
+		"@Rig.Dialog.GenerateCollisionShapes.Message", pWindow.genColShapesConvexHullThreshold)){
+			return {};
+		}
+		
+		const auto generatedRig = rig->GetEngineComponent()->GetModel()->GetPeerPhysics()->
+			GenerateCollisionShapes(pWindow.genColShapesConvexHullThreshold, 0.45f);
 		if(!generatedRig){
 			return {};
 		}
@@ -1246,7 +1253,20 @@ public:
 		if(selection.IsEmpty() || !rig->GetEngineComponent() || !rig->GetEngineComponent()->GetModel()){
 			return {};
 		}
-		const auto generatedRig = rig->GetEngineComponent()->GetModel()->GetPeerPhysics()->GenerateCollisionShapes();
+		
+		if(!igdeCommonDialogs::GetFloat(pWindow, "@Rig.Dialog.GenerateCollisionShapes.Title",
+		"@Rig.Dialog.GenerateCollisionShapes.Message", pWindow.genColShapesConvexHullThreshold)){
+			return {};
+		}
+		
+		if(!igdeCommonDialogs::GetFloat(pWindow, "@Rig.Dialog.GenerateCollisionShapes2.Title",
+		"@Rig.Dialog.GenerateCollisionShapes2.Message", pWindow.genColShapesWeightThreshold)){
+			return {};
+		}
+		
+		const auto generatedRig = rig->GetEngineComponent()->GetModel()->GetPeerPhysics()->
+			GenerateCollisionShapes(pWindow.genColShapesConvexHullThreshold,
+				pWindow.genColShapesWeightThreshold);
 		if(!generatedRig){
 			return {};
 		}

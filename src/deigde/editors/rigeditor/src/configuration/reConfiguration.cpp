@@ -66,9 +66,7 @@ pPreventSaving(false)
 	pReset();
 }
 
-reConfiguration::~reConfiguration(){
-}
-
+reConfiguration::~reConfiguration() = default;
 
 
 // Management

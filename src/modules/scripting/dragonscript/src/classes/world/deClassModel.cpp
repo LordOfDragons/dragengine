@@ -267,7 +267,31 @@ void deClassModel::nfGenerateCollisionShapes::RunFunction(dsRunTime *rt, dsValue
 	
 	auto peer = model->GetPeerPhysics();
 	if(peer){
-		rig = peer->GenerateCollisionShapes();
+		rig = peer->GenerateCollisionShapes(1.0f, 0.45f);
+	}
+	
+	ds.GetClassRig()->PushRig(rt, rig);
+}
+
+// func Rig generateCollisionShapes(float convexHullThreshold, float weightThreshold)
+deClassModel::nfGenerateCollisionShapes2::nfGenerateCollisionShapes2(const sInitData &init) :
+dsFunction(init.clsMdl, "generateCollisionShapes", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
+	p_AddParameter(init.clsFloat); // convexHullThreshold
+	p_AddParameter(init.clsFloat); // weightThreshold
+}
+
+void deClassModel::nfGenerateCollisionShapes2::RunFunction(dsRunTime *rt, dsValue *myself){
+	const auto &model = dedsGetNativeData<sMdlNatDat>(p_GetNativeData(myself)).model;
+	const auto &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
+	
+	const float convexHullThreshold = rt->GetValue(0)->GetFloat();
+	const float weightThreshold = rt->GetValue(1)->GetFloat();
+	deRig::Ref rig;
+	
+	auto peer = model->GetPeerPhysics();
+	if(peer){
+		rig = peer->GenerateCollisionShapes(convexHullThreshold, weightThreshold);
 	}
 	
 	ds.GetClassRig()->PushRig(rt, rig);
@@ -346,6 +370,7 @@ void deClassModel::CreateClassMembers(dsEngine *engine){
 	init.clsBool = engine->GetClassBool();
 	init.clsStr = engine->GetClassString();
 	init.clsInt = engine->GetClassInt();
+	init.clsFloat = engine->GetClassFloat();
 	init.clsObj = engine->GetClassObject();
 	init.clsVec = pDS->GetClassVector();
 	init.clsRN = pDS->GetClassResourceListener();
@@ -371,6 +396,7 @@ void deClassModel::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfVertexPositionSetGetNameAt(init));
 	
 	AddFunction(new nfGenerateCollisionShapes(init));
+	AddFunction(new nfGenerateCollisionShapes2(init));
 	
 	AddFunction(new nfEquals(init));
 	AddFunction(new nfHashCode(init));

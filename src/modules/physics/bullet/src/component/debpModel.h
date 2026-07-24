@@ -84,6 +84,8 @@ private:
 	
 	deTUniqueReference<decShape::List> pModelShapes;
 	ShapeListList pBoneShapes;
+	float pModelShapeConvexHullThreshold;
+	float pBoneShapesConvexHullThreshold, pBoneShapesWeightThreshold;
 	bool pModelShapesGenerated = false;
 	bool pBoneShapesPrepared = false;
 	
@@ -108,7 +110,7 @@ public:
 	
 	
 	
-	/** \brief Octree or \em NULL if not prepared. */
+	/** \brief Octree or nullptr if not prepared. */
 	inline debpModelOctree *GetOctree() const{ return pOctree; }
 	
 	/** \brief Prepare octree if not ready yet. */
@@ -169,19 +171,19 @@ public:
 	
 	
 	/** \brief Prepare shapes for static collision. */
-	void PrepareModelShapes();
+	void PrepareModelShapes(float convexHullThreshold);
 	
 	/** \brief Static shapes or nullptr if not prepared. */
 	inline const deTUniqueReference<decShape::List> &GetModelShapes() const{ return pModelShapes; }
 	
 	/** \brief Prepare bone shapes for dynamic collision. */
-	void PrepareBoneShapes();
+	void PrepareBoneShapes(float convexHullThreshold, float weightThreshold);
 	
 	/** \brief Bone shapes or empty if not prepared. */
 	inline const ShapeListList &GetBoneShapes() const{ return pBoneShapes; }
 	
 	/** \brief Generate collision shapes as a rig. */
-	deRig::Ref GenerateCollisionShapes() override;
+	deRig::Ref GenerateCollisionShapes(float convexHullThreshold, float weightThreshold) override;
 	/*@}*/
 	
 	

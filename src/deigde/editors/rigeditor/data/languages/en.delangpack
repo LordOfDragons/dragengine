@@ -69,6 +69,9 @@
 	<translation name="Rig.Action.RigShowPushs.Description">Show pushes of the entire rig</translation>
 	<translation name="Rig.Action.RigGenerateCollisionShapes">Generate Collision Shapes</translation>
 	<translation name="Rig.Action.RigGenerateCollisionShapes.Description">Generate collision shapes for the rig</translation>
+	<translation name="Rig.Dialog.GenerateCollisionShapes.Title">Generate Collision Shapes</translation>
+	<translation name="Rig.Dialog.GenerateCollisionShapes.Message">Enter convex hull threshold multiplier. 0 generates only convex hulls. 1 uses default threshold. Larger values increase analytic shape count.</translation>
+	<translation name="Rig.Dialog.GenerateCollisionShapes2.Message">Enter weight threshold multiplier. 0.45 is the default value.</translation>
 	
 	<!-- Window Main Actions - Bone -->
 	<translation name="Rig.Action.BoneAdd">Add</translation>

@@ -35,6 +35,9 @@
 #include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/common/shape/decShapeSphere.h>
 
+#include <Bullet/BulletCollision/CollisionShapes/btShapeHull.h>
+#include <Bullet/BulletCollision/CollisionShapes/btConvexHullShape.h>
+
 
 // Class debpShapeGenerator
 /////////////////////////////
@@ -44,6 +47,8 @@ const float vFltMax = std::numeric_limits<float>::max();
 debpShapeGenerator::FittingParams::FittingParams(const WeightList &aweights) :
 weights(aweights){
 }
+
+debpShapeGenerator::FittingParams::FittingParams(const FittingParams &fparams) = default;
 
 
 // Constructor, destructor
@@ -55,28 +60,56 @@ pMinHalfExtents(0.005f),
 pMinHalfHeight(0.005f),
 pPreferBoxVolRatio(0.75f), //0.5f
 pUseTaperedRatio(0.05f),
-pUseAxisScalingRatio(0.05f){
+pUseAxisScalingRatio(0.05f),
+pUseConvexHullThreshold(0.1f),
+pUseConvexHullThresholdPower(0.5f),
+pMinUseConvexHullThreshold(0.0025f)
+{
 }
 
 
 // Management
 ///////////////
 
-debpShapeGenerator::ShapeListRef debpShapeGenerator::Create(const WeightList &weights){
+debpShapeGenerator::ShapeListRef debpShapeGenerator::Create(const WeightList &weights, float convexHullThreshold){
 	if(weights.GetCount() < 4){
 		return {};
 	}
 	
-	FittingParams fparams(weights);
-	if(!pPrepareFittingParams(fparams)){
-		return {};
+	FittingParams fparamsBasic(weights);
+	fparamsBasic.convexHullThreshold = decMath::max(convexHullThreshold, 0.0f);
+	pPrepareFittingParamsBasic(fparamsBasic);
+	
+	FittingParams fparamsAxis(fparamsBasic);
+	pPrepareFittingParamsAxis(fparamsAxis);
+	const auto capsuleAxis = pFitTaperedCapsule(fparamsAxis);
+	const auto cylinderAxis = pFitTaperedCylinder(fparamsAxis);
+	const auto boxAxis = pFitBox(fparamsAxis);
+	
+	FittingParams fparamsEigen(fparamsBasic);
+	pPrepareFittingParamsEigen(fparamsEigen);
+	const auto capsuleEigen = pFitTaperedCapsule(fparamsEigen);
+	const auto cylinderEigen = pFitTaperedCylinder(fparamsEigen);
+	const auto boxEigen = pFitBox(fparamsEigen);
+	
+	const auto capsule = pUseBetter(capsuleAxis, capsuleEigen);
+	const auto cylinder = pUseBetter(cylinderAxis, cylinderEigen);
+	const auto box = pUseBetter(boxAxis, boxEigen);
+	
+	auto result = pSelectBestShape(capsule, cylinder, box);
+	
+	if(result.type == ShapeType::convexHull){
+		const auto convexHull = pFitConvexHull(fparamsAxis);
+		if(convexHull.type == ShapeType::convexHull){
+			return deTUniqueReference<decShape::List>::New(devctag,
+				decShapeHull::Ref::New(convexHull.center,
+					convexHull.orientation, convexHull.hullVertices));
+		}
+		
+		result.type = result.fallbackType;
 	}
 	
-	const auto capsule = pFitTaperedCapsule(fparams);
-	const auto box = pFitBox(fparams);
-	const auto convexHull = pFitConvexHull(fparams);
-	
-	switch(pSelectBestShape(fparams, capsule, box, convexHull)){
+	switch(result.type){
 	case ShapeType::sphere:
 		return deTUniqueReference<decShape::List>::New(devctag,
 			decShapeSphere::Ref::New(capsule.radius, capsule.center));
@@ -98,6 +131,18 @@ debpShapeGenerator::ShapeListRef debpShapeGenerator::Create(const WeightList &we
 				capsule.radiusBottom, capsule.topAxisScaling, capsule.bottomAxisScaling,
 				capsule.center, capsule.orientation));
 		
+	case ShapeType::cylinder:
+		return deTUniqueReference<decShape::List>::New(devctag,
+			decShapeCylinder::Ref::New(cylinder.halfHeight, cylinder.radius, cylinder.radius,
+				cylinder.topAxisScaling, cylinder.bottomAxisScaling,
+				cylinder.center, cylinder.orientation));
+		
+	case ShapeType::taperedCylinder:
+		return deTUniqueReference<decShape::List>::New(devctag,
+			decShapeCylinder::Ref::New(cylinder.halfHeight, cylinder.radiusTop,
+				cylinder.radiusBottom, cylinder.topAxisScaling, cylinder.bottomAxisScaling,
+				cylinder.center, cylinder.orientation));
+		
 	case ShapeType::box:
 		return deTUniqueReference<decShape::List>::New(devctag,
 			decShapeBox::Ref::New(box.halfExtents, box.center, box.orientation));
@@ -106,11 +151,6 @@ debpShapeGenerator::ShapeListRef debpShapeGenerator::Create(const WeightList &we
 		return deTUniqueReference<decShape::List>::New(devctag,
 			decShapeBox::Ref::New(box.halfExtents, box.axisScaling, box.center, box.orientation));
 		
-	case ShapeType::convexHull:
-		return deTUniqueReference<decShape::List>::New(devctag,
-			decShapeHull::Ref::New(convexHull.center, convexHull.orientation, convexHull.hullVertices));
-		
-	case ShapeType::none:
 	default:
 		break;
 	}
@@ -122,31 +162,71 @@ debpShapeGenerator::ShapeListRef debpShapeGenerator::Create(const WeightList &we
 // Private Functions
 //////////////////////
 
-bool debpShapeGenerator::pPrepareFittingParams(FittingParams &params){
+void debpShapeGenerator::pPrepareFittingParamsBasic(FittingParams &params){
 	params.totalWeight = params.weights.Inject(0.0f, [](float acc, const Weight &weight){
 		return acc + weight.weight;
 	});
 	if(params.totalWeight < FLOAT_SAFE_EPSILON){
-		return false;
+		params.totalWeight = 1.0f;
 	}
 	
-	params.center = params.weights.Inject(decVector(), [&](const decVector &acc, const Weight &weight){
+	/*params.center = params.weights.Inject(decVector(), [&](const decVector &acc, const Weight &weight){
 		return acc + weight.position * weight.weight;
-	}) / params.totalWeight;
+	}) / params.totalWeight;*/
+	params.center = params.weights.Inject(decVector(), [&](const decVector &acc, const Weight &weight){
+		return acc + weight.position;
+	}) / (float)params.weights.GetCount();
 	
+	params.maxExtents = {-vFltMax, -vFltMax, -vFltMax};
+	params.minExtents = { vFltMax,  vFltMax,  vFltMax};
+	params.weights.Visit([&](const Weight &weight){
+		params.minExtents.SetSmallest(weight.position);
+		params.maxExtents.SetLargest(weight.position);
+	});
+	
+	params.extents = params.maxExtents - params.minExtents;
+}
+
+void debpShapeGenerator::pPrepareFittingParamsAxis(FittingParams &params){
+	// choose largest extents as major axis. minor axis becomes the next axis (left-hand)
+	if(params.extents.z > params.extents.x && params.extents.z > params.extents.y){
+		params.majorAxis = {0.0f, 0.0f, 1.0f};
+		params.minorAxis = {1.0f, 0.0f, 0.0f};
+		
+	}else if(params.extents.y > params.extents.x){
+		params.majorAxis = {0.0f, 1.0f, 0.0f};
+		params.minorAxis = {0.0f, 0.0f, 1.0f};
+		
+	}else{
+		params.majorAxis = {1.0f, 0.0f, 0.0f};
+		params.minorAxis = {0.0f, 1.0f, 0.0f};
+	}
+	
+	pPrepareFittingParamsShared(params);
+}
+
+void debpShapeGenerator::pPrepareFittingParamsEigen(FittingParams &params){
 	params.covariance = pCalcCovariance(params.weights, params.center, params.totalWeight);
 	params.eigenvectors = pCalcEigenvectors(params.covariance, params.eigenvalues);
 	
 	params.majorAxis = params.eigenvectors.TransformRight().Normalized(); // first eigenvector
 	params.minorAxis = params.eigenvectors.TransformUp().Normalized(); // second eigenvector
 	
+	// ensure consistent left-hand rule by reorthogonalizing
+	decVector thirdAxis = (params.majorAxis % params.minorAxis).Normalized();
+	params.minorAxis = (thirdAxis % params.majorAxis).Normalized();
+	
+	pPrepareFittingParamsShared(params);
+}
+
+void debpShapeGenerator::pPrepareFittingParamsShared(FittingParams &params){
 	// for analytic shapes the major axis lines up with the up axis
 	params.matrix = decMatrix::CreateWorld(params.center, params.minorAxis, params.majorAxis);
 	params.invMatrix = params.matrix.QuickInvert();
-	
 	params.orientation = params.matrix.ToQuaternion();
 	params.conjOrientation = params.orientation.Conjugate();
 	
+	params.vertices.RemoveAll();
 	params.weights.Visit([&](const Weight &weight){
 		params.vertices.Add(params.invMatrix * weight.position);
 	});
@@ -158,8 +238,8 @@ bool debpShapeGenerator::pPrepareFittingParams(FittingParams &params){
 		params.maxExtents.SetLargest(v);
 	});
 	
-	params.extends = params.maxExtents - params.minExtents;
-	params.halfExtents = params.extends / 2.0f;
+	params.extents = params.maxExtents - params.minExtents;
+	params.halfExtents = params.extents / 2.0f;
 	
 	const decVector offset((params.maxExtents + params.minExtents) / 2.0f);
 	params.center += params.matrix.TransformNormal(offset);
@@ -173,11 +253,12 @@ bool debpShapeGenerator::pPrepareFittingParams(FittingParams &params){
 	params.matrix = decMatrix::CreateWorld(params.center, params.minorAxis, params.majorAxis);
 	params.invMatrix = params.matrix.QuickInvert();
 	
-	return true;
+	params.volume = params.extents.x * params.extents.y * params.extents.z;
 }
 
 debpShapeGenerator::ShapeParams debpShapeGenerator::pFitSphere(const FittingParams &fparams){
 	ShapeParams sparams;
+	sparams.fparams = &fparams;
 	sparams.type = ShapeType::sphere;
 	sparams.center = fparams.center;
 	
@@ -204,6 +285,7 @@ debpShapeGenerator::ShapeParams debpShapeGenerator::pFitCapsule(const FittingPar
 	}
 	
 	ShapeParams sparams;
+	sparams.fparams = &fparams;
 	sparams.type = ShapeType::capsule;
 	sparams.center = fparams.center;
 	sparams.orientation = fparams.orientation;
@@ -239,8 +321,8 @@ debpShapeGenerator::ShapeParams debpShapeGenerator::pFitTaperedCapsule(const Fit
 	sparams.type = ShapeType::taperedCapsule;
 	
 	// radius at bottom 25% and top 25%
-	const float bottomY = fparams.minExtents.y + fparams.extends.y * 0.25f;
-	const float topY = fparams.maxExtents.y - fparams.extends.y * 0.25f;
+	const float bottomY = fparams.minExtents.y + fparams.extents.y * 0.25f;
+	const float topY = fparams.maxExtents.y - fparams.extents.y * 0.25f;
 	
 	decVector minExtTop(vFltMax, vFltMax, vFltMax);
 	decVector maxExtTop(-vFltMax, -vFltMax, -vFltMax);
@@ -278,7 +360,7 @@ debpShapeGenerator::ShapeParams debpShapeGenerator::pFitTaperedCapsule(const Fit
 	}
 	
 	// ensure minimum radius. bullet requires at least 1cm to not cause problems
-	sparams.halfHeight = decMath::max((fparams.extends.y - sparams.radiusTop - sparams.radiusBottom) / 2.0f, pMinHalfHeight);
+	sparams.halfHeight = decMath::max((fparams.extents.y - sparams.radiusTop - sparams.radiusBottom) / 2.0f, pMinHalfHeight);
 	
 	// adjust center to capsule center
 	sparams.center += fparams.matrix.TransformNormal({0.0f,
@@ -305,8 +387,100 @@ debpShapeGenerator::ShapeParams debpShapeGenerator::pFitTaperedCapsule(const Fit
 	return sparams;
 }
 
+debpShapeGenerator::ShapeParams debpShapeGenerator::pFitCylinder(const FittingParams &fparams){
+	ShapeParams sparams;
+	sparams.fparams = &fparams;
+	sparams.type = ShapeType::cylinder;
+	sparams.center = fparams.center;
+	sparams.orientation = fparams.orientation;
+	sparams.conjOrientation = fparams.conjOrientation;
+	
+	sparams.radius = decMath::max(fparams.halfExtents.x, fparams.halfExtents.z, pMinRadius);
+	sparams.halfHeight = decMath::max(fparams.halfExtents.y, pMinHalfHeight);
+	
+	const decVector2 axisScaling(
+		fparams.halfExtents.x / sparams.radius,
+		fparams.halfExtents.z / sparams.radius);
+	
+	if(!axisScaling.IsEqualTo({1.0f, 1.0f}, pUseAxisScalingRatio)){
+		sparams.topAxisScaling = sparams.bottomAxisScaling = axisScaling;
+	}
+	
+	return sparams;
+}
+
+debpShapeGenerator::ShapeParams debpShapeGenerator::pFitTaperedCylinder(const FittingParams &fparams){
+	const ShapeParams sparamsCylinder(pFitCylinder(fparams));
+	if(sparamsCylinder.type == ShapeType::none){
+		return {};
+	}
+	
+	ShapeParams sparams(sparamsCylinder);
+	sparams.type = ShapeType::taperedCylinder;
+	
+	// caps at bottom 25% and top 25%
+	const float bottomY = fparams.minExtents.y + fparams.extents.y * 0.25f;
+	const float topY = fparams.maxExtents.y - fparams.extents.y * 0.25f;
+	
+	decVector minExtTop(vFltMax, vFltMax, vFltMax);
+	decVector maxExtTop(-vFltMax, -vFltMax, -vFltMax);
+	decVector minExtBottom(vFltMax, vFltMax, vFltMax);
+	decVector maxExtBottom(-vFltMax, -vFltMax, -vFltMax);
+	float radiusBottomSquared = 0.0f, radiusTopSquared = 0.0f;
+	int countBottom = 0, countTop = 0;
+	
+	fparams.vertices.Visit([&](const decVector &v){
+		const float radiusSquared = decVector2(v.x, v.z).LengthSquared();
+		if(v.y <= bottomY){
+			minExtBottom.SetSmallest(v);
+			maxExtBottom.SetLargest(v);
+			radiusBottomSquared = decMath::max(radiusBottomSquared, radiusSquared);
+			countBottom++;
+			
+		}else if(v.y >= topY){
+			minExtTop.SetSmallest(v);
+			maxExtTop.SetLargest(v);
+			radiusTopSquared = decMath::max(radiusTopSquared, radiusSquared);
+			countTop++;
+		}
+	});
+	
+	if(countBottom == 0 || countTop == 0){
+		return sparamsCylinder; // not enough points
+	}
+	
+	sparams.radiusBottom = sqrtf(radiusBottomSquared);
+	sparams.radiusTop = sqrtf(radiusTopSquared);
+	
+	// only use tapered if radi difference is large enough
+	if(fabsf(sparams.radiusTop - sparams.radiusBottom) < sparams.radius * pUseTaperedRatio){
+		return sparamsCylinder;
+	}
+	
+	// ensure minimum radius. bullet requires at least 1cm to not cause problems
+	sparams.halfHeight = decMath::max(fparams.halfExtents.y, pMinHalfHeight);
+	
+	// axis scaling
+	const decVector topHalfExtents((maxExtTop - minExtTop) / 2.0f);
+	const decVector bottomHalfExtents((maxExtBottom - minExtBottom) / 2.0f);
+	
+	const decVector2 topAxisScaling(topHalfExtents.x / sparams.radiusTop,
+		topHalfExtents.z / sparams.radiusTop);
+	const decVector2 bottomAxisScaling(bottomHalfExtents.x / sparams.radiusBottom,
+		bottomHalfExtents.z / sparams.radiusBottom);
+	
+	if(!topAxisScaling.IsEqualTo({1.0f, 1.0f}, pUseAxisScalingRatio)
+	|| !bottomAxisScaling.IsEqualTo({1.0f, 1.0f}, pUseAxisScalingRatio)){
+		sparams.topAxisScaling = topAxisScaling;
+		sparams.bottomAxisScaling = bottomAxisScaling;
+	}
+	
+	return sparams;
+}
+
 debpShapeGenerator::ShapeParams debpShapeGenerator::pFitBox(const FittingParams &fparams){
 	ShapeParams sparams;
+	sparams.fparams = &fparams;
 	sparams.type = ShapeType::box;
 	sparams.center = fparams.center;
 	sparams.orientation = fparams.orientation;
@@ -319,8 +493,8 @@ debpShapeGenerator::ShapeParams debpShapeGenerator::pFitBox(const FittingParams 
 	// tapered box
 	
 	// extents at top and bottom end
-	const float bottomY = fparams.minExtents.y + fparams.extends.y * 0.25f;
-	const float topY = fparams.maxExtents.y - fparams.extends.y * 0.25f;
+	const float bottomY = fparams.minExtents.y + fparams.extents.y * 0.25f;
+	const float topY = fparams.maxExtents.y - fparams.extents.y * 0.25f;
 	
 	decVector minExtBottom(vFltMax, vFltMax, vFltMax);
 	decVector maxExtBottom(-vFltMax, -vFltMax, -vFltMax);
@@ -374,25 +548,60 @@ debpShapeGenerator::ShapeParams debpShapeGenerator::pFitBox(const FittingParams 
 }
 
 debpShapeGenerator::ShapeParams debpShapeGenerator::pFitConvexHull(const FittingParams &fparams){
-	ShapeParams sparams;
-	sparams.type = ShapeType::convexHull;
-	
-	// For convex hull, we use the vertices directly as hull vertices
-	// We need at least 4 non-coplanar points for a valid 3D convex hull
 	if(fparams.weights.GetCount() < 4){
-		return sparams; // Not enough points for a convex hull
+		return {}; // not enough points
 	}
 	
-	sparams.hullVertices.EnlargeCapacityDiscard(fparams.weights.GetCount());
-	fparams.weights.Visit([&](const Weight &weight){
-		sparams.hullVertices.Add(weight.position);
+	// build optimized convex hull
+	auto fullShape = deTUniqueReference<btConvexHullShape>::New();
+	fparams.vertices.Visit([&](const decVector &p){
+		fullShape->addPoint({p.x, p.y, p.z});
 	});
+	fullShape->setMargin(0.0f);
+	
+	auto simplifier = deTUniqueReference<btShapeHull>::New(fullShape);
+	simplifier->buildHull(0.0f);
+	
+	auto vertexCount = simplifier->numVertices();
+	if(vertexCount < 4){
+		return {}; // not enough points
+	}
+	
+	// store parameters
+	ShapeParams sparams;
+	sparams.fparams = &fparams;
+	sparams.type = ShapeType::convexHull;
+	sparams.center = fparams.center;
+	sparams.orientation = fparams.orientation;
+	sparams.conjOrientation = fparams.conjOrientation;
+	
+	sparams.hullVertices.EnlargeCapacityDiscard(vertexCount);
+	auto vertices = simplifier->getVertexPointer();
+	for(int i=0; i<vertexCount; i++){
+		auto &v = vertices[i];
+		sparams.hullVertices.Add({v.x(), v.y(), v.z()});
+	}
 	
 	return sparams;
 }
 
-debpShapeGenerator::ShapeType debpShapeGenerator::pSelectBestShape(const FittingParams &fparams,
-const ShapeParams &capsule, const ShapeParams &box, const ShapeParams &convexHull){
+debpShapeGenerator::ShapeParams debpShapeGenerator::pUseBetter(
+const ShapeParams &params1, const ShapeParams &params2){
+	if(params2.type == ShapeType::none){
+		return params1;
+		
+	}else if(params1.type == ShapeType::none){
+		return {};
+	}
+	
+	const auto error1 = pComputeFitError(params1);
+	const auto error2 = pComputeFitError(params2);
+	return error1.avgError <= error2.avgError ? params1 : params2;
+}
+
+debpShapeGenerator::SelectShapeResult debpShapeGenerator::pSelectBestShape(
+const ShapeParams &capsule, const ShapeParams &cylinder, const ShapeParams &box){
+#if 0
 	// using simple heuristic based on aspect ratios. for better results computing fit error
 	// for each shape is required. but until shown to be a problem this will do. the basic
 	// matching rules are like this:
@@ -478,31 +687,90 @@ const ShapeParams &capsule, const ShapeParams &box, const ShapeParams &convexHul
 		}
 	}
 	
-	// check if convex hull is significantly better (use fit error)
-	/*
-	const float hullError = pComputeFitError(convexHull, vertices, weights);
-	const float capsuleError = pComputeFitError(capsule, vertices, weights);
-	const float boxError = pComputeFitError(box, vertices, weights);
+#else
+	// select best shape using fit error calculation for accurate shape matching.
+	// base matching rules:
+	// - capsule is best for elongated shapes like limbs
+	// - box is best for blocky shapes like torso
+	// - sphere/ellipsoid is fallback for round shapes
+	// - convexHull is best for complex shapes that don't fit simple primitives
+	//
+	// fit error is computed for each candidate shape. lowest error wins.
+	// convex hull is selected if primitives fit poorly.
+	/*{
+		SelectShapeResult result;
+		result.type = cylinder.type;
+		result.avgError = 0;
+		result.maxError = 0;
+		return result;
+	}*/
+	const FittingParams *fparams = nullptr;
+	SelectShapeResult result;
+	result.type = ShapeType::convexHull;
+	result.avgError = vFltMax;
+	result.maxError = vFltMax;
 	
-	if(hullError < capsuleError * 0.5f && hullError < boxError * 0.5f){
-		return ShapeType::convexHull;
+	// sphere, ellipsoid, capsule, taperedCapsule
+	if(capsule.type != ShapeType::none){
+		const auto error = pComputeFitError(capsule);
+		if(error.avgError < result.avgError){
+			result.type = capsule.type;
+			result.avgError = error.avgError;
+			result.maxError = error.maxError;
+			fparams = capsule.fparams;
+		}
 	}
-	*/
 	
-	return bestType;
+	// cylinder, taperedCylinder
+	if(cylinder.type != ShapeType::none){
+		const auto error = pComputeFitError(cylinder);
+		if(error.avgError < result.avgError){
+			result.type = cylinder.type;
+			result.avgError = error.avgError;
+			result.maxError = error.maxError;
+			fparams = cylinder.fparams;
+		}
+	}
+	
+	// box, taperedBox
+	if(box.type != ShapeType::none){
+		const auto error = pComputeFitError(box);
+		if(error.avgError < result.avgError){
+			result.type = box.type;
+			result.avgError = error.avgError;
+			result.maxError = error.maxError;
+			fparams = box.fparams;
+		}
+	}
+	
+	// use best analytic shape as fallback in case convex hull fails to build
+	result.fallbackType = result.type;
+	
+	// choose convex hull if the best primitive fits poorly
+	if(fparams){
+		//const float size = decMath::max(fparams->extents.x, fparams->extents.y, fparams->extents.z);
+		const float size = powf(fparams->extents.Length(), pUseConvexHullThresholdPower);
+		const float threshold = decMath::max(pMinUseConvexHullThreshold,
+			size * pUseConvexHullThreshold * fparams->convexHullThreshold);
+		if(result.avgError > threshold){
+			result.type = ShapeType::convexHull;
+		}
+	}
+#endif
+	
+	return result;
 }
 
-float debpShapeGenerator::pComputeFitError(const ShapeParams &params, const FittingParams &fparams){
-	float totalError = 0.0f;
-	float totalWeight = 0.0f;
+debpShapeGenerator::FitErrorResult debpShapeGenerator::pComputeFitError(const ShapeParams &params){
+	FitErrorResult result;
 	
-	fparams.weights.Visit([&](const Weight &weight){
-		const decVector local(params.conjOrientation * (weight.position - params.center));
-		float dist = 0.0f;
+	params.fparams->vertices.Visit([&](const decVector &vertex){
+		const decVector local(params.conjOrientation * (vertex - params.center));
+		float error = 0.0f;
 		
 		switch(params.type){
 		case ShapeType::sphere:
-			dist = fabsf(local.Length() - params.radius);
+			error = fabsf(local.Length() - params.radius);
 			break;
 			
 		case ShapeType::ellipsoid:{
@@ -515,12 +783,7 @@ float debpShapeGenerator::pComputeFitError(const ShapeParams &params, const Fitt
 			const float termY = (local.y / b) * (local.y / b);
 			const float termZ = (local.z / c) * (local.z / c);
 			const float ellipsoidValue = sqrtf(termX + termY + termZ);
-			dist = ellipsoidValue - 1.0f;
-			}break;
-			
-		case ShapeType::box:{
-			const decVector diff(local.Absolute() - params.halfExtents);
-			dist = decMath::max(diff.x, diff.y, diff.z, 0.0f);
+			error = fabsf(ellipsoidValue - 1.0f);
 			}break;
 			
 		case ShapeType::capsule:
@@ -547,31 +810,76 @@ float debpShapeGenerator::pComputeFitError(const ShapeParams &params, const Fitt
 			const float dxy = sqrtf((local.x / rx) * (local.x / rx) + (local.y / ry) * (local.y / ry));
 			const float dz = fabsf(local.z) - hh;
 			if(dz > 0){
-				dist = sqrtf(dxy * dxy + dz * dz) - r;
+				error = fabsf(sqrtf(dxy * dxy + dz * dz) - r);
 				
 			}else{
-				dist = dxy - r;
+				error = fabsf(dxy - r);
 			}
-			dist = decMath::max(dist, 0.0f);
+			}break;
+			
+		case ShapeType::cylinder:
+		case ShapeType::taperedCylinder:{
+			// distance to cylinder
+			const float hh = params.halfHeight;
+			float r = params.radius;
+			float rx = 1.0f;
+			float ry = 1.0f;
+			
+			if(params.type == ShapeType::taperedCylinder){
+				// interpolate radius and axis scaling
+				const float t = (local.z + hh) / (2.0f * hh);
+				r = params.radiusBottom * (1.0f - t) + params.radiusTop * t;
+				rx = params.bottomAxisScaling.x * (1.0f - t) + params.topAxisScaling.x * t;
+				ry = params.bottomAxisScaling.y * (1.0f - t) + params.topAxisScaling.y * t;
+				
+			}else{
+				rx = params.topAxisScaling.x;
+				ry = params.topAxisScaling.y;
+			}
+			
+			// distance to elliptical cross-section
+			const float dxy = sqrtf((local.x / rx) * (local.x / rx) + (local.y / ry) * (local.y / ry));
+			const float dz = fabsf(local.z) - hh;
+			if(dz > 0){
+				// point is beyond the flat end
+				if(dxy <= r){
+					// point is directly above/below the flat circular/elliptical end
+					error = dz;
+					
+				}else{
+					// point is beyond the edge
+					error = sqrtf((dxy - r) * (dxy - r) + dz * dz);
+				}
+				
+			}else{
+				// point is within the height range
+				error = fabsf(dxy - r);
+			}
+			}break;
+			
+		case ShapeType::box:{
+			const decVector diff((local.Absolute() - params.halfExtents).Absolute());
+			error = decMath::max(diff.x, diff.y, diff.z);
 			}break;
 			
 		case ShapeType::taperedBox:{
-			const decVector topHalfExtends(params.halfExtents.Multiply(
-				{params.axisScaling.x, 1.0f, params.axisScaling.y}));
+			const decVector topHalfExtends(params.halfExtents.
+				Multiply({params.axisScaling.x, 1.0f, params.axisScaling.y}));
 			const decVector avgHalfExtends((params.halfExtents + topHalfExtends) / 2.0f);
-			const decVector diff(local.Absolute() - avgHalfExtends);
-			dist = decMath::max(diff.x, diff.y, diff.z, 0.0f);
+			const decVector diff((local.Absolute() - avgHalfExtends).Absolute());
+			error = decMath::max(diff.x, diff.y, diff.z);
 			}break;
 			
 		default:
-			dist = 0.0f;
+			break;
 		}
 		
-		totalError += dist * weight.weight;
-		totalWeight += weight.weight;
+		result.avgError += error;
+		result.maxError = decMath::max(result.maxError, error);
 	});
 	
-	return totalWeight > 0 ? totalError / totalWeight : 0.0f;
+	result.avgError /= params.fparams->vertices.GetCount();
+	return result;
 }
 
 decMatrix debpShapeGenerator::pCalcCovariance(const WeightList &weights,

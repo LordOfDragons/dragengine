@@ -67,6 +67,9 @@ public:
 	using Ref = deTObjectReference<reWindowMain>;
 	
 	
+	float genColShapesConvexHullThreshold = 1.0f;
+	float genColShapesWeightThreshold = 0.45f;
+	
 private:
 	reWindowMainListener::Ref pListener;
 	
