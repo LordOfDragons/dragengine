@@ -144,7 +144,7 @@ public:
 	};
 	
 	/** \brief Copy to clipboard action. */
-	class ActionCopy : public Action{
+	class DE_DLL_EXPORT ActionCopy : public Action{
 	protected:
 		igdeMetaPropertyObjectSet &pPropertyObjectSet;
 		bool pSelection;
@@ -158,7 +158,7 @@ public:
 	};
 	
 	/** \brief Copy selection to clipboard action. */
-	class ActionCopySelection : public ActionCopy{
+	class DE_DLL_EXPORT ActionCopySelection : public ActionCopy{
 	public:
 		using Ref = deTObjectReference<ActionCopySelection>;
 		ActionCopySelection(igdeMetaPropertyObjectSet &property, igdeWidget &owner,
@@ -166,7 +166,7 @@ public:
 	};
 	
 	/** \brief Cut action. */
-	class ActionCut : public ActionRemove{
+	class DE_DLL_EXPORT ActionCut : public ActionRemove{
 	protected:
 		ActionCopy::Ref pActionCopy;
 		
@@ -178,7 +178,7 @@ public:
 	};
 	
 	/** \brief Paste action. */
-	class ActionPaste : public Action{
+	class DE_DLL_EXPORT ActionPaste : public Action{
 	protected:
 		igdeMetaPropertyObjectSet &pPropertyObjectSet;
 		bool pReplace = false;
@@ -192,7 +192,7 @@ public:
 	};
 	
 	/** \brief Paste replace action. */
-	class ActionPasteReplace : public ActionPaste{
+	class DE_DLL_EXPORT ActionPasteReplace : public ActionPaste{
 	public:
 		using Ref = deTObjectReference<ActionPasteReplace>;
 		ActionPasteReplace(igdeMetaPropertyObjectSet &property, igdeWidget &owner,
