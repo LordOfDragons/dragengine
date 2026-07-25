@@ -55,3 +55,13 @@ vec3 depthToPositionLod0( ARG_SAMP_HIGHP sampler2DArray samplerDepth, in vec3 te
 bool depthIsZFar( in float depth, in int layer ){
 	return depth == pDepthToPosition[ layer ].y;
 }
+
+// calculate texture coordinates for position
+bool positionToScreen(in vec3 position, in int layer, out vec2 screenCoord){
+	if(position.z <= 0.0){
+		return false;
+	}
+	
+	screenCoord = position.xy / (pDepthToPosition[layer].zw * position.zz) - pDepthToPosition2[layer];
+	return all(greaterThanEqual(screenCoord.xy, vec2(-1.0))) && all(lessThanEqual(screenCoord.xy, vec2(1.0)));
+}

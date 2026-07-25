@@ -830,6 +830,17 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		toneMapBloomBlend *= 0.5f;
 	}
 	
+	// screen space shadow casting
+	// float ssscMaxLengthBase = 0.02f, ssscMaxLengthScalePerMeter = 0.02f;
+	// float ssscThicknessBase = 0.01f, ssscThicknessScalePerMeter = 0.01f;
+	// float ssscMaxLengthBase = 0.005f, ssscMaxLengthScalePerMeter = 0.03f;
+	// float ssscThicknessBase = 0.0025f, ssscThicknessScalePerMeter = 0.015f;
+	// float ssscMaxLengthBase = 0.05f, ssscMaxLengthScalePerMeter = 0.02f;
+	// float ssscThicknessBase = 0.02f, ssscThicknessScalePerMeter = 0.01f;
+	float ssscMaxLengthBase = 0.05f, ssscMaxLengthScalePerMeter = 0.04f;
+	float ssscThicknessBase = 0.02f, ssscThicknessScalePerMeter = 0.005f;
+	int ssscStepCount = 16; // 8;
+	
 	// render all debug shapes with a z-offset to avoid z-fighting for shapes overlapping rendered
 	// geometry. doing this by default is okay since debug drawers are supposed to be rendered
 	// after world geometry and thus winning over world geometry feels logic.
@@ -951,6 +962,14 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataVec2(deoglSkinShader::erutLumFragCoordScale,
 			(float)width / (float)defren.GetTextureLuminance()->GetWidth(),
 			(float)height / (float)defren.GetTextureLuminance()->GetHeight());
+		
+		// screen space shadow casting
+		spb.SetParameterDataVec4(deoglSkinShader::erutSSShadowParams1,
+			ssscMaxLengthBase, ssscMaxLengthScalePerMeter,
+			ssscThicknessBase, ssscThicknessScalePerMeter);
+		
+		spb.SetParameterDataVec4(deoglSkinShader::erutSSShadowParams2,
+			(float)ssscStepCount, 0.0f, 0.0f, 0.0f);
 		
 		// global illumination
 		spb.SetParameterDataMat4x3(deoglSkinShader::erutGIRayMatrix, giMatrix);

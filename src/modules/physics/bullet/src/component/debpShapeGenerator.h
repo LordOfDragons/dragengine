@@ -83,6 +83,9 @@ private:
 		
 		explicit FittingParams(const WeightList &weights);
 		FittingParams(const FittingParams &fparams);
+		
+	protected:
+		~FittingParams() override;
 	};
 	
 	class ShapeParams : public deObject{
@@ -103,6 +106,9 @@ private:
 		decVector2 topAxisScaling{1.0f, 1.0f}; // tapered capsule
 		decVector2 bottomAxisScaling{1.0f, 1.0f}; // tapered capsule
 		decTList<decVector> hullVertices; // convex hull
+		
+	protected:
+		~ShapeParams() override;
 	};
 	
 	struct SelectShapeResult{

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglLightShaderConfig.h"
 
 #include <dragengine/common/exceptions.h>
@@ -78,6 +74,7 @@ void deoglLightShaderConfig::Reset(){
 	pGIRay = false;
 	pGSRenderStereo = false;
 	pVSRenderStereo = false;
+	pNoiseTap = false;
 	
 	pTextureNoise = false;
 	pTextureColor = false;
@@ -177,6 +174,9 @@ void deoglLightShaderConfig::SetVSRenderStereo(bool vsRenderStereo){
 	pVSRenderStereo = vsRenderStereo;
 }
 
+void deoglLightShaderConfig::SetNoiseTap(bool isUsed){
+	pNoiseTap = isUsed;
+}
 
 
 void deoglLightShaderConfig::SetTextureNoise(bool isUsed){
@@ -245,6 +245,7 @@ void deoglLightShaderConfig::UpdateKey(){
 	if(pGIRay) pKey2 |= (uint32_t)1 << 10;
 	if(pGSRenderStereo) pKey2 |= (uint32_t)1 << 11;
 	if(pVSRenderStereo) pKey2 |= (uint32_t)1 << 12;
+	if(pNoiseTap) pKey2 |= (uint32_t)1 << 13;
 	
 	pKey3 = (uint32_t)0;
 	if(pTextureNoise) pKey3 |= (uint32_t)1 << 0;
@@ -333,6 +334,9 @@ void deoglLightShaderConfig::DebugGetConfigString(decString &string) const{
 	if(pVSRenderStereo){
 		string.Append(" vsRenderStereo");
 	}
+	if(pNoiseTap){
+		string.Append(" noiseTap");
+	}
 	
 	if(pTextureShadow1Solid){
 		string.Append(" shadow1Solid");
@@ -383,6 +387,7 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=(const deoglLightShader
 	pGIRay = config.pGIRay;
 	pGSRenderStereo = config.pGSRenderStereo;
 	pVSRenderStereo = config.pVSRenderStereo;
+	pNoiseTap = config.pNoiseTap;
 	
 	pTextureNoise = config.pTextureNoise;
 	pTextureColor = config.pTextureColor;

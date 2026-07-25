@@ -140,6 +140,8 @@ public:
 		erutSSRParams3,
 		erutAOSelfShadow,
 		erutLumFragCoordScale,
+		erutSSShadowParams1,
+		erutSSShadowParams2,
 		erutGIRayMatrix,
 		erutGIRayMatrixNormal,
 		erutGIHighestCascade,

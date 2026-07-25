@@ -1075,7 +1075,7 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 	
 	// calculate layer parameters
 	// const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
-	const float smDepthScaleFactor = 1.2f; // TODO add config option
+	const float smDepthScaleFactor = 1.5f; //2.0f; //1.2f; // TODO add config option
 	
 	for(p=0; p<pShadowLayerCount; p++){
 		sShadowLayer &sl = pShadowLayers[p];
@@ -1110,24 +1110,26 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 		const float smSize = sl.maxExtend.x - sl.minExtend.x;
 		const float smDepthScale = sl.scale.z * 2.0f;
 		const float smOffsetScale = smSize / pPlan.GetShadowSkySize();
-		const float smOffsetBias = smOffsetScale; // * 0.5f;
+		const float smOffsetBias = smOffsetScale * 2.0f; //4.0f; //1.0f;
 		
 		sl.zscale = smOffsetScale * smDepthScaleFactor * smDepthScale;
 		sl.zoffset = smOffsetBias * smDepthScaleFactor * smDepthScale;
 	}
 	
 	// adjust shadow depth offsets
-	pShadowLayers[0].zscale *= 1.0f;
-	pShadowLayers[0].zoffset *= 1.0f;
+	/*
+	pShadowLayers[0].zscale *= 1.5f; //1.0f;
+	pShadowLayers[0].zoffset *= 1.5f; //1.0f;
 	
-	pShadowLayers[1].zscale *= 1.5f;
-	pShadowLayers[1].zoffset *= 1.5f;
+	pShadowLayers[1].zscale *= 2.0f; //1.5f;
+	pShadowLayers[1].zoffset *= 2.0f; //1.5f;
 	
-	pShadowLayers[2].zscale *= 2.0f;
-	pShadowLayers[2].zoffset *= 2.0f;
+	pShadowLayers[2].zscale *= 3.0f; //2.0f;
+	pShadowLayers[2].zoffset *= 3.0f; //2.0f;
 	
-	pShadowLayers[3].zscale *= 2.5f;
-	pShadowLayers[3].zoffset *= 2.5f;
+	pShadowLayers[3].zscale *= 4.0f; //2.5f;
+	pShadowLayers[3].zoffset *= 4.0f; //2.5f;
+	*/
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){

@@ -893,7 +893,8 @@ void deoglRenderLightSky::RenderShadowMap(deoglRenderPlanSkyLight &plan, deoglSh
 			renderParamBlock->SetParameterDataMat3x3(deoglSkinShader::erutMatrixVn,
 				matrixCamera.GetRotationMatrix().Invert());
 			renderParamBlock->SetParameterDataVec4(deoglSkinShader::erutDepthOffset,
-				sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset);
+				sl.zscale, sl.zoffset, sl.zscale, sl.zoffset);
+				//sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset);
 			
 			renderParamBlock->SetParameterDataBVec4(deoglSkinShader::erutConditions1, false, false, false, false);
 		}

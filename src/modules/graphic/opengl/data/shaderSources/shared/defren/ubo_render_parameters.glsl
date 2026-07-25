@@ -190,6 +190,16 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	vec2 pAOSelfShadow; // minShadowIntensity, smoothAngle
 	vec2 pLumFragCoordScale;
 	
+	// screen space shadow casting
+	vec4 pSSShadowParams1; // maxLength.base, maxLength.scalePerMeter, thickness.base, thickness.scalePerMeter
+	#define pSSShadowMaxLengthBase (pSSShadowParams1.x)
+	#define pSSShadowMaxLengthScalePerMeter (pSSShadowParams1.y)
+	#define pSSShadowThicknessBase (pSSShadowParams1.z)
+	#define pSSShadowThicknessScalePerMeter (pSSShadowParams1.w)
+	
+	vec4 pSSShadowParams2; // stepCount, n/a, n/a, n/a
+	#define pSSShadowStepCount (pSSShadowParams2.x)
+	
 	// global illumination rays
 	mat4x3 pGIRayMatrix; // transform from GI space to camera space
 	mat3 pGIRayMatrixNormal; // transform from GI space to camera space (requires transpose)
@@ -250,18 +260,18 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 };
 
 // helper functions
-vec2 fsquadScreenCoordToTexCoord( in vec2 screenCoord ){
+vec2 fsquadScreenCoordToTexCoord(in vec2 screenCoord){
 	return screenCoord * pFSScreenCoordToTexCoord.xy + pFSScreenCoordToTexCoord.zw;
 }
 
-vec2 fsquadTexCoordToScreenCoord( in vec2 texCoord ){
+vec2 fsquadTexCoordToScreenCoord(in vec2 texCoord){
 	return texCoord * pFSTexCoordToScreenCoord.xy + pFSTexCoordToScreenCoord.zw;
 }
 
-vec2 fragCoordToTexCoord( in ivec2 fragCoord ){
-	return vec2( fragCoord ) * pFSFragCoordToTexCoord.xy + pFSFragCoordToTexCoord.zw;
+vec2 fragCoordToTexCoord(in ivec2 fragCoord){
+	return vec2(fragCoord) * pFSFragCoordToTexCoord.xy + pFSFragCoordToTexCoord.zw;
 }
 
-vec2 fragCoordToScreenCoord( in ivec2 fragCoord ){
-	return vec2( fragCoord ) * pFSFragCoordToScreenCoord.xy + pFSFragCoordToScreenCoord.zw;
+vec2 fragCoordToScreenCoord(in ivec2 fragCoord){
+	return vec2(fragCoord) * pFSFragCoordToScreenCoord.xy + pFSFragCoordToScreenCoord.zw;
 }

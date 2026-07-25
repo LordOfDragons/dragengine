@@ -172,3 +172,60 @@ const in vec4 position, const in vec2 depthTransform){
 	thickness = position.q - thickness;
 	return max(thickness, 0.0);
 }
+
+
+
+// screen space shadows
+/////////////////////////
+
+float screenSpaceShadow(ARG_SAMP_HIGHP sampler2DArray samplerDepth, const in vec3 position, const in vec3 lightDir){
+	float maxLength = pSSShadowMaxLengthBase + position.z * pSSShadowMaxLengthScalePerMeter;
+	float thickness = pSSShadowThicknessBase + position.z * pSSShadowThicknessScalePerMeter;
+	int stepCount = int(pSSShadowStepCount);
+	
+	float stepSize = maxLength / float(stepCount);
+	vec3 rayDir = lightDir * stepSize;
+	vec3 rayPosition = position;
+	
+	ivec2 tcFrag = ivec2(gl_FragCoord.xy);
+	ivec3 tcTest = ivec3(tcFrag, vLayer);
+	
+	vec3 screenCoord = vec3(0.0, 0.0, vLayer);
+	vec3 testPosition;
+	
+	ivec2 sizeNoise = textureSize(texShadowNoise, 0);
+	vec4 noiseValue = texelFetch(texShadowNoise, tcFrag % sizeNoise, 0);
+	rayPosition += rayDir * vec3(noiseValue.x);
+	
+	for(int i=0; i<stepCount; i++){
+		rayPosition += rayDir;
+		
+		if(!positionToScreen(rayPosition, vLayer, screenCoord.xy)){
+			break;
+		}
+		
+		tcTest.xy = ivec2((screenCoord.xy + vec2(1.0)) / vec2(2.0) * pRenderSize);
+		if(tcTest.xy == tcFrag){
+			continue;
+		}
+		
+		float depth = sampleDepth(samplerDepth, tcTest);
+		if(FullScreenQuad){
+			testPosition = depthToPosition(depth, screenCoord.xy, vLayer);
+			
+		}else{
+			testPosition = depthToPositionVolume(depth, vLightVolumePos, vLayer);
+		}
+		
+		float diff = rayPosition.z - testPosition.z;
+		if(InverseDepth){
+			diff = -diff;
+		}
+		
+		if(diff > 0.0 && diff < thickness){
+			return pow(length(rayPosition - position) / maxLength, 2.0);
+		}
+	}
+	
+	return 1.0;
+}

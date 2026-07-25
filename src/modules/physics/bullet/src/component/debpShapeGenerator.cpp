@@ -49,6 +49,9 @@ weights(aweights){
 }
 
 debpShapeGenerator::FittingParams::FittingParams(const FittingParams &fparams) = default;
+debpShapeGenerator::FittingParams::~FittingParams() = default;
+
+debpShapeGenerator::ShapeParams::~ShapeParams() = default;
 
 
 // Constructor, destructor
@@ -78,8 +81,8 @@ debpShapeGenerator::ShapeListRef debpShapeGenerator::Create(const WeightList &we
 	}
 	
 	// find the best fitting analytic shape along the major axis and along the first eigenvector
-	FittingParams fparamsBasic(weights);
-	fparamsBasic.convexHullThreshold = decMath::max(convexHullThreshold, 0.0f);
+	auto fparamsBasic = FittingParams::Ref::New(weights);
+	fparamsBasic->convexHullThreshold = decMath::max(convexHullThreshold, 0.0f);
 	pPrepareFittingParamsBasic(fparamsBasic);
 	
 	ShapeParams::Ref capsule, cylinder, box;

@@ -89,7 +89,8 @@ void deoglLightPipelinesParticle::pPreparePipelines(deoglBatchedShaderLoading &b
 	baseShaderConfig.SetHWDepthCompare(true);
 	baseShaderConfig.SetDecodeInShadow(false);
 	baseShaderConfig.SetShadowMatrix2EqualsMatrix1(true);
-	baseShaderConfig.SetTextureNoise(false);
+	baseShaderConfig.SetTextureNoise(true);
+	baseShaderConfig.SetNoiseTap(false);
 	
 	// create pipelines for each type and all valid modifications
 	pPrepareNoShadow(basePipelineConfig, baseShaderConfig, batched);

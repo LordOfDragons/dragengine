@@ -237,7 +237,8 @@ void deoglLightPipelinesSpot::pSetSpot(deoglLightShaderConfig &shaconf){
 	shaconf.SetShadowInverseDepth(true);
 	
 	shaconf.SetShadowTapMode(deoglLightShaderConfig::estmPcf9);
-	shaconf.SetTextureNoise(false);
+	shaconf.SetTextureNoise(true);
+	shaconf.SetNoiseTap(false);
 	
 	if(pLight.GetLightCanvas()){
 		shaconf.SetTextureColor(true);
