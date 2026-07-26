@@ -45,10 +45,24 @@
 #include <BulletCollision/CollisionShapes/btMultiSphereShape.h>
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
 #include <BulletCollision/CollisionShapes/btTriangleShape.h>
-
-
+#include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
+#include <BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h>
 
 // #define DEBUGGING 1
+
+
+// Class debpCreateBulletShape::CustomInertiaCompoundShape
+////////////////////////////////////////////////////////////
+
+debpCreateBulletShape::CompoundShapeCustomInertia::CompoundShapeCustomInertia(const btVector3 &inertia) :
+pInertia(inertia){
+}
+
+void debpCreateBulletShape::CompoundShapeCustomInertia::calculateLocalInertia(
+btScalar mass, btVector3 &inertia) const{
+	inertia = pInertia * mass;
+}
+
 
 // Class debpCreateBulletShape
 ////////////////////////////////
@@ -329,7 +343,7 @@ void debpCreateBulletShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	const bool hasBottomScaling = !bottomAxisScaling.IsEqualTo({1.0f, 1.0f});
 	void * const userPointer = (void*)(intptr_t)(pShapeIndex + 1);
 	
-	if(hasTopScaling || hasBottomScaling){
+	if(hasTopScaling || hasBottomScaling || fabsf(topRadius - bottomRadius) > 0.001f){
 		// create convex hull approximation for scaled cylinders
 		// with 16 points per circle and 2 circles this results in 32 hull points
 		auto hullShape = new btConvexHullShape();
@@ -366,24 +380,13 @@ void debpCreateBulletShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 		hullShape->setUserPointer(userPointer);
 		
 		bulletShapeCylinder = debpBulletShape::Ref::New(hullShape);
+		//bulletShapeCylinder = debpBulletShape::Ref::New(pCreateBalancedConvexHull(hullShape));
 		
 		// update CCD radius
 		ccdRadius = decMath::min(ccdRadius, topRadius * topAxisScaling.x * 0.5f,
 			topRadius * topAxisScaling.y * 0.5f);
 		ccdRadius = decMath::min(ccdRadius, bottomRadius * bottomAxisScaling.x * 0.5f,
 			bottomRadius * bottomAxisScaling.y * 0.5f);
-		
-	}else if(fabsf(topRadius - bottomRadius) > 0.001f){
-		const btVector3 positions[2]{{0.0f, halfHeight, 0.0f}, {0.0f, -halfHeight, 0.0f}};
-		const btScalar radi[2]{topRadius, bottomRadius};
-		
-		auto cylinderShape = new btMultiSphereShape(positions, &radi[0], 2);
-		if(pNoMargin){
-			cylinderShape->setMargin(BT_ZERO);
-		}
-		cylinderShape->setUserPointer(userPointer);
-		
-		bulletShapeCylinder = debpBulletShape::Ref::New(cylinderShape);
 		
 	}else{
 		auto cylinderShape = new btCylinderShape(btVector3(topRadius, halfHeight, topRadius));
@@ -572,6 +575,7 @@ void debpCreateBulletShape::VisitShapeHull(decShapeHull &hull){
 	hullShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
 	
 	bulletShapeHull = debpBulletShape::Ref::New(hullShape);
+	//bulletShapeHull = debpBulletShape::Ref::New(pCreateBalancedConvexHull(hullShape));
 	
 	if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
 		needsTransform = true;
@@ -644,6 +648,64 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 		pBulletShape = nullptr;
 	}
 	pBulletCompoundShape = bulletShape;
+}
+
+debpCreateBulletShape::CompoundShapeCustomInertia *debpCreateBulletShape::pCreateBalancedConvexHull(
+btConvexHullShape *convexHull){
+	DEASSERT_NOTNULL(convexHull)
+	DEASSERT_TRUE(convexHull->getNumVertices() > 0)
+	
+	const int vertexCount = convexHull->getNumVertices();
+	const btVector3 * const vertices = convexHull->getPoints();
+	
+	// copy vertices into temporary array for builder
+	decTList<btVector3> points(vertexCount);
+	for(int i=0; i<vertexCount; i++){
+		points.Add(vertices[i]);
+	}
+	
+	// create temporary triangle index layout
+	auto vertexArray = deTUniqueReference<btTriangleIndexVertexArray>::New();
+	btIndexedMesh tempMesh{};
+	tempMesh.m_numVertices = vertexCount;
+	tempMesh.m_vertexBase = reinterpret_cast<const unsigned char*>(points.GetArrayPointer());
+	tempMesh.m_vertexStride = sizeof(btVector3);
+	tempMesh.m_vertexType = PHY_FLOAT;
+	
+	// create temporary index strips
+	decTList<int> indices((vertexCount - 2) * 3);
+	for(int i=2; i<vertexCount; i++){
+		indices.Add(0);
+		indices.Add(i - 1);
+		indices.Add(i);
+	}
+	tempMesh.m_numTriangles = indices.GetCount() / 3;
+	tempMesh.m_triangleIndexBase = reinterpret_cast<const unsigned char*>(indices.GetArrayPointer());
+	tempMesh.m_triangleIndexStride = 3 * sizeof(int);
+	tempMesh.m_indexType = PHY_INTEGER;
+	
+	vertexArray->addIndexedMesh(tempMesh);
+	
+	// let Bullet calculate the true principal axes transform and exact inertia distribution
+	auto tempShape = deTUniqueReference<btConvexTriangleMeshShape>::New(vertexArray);
+	
+	btTransform transform{};
+	btVector3 inertia(BT_ZERO, BT_ZERO, BT_ZERO);
+	btScalar volume = BT_ZERO;
+	
+	tempShape->calculatePrincipalAxisTransform(transform, inertia, volume);
+	
+	// wrap convex hull with btCompoundShape with convex hull vertices shifted to match the center of mass
+	auto compoundShape = new btCompoundShape();
+	
+	btTransform childTransform;
+	childTransform.setIdentity();
+	childTransform.setOrigin(-transform.getOrigin());
+	
+	compoundShape->addChildShape(childTransform, convexHull);
+	
+	// create custom compound shape storing the analytical inertia vector for later use
+	return new CompoundShapeCustomInertia(inertia);
 }
 
 void debpCreateBulletShape::pAddCollisionShape(debpBulletShape *collisionShape){
