@@ -1315,7 +1315,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams){
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
-	const bool useDitherShadow = deoglShadowMapper::UseShadowDither(renderThread.GetConfiguration());
+	const bool useDitherShadow = renderThread.GetConfigurationSets().ShadowQuality().ditherShadows;
 	
 	DebugTimer3Reset(plan, false);
 	

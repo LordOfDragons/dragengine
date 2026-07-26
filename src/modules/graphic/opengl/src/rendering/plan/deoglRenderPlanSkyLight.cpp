@@ -954,10 +954,11 @@ void deoglRenderPlanSkyLight::pSetGISplits(deoglSPBlockUBO &ubo){
 
 
 void deoglRenderPlanSkyLight::pDetermineShadowParameters(){
-	const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
+	const deoglConfigurationSets::sShadowQuality &config =
+		pPlan.GetRenderThread().GetConfigurationSets().ShadowQuality();
 	
 	pUseLight = true;
-	pUseShadow = config.GetShadowQuality() != deoglConfiguration::esqOff;
+	pUseShadow = config.enable;
 	pShadowLayerCount = 4;
 	
 	// if array-texture support is missing no shadows for the time being
@@ -1217,8 +1218,8 @@ void deoglRenderPlanSkyLight::pBuildCRTShadow(int layer){
 	const sShadowLayer &sl = pShadowLayers[layer];
 	deoglComputeRenderTask &renderTask = sl.computeRenderTask;
 	const deoglComputeRenderTask::cGuard guard(renderTask, worldCompute, 3);
-	const bool useDitherShadow = deoglShadowMapper::UseShadowDither(
-		pPlan.GetRenderThread().GetConfiguration());
+	const bool useDitherShadow = pPlan.GetRenderThread().GetConfigurationSets().
+		ShadowQuality().ditherShadows;
 	
 	renderTask.Clear();
 	renderTask.SetNoShadowNone(true);

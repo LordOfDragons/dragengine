@@ -672,6 +672,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const int width = defren.GetWidth();
 	float envMapLodLevel = 1.0f;
 	
+	const auto &configSetShadowQuality = renderThread.GetConfigurationSets().ShadowQuality();
+	
 	// sharpness indicates the cone angle from 0 to 90 degrees. at 45 degrees a single cube map face is required
 	// to be sampled. hence 0.5 sharpness has to pick the max lod level from the environment map. to determine
 	// the lod level the log2 from the size times the double-sharpness can be used. to avoid a bad look at very
@@ -831,15 +833,16 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	}
 	
 	// screen space shadow casting
-	// float ssscMaxLengthBase = 0.02f, ssscMaxLengthScalePerMeter = 0.02f;
-	// float ssscThicknessBase = 0.01f, ssscThicknessScalePerMeter = 0.01f;
-	// float ssscMaxLengthBase = 0.005f, ssscMaxLengthScalePerMeter = 0.03f;
-	// float ssscThicknessBase = 0.0025f, ssscThicknessScalePerMeter = 0.015f;
-	// float ssscMaxLengthBase = 0.05f, ssscMaxLengthScalePerMeter = 0.02f;
-	// float ssscThicknessBase = 0.02f, ssscThicknessScalePerMeter = 0.01f;
-	float ssscMaxLengthBase = 0.05f, ssscMaxLengthScalePerMeter = 0.04f;
-	float ssscThicknessBase = 0.02f, ssscThicknessScalePerMeter = 0.005f;
-	int ssscStepCount = 16; // 8;
+	// const float ssscMaxLengthBase = 0.02f, ssscMaxLengthScalePerMeter = 0.02f;
+	// const float ssscThicknessBase = 0.01f, ssscThicknessScalePerMeter = 0.01f;
+	// const float ssscMaxLengthBase = 0.005f, ssscMaxLengthScalePerMeter = 0.03f;
+	// const float ssscThicknessBase = 0.0025f, ssscThicknessScalePerMeter = 0.015f;
+	// const float ssscMaxLengthBase = 0.05f, ssscMaxLengthScalePerMeter = 0.02f;
+	// const float ssscThicknessBase = 0.02f, ssscThicknessScalePerMeter = 0.01f;
+	const float ssscMaxLengthBase = 0.05f, ssscMaxLengthScalePerMeter = 0.04f;
+	const float ssscThicknessBase = 0.02f, ssscThicknessScalePerMeter = 0.005f;
+	const int ssscStepCount = configSetShadowQuality.screenSpaceStepCount;
+	const float ssscBorderBlendRange = 0.1f; // relative to range -1..1
 	
 	// render all debug shapes with a z-offset to avoid z-fighting for shapes overlapping rendered
 	// geometry. doing this by default is okay since debug drawers are supposed to be rendered
@@ -969,7 +972,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			ssscThicknessBase, ssscThicknessScalePerMeter);
 		
 		spb.SetParameterDataVec4(deoglSkinShader::erutSSShadowParams2,
-			(float)ssscStepCount, 0.0f, 0.0f, 0.0f);
+			(float)ssscStepCount, ssscBorderBlendRange, 0.0f, 0.0f);
 		
 		// global illumination
 		spb.SetParameterDataMat4x3(deoglSkinShader::erutGIRayMatrix, giMatrix);

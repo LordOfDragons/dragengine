@@ -750,7 +750,7 @@ void main(void){
 			if(!GIRay){
 				
 				if(shadow > epsilon && dotval > 0.0){
-					shadow *= screenSpaceShadow(texDepth, position, lightDir);
+					shadow *= screenSpaceShadow(texDepth, texNormal, position, lightDir);
 				}
 			}
 			

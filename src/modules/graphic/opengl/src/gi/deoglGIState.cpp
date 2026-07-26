@@ -67,8 +67,7 @@ pRenderThread(renderThread),
 
 pSize(size),
 pWorld(nullptr),
-pGIImportance(deoglGIAreaTracker::GIImportanceFromGIQuality(
-	renderThread.GetConfiguration().GetGIQuality())),
+pGIImportance(renderThread.GetConfigurationSets().GIQuality().areaTrackerImportance),
 
 pProbeCount(32, 8, 32),
 pGridCoordClamp(pProbeCount - decPoint3(1, 1, 1)),
@@ -273,8 +272,7 @@ void deoglGIState::Update(const decDVector &cameraPosition, const deoglDCollisio
 	INIT_SPECIAL_TIMING
 	// monitor configuration changes
 	pRenderThread.GetGI().GetTraceRays().UpdateFromConfig();
-	pGIImportance = deoglGIAreaTracker::GIImportanceFromGIQuality(
-		pRenderThread.GetConfiguration().GetGIQuality());
+	pGIImportance = pRenderThread.GetConfigurationSets().GIQuality().areaTrackerImportance;
 	pAreaTracker.SetGIImportance(pGIImportance);
 	
 	// update position

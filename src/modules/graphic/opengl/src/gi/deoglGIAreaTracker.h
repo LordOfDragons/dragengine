@@ -146,11 +146,6 @@ public:
 	
 	/** Component touches current box. */
 	bool ComponentTouches(const deoglRComponent &component) const;
-	
-	
-	
-	/** GI importance from GI quality. */
-	static int GIImportanceFromGIQuality(deoglConfiguration::eGIQuality quality);
 	/*@}*/
 	
 	

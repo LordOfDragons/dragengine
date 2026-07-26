@@ -197,8 +197,9 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	#define pSSShadowThicknessBase (pSSShadowParams1.z)
 	#define pSSShadowThicknessScalePerMeter (pSSShadowParams1.w)
 	
-	vec4 pSSShadowParams2; // stepCount, n/a, n/a, n/a
+	vec4 pSSShadowParams2; // stepCount, borderBlendRange, n/a, n/a
 	#define pSSShadowStepCount (pSSShadowParams2.x)
+	#define pSSShadowBorderBlendRange (pSSShadowParams2.y)
 	
 	// global illumination rays
 	mat4x3 pGIRayMatrix; // transform from GI space to camera space

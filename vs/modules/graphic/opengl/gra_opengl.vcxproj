@@ -480,6 +480,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentWCElement.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfigurationSets.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglLSConfiguration.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deGraphicOpenGl.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugInformation.cpp" />
@@ -1113,6 +1114,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentWCElement.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfigurationSets.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglLSConfiguration.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deGraphicOpenGl.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\debugSnapshot.h" />

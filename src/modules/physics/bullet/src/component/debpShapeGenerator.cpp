@@ -35,8 +35,8 @@
 #include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/common/shape/decShapeSphere.h>
 
-#include <Bullet/BulletCollision/CollisionShapes/btShapeHull.h>
-#include <Bullet/BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include "BulletCollision/CollisionShapes/btShapeHull.h"
+#include "BulletCollision/CollisionShapes/btConvexHullShape.h"
 
 
 // Class debpShapeGenerator

@@ -204,6 +204,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfigurationSets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglLSConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2097,6 +2100,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfigurationSets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglLSConfiguration.h">

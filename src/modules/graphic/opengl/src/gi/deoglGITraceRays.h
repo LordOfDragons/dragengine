@@ -83,12 +83,6 @@ public:
 	/** Probe count in result textures. */
 	inline int GetProbeCount() const{ return pProbeCount; }
 	
-	/** Get rays per probe matching configuration quality. */
-	static int ConfigRaysPerProbe(const deoglConfiguration &config);
-	
-	/** Get probe count matching configuration quality. */
-	static int ConfigProbeCount(const deoglConfiguration &config);
-	
 	/** Update from configuration. */
 	void UpdateFromConfig();
 	

@@ -635,39 +635,30 @@ const deoglShaderUnitSourceCode *sources, const deoglShaderDefines &defines) con
 void deoglShaderManager::pLoadUnitSourceCodesIn(const char *directory){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	deVirtualFileSystem &vfs = ogl.GetVFS(); // accessed from main thread only
-	decPath searchPath, basePath;
-	decString filename;
-	int i;
+	decString validationString, filename;
 	
-	basePath.SetFromUnix(pPathShaderSources);
-	const int basePathLen = basePath.GetPathUnix().GetLength() + 1;
+	const auto basePath = decPath::CreatePathUnix(pPathShaderSources);
+	const int basePathLen = pPathShaderSources.GetLength() + 1;
 	
 	try{
 		deCollectFileSearchVisitor collect("*.shaderSource.xml", true);
-		searchPath.SetFrom(basePath);
+		auto searchPath = basePath;
 		searchPath.AddUnixPath(directory);
 		vfs.SearchFiles(searchPath, collect);
 		
-		const decPath::List &pathList = collect.GetFiles();
-		const int count = pathList.GetCount();
-		decString validationString;
-		
-		for(i=0; i<count; i++){
-			const decPath &path = pathList.GetAt(i);
+		collect.GetFiles().Visit([&](const decPath &path){
 			filename = path.GetPathUnix().GetMiddle(basePathLen);
-			
 			/*if(ogl.GetConfiguration()->GetDoLogDebug()){
 				pRenderThread.GetLogger().LogInfoFormat("Loading shader unit source code %s...", filename);
 			}*/
 			
-			const deoglShaderUnitSourceCode::Ref sources(
-				deoglShaderUnitSourceCode::Ref::New(ogl, path));
+			auto sources = deoglShaderUnitSourceCode::Ref::New(ogl, path);
 			
 			DEASSERT_FALSE(pUnitSourceCodes.Has(sources->GetName()))
 			
 			pUnitSourceCodes.SetAt(sources->GetName(), sources);
 			pCacheValidationString.Add(sources->GetValidationString());
-		}
+		});
 		
 	}catch(const deException &){
 		pRenderThread.GetLogger().LogInfoFormat(
@@ -679,37 +670,32 @@ void deoglShaderManager::pLoadUnitSourceCodesIn(const char *directory){
 void deoglShaderManager::pLoadIncludableSourcesIn(const char *directory){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	deVirtualFileSystem &vfs = ogl.GetVFS(); // accessed from main thread only
-	decBaseFileReader::Ref reader;
-	decPath searchPath, basePath;
 	decString filename, source;
-	int i;
 	
-	basePath.SetFromUnix(pPathShaderSources);
-	const int basePathLen = basePath.GetPathUnix().GetLength() + 1;
+	auto basePath = decPath::CreatePathUnix(pPathShaderSources);
+	const int basePathLen = pPathShaderSources.GetLength() + 1;
 	
 	try{
 		deCollectFileSearchVisitor collect("*.glsl", true);
-		searchPath.SetFrom(basePath);
+		auto searchPath = basePath;
 		searchPath.AddUnixPath(directory);
 		vfs.SearchFiles(searchPath, collect);
 		
-		const decPath::List &pathList = collect.GetFiles();
-		const int count = pathList.GetCount();
-		
-		for(i=0; i<count; i++){
-			const decPath &path = pathList.GetAt(i);
+		collect.GetFiles().Visit([&](const decPath &path){
 			filename = path.GetPathUnix().GetMiddle(basePathLen);
-			
 			/*if(ogl.GetConfiguration()->GetDoLogDebug()){
 				pRenderThread.GetLogger().LogInfoFormat("Loading includable source %s...", filename);
 			}*/
 			
-			reader = vfs.OpenFileForReading(path);
+			auto reader = vfs.OpenFileForReading(path);
 			const int length = reader->GetLength();
 			source.Set(' ', length);
 			reader->Read(source.GetMutableString(), length);
 			pIncludableSources.SetAt(filename, source);
-		}
+			
+			pCacheValidationString.Add(decString::Formatted("{0}: {1}",
+				filename, reader->GetModificationTime()));
+		});
 		
 	}catch(const deException &){
 		pRenderThread.GetLogger().LogInfoFormat(
@@ -720,37 +706,27 @@ void deoglShaderManager::pLoadIncludableSourcesIn(const char *directory){
 
 void deoglShaderManager::pLoadSourcesIn(const char *directory){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
-	deLogger &logger = *ogl.GetGameEngine()->GetLogger();
+	deLogger &logger = ogl.GetGameEngine()->GetLogger();
 	deVirtualFileSystem &vfs = ogl.GetVFS(); // accessed from main thread only
 	decString filename;
-	decPath searchPath;
-	decPath basePath;
-	int i;
 	
-	// search for shaders in the current directory
-	basePath.SetFromUnix(pPathShaders.GetString());
-	const int basePathLen = (int)strlen(basePath.GetPathUnix()) + 1;
+	auto basePath = decPath::CreatePathUnix(pPathShaders);
+	const int basePathLen = pPathShaders.GetLength() + 1;
 	
 	try{
 		deCollectFileSearchVisitor collect("*.shader.xml", true);
-		searchPath.SetFrom(basePath);
+		auto searchPath = basePath;
 		searchPath.AddUnixPath(directory);
 		vfs.SearchFiles(searchPath, collect);
 		
-		const decPath::List &pathList = collect.GetFiles();
-		const int count = pathList.GetCount();
-		decString validationString;
-		
-		for(i=0; i<count; i++){
-			const decPath &path = pathList.GetAt(i);
+		collect.GetFiles().Visit([&](const decPath &path){
 			filename = path.GetPathUnix().GetMiddle(basePathLen);
 			/*if( ogl.GetConfiguration()->GetDoLogDebug() ){
 				pRenderThread.GetLogger().LogInfoFormat("Loading shader %s...", filename);
 			}*/
 			
-			const decBaseFileReader::Ref reader(vfs.OpenFileForReading(path));
-			
-			const deoglShaderSources::Ref sources(deoglShaderSources::Ref::New(logger, reader));
+			auto reader = vfs.OpenFileForReading(path);
+			auto sources = deoglShaderSources::Ref::New(logger, reader);
 			
 			if(pSources.Has(sources->GetName())){
 				ogl.LogErrorFormat("Shader file '%s' defines a shader named '%s' but"
@@ -761,10 +737,9 @@ void deoglShaderManager::pLoadSourcesIn(const char *directory){
 			
 			pSources.SetAt(sources->GetName(), sources);
 			
-			validationString.Format("%s: %" PRIu64, filename.GetString(),
-				(uint64_t)reader->GetModificationTime());
-			pCacheValidationString.Add(validationString);
-		}
+			pCacheValidationString.Add(decString::Formatted("{0}: {1}",
+				filename, reader->GetModificationTime()));
+		});
 		
 	}catch(const deException &){
 		pRenderThread.GetLogger().LogInfoFormat("Loading shader %s failed!", filename.GetString());
