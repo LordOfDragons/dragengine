@@ -91,10 +91,8 @@ enum eSPDepthOnly{
 };
 
 enum eSPDepthDownsample{
-	spddsQuadParams,
 	spddsTCClamp,
-	spddsMipMapLevel,
-	spddsPixelSize
+	spddsMipMapLevel
 };
 
 
@@ -137,7 +135,7 @@ deoglRenderBase(renderThread)
 	
 	renderThread.GetShader().SetCommonDefines(commonDefines);
 	if(useInverseDepth){
-		commonDefines.SetDefines("INVERSE_DEPTH");
+		defines.SetDefines("INVERSE_DEPTH");
 	}
 	
 	
@@ -149,12 +147,14 @@ deoglRenderBase(renderThread)
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed("DefRen Depth Downsample");
 	
+	defines.SetDefines("NO_TEXCOORD");
 	defines.SetDefines("USE_MIN_FUNCTION"); // so it works for SSR. should also work for SSAO
 	pAsyncGetPipeline(pPipelineDepthDownsample, pipconf, sources, defines);
 	
 	
 	// depth downsample stereo
 	defines = commonDefines;
+	defines.SetDefines("NO_TEXCOORD");
 	defines.SetDefines("USE_MIN_FUNCTION"); // so it works for SSR. should also work for SSAO
 	
 	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
@@ -522,10 +522,6 @@ DBG_ENTER("DownsampleDepth")
 	OGL_CHECK(renderThread, pglBindVertexArray(defren.GetVAOFullScreenQuad()->GetVAO()));
 	
 	deoglShaderCompiled &shader = pipeline.GetShader();
-	defren.SetShaderParamFSQuad(shader, spddsQuadParams);
-	
-	const decVector2 tcClamp(defren.GetClampU(), defren.GetClampV());
-	decVector2 pixelSize(defren.GetPixelSizeU(), defren.GetPixelSizeV());
 	
 	tsmgr.EnableArrayTexture(0, texture, GetSamplerClampNearest());
 	
@@ -534,13 +530,11 @@ DBG_ENTER("DownsampleDepth")
 		
 		OGL_CHECK(renderThread, pglClearBufferfv(GL_DEPTH, 0, &clearDepth));
 		
-		shader.SetParameterVector2(spddsTCClamp, tcClamp);
-		shader.SetParameterFloat(spddsMipMapLevel, float(i - 1));
-		shader.SetParameterVector2(spddsPixelSize, pixelSize);
+		shader.SetParameterInt(spddsTCClamp, width - 1, height - 1);
+		shader.SetParameterInt(spddsMipMapLevel, i - 1);
 		
 		width = decMath::max(width >> 1, 1);
 		height = decMath::max(height >> 1, 1);
-		pixelSize *= 2.0f;
 		
 		SetViewport(width, height);
 		

@@ -144,11 +144,6 @@ public:
 	inline float GetScalingU() const{ return pScalingU; }
 	/** Retrieves the scaling factor in v direction. */
 	inline float GetScalingV() const{ return pScalingV; }
-	
-	/** Texture coordinate clamping. */
-	inline float GetClampU() const{ return pClampU; }
-	inline float GetClampV() const{ return pClampV; }
-	
 	/** Retrieves the texture coordinate displacement in u direction for 1 pixel. */
 	inline float GetPixelSizeU() const{ return pPixelSizeU; }
 	/** Retrieves the texture coordinate displacement in v direction for 1 pixel. */
