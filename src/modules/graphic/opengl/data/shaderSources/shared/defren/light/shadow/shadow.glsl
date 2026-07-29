@@ -234,8 +234,23 @@ ARG_SAMP_HIGHP sampler2DArray samplerNormal, const in vec3 position, const in ve
 			continue;
 		}
 		
+		// if the blocker normal is nearly perpendicular to lightDir, skip the test to avoid
+		// surface acne due to numerical inaccuracies. 0.08 is roughly 5 degrees
+		/*
+		vec3 normal = sanitizeNormal(normalLoadMaterial(samplerNormal, tcTest));
+		
+		if(dot(normal, normal) < 0.0001){
+			normal = lightDir; // 0-normal means always point towards light source
+			
+		}else{
+			normal = clamp(normal, vec3(-1.0), vec3(1.0)); // some shader writes broken normals (or missing clear?). temporary fix
+			normal = normalize(normal);
+		}
+		
+		if(abs(dot(normal, lightDir)) < 0.08){
 			continue;
 		}
+		*/
 		
 		// fade the shadow towards the end of the ray
 		float shadow = pow(length(rayPosition - position) / maxLength, 2.0);

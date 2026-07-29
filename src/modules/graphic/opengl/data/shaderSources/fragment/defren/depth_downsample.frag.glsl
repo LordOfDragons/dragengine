@@ -3,39 +3,37 @@
 precision HIGHP float;
 precision HIGHP int;
 
-UNIFORM_BIND(3) uniform ivec2 pTCClamp;
-UNIFORM_BIND(4) uniform int pMipMapLevel;
+UNIFORM_BIND(3) uniform vec2 pTCClamp;
+UNIFORM_BIND(4) uniform float pMipMapLevel;
+UNIFORM_BIND(5) uniform vec2 pPixelSize;
 
 layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 
 #include "shared/interface/2d/fragment.glsl"
 
-const ivec4 tcScale = ivec4( 2 );
-const ivec4 tcOffset = ivec4( 0, 0, 1, 1 );
-
 // !UseMinFunction
-const vec4 weights = vec4( 0.25 );
+const vec4 weights = vec4(0.25);
 
-void main( void ){
-	ivec4 tc = min( ivec4( gl_FragCoord.xyxy ) * tcScale + tcOffset, pTCClamp.xyxy ); // s*2, t*2, s*2+1, t*2+1
+void main(void){
+	vec4 tc = vec4(vTexCoord, min(vTexCoord + pPixelSize, pTCClamp));
 	vec4 depth;
 	
-	depth.x = texelFetch( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ).r; // (s*2, t*2)
-	depth.y = texelFetch( texDepth, ivec3( tc.zy, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2)
-	depth.z = texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).r; // (s*2, t*2+1)
-	depth.w = texelFetch( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2+1)
+	depth.x = textureLod(texDepth, vec3(tc.xy, vLayer), pMipMapLevel).r;
+	depth.y = textureLod(texDepth, vec3(tc.zy, vLayer), pMipMapLevel).r;
+	depth.z = textureLod(texDepth, vec3(tc.xw, vLayer), pMipMapLevel).r;
+	depth.w = textureLod(texDepth, vec3(tc.zw, vLayer), pMipMapLevel).r;
 	
 	if(UseMinFunction){
 		if(InverseDepth){
-			depth.xy = max( depth.xy, depth.zw );
-			gl_FragDepth = max( depth.x, depth.y );
+			depth.xy = max(depth.xy, depth.zw);
+			gl_FragDepth = max(depth.x, depth.y);
 			
 		}else{
-			depth.xy = min( depth.xy, depth.zw );
-			gl_FragDepth = min( depth.x, depth.y );
+			depth.xy = min(depth.xy, depth.zw);
+			gl_FragDepth = min(depth.x, depth.y);
 		}
 		
 	}else{
-		gl_FragDepth = dot( depth, weights );
+		gl_FragDepth = dot(depth, weights);
 	}
 }
