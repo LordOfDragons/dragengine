@@ -592,4 +592,21 @@ struct fmt_ns::formatter<decString> : fmt_ns::formatter<std::string_view>{
 	}
 };
 
+#ifdef OS_ANDROID
+
+// workaround for broken/missing "long long" handling in std::formatter on Android NDK
+template <>
+struct fmt_ns::formatter<unsigned long long>{
+	auto parse(fmt_ns::format_parse_context &ctx){
+		return ctx.begin();
+	}
+	
+	auto format(unsigned long long v, fmt_ns::format_context& ctx) const{
+		char buffer[32];
+		std::snprintf(buffer, sizeof(buffer), "%llu", v);
+		return fmt_ns::formatter<std::string_view>::format(std::string_view(buffer), ctx);
+	}
+};
+#endif
+
 #endif
