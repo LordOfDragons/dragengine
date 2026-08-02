@@ -112,9 +112,9 @@ jobs:
       
       - name: Install GLSL Tools
         run: |
-          Invoke-WebRequest "https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-master-windows-Release.zip" `
-            -OutFile "${{ github.workspace }}/glslang-master-windows-Release.zip"
-          Expand-Archive -LiteralPath "${{ github.workspace }}/glslang-master-windows-Release.zip" `
+          Invoke-WebRequest "https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-main-windows-x86_64-release.zip" `
+            -OutFile "${{ github.workspace }}/glslang.zip"
+          Expand-Archive -LiteralPath "${{ github.workspace }}/glslang.zip" `
             -DestinationPath "${{ github.workspace }}/glslang"
           $env:PATH = "${{ github.workspace }}\glslang\bin;" + $env:PATH
           Write-Output "PATH=$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
