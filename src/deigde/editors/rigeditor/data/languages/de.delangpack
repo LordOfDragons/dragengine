@@ -520,4 +520,5 @@
 	<!-- Error Messages -->
 	<translation name="Rig.PanelBone.Error.DuplicateName">Es existiert bereits ein Knochen mit dem Namen "{0}".</translation>
 	<translation name="Rig.PanelBone.Error.InvalidParent">Interner Fehler. Das Element "{0}" ist als übergeordnetes Element ungültig und kann nicht ausgewählt werden.</translation>
+	<translation name="Rig.Dialog.GenerateCollisionShapes2.Title">Kollisionsformen erzeugen</translation>
 </languagePack>

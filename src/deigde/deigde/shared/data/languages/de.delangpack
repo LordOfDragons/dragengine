@@ -848,4 +848,7 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.MetaPropertyPath.FileInfo.Key.Video.Frames">Bilder</translation>
 	<translation name="Igde.MetaPropertyUndoHistory.Property">Rückgängig-Verlauf</translation>
 	<translation name="Igde.MetaPropertyUndoHistory.Property.ToolTip">Rückgängig-Verlauf</translation>
+	<translation name="Igde.MetaProperty.Action.Presets">Voreinstellungen</translation>
+	<translation name="Igde.MetaPropertyPath.FileInfo.Key.OcclusionMesh.Faces">Flächen</translation>
+	<translation name="Igde.MetaPropertyPath.FileInfo.Key.OcclusionMesh.Vertices">Eckpunkte</translation>
 </languagePack>

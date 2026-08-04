@@ -123,8 +123,9 @@ class TranslationScanner:
             return valid_translations, invalid_translations
         
         # Pattern 1: @<translation-name> in string literals (valid names: alphanumeric, dots, underscores, hyphens)
-        # Match: "@Conversation.WPTopic.Actions.Label"
-        at_pattern_valid = re.compile(r'"@([\w.-]+)"')
+        # Match: "@Conversation.WPTopic.Actions.Label" or "@Label{0}" or "@{0}" or "@{}"
+        # Allows format placeholders like {0}, {1}, {} interleaved with name characters
+        at_pattern_valid = re.compile(r'"@((?:[\w.-]|\{\d*\})+)"')
         
         # Pattern 2: @<anything> in string literals (to catch invalid names)
         # This captures strings starting with @ that contain spaces or other invalid characters
@@ -236,6 +237,10 @@ class TranslationScanner:
             
             # Check for missing translations (only for valid names)
             for line_num, trans_name in valid_refs:
+                # Skip checking for missing translations if the name contains format placeholders
+                # These are template keys that get filled in at runtime (e.g., "@{0}" or "@{0}.ToolTip")
+                if re.search(r'\{\d*\}', trans_name):
+                    continue
                 if trans_name not in available_translations:
                     missing_details.append((file_path, line_num, trans_name, primary_langpack))
         
@@ -245,6 +250,7 @@ class TranslationScanner:
             print("INVALID TRANSLATION NAMES FOUND")
             print(f"{'='*70}")
             print("Translation names must contain only alphanumeric characters, dots (.), hyphens (-), and underscores (_).")
+            print("Format placeholders like {0}, {1}, {} are allowed.")
             print("Spaces and other special characters are not allowed.\n")
             
             # Group by langpack

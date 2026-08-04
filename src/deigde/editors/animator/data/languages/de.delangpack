@@ -818,4 +818,6 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.Context.Playground.ToolTip">Steuerung Testen</translation>
 	<translation name="Animator.Context.View">Ansicht</translation>
 	<translation name="Animator.Context.View.ToolTip">Ansicht-Eigenschaften</translation>
+	<translation name="Animator.Action.Rule.Add">Hinzufügen</translation>
+	<translation name="Animator.Action.Rule.Add.ToolTip">Regel hinzufügen</translation>
 </languagePack>

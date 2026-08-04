@@ -1697,4 +1697,10 @@ Standard: ''</translation>
 	<!-- UObjectDropToGround -->
 	<translation name="World.UObjectDropToGround.CountObjects">{0} Objekte</translation>
 	<translation name="World.UObjectDropToGround.OneObject">1 Objekt</translation>
+	<translation name="World.WPSObjectShape.PositionCapsule">Position Kapsel</translation>
+	<translation name="World.WPSObjectShape.RotationCapsule">Rotation Kapsel</translation>
+	<translation name="World.WPSObjectShape.RadiusTopOfCylinder.ToolTip">Radius Oberseite des Zylinders</translation>
+	<translation name="World.WPSObjectShape.RadiusBottomOfCylinder.ToolTip">Radius Unterseite des Zylinders</translation>
+	<translation name="World.WPSObjectShape.RadiusTopOfCapsule.ToolTip">Radius Oberseite der Kapsel</translation>
+	<translation name="World.WPSObjectShape.RadiusBottomOfCapsule.ToolTip">Radius Unterseite der Kapsel</translation>
 </languagePack>
