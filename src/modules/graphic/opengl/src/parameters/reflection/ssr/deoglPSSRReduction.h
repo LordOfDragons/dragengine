@@ -22,31 +22,31 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLPSSRCOVERAGEEDGESIZE_H_
-#define _DEOGLPSSRCOVERAGEEDGESIZE_H_
+#ifndef _DEOGLPSSRREDUCTION_H_
+#define _DEOGLPSSRREDUCTION_H_
 
-#include "../deoglParameterFloat.h"
+#include "../../deoglParameterInt.h"
 
 
 /**
- * Module Parameter Screen Space Reflection Coverage Edge Size.
+ * Module Parameter Screen Space Reflection Reduction.
  */
-class deoglPSSRCoverageEdgeSize : public deoglParameterFloat{
+class deoglPSSRReduction : public deoglParameterInt{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPSSRCoverageEdgeSize(deGraphicOpenGl &ogl);
+	deoglPSSRReduction(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	~deoglPSSRCoverageEdgeSize() override;
+	~deoglPSSRReduction() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Retrieves the current value. */
-	float GetParameterFloat() override;
+	int GetParameterInt() override;
 	/** Sets the current value. */
-	void SetParameterFloat(float value) override;
+	void SetParameterInt(int value) override;
 	/*@}*/
 };
 

@@ -54,6 +54,10 @@ public:
 		int probeCount;
 	};
 	
+	struct sReflectionQuality{
+		int ssrStepCount;
+	};
+	
 	
 private:
 	deoglConfiguration &pConfiguration;
@@ -67,12 +71,15 @@ private:
 	sGIUpdateSpeed pGIUpdateSpeedVeryHigh, pGIUpdateSpeedHigh, pGIUpdateSpeedMedium,
 		pGIUpdateSpeedLow, pGIUpdateSpeedVeryLow, pGIUpdateSpeedOff;
 	
+	sReflectionQuality pReflectionQualityVeryHigh, pReflectionQualityHigh,
+		pReflectionQualityMedium, pReflectionQualityLow, pReflectionQualityVeryLow;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create caches. */
-	deoglConfigurationSets(deoglConfiguration &configuration);
+	explicit deoglConfigurationSets(deoglConfiguration &configuration);
 	/*@}*/
 	
 	
@@ -89,6 +96,10 @@ public:
 	/** Get GI update speed configuration set. */
 	const sGIUpdateSpeed &GIUpdateSpeed() const;
 	const sGIUpdateSpeed &GIUpdateSpeed(deoglConfiguration::eGIUpdateSpeed speed) const;
+	
+	/** Get reflection quality configuration set. */
+	const sReflectionQuality &ReflectionQuality() const;
+	const sReflectionQuality &ReflectionQuality(deoglConfiguration::eReflectionQuality quality) const;
 	/*@}*/
 };
 

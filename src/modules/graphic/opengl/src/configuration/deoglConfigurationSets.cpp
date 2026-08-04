@@ -152,6 +152,40 @@ pGIUpdateSpeedVeryLow{
 },
 pGIUpdateSpeedOff{
 	.probeCount = 128
+},
+
+
+// reflection quality
+//
+// ssrStepCount:
+// performance notes (renderdoc measurements so only relative relationship useful, 2202x1585):
+// - linear: 7.8ms (maximum possible quality)
+// - 1024: 6.3ms
+// - 512: 3.4ms (few convoluted reflections missing)
+// - 256: 2.3ms (some more convoluted reflections missing)
+// - 128: 1.3ms (convolute reflections missing, few edges start missing)
+// - 64: 1.0ms (convolute reflections missing, more noticable edges missing)
+// - 32: 0.6ms (heavy missing reflections, not usable anymore)
+// 64 is the lowest setting for weak systems only.
+// 256 is acceptable middle ground for the majority of systems.
+// 512 is good setting for strong systems.
+// 1024 is a possible choice for strong systems with extra processing time to spare.
+// it is close to linear but faster. an ultra setting could be using linear potentially.
+
+pReflectionQualityVeryHigh{
+	.ssrStepCount = 1024
+},
+pReflectionQualityHigh{
+	.ssrStepCount = 512
+},
+pReflectionQualityMedium{
+	.ssrStepCount = 256
+},
+pReflectionQualityLow{
+	.ssrStepCount = 128
+},
+pReflectionQualityVeryLow{
+	.ssrStepCount = 64
 }
 
 {
@@ -247,6 +281,34 @@ deoglConfiguration::eGIUpdateSpeed speed) const{
 		
 	case deoglConfiguration::egiusVeryHigh:
 		return pGIUpdateSpeedVeryHigh;
+		
+	default:
+		DETHROW(deeInvalidParam);
+	}
+}
+
+
+const deoglConfigurationSets::sReflectionQuality &deoglConfigurationSets::ReflectionQuality() const{
+	return ReflectionQuality(pConfiguration.GetReflectionQuality());
+}
+
+const deoglConfigurationSets::sReflectionQuality &deoglConfigurationSets::ReflectionQuality(
+deoglConfiguration::eReflectionQuality quality) const{
+	switch(quality){
+	case deoglConfiguration::erqVeryLow:
+		return pReflectionQualityVeryLow;
+		
+	case deoglConfiguration::erqLow:
+		return pReflectionQualityLow;
+		
+	case deoglConfiguration::erqMedium:
+		return pReflectionQualityMedium;
+		
+	case deoglConfiguration::erqHigh:
+		return pReflectionQualityHigh;
+		
+	case deoglConfiguration::erqVeryHigh:
+		return pReflectionQualityVeryHigh;
 		
 	default:
 		DETHROW(deeInvalidParam);

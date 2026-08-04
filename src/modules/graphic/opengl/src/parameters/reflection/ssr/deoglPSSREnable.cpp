@@ -22,44 +22,33 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "deoglPSSRReduction.h"
-#include "../../deGraphicOpenGl.h"
-#include "../../configuration/deoglConfiguration.h"
+#include "deoglPSSREnable.h"
+#include "../../../deGraphicOpenGl.h"
+#include "../../../configuration/deoglConfiguration.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class deoglPSSRReduction
-/////////////////////////////
+// Class deoglPSSREnable
+//////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSRReduction::deoglPSSRReduction(deGraphicOpenGl &ogl) :
-deoglParameterInt(ogl)
+deoglPSSREnable::deoglPSSREnable(deGraphicOpenGl &ogl) :
+deoglParameterBool(ogl)
 {
-	SetName("ssrReduction");
-	SetDescription("Set Screen Space Reflection (SSR) reduction."
-		" SSR is expensive especially on larger resolutions."
-		" Rendering SSR at lower resolution then up-scaling improves performance.");
-	SetType(deModuleParameter::eptSelection);
-	SetDisplayName("SSR Reduction");
-	SetCategory(ecAdvanced);
-	
-	AddSelectionEntry({"1", "1x", "Render SSR at full resolution. For strong graphic cards."});
-	AddSelectionEntry({"2", "2x", "Render SSR at half resolution then up-scale to full resolution."});
-	AddSelectionEntry({"4", "4x", "Render SSR at quarter resolution then up-scale to full resolution."});
-	AddSelectionEntry({"8", "8x", "Render SSR at 1/8 resolution then up-scale to full resolution."});
-	
+	SetName("ssrEnable");
+	SetDescription("Enables Screen Space Reflections (SSR)."
+		" This adds higher quality reflections between objects but only for objects visible on screen."
+		" Enabling SSR is expensive. Disable SSR to improve performance.");
+	SetCategory(ecBasic);
+	SetDisplayName("SSR");
 	SetDefaultValue("1");
 }
 
-deoglPSSRReduction::~deoglPSSRReduction(){
+deoglPSSREnable::~deoglPSSREnable(){
 }
 
 
@@ -67,10 +56,10 @@ deoglPSSRReduction::~deoglPSSRReduction(){
 // Parameter Value
 ////////////////////
 
-int deoglPSSRReduction::GetParameterInt(){
-	return pOgl.GetConfiguration().GetSSRReduction();
+bool deoglPSSREnable::GetParameterBool(){
+	return pOgl.GetConfiguration().GetSSREnable();
 }
 
-void deoglPSSRReduction::SetParameterInt(int value){
-	pOgl.GetConfiguration().SetSSRReduction(value);
+void deoglPSSREnable::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetSSREnable(value);
 }

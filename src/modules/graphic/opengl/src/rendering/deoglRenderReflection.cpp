@@ -115,6 +115,13 @@ enum eSPCopyColor{
 	spccTCClampMipMap
 };
 
+enum eSPCopyColorDownsample{
+	spccdsQuadParams,
+	spccdsMipMapLevel,
+	spccdsTCClamp,
+	spccdsPixelSize
+};
+
 enum eSPMinMapMipMap{
 	spmmmmTCClamp,
 	spmmmmMipMapLevel,
@@ -214,8 +221,9 @@ deoglRenderBase(renderThread)
 		sources = shaderManager.GetSourcesNamed("DefRen Copy Color");
 		pAsyncGetPipeline(pPipelineCopyColor, pipconf, sources, defines);
 		
-		defines.SetDefines("MIPMAP");
-		pAsyncGetPipeline(pPipelineCopyColorMipMap, pipconf, sources, defines);
+		// defines.SetDefines("CLAMP_TC", "MIPMAP");
+		// pAsyncGetPipeline(pPipelineCopyColorDownsample, pipconf, sources, defines);
+		
 		
 		defines = commonDefines;
 		defines.SetDefines("INPUT_ARRAY_TEXTURES");
@@ -228,8 +236,29 @@ deoglRenderBase(renderThread)
 		}
 		pAsyncGetPipeline(pPipelineCopyColorStereo, pipconf, sources, defines);
 		
-		defines.SetDefines("MIPMAP");
-		pAsyncGetPipeline(pPipelineCopyColorMipMapStereo, pipconf, sources, defines);
+		// defines.SetDefines("CLAMP_TC", "MIPMAP");
+		// pAsyncGetPipeline(pPipelineCopyColorDownsampleStereo, pipconf, sources, defines);
+		
+		
+		// copy color downsample
+		pipconf.Reset();
+		pipconf.SetMasks(true, true, true, true, false);
+		pipconf.SetEnableScissorTest(true);
+		
+		defines = commonDefines;
+		defines.SetDefines("INPUT_ARRAY_TEXTURES");
+		sources = shaderManager.GetSourcesNamed("DefRen Copy Color Downsample");
+		pAsyncGetPipeline(pPipelineCopyColorDownsample, pipconf, sources, defines);
+		
+		
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
+		if(!renderFSQuadStereoVSLayer){
+			sources = shaderManager.GetSourcesNamed("DefRen Copy Color Downsample Stereo");
+		}
+		pAsyncGetPipeline(pPipelineCopyColorDownsampleStereo, pipconf, sources, defines);
 		
 		
 		// min max
@@ -1340,33 +1369,61 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap(deoglRenderPlan &plan){
 	}
 }
 
-void deoglRenderReflection::CopyColorToTemporary1(deoglRenderPlan &plan){
+void deoglRenderReflection::CopyColorToTemporary1(deoglRenderPlan &plan, bool downsample){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace(renderThread, "Reflection.CopyColorToTemporary1");
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglShaderCompiled *shader;
 	
 	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyColorStereo : *pPipelineCopyColor;
 	pipeline.Activate();
+	OGL_CHECK(renderThread, pglBindVertexArray(defren.GetVAOFullScreenQuad()->GetVAO()));
 	
 	defren.ActivateFBOTemporary1Level(0);
 	
 	GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 	OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, &clearColor[0]));
 	
-	shader = &pipeline.GetShader();
-	
-	defren.SetShaderParamFSQuad(*shader, spccQuadParams);
+	deoglShaderCompiled &shader = pipeline.GetShader();
+	defren.SetShaderParamFSQuad(shader, spccQuadParams);
 	
 	tsmgr.EnableArrayTexture(0, *defren.GetTextureColor(), GetSamplerClampNearest());
 	
-	RenderFullScreenQuadVAO(plan);
+	RenderFullScreenQuad(plan);
 	
-	// downsample the mip-map chain. the hardware solution should not introduce problems since the screen space
-	// reflections do not sample near the border and since it should simply cut off the superflous pixel if
-	// one is present
-//	defren.GetTextureTemporary1()->CreateMipMaps();
+	if(downsample){
+		const deoglDebugTraceGroup debugTrace2(renderThread, "Downsample");
+		deoglArrayTexture &texture = *defren.GetTextureTemporary1();
+		const int mipMapLevelCount = texture.GetRealMipMapLevelCount();
+		int height = defren.GetHeight();
+		int width = defren.GetWidth();
+		
+		const deoglPipeline &pipeline2 = plan.GetRenderStereo()
+			? *pPipelineCopyColorDownsampleStereo : *pPipelineCopyColorDownsample;
+		pipeline2.Activate();
+		
+		deoglShaderCompiled &shader2 = pipeline2.GetShader();
+		defren.SetShaderParamFSQuad(shader2, spccdsQuadParams);
+		shader2.SetParameterFloat(spccdsTCClamp, defren.GetClampU(), defren.GetClampV());
+		
+		tsmgr.EnableArrayTexture(0, texture, GetSamplerClampNearestMipMap());
+		
+		for(int i=1; i<=mipMapLevelCount; i++){
+			defren.ActivateFBOTemporary1Level(i);
+			
+			shader2.SetParameterFloat(spccdsMipMapLevel, (float)(i - 1));
+			shader2.SetParameterFloat(spccdsPixelSize, 1.0f / (float)width, 1.0f / (float)height);
+			
+			width = decMath::max(width >> 1, 1);
+			height = decMath::max(height >> 1, 1);
+			
+			SetViewport(width, height);
+			
+			RenderFullScreenQuad(plan);
+		}
+		
+		SetViewport(plan);
+	}
 }
 
 void deoglRenderReflection::CopyMaterial(deoglRenderPlan &plan, bool solid){
@@ -1558,6 +1615,7 @@ void deoglRenderReflection::RenderScreenSpace(deoglRenderPlan &plan){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
+	//const auto &configSetReflectionQuality = renderThread.GetConfigurationSets().ReflectionQuality();
 	if(!config.GetSSREnable()){
 		return;
 	}
@@ -1568,10 +1626,12 @@ void deoglRenderReflection::RenderScreenSpace(deoglRenderPlan &plan){
 	
 	DEBUG_RESET_TIMERS;
 	
+	SetViewport(plan);
+	
 	// copy color to temporary1 and create mip-map chain unless we are in transparency pass because
 	// there this has been already created for us.
 	if(plan.GetRenderPassNumber() == 1){
-		CopyColorToTemporary1(plan);
+		CopyColorToTemporary1(plan, true);
 		DEBUG_PRINT_TIMER("Reflection ScreenSpace: Copy Color To Temporary1");
 	}
 	
@@ -1582,15 +1642,13 @@ void deoglRenderReflection::RenderScreenSpace(deoglRenderPlan &plan){
 	
 	defren.ActivateFBOTemporary2(false);
 	
-	SetViewport(plan);
-	
 	GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 	OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, &clearColor[0]));
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	if(renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8){
-		tsmgr.EnableArrayTexture(0, *defren.GetDepthTexture1(), GetSamplerClampNearest());
+		tsmgr.EnableArrayTexture(0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap());
 		if(deoglDRDepthMinMax::USAGE_VERSION != -1){
 			tsmgr.EnableArrayTexture(1, *defren.GetDepthMinMax().GetTexture(), GetSamplerClampNearestMipMap());
 		}
@@ -1600,7 +1658,7 @@ void deoglRenderReflection::RenderScreenSpace(deoglRenderPlan &plan){
 		tsmgr.EnableArrayTexture(5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest());
 		
 	}else{
-		tsmgr.EnableArrayTexture(0, *defren.GetDepthTexture1(), GetSamplerClampNearest());
+		tsmgr.EnableArrayTexture(0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap());
 		if(deoglDRDepthMinMax::USAGE_VERSION != -1){
 			tsmgr.EnableArrayTexture(1, *defren.GetDepthMinMax().GetTexture(), GetSamplerClampNearestMipMap());
 		}

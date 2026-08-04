@@ -22,31 +22,31 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLPSSRENABLE_H_
-#define _DEOGLPSSRENABLE_H_
+#ifndef _DEOGLPSSRCOVERAGEPOWERRAYLENGTH_H_
+#define _DEOGLPSSRCOVERAGEPOWERRAYLENGTH_H_
 
-#include "../deoglParameterBool.h"
+#include "../../deoglParameterFloat.h"
 
 
 /**
- * Module Parameter Enable Screen Space Reflection.
+ * Module Parameter Screen Space Reflection Coverage Power Ray Length.
  */
-class deoglPSSREnable : public deoglParameterBool{
+class deoglPSSRCoveragePowerRayLength : public deoglParameterFloat{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPSSREnable(deGraphicOpenGl &ogl);
+	deoglPSSRCoveragePowerRayLength(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	~deoglPSSREnable() override;
+	~deoglPSSRCoveragePowerRayLength() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Retrieves the current value. */
-	bool GetParameterBool() override;
+	float GetParameterFloat() override;
 	/** Sets the current value. */
-	void SetParameterBool(bool value) override;
+	void SetParameterFloat(float value) override;
 	/*@}*/
 };
 

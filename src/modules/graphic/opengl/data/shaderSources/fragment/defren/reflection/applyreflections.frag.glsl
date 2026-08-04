@@ -54,6 +54,7 @@ layout(binding=15) uniform mediump samplerCube texEnvMap8Cube;
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 #include "shared/interface/2d/fragment.glsl"
+#include "shared/defren/downsample.glsl"
 
 layout(location=0) out vec3 outColor;
 
@@ -633,20 +634,75 @@ void main( void ){
 	reflectionLocal += textureLod( texColor, vec3( tcLocal.zw, vLayer ), localMipMapLevel ).rgb;
 	reflectionLocal *= vec3( 0.209486 );
 	*/
-	vec3 reflectionLocal = textureLod( texColor, vec3( reflection.xy, vLayer ), 0.0 ).rgb;
+	
+	vec3 reflectionLocal = vec3(0.0);
 	
 	// check the reflectivity of the hit point. if the reflectivity is high we end up with near black
 	// reflections which looks very odd. the proper solution would be to calculate additional bounces.
 	// typically one additional bounce should be enough to get a proper solution without too high
 	// reflection. for the time being though this is hacked by bouncing a ray into the env-map and
 	// blending the result together. this lets the environment map jump in for these cases.
-	if( reflection.z > 0.0 ){
+	if(reflection.z > 0.0){
 		// this check here is currently required to avoid trying to tap from the sky or another
 		// special pixel not having written the reflectivity properly. later on this should be
 		// handled by doing a proper clear pass that also clears the reflectivity
-		vec3 tcRefl = vec3( reflection.xy, vLayer );
+		vec3 tcRefl = vec3(reflection.xy, vLayer);
 		
-		if( texture( texDiffuse, tcRefl ).a > 0.0 ){
+		vec3 reflPosition = depthToPosition(texDepth, tcRefl, fsquadTexCoordToScreenCoord(tcRefl.xy), vLayer);
+		float reflDist = length(reflPosition - position);
+		
+		// correct mip map level selection goes like this (where roughness(0..1) is angle (0..pi/2)):
+		//
+		// float reflRadius = tan(min(roughness, 0.7) * HALF_PI) * reflDist;
+		// float ssRadius = reflRadius * pMatrixP[0][0][0] / reflPosition.z; // range 0..1
+		// float tcRadius = ssRadius / 2.0; // range 0..0.5
+		// float pixelRadius = tcRadius / pScreenSpacePixelSizeU; // 0..(realTexWidth-1)/2
+		// float reflMipLevel = log2(max(pixelRadius, 1.0));
+		//
+		// with larger roughness values it becomes difficult to see the correct calculation
+		// compared to an estimated one. a roughness value of 0.1 is already quite blurry so
+		// this is used as threshold case. the values are like these:
+		//
+		// 0.03928 = tan(0.025 * HALF_PI)
+		// 0.07867 = tan(0.05 * HALF_PI)
+		// 0.15833 = tan(0.1 * HALF_PI)
+		//
+		// this is rather linear so using a scale factor of 1.5833 is good enough. this then becomes:
+		//
+		// float reflRadius = roughness * 1.5833 * reflDist;
+		// ...
+		//
+		// this can be further simplified to this:
+		//
+		// float pixelRadius = ((roughness * 1.5833 * reflDist * pMatrixP[0][0][0] / reflPosition.z) / 2.0) / pScreenSpacePixelSizeU;
+		// float pixelRadius = (roughness * 1.5833 * reflDist * pMatrixP[0][0][0]) / (reflPosition.z * 2.0 * pScreenSpacePixelSizeU);
+		// float pixelRadius = (roughness * reflDist / reflPosition.z) * ((1.5833 * pMatrixP[0][0][0]) / (2.0 * pScreenSpacePixelSizeU));
+		//
+		// hence using constant "C = (1.5833 * pMatrixP[0][0][0]) / (2.0 * pScreenSpacePixelSizeU)"
+		// this reduces to:
+		//
+		// float pixelRadius = roughness * reflDist * C / reflPosition.z;
+		float pixelRadius = roughness * reflDist * pSSRRoughnessToPixelRadius / reflPosition.z;
+		
+		
+		// when downsample shader uses 4-tap filtering the mip level has to be reduced by 1
+		// to produce a similar result to a single tap. when the downsample shader uses
+		// 16-tap filtering the mip level has to be reduced by 2 (maybe 1.5).
+		float reflMipLevel = max(log2(max(pixelRadius, 1.0)) - 2.0, 0.0);
+		reflectionLocal = textureLod(texColor, vec3(reflection.xy, vLayer), reflMipLevel).rgb;
+		
+		// an alternative approach is to apply a downsample filter on the reflection. this
+		// requires then reducing the mip map level even further using the same rules.
+		// the resulting reflection is smoother this way but costs more performance. the main
+		// problem is though that fully sharp reflections are not possible anymore without
+		// using a mix between the mip0 tap and the filtered tap
+		/*
+		float reflMipLevel = max(log2(max(pixelRadius, 1.0)) - 4.0, 0.0);
+		reflectionLocal = downsampleColorNpot13Tap(texColor, reflection.xy,
+			vec2(pow(2.0, reflMipLevel)) * pScreenSpacePixelSize, vec2(1.0), vLayer, reflMipLevel).xyz;
+		*/
+		
+		if(texture(texDiffuse, tcRefl).a > 0.0){
 			vec3 bouncedReflectionColor;
 			vec3 bouncedReflectivity;
 			vec3 bouncedReflectDir;

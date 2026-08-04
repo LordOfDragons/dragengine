@@ -22,23 +22,23 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLPSSRMAXRAYLENGTH_H_
-#define _DEOGLPSSRMAXRAYLENGTH_H_
+#ifndef _DEOGLPSSRCOVERAGEEDGESIZE_H_
+#define _DEOGLPSSRCOVERAGEEDGESIZE_H_
 
-#include "../deoglParameterFloat.h"
+#include "../../deoglParameterFloat.h"
 
 
 /**
- * Module Parameter Screen Space Reflection Maximum Ray Length.
+ * Module Parameter Screen Space Reflection Coverage Edge Size.
  */
-class deoglPSSRMaxRayLength : public deoglParameterFloat{
+class deoglPSSRCoverageEdgeSize : public deoglParameterFloat{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPSSRMaxRayLength(deGraphicOpenGl &ogl);
+	deoglPSSRCoverageEdgeSize(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	~deoglPSSRMaxRayLength() override;
+	~deoglPSSRCoverageEdgeSize() override;
 	/*@}*/
 	
 	/** \name Parameter Value */

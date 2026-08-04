@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Copy Color Downsample</name>
+	
+	<parameter name='pQuadParams' location='0'/> <!-- 0 -->
+	<parameter name='pMipMapLevel' location='3'/> <!-- 1 -->
+	<parameter name='pTCClamp' location='4'/> <!-- 2 -->
+	<parameter name='pPixelSize' location='5'/> <!-- 3 -->
+	
+	<sourceCode unit='vertex'>V Generic FullScreenQuad</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Copy Color Downsample</sourceCode>
+</shader>

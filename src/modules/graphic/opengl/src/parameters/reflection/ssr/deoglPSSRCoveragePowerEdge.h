@@ -22,32 +22,31 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLPSSRSTEPCOUNT_H_
-#define _DEOGLPSSRSTEPCOUNT_H_
+#ifndef _DEOGLPSSRCOVERAGEPOWEREDGE_H_
+#define _DEOGLPSSRCOVERAGEPOWEREDGE_H_
 
-#include "../deoglParameter.h"
+#include "../../deoglParameterFloat.h"
 
 
 /**
- * Module Parameter Screen Space Reflection Step Count.
+ * Module Parameter Screen Space Reflection Coverage Power Edge.
  */
-class deoglPSSRStepCount : public deoglParameter{
+class deoglPSSRCoveragePowerEdge : public deoglParameterFloat{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPSSRStepCount(deGraphicOpenGl &ogl);
+	deoglPSSRCoveragePowerEdge(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	~deoglPSSRStepCount() override;
+	~deoglPSSRCoveragePowerEdge() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** Current value. */
-	decString GetParameterValue() override;
-	
-	/** Set current value. */
-	void SetParameterValue(const char *value) override;
+	/** Retrieves the current value. */
+	float GetParameterFloat() override;
+	/** Sets the current value. */
+	void SetParameterFloat(float value) override;
 	/*@}*/
 };
 

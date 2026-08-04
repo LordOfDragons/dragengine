@@ -234,9 +234,6 @@ ARG_SAMP_HIGHP sampler2DArray samplerNormal, const in vec3 position, const in ve
 			continue;
 		}
 		
-			continue;
-		}
-		
 		// fade the shadow towards the end of the ray
 		float shadow = pow(length(rayPosition - position) / maxLength, 2.0);
 		

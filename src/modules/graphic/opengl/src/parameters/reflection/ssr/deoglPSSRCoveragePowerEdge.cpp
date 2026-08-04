@@ -22,43 +22,41 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "deoglPSSRCoverageEdgeSize.h"
-#include "../../deGraphicOpenGl.h"
-#include "../../configuration/deoglConfiguration.h"
+#include "deoglPSSRCoveragePowerEdge.h"
+#include "../../../deGraphicOpenGl.h"
+#include "../../../configuration/deoglConfiguration.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class deoglPSSRCoverageEdgeSize
-////////////////////////////////////
+// Class deoglPSSRCoveragePowerEdge
+/////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSRCoverageEdgeSize::deoglPSSRCoverageEdgeSize(deGraphicOpenGl &ogl) :
+deoglPSSRCoveragePowerEdge::deoglPSSRCoveragePowerEdge(deGraphicOpenGl &ogl) :
 deoglParameterFloat(ogl)
 {
-	SetName("ssrCoverageEdgeSize");
-	SetDescription("Sets the edge size for edge coverage calculation in screen space reflection."
+	SetName("ssrCoveragePowerEdge");
+	SetDescription("Sets the power for edge coverage calculation in screen space reflection."
 		" Many reflections can not be calculated properly in screen space."
 		" Especially near the edge the calculation fails with higher probability."
 		" Using edge coverage the found results near the screen edge are gradually faded out"
 		" to avoid sharp differences between reflections just inside or outside the screen boundaries."
-		" This parameter sets the fading distance from the edge as percentage of half the screen dimension."
-		" The default value is 0.1 (10%) which equals to 5% edge of the screen dimension."
-		" Higher values enlarge the fading distance which might be more visually more pleasant."
-		" Speed wise this has no impact.");
+		" This parameter sets the power to which the edge coverage is raised."
+		" The default is 2 which results in a quadratic fading from no coverage to full coverage."
+		" A value of 1 results in a linear fading from no coverage to full coverage."
+		" Values larger than 2 result in fading function using x-raisedto-N keeping the coverage longer"
+		" near full coverage before falling down to no coverage."
+		" This can be used to adjust the fading function to your personal liking.");
 	SetCategory(ecExpert);
-	SetDisplayName("SSR Coverage Edge Size");
-	SetDefaultValue("0.1");
+	SetDisplayName("SSR Coverage Edge Power");
+	SetDefaultValue("1");
 }
 
-deoglPSSRCoverageEdgeSize::~deoglPSSRCoverageEdgeSize(){
+deoglPSSRCoveragePowerEdge::~deoglPSSRCoveragePowerEdge(){
 }
 
 
@@ -66,10 +64,10 @@ deoglPSSRCoverageEdgeSize::~deoglPSSRCoverageEdgeSize(){
 // Parameter Value
 ////////////////////
 
-float deoglPSSRCoverageEdgeSize::GetParameterFloat(){
-	return pOgl.GetConfiguration().GetSSRCoverageEdgeSize();
+float deoglPSSRCoveragePowerEdge::GetParameterFloat(){
+	return pOgl.GetConfiguration().GetSSRCoveragePowerEdge();
 }
 
-void deoglPSSRCoverageEdgeSize::SetParameterFloat(float value){
-	pOgl.GetConfiguration().SetSSRCoverageEdgeSize(value);
+void deoglPSSRCoveragePowerEdge::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetSSRCoveragePowerEdge(value);
 }

@@ -59,6 +59,14 @@ public:
 		esqVeryHigh
 	};
 	
+	enum eReflectionQuality{
+		erqVeryLow,
+		erqLow,
+		erqMedium,
+		erqHigh,
+		erqVeryHigh
+	};
+	
 	enum eGIQuality{
 		egiqOff,
 		egiqVeryLow,
@@ -137,9 +145,8 @@ private:
 	
 	float pNormalRoughnessCorrectionStrength;
 	
+	eReflectionQuality pReflectionQuality;
 	bool pSSREnable;
-	int pSSRStepCount;
-	float pSSRMaxRayLength;
 	int pSSRReduction;
 	float pSSRCoverageEdgeSize;
 	float pSSRCoveragePowerEdge;
@@ -366,18 +373,16 @@ public:
 	/** Sets the normal roughness correction strength. */
 	void SetNormalRoughnessCorrectionStrength(float strength);
 	
+	/** Reflection quality. */
+	inline eReflectionQuality GetReflectionQuality() const{ return pReflectionQuality; }
+	
+	/** Set reflection quality. */
+	void SetReflectionQuality(eReflectionQuality quality);
+	
 	/** Determines if screen space reflections are enabled. */
 	inline bool GetSSREnable() const{ return pSSREnable; }
 	/** Sets if screen space reflections are enabled. */
 	void SetSSREnable(bool enable);
-	/** Retrieves the screen space reflection step count. */
-	inline int GetSSRStepCount() const{ return pSSRStepCount; }
-	/** Sets the screen space reflection step count. */
-	void SetSSRStepCount(int stepCount);
-	/** Retrieves the screen space reflection maximum ray length. */
-	inline float GetSSRMaxRayLength() const{ return pSSRMaxRayLength; }
-	/** Sets the screen space reflection maximum ray length. */
-	void SetSSRMaxRayLength(float maxRayLength);
 	/** Retrieves the screen space reflection reduction. */
 	inline int GetSSRReduction() const{ return pSSRReduction; }
 	/** Sets the screen space reflection reduction. */

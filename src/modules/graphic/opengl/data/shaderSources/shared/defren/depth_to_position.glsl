@@ -19,6 +19,10 @@ float depthToZ( ARG_SAMP_HIGHP sampler2DArray samplerDepth, in vec3 texCoord, in
 	return depthToZ( sampleDepth( samplerDepth, texCoord ), layer );
 }
 
+float depthToZ(ARG_SAMP_HIGHP sampler2DArray samplerDepth, in ivec3 texCoord, in int layer, int level){
+	return depthToZ(sampleDepth(samplerDepth, texCoord, level), layer);
+}
+
 // calculate position from depth value. requires sampleDepth to be called to get depth value
 // call is protected against "depth == zfar".
 vec3 depthToPosition( in float depth, in vec2 screenCoord, in int layer ){

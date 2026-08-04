@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,31 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLPSSRREDUCTION_H_
-#define _DEOGLPSSRREDUCTION_H_
+#ifndef _DEOGLPREFLECTIONQUALITY_H_
+#define _DEOGLPREFLECTIONQUALITY_H_
 
-#include "../deoglParameterInt.h"
+#include "../deoglParameter.h"
 
 
-/**
- * Module Parameter Screen Space Reflection Reduction.
- */
-class deoglPSSRReduction : public deoglParameterInt{
+/** Reflection quality parameter. */
+class deoglPReflectionQuality : public deoglParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new parameter. */
-	deoglPSSRReduction(deGraphicOpenGl &ogl);
-	/** Cleans up the parameter. */
-	~deoglPSSRReduction() override;
+	/** Create parameter. */
+	explicit deoglPReflectionQuality(deGraphicOpenGl &ogl);
+	
+	/** Clean up parameter. */
+	~deoglPReflectionQuality() override;
 	/*@}*/
 	
-	/** \name Parameter Value */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the current value. */
-	int GetParameterInt() override;
-	/** Sets the current value. */
-	void SetParameterInt(int value) override;
+	/** Current value. */
+	decString GetParameterValue() override;
+	
+	/** Set current value. */
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

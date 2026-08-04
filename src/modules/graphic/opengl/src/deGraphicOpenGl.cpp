@@ -85,13 +85,12 @@
 #include "parameters/postprocessing/deoglPBrightness.h"
 #include "parameters/postprocessing/deoglPContrast.h"
 #include "parameters/postprocessing/deoglPGammaCorrection.h"
-#include "parameters/ssr/deoglPSSRCoverageEdgeSize.h"
-#include "parameters/ssr/deoglPSSRCoveragePowerEdge.h"
-#include "parameters/ssr/deoglPSSRCoveragePowerRayLength.h"
-#include "parameters/ssr/deoglPSSREnable.h"
-#include "parameters/ssr/deoglPSSRMaxRayLength.h"
-#include "parameters/ssr/deoglPSSRReduction.h"
-#include "parameters/ssr/deoglPSSRStepCount.h"
+#include "parameters/reflection/deoglPReflectionQuality.h"
+#include "parameters/reflection/ssr/deoglPSSRCoverageEdgeSize.h"
+#include "parameters/reflection/ssr/deoglPSSRCoveragePowerEdge.h"
+#include "parameters/reflection/ssr/deoglPSSRCoveragePowerRayLength.h"
+#include "parameters/reflection/ssr/deoglPSSREnable.h"
+#include "parameters/reflection/ssr/deoglPSSRReduction.h"
 #include "parameters/ssao/deoglPSSAOEdgeBlurThreshold.h"
 #include "parameters/ssao/deoglPSSAOEnable.h"
 #include "parameters/ssao/deoglPSSAOMipMapBase.h"
@@ -755,9 +754,8 @@ void deGraphicOpenGl::pCreateParameters() {
 	
 	pParameters.Add(deTUniqueReference<deoglPNorRougCorrStrength>::New(*this));
 	
+	pParameters.Add(deTUniqueReference<deoglPReflectionQuality>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPSSREnable>::New(*this));
-	pParameters.Add(deTUniqueReference<deoglPSSRStepCount>::New(*this));
-	pParameters.Add(deTUniqueReference<deoglPSSRMaxRayLength>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPSSRReduction>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPSSRCoverageEdgeSize>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPSSRCoveragePowerEdge>::New(*this));

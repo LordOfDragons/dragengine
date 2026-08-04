@@ -173,15 +173,13 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	#define pSSRPowEdge (pSSRParams1.z)
 	#define pSSRPowRayLen (pSSRParams1.w)
 	
-	vec4 pSSRParams2; // clipReflDirNearDist, roughnessTapCountScale, minMaxTCFactor(xy)
+	vec4 pSSRParams2; // clipReflDirNearDist, roughnessTapCountScale, roughnessToPixelRadius, n/a
 	#define pSSRClipReflDirNearDist (pSSRParams2.x)
 	#define pSSRRoughnessTapCountScale (pSSRParams2.y)
-	#define pSSRMinMaxTCScale (pSSRParams2.zw)
+	#define pSSRRoughnessToPixelRadius (pSSRParams2.z)
 	
-	ivec4 pSSRParams3; // stepCount, subStepCount, maxRayLength, roughnessMaxTaps
+	ivec4 pSSRParams3; // stepCount, n/a, n/a, roughnessMaxTaps
 	#define pSSRStepCount (pSSRParams3.x)
-	#define pSSRSubStepCount (pSSRParams3.y)
-	#define pSSRMaxRayLength (pSSRParams3.z)
 	#define pSSRRoughnessMapTaps (pSSRParams3.w)
 	
 	

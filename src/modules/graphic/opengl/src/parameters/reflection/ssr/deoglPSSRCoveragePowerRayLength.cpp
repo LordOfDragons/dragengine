@@ -22,13 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglPSSRCoveragePowerRayLength.h"
-#include "../../deGraphicOpenGl.h"
-#include "../../configuration/deoglConfiguration.h"
+#include "../../../deGraphicOpenGl.h"
+#include "../../../configuration/deoglConfiguration.h"
 
 #include <dragengine/common/exceptions.h>
 
