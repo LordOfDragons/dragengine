@@ -78,7 +78,7 @@ void deoglConvexHull3D::CalculateHull(){
 	
 	decTList<ch_vertex> vertices(uniquePoints.GetCount());
 	uniquePoints.Visit([&](const decVector &point){
-		vertices.Add({point.x, point.y, point.z});
+		vertices.Add({.v = {point.x, point.y, point.z}});
 	});
 	
 	int *faceIndices = nullptr;

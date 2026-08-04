@@ -604,7 +604,7 @@ struct fmt_ns::formatter<unsigned long long>{
 	auto format(unsigned long long v, fmt_ns::format_context& ctx) const{
 		char buffer[32];
 		std::snprintf(buffer, sizeof(buffer), "%llu", v);
-		return fmt_ns::formatter<std::string_view>::format(std::string_view(buffer), ctx);
+		return fmt_ns::formatter<std::string_view>().format(std::string_view(buffer), ctx);
 	}
 };
 #endif

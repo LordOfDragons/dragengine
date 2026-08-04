@@ -11,8 +11,8 @@
 // pixelSize: size of pixel in texture coordinates (1/textureSize)
 // layer: layer of texture array to sample from
 // level: mipmap level to sample from
-vec4 downsampleColorNpot13Tap(in sampler2DArray samplerColor, in vec2 tc, in vec2 pixelSize,
-in vec2 tcClamp, in float layer, in float level){
+vec4 downsampleColorNpot13Tap(in mediump sampler2DArray samplerColor, in vec2 tc, in vec2 pixelSize,
+in vec2 tcClamp, in int layer, in float level){
 	float psx = pixelSize.x;
 	float psy = pixelSize.y;
 	
@@ -48,8 +48,8 @@ in vec2 tcClamp, in float layer, in float level){
 // pixelSize: size of pixel in texture coordinates (1/textureSize)
 // layer: layer of texture array to sample from
 // level: mipmap level to sample from
-vec4 downsampleColorNpot13TapSharpen(in sampler2DArray samplerColor, in vec2 tc, in vec2 pixelSize,
-in vec2 tcClamp, in float layer, in float level, float sharpen){
+vec4 downsampleColorNpot13TapSharpen(in mediump sampler2DArray samplerColor, in vec2 tc, in vec2 pixelSize,
+in vec2 tcClamp, in int layer, in float level, float sharpen){
 	float psx = pixelSize.x;
 	float psy = pixelSize.y;
 	
@@ -91,28 +91,6 @@ in vec2 tcClamp, in float layer, in float level, float sharpen){
 	return s1 * w1 + s2 * w2 + s3 * w3 + s4 * w4;
 }
 
-// NPOT depth 13-tap downsampling filter based on CoD presentation at Siggraph 2014
-//
-// tc: texture coordinate of current pixel (range 0..1)
-// pixelSize: size of pixel in texture coordinates (1/textureSize)
-// layer: layer of texture array to sample from
-// level: mipmap level to sample from
-float downsampleDepthNpot13Tap(in sampler2DArray samplerDepth, in vec2 tc, in vec2 pixelSize,
-in vec2 tcClamp, in float layer, in float level){
-	return downsampleColorNpot13Tap(samplerDepth, tc, pixelSize, tcClamp, int(layer), int(level)).r;
-}
-
-// NPOT depth 13-tap downsampling filter based on CoD presentation at Siggraph 2014 with sharpening
-//
-// tc: texture coordinate of current pixel (range 0..1)
-// pixelSize: size of pixel in texture coordinates (1/textureSize)
-// layer: layer of texture array to sample from
-// level: mipmap level to sample from
-float downsampleDepthNpot13Tap(in sampler2DArray samplerDepth, in vec2 tc, in vec2 pixelSize,
-in vec2 tcClamp, in float layer, in float level, in float sharpen){
-	return downsampleColorNpot13TapSharpen(samplerDepth, tc, pixelSize, tcClamp, int(layer), int(level), sharpen).r;
-}
-
 
 
 // NPOT color 9-tap downsampling filter with sharpening
@@ -121,8 +99,8 @@ in vec2 tcClamp, in float layer, in float level, in float sharpen){
 // pixelSize: size of pixel in texture coordinates (1/textureSize)
 // layer: layer of texture array to sample from
 // level: mipmap level to sample from
-vec4 downsampleColorNpot9TapSharpen(in sampler2DArray samplerColor, in vec2 tc, in vec2 pixelSize,
-in vec2 tcClamp, in float layer, in float level, in float sharpen){
+vec4 downsampleColorNpot9TapSharpen(in mediump sampler2DArray samplerColor, in vec2 tc, in vec2 pixelSize,
+in vec2 tcClamp, in int layer, in float level, in float sharpen){
 	// sample 3x3 grid
 	vec4 s3 = textureLod(samplerColor, vec3(min(vec2(tc.x - pixelSize.x, tc.y - pixelSize.y), tcClamp), layer), level);
 	vec4 s2 = textureLod(samplerColor, vec3(min(vec2(tc.x, tc.y - pixelSize.y), tcClamp), layer), level);
@@ -150,8 +128,8 @@ in vec2 tcClamp, in float layer, in float level, in float sharpen){
 // pixelSize: size of pixel in texture coordinates (1/textureSize)
 // layer: layer of texture array to sample from
 // level: mipmap level to sample from
-float downsampleDepthNpot9Tap(in sampler2DArray samplerDepth, in vec2 tc, in vec2 pixelSize,
-in vec2 tcClamp, in float layer, in float level, in float sharpen){
+float downsampleDepthNpot9Tap(in mediump sampler2DArray samplerDepth, in vec2 tc, in vec2 pixelSize,
+in vec2 tcClamp, in int layer, in float level, in float sharpen){
 	return downsampleColorNpot9TapSharpen(samplerDepth, tc, pixelSize, tcClamp, layer, level, sharpen).r;
 }
 
@@ -163,8 +141,8 @@ in vec2 tcClamp, in float layer, in float level, in float sharpen){
 // pixelSize: size of pixel in texture coordinates (1/textureSize)
 // layer: layer of texture array to sample from
 // level: mipmap level to sample from
-vec4 downsampleColorNpot4Tap(in sampler2DArray samplerColor, in vec2 tc, in vec2 pixelSize,
-in vec2 tcClamp, in float layer, in float level){
+vec4 downsampleColorNpot4Tap(in mediump sampler2DArray samplerColor, in vec2 tc, in vec2 pixelSize,
+in vec2 tcClamp, in int layer, in float level){
 	float psx = pixelSize.x;
 	float psy = pixelSize.y;
 	
@@ -174,15 +152,4 @@ in vec2 tcClamp, in float layer, in float level){
 	s += textureLod(samplerColor, vec3(min(vec2(tc.x + psx, tc.y + psy), tcClamp), layer), level);
 	
 	return s / 4.0;
-}
-
-// NPOT depth 4-tap downsampling filter
-//
-// tc: texture coordinate of current pixel (range 0..1)
-// pixelSize: size of pixel in texture coordinates (1/textureSize)
-// layer: layer of texture array to sample from
-// level: mipmap level to sample from
-float downsampleDepthNpot4Tap(in sampler2DArray samplerDepth, in vec2 tc, in vec2 pixelSize,
-in vec2 tcClamp, in float layer, in float level){
-	return downsampleColorNpot4Tap(samplerDepth, tc, pixelSize, tcClamp, int(layer), int(level)).r;
 }

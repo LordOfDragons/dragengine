@@ -15,6 +15,7 @@ UNIFORM_BIND(4) uniform vec4 pSkyBgColor;
 layout(binding=0) uniform mediump sampler2D texSky;
 
 #include "shared/interface/2d/fragment.glsl"
+#include "shared/useful_constants.glsl"
 
 layout(location=0) out vec4 outColor;
 
