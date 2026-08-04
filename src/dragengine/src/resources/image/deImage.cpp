@@ -125,168 +125,176 @@ sGrayscale8 *deImage::GetDataGrayscale8(){
 	DEASSERT_TRUE(pComponentCount == 1)
 	DEASSERT_TRUE(pBitCount == 8)
 	
-	return (sGrayscale8*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscale8*)pData.GetArrayPointer() : nullptr;
 }
 
 const sGrayscale8 *deImage::GetDataGrayscale8() const{
 	DEASSERT_TRUE(pComponentCount == 1)
 	DEASSERT_TRUE(pBitCount == 8)
 	
-	return (sGrayscale8*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscale8*)pData.GetArrayPointer() : nullptr;
 }
 
 sGrayscale16 *deImage::GetDataGrayscale16(){
 	DEASSERT_TRUE(pComponentCount == 1)
 	DEASSERT_TRUE(pBitCount == 16)
 	
-	return (sGrayscale16*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscale16*)pData.GetArrayPointer() : nullptr;
 }
 
 const sGrayscale16 *deImage::GetDataGrayscale16() const{
 	DEASSERT_TRUE(pComponentCount == 1)
 	DEASSERT_TRUE(pBitCount == 16)
 	
-	return (sGrayscale16*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscale16*)pData.GetArrayPointer() : nullptr;
 }
 
 sGrayscale32 *deImage::GetDataGrayscale32(){
 	DEASSERT_TRUE(pComponentCount == 1)
 	DEASSERT_TRUE(pBitCount == 32)
 	
-	return (sGrayscale32*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscale32*)pData.GetArrayPointer() : nullptr;
 }
 
 const sGrayscale32 *deImage::GetDataGrayscale32() const{
 	DEASSERT_TRUE(pComponentCount == 1)
 	DEASSERT_TRUE(pBitCount == 32)
 	
-	return (sGrayscale32*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscale32*)pData.GetArrayPointer() : nullptr;
 }
 
 sGrayscaleAlpha8 *deImage::GetDataGrayscaleAlpha8(){
 	DEASSERT_TRUE(pComponentCount == 2)
 	DEASSERT_TRUE(pBitCount == 8)
 	
-	return (sGrayscaleAlpha8*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscaleAlpha8*)pData.GetArrayPointer() : nullptr;
 }
 
 const sGrayscaleAlpha8 *deImage::GetDataGrayscaleAlpha8() const{
 	DEASSERT_TRUE(pComponentCount == 2)
 	DEASSERT_TRUE(pBitCount == 8)
 	
-	return (sGrayscaleAlpha8*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscaleAlpha8*)pData.GetArrayPointer() : nullptr;
 }
 
 sGrayscaleAlpha16 *deImage::GetDataGrayscaleAlpha16(){
 	DEASSERT_TRUE(pComponentCount == 2)
 	DEASSERT_TRUE(pBitCount == 16)
 	
-	return (sGrayscaleAlpha16*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscaleAlpha16*)pData.GetArrayPointer() : nullptr;
 }
 
 const sGrayscaleAlpha16 *deImage::GetDataGrayscaleAlpha16() const{
 	DEASSERT_TRUE(pComponentCount == 2)
 	DEASSERT_TRUE(pBitCount == 16)
 	
-	return (sGrayscaleAlpha16*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscaleAlpha16*)pData.GetArrayPointer() : nullptr;
 }
 
 sGrayscaleAlpha32 *deImage::GetDataGrayscaleAlpha32(){
 	DEASSERT_TRUE(pComponentCount == 2)
 	DEASSERT_TRUE(pBitCount == 32)
 	
-	return (sGrayscaleAlpha32*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscaleAlpha32*)pData.GetArrayPointer() : nullptr;
 }
 
 const sGrayscaleAlpha32 *deImage::GetDataGrayscaleAlpha32() const{
 	DEASSERT_TRUE(pComponentCount == 2)
 	DEASSERT_TRUE(pBitCount == 32)
 	
-	return (sGrayscaleAlpha32*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sGrayscaleAlpha32*)pData.GetArrayPointer() : nullptr;
 }
 
 sRGB8 *deImage::GetDataRGB8(){
 	DEASSERT_TRUE(pComponentCount == 3)
 	DEASSERT_TRUE(pBitCount == 8)
 	
-	return (sRGB8*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGB8*)pData.GetArrayPointer() : nullptr;
 }
 
 const sRGB8 *deImage::GetDataRGB8() const{
 	DEASSERT_TRUE(pComponentCount == 3)
 	DEASSERT_TRUE(pBitCount == 8)
 	
-	return (sRGB8*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGB8*)pData.GetArrayPointer() : nullptr;
 }
 
 sRGB16 *deImage::GetDataRGB16(){
 	DEASSERT_TRUE(pComponentCount == 3)
 	DEASSERT_TRUE(pBitCount == 16)
 	
-	return (sRGB16*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGB16*)pData.GetArrayPointer() : nullptr;
 }
 
 const sRGB16 *deImage::GetDataRGB16() const{
 	DEASSERT_TRUE(pComponentCount == 3)
 	DEASSERT_TRUE(pBitCount == 16)
 	
-	return (sRGB16*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGB16*)pData.GetArrayPointer() : nullptr;
 }
 
 sRGB32 *deImage::GetDataRGB32(){
 	DEASSERT_TRUE(pComponentCount == 3)
 	DEASSERT_TRUE(pBitCount == 32)
 	
-	return (sRGB32*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGB32*)pData.GetArrayPointer() : nullptr;
 }
 
 const sRGB32 *deImage::GetDataRGB32() const{
 	DEASSERT_TRUE(pComponentCount == 3)
 	DEASSERT_TRUE(pBitCount == 32)
 	
-	return (sRGB32*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGB32*)pData.GetArrayPointer() : nullptr;
 }
 
 sRGBA8 *deImage::GetDataRGBA8(){
 	DEASSERT_TRUE(pComponentCount == 4)
 	DEASSERT_TRUE(pBitCount == 8)
 	
-	return (sRGBA8*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGBA8*)pData.GetArrayPointer() : nullptr;
 }
 
 const sRGBA8 *deImage::GetDataRGBA8() const{
 	DEASSERT_TRUE(pComponentCount == 4)
 	DEASSERT_TRUE(pBitCount == 8)
 	
-	return (sRGBA8*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGBA8*)pData.GetArrayPointer() : nullptr;
 }
 
 sRGBA16 *deImage::GetDataRGBA16(){
 	DEASSERT_TRUE(pComponentCount == 4)
 	DEASSERT_TRUE(pBitCount == 16)
 	
-	return (sRGBA16*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGBA16*)pData.GetArrayPointer() : nullptr;
 }
 
 const sRGBA16 *deImage::GetDataRGBA16() const{
 	DEASSERT_TRUE(pComponentCount == 4)
 	DEASSERT_TRUE(pBitCount == 16)
 	
-	return (sRGBA16*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGBA16*)pData.GetArrayPointer() : nullptr;
 }
 
 sRGBA32 *deImage::GetDataRGBA32(){
 	DEASSERT_TRUE(pComponentCount == 4)
 	DEASSERT_TRUE(pBitCount == 32)
 	
-	return (sRGBA32*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGBA32*)pData.GetArrayPointer() : nullptr;
 }
 
 const sRGBA32 *deImage::GetDataRGBA32() const{
 	DEASSERT_TRUE(pComponentCount == 4)
 	DEASSERT_TRUE(pBitCount == 32)
 	
-	return (sRGBA32*)pData.GetArrayPointer();
+	return pData.IsNotEmpty() ? (sRGBA32*)pData.GetArrayPointer() : nullptr;
+}
+
+void *deImage::GetData(){
+	return pData.IsNotEmpty() ? pData.GetArrayPointer() : nullptr;
+}
+
+const void *deImage::GetData() const{
+	return pData.IsNotEmpty() ? pData.GetArrayPointer() : nullptr;
 }
 
 void deImage::NotifyImageDataChanged(){
@@ -294,8 +302,6 @@ void deImage::NotifyImageDataChanged(){
 		pPeerGraphic->ImageDataChanged();
 	}
 }
-
-
 
 void deImage::RetainImageData(){
 	const deMutexGuard guard(pMutex);
