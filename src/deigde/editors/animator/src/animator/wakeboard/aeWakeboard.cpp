@@ -91,7 +91,7 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 	pTiltLeftRight = 0.0f;
 	pMaxTiltLeftRight = 30.0f;
 	
-	deVirtualFileSystem * const vfsData = animator->GetEnvironment()->GetFileSystemIGDE();
+	deVirtualFileSystem * const vfsData = animator->GetEnvironment().GetFileSystemIGDE();
 	decString pathData;
 	pathData.Format("/data/modules/%s/",
 		animator->GetWindowMain().GetEditorModule().GetEditorDirectory().GetString());

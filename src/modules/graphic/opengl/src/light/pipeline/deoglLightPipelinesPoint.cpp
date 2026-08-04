@@ -230,7 +230,8 @@ void deoglLightPipelinesPoint::pSetPoint(deoglLightShaderConfig &shaconf){
 	
 	shaconf.SetShadowTapMode(deoglLightShaderConfig::estmPcf9);
 	//shaconf.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
-	shaconf.SetTextureNoise(false);
+	shaconf.SetTextureNoise(true);
+	shaconf.SetNoiseTap(false);
 	
 	if(pLight.GetLightCanvas()){
 		// right now canvas can not have depth. once it has light canvas can only be used

@@ -135,6 +135,7 @@ public:
 	bool pGIRay;
 	bool pGSRenderStereo;
 	bool pVSRenderStereo;
+	bool pNoiseTap;
 	
 	bool pTextureNoise;
 	bool pTextureColor;
@@ -298,6 +299,12 @@ public:
 	
 	/** Set render dual view using vertex shader. */
 	void SetVSRenderStereo(bool vsRenderStereo);
+	
+	/** Noise tap is used. */
+	inline bool GetNoiseTap() const{ return pNoiseTap; }
+	
+	/** Set if noise tap is used. */
+	void SetNoiseTap(bool isUsed);
 	
 	
 	

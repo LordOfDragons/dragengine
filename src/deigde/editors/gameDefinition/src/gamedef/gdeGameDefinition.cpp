@@ -51,9 +51,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gameproject/igdeGameProject.h>
-#include <deigde/gui/igdeCamera.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
-#include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -74,17 +72,10 @@
 ////////////////////////////
 
 gdeGameDefinition::gdeGameDefinition(igdeEnvironment* environment) :
-igdeEditableEntity(environment),
-
-pSky(nullptr),
-
-pCamera(nullptr),
+igdeEditableEntity(*environment),
 pViewRatio(1.0f),
-
 pIsProjectGameDef(false),
-
 pVFSPath("/"),
-
 pSelectedObjectType(eotNoSelection),
 pPreviewVFS(nullptr)
 {
@@ -99,7 +90,7 @@ pPreviewVFS(nullptr)
 		pWorld->SetDisableLights(false);
 		
 		// create camera
-		pCamera = new igdeCamera(engine);
+		pCamera = igdeCamera::Ref::New(*environment, engine);
 		pCamera->SetEngineWorld(pWorld);
 		pCamera->Reset();
 		pCamera->SetPosition(decDVector(0.0, /*1.0*/0.0, 0.0));
@@ -110,7 +101,7 @@ pPreviewVFS(nullptr)
 		pCamera->SetAdaptionTime(4.0f);
 		
 		// create sky
-		pSky = new igdeWSky(*environment);
+		pSky = igdeWSky::Ref::New(*environment);
 		pSky->SetGDDefaultSky();
 		pSky->SetWorld(pWorld);
 		
@@ -239,19 +230,19 @@ void gdeGameDefinition::UpdateBaseGameDefinitions(gdeLoadSaveSystem &loadSaveSys
 		}
 		
 		// resolve game definition id using the environment
-		GetEnvironment()->GetLogger()->LogInfoFormat(LOGSOURCE,
+		GetEnvironment().GetLogger()->LogInfoFormat(LOGSOURCE,
 			"UpdateBaseGameDefinitions: Resolving Base Game Definition ID '%s'", id.GetString());
 		
-		const igdeGameDefinition * const sharedGameDefinition = GetEnvironment()->GetSharedGameDefinition(id);
+		const igdeGameDefinition * const sharedGameDefinition = GetEnvironment().GetSharedGameDefinition(id);
 		if(!sharedGameDefinition){
-			GetEnvironment()->GetLogger()->LogInfoFormat(LOGSOURCE,
+			GetEnvironment().GetLogger()->LogInfoFormat(LOGSOURCE,
 				"UpdateBaseGameDefinitions: Failed resolving Game Definition ID '%s'", id.GetString());
 			continue;
 		}
 		
 		// load game definitions. this potentially loads base game definitions too
 		const decString &path = sharedGameDefinition->GetFilename();
-		GetEnvironment()->GetLogger()->LogInfoFormat(LOGSOURCE,
+		GetEnvironment().GetLogger()->LogInfoFormat(LOGSOURCE,
 			"UpdateBaseGameDefinitions: Loading Game Definition '%s'", path.GetString());
 		
 		gdeGameDefinition::Ref gameDefinition;
@@ -259,9 +250,9 @@ void gdeGameDefinition::UpdateBaseGameDefinitions(gdeLoadSaveSystem &loadSaveSys
 			gameDefinition = loadSaveSystem.LoadGameDefinition(path);
 			
 		}catch(const deException &e){
-			GetEnvironment()->GetLogger()->LogInfoFormat(LOGSOURCE,
+			GetEnvironment().GetLogger()->LogInfoFormat(LOGSOURCE,
 				"UpdateBaseGameDefinitions: Failed Loading Game Definition '%s'", path.GetString());
-			GetEnvironment()->GetLogger()->LogException(LOGSOURCE, e);
+			GetEnvironment().GetLogger()->LogException(LOGSOURCE, e);
 			continue;
 		}
 		
@@ -1716,11 +1707,7 @@ void gdeGameDefinition::pCleanUp(){
 	
 	pBaseGameDefinitions.RemoveAll();
 	
-	if(pSky){
-		delete pSky;
-	}
-	pEnvObject = nullptr;
-	if(pCamera){
-		delete pCamera;
-	}
+	pSky.Clear();
+	pEnvObject.Clear();
+	pCamera.Clear();
 }

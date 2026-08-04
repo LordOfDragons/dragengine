@@ -29,6 +29,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRWorld;
@@ -58,7 +59,7 @@ private:
 	bool pHasShapes;
 	bool pHasFaces;
 	
-	decTList<deoglDebugDrawerShape> pShapes;
+	decTUniqueList<deoglDebugDrawerShape> pShapes;
 	
 	decTList<oglVector3> pVBOData;
 	
@@ -77,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render debug drawer. */
-	deoglRDebugDrawer(deoglRenderThread &renderThread);
+	explicit deoglRDebugDrawer(deoglRenderThread &renderThread);
 	
 protected:
 	/** Cleans up render debug drawer. */
@@ -131,7 +132,7 @@ public:
 	inline bool GetHasFaces() const{ return pHasFaces; }
 	
 	/** Shapes. */
-	inline const decTList<deoglDebugDrawerShape> &GetShapes() const{ return pShapes; }
+	inline const decTUniqueList<deoglDebugDrawerShape> &GetShapes() const{ return pShapes; }
 	
 	/** Retrieves a shape. */
 	deoglDebugDrawerShape &GetShapeAt(int index);

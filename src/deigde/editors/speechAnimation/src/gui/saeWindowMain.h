@@ -87,7 +87,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	saeConfiguration *pConfiguration;
-	igdeClipboard pClipboard;
 	saeLoadSaveSystem *pLoadSaveSystem;
 	
 	saeViewSAnimation::Ref pViewSAnimation;
@@ -125,7 +124,8 @@ public:
 	inline saeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** Load save system. */
 	inline saeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }

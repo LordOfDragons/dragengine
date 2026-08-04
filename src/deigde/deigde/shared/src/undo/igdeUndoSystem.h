@@ -26,6 +26,8 @@
 #define _IGDEUNDOSYSTEM_H_
 
 #include "igdeUndo.h"
+#include "../meta/igdeMetaContext.h"
+#include "../meta/property/igdeMetaPropertyUndoHistory.h"
 
 #include <dragengine/common/collection/decTOrderedSet.h>
 
@@ -43,6 +45,9 @@ class igdeEditableEntity;
 class DE_DLL_EXPORT igdeUndoSystem{
 private:
 	igdeEditableEntity *pEditableEntity;
+	
+	igdeMetaContext::Ref pMetaContext;
+	igdeMetaPropertyUndoHistory::Ref pMetaProperty;
 	
 	decTObjectOrderedSet<igdeUndo> pUndos;
 	int pRedoCount;
@@ -69,6 +74,16 @@ public:
 	/** \brief Editable entity. */
 	inline igdeEditableEntity *GetEditableEntity() const{ return pEditableEntity; }
 	
+	
+	/** \brief Meta context or nullptr. */
+	inline const igdeMetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
+	
+	/** \brief Meta property for undo history or nullptr. */
+	inline const igdeMetaPropertyUndoHistory::Ref &GetMetaProperty() const{ return pMetaProperty; }
+	
+	/** \brief Set meta property for undo history or nullptr. */
+	void SetMetaProperty(const igdeMetaContext::Ref &metaContext,
+		const igdeMetaPropertyUndoHistory::Ref &metaProperty);
 	
 	
 	/** \brief Undo actions. */
@@ -142,6 +157,10 @@ public:
 	 */
 	void RemoveAllRedoable();
 	/*@}*/
+	
+	
+protected:
+	void pNotifyChanged();
 };
 
 #endif

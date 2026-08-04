@@ -26,8 +26,14 @@
 #define _AERULETRACKTO_H_
 
 #include "aeRule.h"
-#include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+
+#include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 
 
 /**
@@ -37,81 +43,54 @@ class aeRuleTrackTo : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleTrackTo>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleTrackTo, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleTrackTo *rule);
 	
-private:
-	decString pTrackBone;
-	deAnimatorRuleTrackTo::eTrackAxis pTrackAxis;
-	deAnimatorRuleTrackTo::eTrackAxis pUpAxis;
-	deAnimatorRuleTrackTo::eUpTarget pUpTarget;
-	deAnimatorRuleTrackTo::eLockedAxis pLockedAxis;
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-	aeControllerTarget::Ref pTargetPosition;
-	aeControllerTarget::Ref pTargetUp;
+public:
+	igdeMetaPropertyStringStorage::Storage mpTrackBone;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage mpTrackAxis;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage mpUpAxis;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eUpTarget>::Storage mpUpTarget;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eLockedAxis>::Storage mpLockedAxis;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetUp;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleTrackTo() = delete;
+	
 	/** Create a new track to rule. */
-	explicit aeRuleTrackTo(const char *name);
+	aeRuleTrackTo(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a track to rule. */
 	aeRuleTrackTo(const aeRuleTrackTo &copy);
 	/** Clean up the animator rule. */
 protected:
 	~aeRuleTrackTo() override;
+private:
+	aeRuleTrackTo(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieve the name of the track bone or empty string to use none. */
-	inline const decString &GetTrackBone() const{ return pTrackBone; }
-	/** Set the name of the track bone or empty string to use none. */
-	void SetTrackBone(const char *boneName);
-	/** Retrieve the track axis. */
-	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{ return pTrackAxis; }
-	/** Set the track axis. */
-	void SetTrackAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
-	/** Retrieve the up axis. */
-	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{ return pUpAxis; }
-	/** Set the up axis. */
-	void SetUpAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
-	/** Retrieve the up target. */
-	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{ return pUpTarget; }
-	/** Set the up target. */
-	void SetUpTarget(deAnimatorRuleTrackTo::eUpTarget target);
-	/** Retrieve the locked axis. */
-	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{ return pLockedAxis; }
-	/** Set the locked axis. */
-	void SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis axis);
-	
-	/** Retrieve the position target. */
-	inline const aeControllerTarget::Ref &GetTargetPosition() const{ return pTargetPosition; }
-	
-	/** Retrieve the up target. */
-	inline const aeControllerTarget::Ref &GetTargetUp() const{ return pTargetUp; }
-	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
-	/** Remove a link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	/** Remove all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
 	aeRule::Ref CreateCopy() const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another track to rule to this track to rule. */
-	virtual aeRuleTrackTo &operator=(const aeRuleTrackTo &copy);
+	aeRuleTrackTo &operator=(const aeRuleTrackTo &copy) = delete;
 	/*@}*/
 };
 

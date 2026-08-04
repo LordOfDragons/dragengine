@@ -45,11 +45,11 @@ pMove1Name("idle "),
 pMove1Time(0.0f),
 pMove2Name("idle"),
 pMove2Time(0.0f),
-pUseSameMove(false),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
-pEnableVertexPositionSet(true){
+pEnableVertexPositionSet(true),
+pUseComponentSpace(false){
 }
 
 deAnimatorRuleAnimationDifference::~deAnimatorRuleAnimationDifference(){
@@ -76,10 +76,6 @@ void deAnimatorRuleAnimationDifference::SetReferenceMoveTime(float moveTime){
 	pMove2Time = moveTime;
 }
 
-void deAnimatorRuleAnimationDifference::SetUseSameMove(bool useSameMove){
-	pUseSameMove = useSameMove;
-}
-
 void deAnimatorRuleAnimationDifference::SetEnablePosition(bool enabled){
 	pEnablePosition = enabled;
 }
@@ -94,6 +90,10 @@ void deAnimatorRuleAnimationDifference::SetEnableSize(bool enabled){
 
 void deAnimatorRuleAnimationDifference::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
+}
+
+void deAnimatorRuleAnimationDifference::SetUseComponentSpace(bool useComponentSpace){
+	pUseComponentSpace = useComponentSpace;
 }
 
 

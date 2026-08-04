@@ -445,6 +445,31 @@ void igdeBaseXML::ReadPoint3(const decXmlElementTag &tag, decPoint3 &point){
 	}
 }
 
+void igdeBaseXML::VisitTags(const decXmlElementTag &tag,
+const std::function<void(const decXmlElementTag &)> &visitor){
+	const int count = tag.GetElementCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		auto element = tag.GetElementIfTag(i);
+		if(element){
+			visitor(*element);
+		}
+	}
+}
+
+void igdeBaseXML::VisitTags(const decXmlElementTag &tag,
+const std::function<void(const decXmlElementTag &, const decString &)> &visitor){
+	const int count = tag.GetElementCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		auto element = tag.GetElementIfTag(i);
+		if(element){
+			visitor(*element, element->GetName());
+		}
+	}
+}
 
 
 void igdeBaseXML::WriteMultilineString(decXmlWriter &writer, const char *name, const char *string){

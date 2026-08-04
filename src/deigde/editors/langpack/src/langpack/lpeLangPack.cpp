@@ -51,7 +51,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeLangPack::lpeLangPack(igdeEnvironment *environment) : igdeEditableEntity(environment){
+lpeLangPack::lpeLangPack(igdeEnvironment *environment) : igdeEditableEntity(*environment){
 	pIdentifier = "id";
 	pName.SetFromUTF8("Language Pack");
 	pMissingText.SetFromUTF8("??");

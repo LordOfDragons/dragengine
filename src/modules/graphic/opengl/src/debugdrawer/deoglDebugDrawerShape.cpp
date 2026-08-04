@@ -22,16 +22,13 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglDebugDrawer.h"
 #include "deoglDebugDrawerShape.h"
 #include "../utils/convexhull/deoglConvexHull3D.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeVisitor.h>
+#include <dragengine/common/shape/decShapeVisitorIdentify.h>
 #include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/debug/deDebugDrawerShape.h>
@@ -45,18 +42,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDebugDrawerShape::deoglDebugDrawerShape() :
+deoglDebugDrawerShape::deoglDebugDrawerShape(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 pFillFirstPoint(0),
 pFillPointCount(0),
 pLineFirstPoint(0),
 pLinePointCount(0),
-
 pDirtyHulls(false){
 }
 
-deoglDebugDrawerShape::~deoglDebugDrawerShape(){
-}
-
+deoglDebugDrawerShape::~deoglDebugDrawerShape() = default;
 
 
 // Management
@@ -77,7 +72,17 @@ void deoglDebugDrawerShape::SetFillColor(const decColor &color){
 
 void deoglDebugDrawerShape::SetShapeList(const decShape::List &shapes){
 	pShapeList = shapes;
-	pDirtyHulls = shapes.IsNotEmpty();
+	pDirtyHulls = true;
+	pHullShape.Clear();
+	
+	// if shape list contains hull shapes create a single hull shape for rendering all of them
+	decShapeVisitorIdentify visitor;
+	if(shapes.HasMatching([&](decShape &s){
+		s.Visit(visitor);
+		return visitor.IsHull();
+	})){
+		pHullShape = deTUniqueReference<deoglShapeHull>::New(GetRenderThread());
+	}
 }
 
 void deoglDebugDrawerShape::SetFillFirstPoint(int firstPoint){
@@ -256,9 +261,11 @@ public:
 			return;
 		}
 		
+		const auto matrix = decMatrix::CreateWorld(hull.GetPosition(), hull.GetOrientation());
+		
 		deoglConvexHull3D calculator;
 		hull.GetPoints().Visit([&](const decVector &p){
-			calculator.AddPoint(p);
+			calculator.AddPoint(matrix * p);
 		});
 		calculator.CalculateHull();
 		
@@ -269,7 +276,7 @@ public:
 		const int offset = pHullPoints.GetCount();
 		pHullPoints.EnlargeCapacity(offset + hull.GetPoints().GetCount());
 		hull.GetPoints().Visit([&](const decVector &p){
-			pHullPoints.Add(p);
+			pHullPoints.Add(matrix * p);
 		});
 		
 		pHullIndices.EnlargeCapacity(pHullIndices.GetCount() + calculator.GetHullIndices().GetCount());
@@ -291,6 +298,10 @@ void deoglDebugDrawerShape::pPrepareHulls(){
 	pShapeList.Visit([&](decShape &s){
 		s.Visit(visitor);
 	});
+	
+	if(pHullShape){
+		pHullShape->SetHullData(pHullPoints, pHullIndices);
+	}
 	
 	pDirtyHulls = false;
 }

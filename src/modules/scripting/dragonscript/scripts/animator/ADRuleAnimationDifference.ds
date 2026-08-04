@@ -36,26 +36,24 @@ pin Dragengine.Utils
  * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleAnimationDifference extends ADRule
-	private var String pLeadMoveName
-	private var float pLeadMoveTime
-	private var String pRefMoveName
-	private var float pRefMoveTime
-	private var bool pEnablePosition
-	private var bool pEnableOrientation
-	private var bool pEnableSize
-	private var bool pEnableVertexPositionSet
+	var String pLeadMoveName
+	var float pLeadMoveTime
+	var String pRefMoveName
+	var float pRefMoveTime
+	var bool pUseComponentSpace
+	var bool pEnablePosition
+	var bool pEnableOrientation
+	var bool pEnableSize
+	var bool pEnableVertexPositionSet
 	
 	
 	
 	/** \brief Create new animation rule definition. */
-	public func new()
+	func new()
 		pLeadMoveName = "idle"
-		pLeadMoveTime = 0
 		pRefMoveName = "idle"
-		pRefMoveTime = 0
 		pEnablePosition = true
 		pEnableOrientation = true
-		pEnableSize = false
 		pEnableVertexPositionSet = true
 	end
 	
@@ -63,12 +61,13 @@ class ADRuleAnimationDifference extends ADRule
 	 * \brief Create copy of animation rule definition.
 	 * \version 1.13
 	 */
-	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
 	ADRuleAnimationDifference rule) super(fromDef, toDef, rule)
 		pLeadMoveName = rule.pLeadMoveName
 		pLeadMoveTime = rule.pLeadMoveTime
 		pRefMoveName = rule.pRefMoveName
 		pRefMoveTime = rule.pRefMoveTime
+		pUseComponentSpace = rule.pUseComponentSpace
 		pEnablePosition = rule.pEnablePosition
 		pEnableOrientation = rule.pEnableOrientation
 		pEnableSize = rule.pEnableSize
@@ -78,12 +77,12 @@ class ADRuleAnimationDifference extends ADRule
 	
 	
 	/** \brief Leading move name. */
-	public func String getLeadingMoveName()
+	func String getLeadingMoveName()
 		return pLeadMoveName
 	end
 	
 	/** \brief Set leading move name. */
-	public func void setLeadingMoveName(String name)
+	func void setLeadingMoveName(String name)
 		if name == null
 			throw ENullPointer.new("name")
 		end
@@ -91,22 +90,22 @@ class ADRuleAnimationDifference extends ADRule
 	end
 	
 	/** \brief Time relative to leading move playtime. */
-	public func float getLeadingMoveTime()
+	func float getLeadingMoveTime()
 		return pLeadMoveTime
 	end
 	
 	/** \brief Set time relative to leading move playtime. */
-	public func void setLeadingMoveTime(float time)
+	func void setLeadingMoveTime(float time)
 		pLeadMoveTime = time
 	end
 	
 	/** \brief Reference move name. */
-	public func String getReferenceMoveName()
+	func String getReferenceMoveName()
 		return pRefMoveName
 	end
 	
 	/** \brief Set reference move name. */
-	public func void setReferenceMoveName(String name)
+	func void setReferenceMoveName(String name)
 		if name == null
 			throw ENullPointer.new("name")
 		end
@@ -114,42 +113,58 @@ class ADRuleAnimationDifference extends ADRule
 	end
 	
 	/** \brief Time relative to reference move playtime. */
-	public func float getReferenceMoveTime()
+	func float getReferenceMoveTime()
 		return pRefMoveTime
 	end
 	
 	/** \brief Set time relative to reference move playtime. */
-	public func void setReferenceMoveTime(float time)
+	func void setReferenceMoveTime(float time)
 		pRefMoveTime = time
 	end
 	
+	/**
+	 * \brief Get use component space.
+	 * \version 1.33
+	 */
+	func bool getUseComponentSpace()
+		return pUseComponentSpace
+	end
+	
+	/**
+	 * \brief Set use component space.
+	 * \version 1.33
+	 */
+	func void setUseComponentSpace(bool useComponentSpace)
+		pUseComponentSpace = useComponentSpace
+	end
+	
 	/** \brief Position manipulation is enabled. */
-	public func bool getEnablePosition()
+	func bool getEnablePosition()
 		return pEnablePosition
 	end
 	
 	/** \brief Set if position manipulation is enabled. */
-	public func void setEnablePosition(bool enable)
+	func void setEnablePosition(bool enable)
 		pEnablePosition = enable
 	end
 	
 	/** \brief Orientation manipulation is enabled. */
-	public func bool getEnableOrientation()
+	func bool getEnableOrientation()
 		return pEnableOrientation
 	end
 	
 	/** \brief Set if orientation manipulation is enabled. */
-	public func void setEnableOrientation(bool enable)
+	func void setEnableOrientation(bool enable)
 		pEnableOrientation = enable
 	end
 	
 	/** \brief Size manipulation is enabled. */
-	public func bool getEnableSize()
+	func bool getEnableSize()
 		return pEnableSize
 	end
 	
 	/** \brief Set if size manipulation is enabled. */
-	public func void setEnableSize(bool enable)
+	func void setEnableSize(bool enable)
 		pEnableSize = enable
 	end
 	
@@ -157,7 +172,7 @@ class ADRuleAnimationDifference extends ADRule
 	 * \brief Vertex position set manipulation is enabled.
 	 * \version 1.17
 	 */
-	public func bool getEnableVertexPositionSet()
+	func bool getEnableVertexPositionSet()
 		return pEnableVertexPositionSet
 	end
 	
@@ -165,14 +180,14 @@ class ADRuleAnimationDifference extends ADRule
 	 * \brief Set if vertex position set manipulation is enabled.
 	 * \version 1.17
 	 */
-	public func void setEnableVertexPositionSet(bool enable)
+	func void setEnableVertexPositionSet(bool enable)
 		pEnableVertexPositionSet = enable
 	end
 	
 	
 	
 	/** \brief Build engine animator rule using the stored definition. */
-	public func AnimatorRule buildRule(Animator animator)
+	func AnimatorRule buildRule(Animator animator)
 		var ARAnimationDifference rule = ARAnimationDifference.new()
 		
 		buildRuleCommon(rule)
@@ -185,6 +200,7 @@ class ADRuleAnimationDifference extends ADRule
 		rule.setLeadingMoveTime(pLeadMoveTime)
 		rule.setReferenceMoveName(pRefMoveName)
 		rule.setReferenceMoveTime(pRefMoveTime)
+		rule.setUseComponentSpace(pUseComponentSpace)
 		rule.setEnablePosition(pEnablePosition)
 		rule.setEnableOrientation(pEnableOrientation)
 		rule.setEnableSize(pEnableSize)
@@ -199,17 +215,18 @@ class ADRuleAnimationDifference extends ADRule
 	 * \brief Create copy of rule.
 	 * \version 1.13
 	 */
-	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+	func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
 		return new(fromDef, toDef, this)
 	end
 	
 	
 	
-	public func void debug(Console console)
+	func void debug(Console console)
 		console.addMessage(debugCommon("Animation Difference") + \
 			" lmove=" + pLeadMoveName + ":" + pLeadMoveTime + \
 			" rmove=" + pRefMoveName + ":" + pRefMoveTime + \
-			" epos=" + pEnablePosition + " eorient=" + pEnableOrientation \
-			+ " esize=" + pEnableSize  + " evps=" + pEnableVertexPositionSet + ")")
+			" ucs=" + pUseComponentSpace + " epos=" + pEnablePosition + \
+			" eorient=" + pEnableOrientation + " esize=" + pEnableSize + \
+			" evps=" + pEnableVertexPositionSet + ")")
 	end
 end

@@ -111,6 +111,7 @@ pAsyncRendering(true),
 pConfigChanged(true),
 pFrameCounter(0),
 pVRCamera(nullptr),
+pConfigurationSets(pConfiguration),
 
 pLeakTracker(*this),
 
@@ -1114,7 +1115,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	pOccQueryMgr = new deoglOcclusionQueryManager(*this);
 	pLightBoundarybox = new deoglLightBoundaryMap(*this,
-		deoglShadowMapper::ShadowMapSize(pConfiguration) >> 1);
+		pConfigurationSets.ShadowQuality().shadowMapSize / 2);
 	
 	decTimer timer;
 	pRenderers = new deoglRTRenderers(*this);

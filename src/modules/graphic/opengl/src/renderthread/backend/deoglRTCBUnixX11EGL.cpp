@@ -354,43 +354,112 @@ void deoglRTCBUnixX11EGL::pChooseConfig(){
 		EGL_NONE
 	};
 	
-	EGLint numConfigs = 0;
-	if(pEglChooseConfig(pEGLDisplay, configAttribs, &pEGLConfig, 1, &numConfigs) == EGL_FALSE
-	|| numConfigs == 0){
+	int configCount = 0;
+	if(pEglChooseConfig(pEGLDisplay, configAttribs, nullptr, 0, &configCount) == EGL_FALSE){
 		DETHROW_INFO(deeInvalidAction, "eglChooseConfig failed");
 	}
+	logger.LogInfoFormat("%d EGL configs found", configCount);
 	
-	if(pRTContext.GetRenderThread().GetConfiguration().GetDoLogDebug()){
-		logger.LogInfo("EGL config selected");
+	pEGLConfigs.SetAll(configCount, {});
+	if(pEglChooseConfig(pEGLDisplay, configAttribs, pEGLConfigs.GetArrayPointer(),
+	pEGLConfigs.GetCount(), &configCount) == EGL_FALSE || configCount == 0){
+		DETHROW_INFO(deeInvalidAction, "eglChooseConfig failed");
 	}
+	pEGLConfigs.SetCount(configCount);
 }
 
 void deoglRTCBUnixX11EGL::pChooseVisual(){
-	EGLint nativeVisualId = 0;
-	pEglGetConfigAttrib(pEGLDisplay, pEGLConfig, EGL_NATIVE_VISUAL_ID, &nativeVisualId);
+	deoglRTLogger &logger = pRTContext.GetRenderThread().GetLogger();
 	
-	if(nativeVisualId != 0){
-		XVisualInfo visTemplate;
+	// choose configuration which is supported by both X11 and EGL
+	pChooseConfig();
+	
+	pEGLConfigs.VisitWhileIndexed([&](int index,const EGLConfig config){
+		EGLint nativeVisualId = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_NATIVE_VISUAL_ID, &nativeVisualId);
+		if(nativeVisualId == 0){
+			return true;
+		}
+		
+		XVisualInfo visTemplate{};
 		visTemplate.visualid = (VisualID)nativeVisualId;
 		int numVisuals = 0;
-		pVisInfo = XGetVisualInfo(pDisplay, VisualIDMask, &visTemplate, &numVisuals);
-	}
+		auto visInfo = XGetVisualInfo(pDisplay, VisualIDMask, &visTemplate, &numVisuals);
+		if(!visInfo || numVisuals == 0){
+			return true;
+		}
+		
+		pEGLConfig = config;
+		pVisInfo = visInfo;
+		
+		EGLint alphaSize = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_ALPHA_SIZE, &alphaSize);
+		
+		EGLint blueSize = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_BLUE_SIZE, &blueSize);
+		
+		EGLint configCaveat = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_CONFIG_CAVEAT, &configCaveat);
+		
+		EGLint conformant = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_CONFORMANT, &conformant);
+		
+		EGLint depthSize = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_DEPTH_SIZE, &depthSize);
+		
+		EGLint greenSize = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_GREEN_SIZE, &greenSize);
+		
+		EGLint maxPBufferHeight = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_MAX_PBUFFER_HEIGHT, &maxPBufferHeight);
+		
+		EGLint maxPBufferWidth = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_MAX_PBUFFER_WIDTH, &maxPBufferWidth);
+		
+		EGLint maxSwapInterval = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_MAX_SWAP_INTERVAL, &maxSwapInterval);
+		
+		EGLint minSwapInterval = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_MIN_SWAP_INTERVAL, &minSwapInterval);
+		
+		EGLint redSize = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_RED_SIZE, &redSize);
+		
+		EGLint sampleBuffers = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_SAMPLE_BUFFERS, &sampleBuffers);
+		
+		EGLint samples = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_SAMPLES, &samples);
+		
+		EGLint stencilSize = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_STENCIL_SIZE, &stencilSize);
+		
+		EGLint transparentType = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_TRANSPARENT_TYPE, &transparentType);
+		
+		EGLint transparentRedValue = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_TRANSPARENT_RED_VALUE, &transparentRedValue);
+		
+		EGLint transparentGreenValue = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_TRANSPARENT_GREEN_VALUE, &transparentGreenValue);
+		
+		EGLint transparentBlueValue = 0;
+		pEglGetConfigAttrib(pEGLDisplay, config, EGL_TRANSPARENT_BLUE_VALUE, &transparentBlueValue);
+		
+		logger.LogInfoFormat("Using config %d: rgbaSize=(%d,%d,%d,%d) depthSize=%d stencilSize=%d\n"
+			"transparent(type=0x%x rgbValue=(%d,%d,%d)) caveat=0x%x conformant=0x%x\n"
+			"maxPBuffer=(%dx%d) swapInterval=(%d..%d) multisample(buffers=%d samples=%d)",
+			index, redSize, greenSize, blueSize, alphaSize, depthSize, stencilSize,
+			transparentType, transparentRedValue, transparentGreenValue, transparentBlueValue,
+			configCaveat, conformant, maxPBufferWidth, maxPBufferHeight, minSwapInterval,
+			maxSwapInterval, sampleBuffers, samples);
+		
+		return false;
+	});
 	
-	if(!pVisInfo){
-		// fall back to DefaultVisual if EGL_NATIVE_VISUAL_ID did not work
-		XVisualInfo visTemplate;
-		visTemplate.screen = pScreen;
-		visTemplate.depth = DefaultDepth(pDisplay, pScreen);
-		int numVisuals = 0;
-		pVisInfo = XGetVisualInfo(pDisplay, VisualScreenMask | VisualDepthMask,
-			&visTemplate, &numVisuals);
-	}
-	
-	if(!pVisInfo){
+	if(!pVisInfo || !pEGLConfig){
 		DETHROW_INFO(deeInvalidAction, "Failed to find XVisualInfo for EGL config");
 	}
-	
-	pChooseConfig();
 }
 
 void deoglRTCBUnixX11EGL::pQueryEglExtensions(){

@@ -1,0 +1,158 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include "igdeMetaPropertyPath.h"
+#include "widget/igdeMetaPropertyPathWidget.h"
+#include "../../undo/igdeUndoSystem.h"
+
+
+// Class igdeMetaPropertyPath::Listener
+/////////////////////////////////////////
+
+void igdeMetaPropertyPath::Listener::OnBasePathChanged(
+igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
+}
+
+
+// Class igdeMetaPropertyPath
+///////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+igdeMetaPropertyPath::igdeMetaPropertyPath(const char *id, const char *name,
+	const char *description, igdeEnvironment::eFilePatternListTypes resourceType) :
+igdeMetaProperty(id, name, description),
+pResourceType(resourceType){
+}
+
+igdeMetaPropertyPath::igdeMetaPropertyPath(const char *id, const char *name,
+	const char *description, const igdeFilePattern::List &customPatternList) :
+igdeMetaProperty(id, name, description),
+pResourceType(igdeEnvironment::eFilePatternListTypes::efpltAll),
+pCustomPatternList(customPatternList){
+}
+
+igdeMetaPropertyPath::igdeMetaPropertyPath(const char *id, const char *translationTag,
+	igdeEnvironment::eFilePatternListTypes resourceType) :
+igdeMetaProperty(id, translationTag),
+pResourceType(resourceType){
+}
+
+igdeMetaPropertyPath::igdeMetaPropertyPath(const char *id, const char *translationTag,
+	const igdeFilePattern::List &customPatternList) :
+igdeMetaProperty(id, translationTag),
+pResourceType(igdeEnvironment::eFilePatternListTypes::efpltAll),
+pCustomPatternList(customPatternList){
+}
+
+igdeMetaPropertyPath::~igdeMetaPropertyPath() = default;
+
+
+// Management
+///////////////
+
+void igdeMetaPropertyPath::SetDefaultValue(const decString &value){
+	pDefaultValue = value;
+}
+
+void igdeMetaPropertyPath::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
+}
+
+void igdeMetaPropertyPath::NotifyBasePathChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnBasePathChanged(this, context);
+	});
+}
+
+
+igdeMetaPropertyPathUndo::Ref igdeMetaPropertyPath::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const char *newValue,
+const char *undoInfo, const char *undoInfoLong){
+	if(context->GetUndoSystem() && GetCanUndo()){
+		const auto undo = igdeMetaPropertyPathUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
+}
+
+decString igdeMetaPropertyPath::GetPropertyBasePath(const ContextRef&) const{
+	return "";
+}
+
+igdeMetaPropertyPath::PresetList igdeMetaPropertyPath::GetPropertyPresets(const ContextRef&) const{
+	return {};
+}
+
+igdeMetaPropertyWidget::Ref igdeMetaPropertyPath::CreateWidget(){
+	return igdeMetaPropertyPathWidget::Ref::New(*this);
+}
+
+void igdeMetaPropertyPath::FileContentInformation(const ContextRef&, const decString&,
+decStringDictionary&) const{
+}
+
+
+// igdeMetaPropertyPathStorage
+////////////////////////////////
+
+igdeMetaPropertyPathStorage::igdeMetaPropertyPathStorage(const char *id, const char *name,
+	const char *description, igdeEnvironment::eFilePatternListTypes resourceType) :
+igdeMetaPropertyPath(id, name, description, resourceType){
+}
+
+igdeMetaPropertyPathStorage::igdeMetaPropertyPathStorage(const char *id, const char *name,
+	const char *description, const igdeFilePattern::List &customPatternList) :
+igdeMetaPropertyPath(id, name, description, customPatternList){
+}
+
+igdeMetaPropertyPathStorage::igdeMetaPropertyPathStorage(const char *id, const char *translationTag,
+	igdeEnvironment::eFilePatternListTypes resourceType) :
+igdeMetaPropertyPath(id, translationTag, resourceType){
+}
+
+igdeMetaPropertyPathStorage::igdeMetaPropertyPathStorage(const char *id, const char *translationTag,
+	const igdeFilePattern::List &customPatternList) :
+igdeMetaPropertyPath(id, translationTag, customPatternList){
+}
+
+igdeMetaPropertyPathStorage::~igdeMetaPropertyPathStorage() = default;
+
+const decString &igdeMetaPropertyPathStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyPathStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decString &value){
+	GetStorage(context).SetValue(value);
+}

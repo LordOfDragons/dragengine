@@ -220,9 +220,8 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "@Igde.Action.Paste.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(seSkin *skin) override{
-		const seClipboardDataMapped * const data = (seClipboardDataMapped*)
-			pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
-			GetWithTypeName(seClipboardDataMapped::TYPE_NAME);
+		auto data = pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			GetWithTypeName(seClipboardDataMapped::TYPE_NAME).DynamicCast<seClipboardDataMapped>();
 		return data ? seUMappedPaste::Ref::New(skin, *data) : seUMappedPaste::Ref();
 	}
 	

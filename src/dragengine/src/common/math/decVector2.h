@@ -55,6 +55,9 @@ public:
 	/** \brief Length. */
 	float Length() const;
 	
+	/** \brief Length squared. */
+	float LengthSquared() const;
+	
 	/**
 	 * \brief Normalize vector.
 	 * \throws deeDivisionByZero Length of vector is 0.

@@ -45,9 +45,9 @@
 
 deoglGITraceRays::deoglGITraceRays(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pRaysPerProbe(ConfigRaysPerProbe(renderThread.GetConfiguration())),
+pRaysPerProbe(renderThread.GetConfigurationSets().GIQuality().raysPerProbe),
 pProbesPerLine(8),
-pProbeCount(ConfigProbeCount(renderThread.GetConfiguration())),
+pProbeCount(renderThread.GetConfigurationSets().GIUpdateSpeed().probeCount),
 pTexPosition(renderThread),
 pTexNormal(renderThread),
 pTexDiffuse(renderThread),
@@ -73,53 +73,9 @@ deoglGITraceRays::~deoglGITraceRays(){
 // Management
 ///////////////
 
-int deoglGITraceRays::ConfigRaysPerProbe(const deoglConfiguration &config){
-	switch(config.GetGIQuality()){
-	case deoglConfiguration::egiqVeryHigh:
-		return 256;
-		
-	case deoglConfiguration::egiqHigh:
-	default:
-		return 128;
-		// return 192;
-		
-	case deoglConfiguration::egiqMedium:
-		return 64;
-		// return 192;
-		
-	case deoglConfiguration::egiqLow:
-		return 32;
-		// return 128;
-		
-	case deoglConfiguration::egiqVeryLow:
-		return 16;
-		// return 128;
-	}
-}
-
-int deoglGITraceRays::ConfigProbeCount(const deoglConfiguration &config){
-	switch(config.GetGIUpdateSpeed()){
-	case deoglConfiguration::egiusVeryHigh:
-		return 2048;
-		
-	case deoglConfiguration::egiusHigh:
-		return 1024;
-		
-	case deoglConfiguration::egiusMedium:
-	default:
-		return 512;
-		
-	case deoglConfiguration::egiusLow:
-		return 256;
-		
-	case deoglConfiguration::egiusVeryLow:
-		return 128;
-	}
-}
-
 void deoglGITraceRays::UpdateFromConfig(){
-	const int raysPerProbe = ConfigRaysPerProbe(pRenderThread.GetConfiguration());
-	const int probeCount = ConfigProbeCount(pRenderThread.GetConfiguration());
+	const int raysPerProbe = pRenderThread.GetConfigurationSets().GIQuality().raysPerProbe;
+	const int probeCount = pRenderThread.GetConfigurationSets().GIUpdateSpeed().probeCount;
 	if(raysPerProbe == pRaysPerProbe && probeCount == pProbeCount){
 		return;
 	}

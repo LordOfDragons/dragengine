@@ -204,6 +204,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfigurationSets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglLSConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -385,6 +388,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-shell-protocol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-toplevel-icon-protocol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.cpp">
@@ -711,6 +717,24 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\postprocessing\deoglPGammaCorrection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\deoglPReflectionQuality.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\ssr\deoglPSSRCoverageEdgeSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\ssr\deoglPSSRCoveragePowerEdge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\ssr\deoglPSSRCoveragePowerRayLength.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\ssr\deoglPSSREnable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\ssr\deoglPSSRReduction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\shadow\deoglPShadowCubePCFSize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -745,27 +769,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOTurnCount.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoverageEdgeSize.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoveragePowerEdge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoveragePowerRayLength.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSREnable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRMaxRayLength.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRReduction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRStepCount.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRForceFrameRate.cpp">
@@ -1285,6 +1288,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCylinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeHull.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeManager.cpp">
@@ -2093,6 +2099,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfiguration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfigurationSets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglLSConfiguration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2304,6 +2313,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-shell-protocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-toplevel-icon-protocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wglext.h">
@@ -2636,6 +2648,24 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\postprocessing\deoglPGammaCorrection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\deoglPReflectionQuality.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\ssr\deoglPSSRCoverageEdgeSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\ssr\deoglPSSRCoveragePowerEdge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\ssr\deoglPSSRCoveragePowerRayLength.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\ssr\deoglPSSREnable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\reflection\ssr\deoglPSSRReduction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\shadow\deoglPShadowCubePCFSize.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2670,27 +2700,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOTurnCount.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoverageEdgeSize.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoveragePowerEdge.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoveragePowerRayLength.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSREnable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRMaxRayLength.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRReduction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRStepCount.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRForceFrameRate.h">
@@ -3219,6 +3228,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCylinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeHull.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeManager.h">

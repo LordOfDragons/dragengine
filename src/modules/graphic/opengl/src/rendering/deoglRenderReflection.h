@@ -44,24 +44,19 @@ class deoglArrayTexture;
  */
 class deoglRenderReflection : public deoglRenderBase{
 private:
-	const deoglPipeline *pPipelineCopyColor;
-	const deoglPipeline *pPipelineCopyColorMipMap;
-	const deoglPipeline *pPipelineCopyColorStereo;
-	const deoglPipeline *pPipelineCopyColorMipMapStereo;
+	const deoglPipeline *pPipelineCopyColor, *pPipelineCopyColorStereo;
+	const deoglPipeline *pPipelineCopyColorDownsample, *pPipelineCopyColorDownsampleStereo;
 	const deoglPipeline *pPipelineMinMaxMipMapMin;
 	const deoglPipeline *pPipelineMinMaxMipMapMax;
 	const deoglPipeline *pPipelineMinMaxMipMapInitial;
 	const deoglPipeline *pPipelineMinMaxMipMapDownsample;
-	const deoglPipeline *pPipelineScreenSpace;
-	const deoglPipeline *pPipelineScreenSpaceStereo;
-	const deoglPipeline *pPipelineApplyReflections;
-	const deoglPipeline *pPipelineApplyReflectionsStereo;
+	const deoglPipeline *pPipelineScreenSpace, *pPipelineScreenSpaceStereo;
+	const deoglPipeline *pPipelineApplyReflections, *pPipelineApplyReflectionsStereo;
 	
 	const deoglPipeline *pPipelineCopyMaterial;
 	const deoglPipeline *pPipelineEnvMapLightGI;
 	const deoglPipeline *pPipelineEnvMapCopy;
-	const deoglPipeline *pPipelineReflection;
-	const deoglPipeline *pPipelineReflectionStereo;
+	const deoglPipeline *pPipelineReflection, *pPipelineReflectionStereo;
 	const deoglPipeline *pPipelineCubeMap2EquiMap;
 	const deoglPipeline *pPipelineBuildEnvMap;
 	const deoglPipeline *pPipelineEnvMapMask;
@@ -124,7 +119,7 @@ public:
 	void RenderDepthMinMaxMipMap(deoglRenderPlan &plan);
 	
 	/** Copy color texture to temporary1 texture and create mip-map levels. */
-	void CopyColorToTemporary1(deoglRenderPlan &plan);
+	void CopyColorToTemporary1(deoglRenderPlan &plan, bool downsample);
 	
 	/** Copy material. */
 	void CopyMaterial(deoglRenderPlan &plan, bool solid);

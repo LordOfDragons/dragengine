@@ -22,11 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeCamera.h"
+#include "igdeCommonDialogs.h"
+#include "igdeUIHelper.h"
+#include "igdeWindow.h"
+#include "../environment/igdeEnvironment.h"
+#include "../loadsave/igdeLoadSaveCamera.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -35,43 +36,625 @@
 #include <dragengine/resources/camera/deCameraManager.h>
 
 
+// Meta Context
+//////////////////
+
+// Class igdeCamera::MetaContext
+//////////////////////////////////
+
+igdeCamera::MetaContext::Ref igdeCamera::CreateMetaContext(igdeCamera *camera){
+	return igdeCamera::MetaContext::Ref::New("igde.camera",
+		igdeCamera::MetaProperties::global.properties, camera);
+}
+
+
+// Meta Properties
+////////////////////
+
+namespace{
+
+class cActionSetDefaultParams : public igdeMetaProperty::Action{
+	igdeCamera &pCamera;
+	const float pLowestIntensity, pHighestIntensity, pAdaptionTime;
+	
+public:
+	cActionSetDefaultParams(igdeCamera &camera, igdeWidget &owner,
+		const igdeMetaContext::Ref &context, float lowestIntensity,
+		float highestIntensity, float adaptionTime, const char *translationTag) :
+	Action(owner, context, decString::Formatted("@{}", translationTag), nullptr,
+		decString::Formatted("@{}.ToolTip", translationTag)),
+	pCamera(camera),
+	pLowestIntensity(lowestIntensity),
+	pHighestIntensity(highestIntensity),
+	pAdaptionTime(adaptionTime){}
+	
+	void OnAction() override{
+		pCamera.SetDefaultParameters(pLowestIntensity, pHighestIntensity, pAdaptionTime);
+	}
+};
+
+class cActionLoad : public igdeMetaProperty::Action{
+	igdeCamera &pCamera;
+	
+public:
+	using Ref = deTObjectReference<cActionLoad>;
+	cActionLoad(igdeCamera &camera, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	Action(owner, context, "@Igde.WPCamera.Action.Load",
+		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch),
+		"@Igde.WPCamera.Action.Load.ToolTip"),
+	pCamera(camera){}
+	
+	void OnAction() override{
+		if(!igdeCommonDialogs::GetFileOpen(GetOwner(), "@Igde.WPCamera.Dialog.OpenCamera.Title",
+		*GetEnvironment().GetFileSystemGame(),
+		*pCamera.GetEnvironment().GetOpenFilePatternList(igdeEnvironment::efpltCamera),
+		igdeCamera::lastCameraFile)){
+			return;
+		}
+		
+		igdeLoadSaveCamera lscamera(GetEnvironment(), GetOwner().GetLogger(), "IGDE");
+		lscamera.Load(igdeCamera::lastCameraFile, pCamera, GetEnvironment().GetFileSystemGame()->
+			OpenFileForReading(decPath::CreatePathUnix(igdeCamera::lastCameraFile)));
+	}
+};
+
+class cActionSave : public igdeMetaProperty::Action{
+	const igdeCamera &pCamera;
+	
+public:
+	using Ref = deTObjectReference<cActionSave>;
+	cActionSave(const igdeCamera &camera, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	Action(owner, context, "@Igde.WPCamera.Action.Save",
+		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Igde.WPCamera.Action.Save.ToolTip"),
+	pCamera(camera){}
+	
+	void OnAction() override{
+		if(!igdeCommonDialogs::GetFileSave(GetOwner(), "@Igde.WPCamera.Dialog.SaveCamera.Title",
+		*GetEnvironment().GetFileSystemGame(),
+		*pCamera.GetEnvironment().GetSaveFilePatternList(igdeEnvironment::efpltCamera),
+		igdeCamera::lastCameraFile)){
+			return;
+		}
+		
+		igdeLoadSaveCamera lscamera(GetEnvironment(), GetOwner().GetLogger(), "IGDE");
+		lscamera.Save(pCamera, GetEnvironment().GetFileSystemGame()->
+			OpenFileForWriting(decPath::CreatePathUnix(igdeCamera::lastCameraFile)));
+	}
+};
+
+class cActionShowInfo : public igdeMetaProperty::Action{
+	const igdeCamera &pCamera;
+	
+public:
+	cActionShowInfo(const igdeCamera &camera, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	Action(owner, context, "@Igde.WPCamera.Action.ShowInfo",
+		nullptr, "@Igde.WPCamera.Action.ShowInfo.ToolTip"),
+	pCamera(camera){}
+	
+	void OnAction() override{
+		const auto &viewMatrix = pCamera.GetViewMatrix();
+		const auto view = viewMatrix.TransformView();
+		const auto up = viewMatrix.TransformUp();
+		const auto right = viewMatrix.TransformRight();
+		
+		decStringDictionary dict;
+		dict.SetAt("@Igde.WPCamera.Action.ShowInfo.Key.Position",
+			decString::Formatted("({:.4f}, {:.4f}, {:.4f})", pCamera.GetPosition().x,
+				pCamera.GetPosition().y, pCamera.GetPosition().z));
+		dict.SetAt("@Igde.WPCamera.Action.ShowInfo.Key.Rotation",
+			decString::Formatted("({:.2f}, {:.2f}, {:.2f})", pCamera.GetOrientation().x,
+				pCamera.GetOrientation().y, pCamera.GetOrientation().z));
+		dict.SetAt("@Igde.WPCamera.Action.ShowInfo.Key.ViewForward",
+			decString::Formatted("({:.3f}, {:.3f}, {:.3f})", view.x, view.y, view.z));
+		dict.SetAt("@Igde.WPCamera.Action.ShowInfo.Key.ViewUp",
+			decString::Formatted("({:.3f}, {:.3f}, {:.3f})", up.x, up.y, up.z));
+		dict.SetAt("@Igde.WPCamera.Action.ShowInfo.Key.ViewRight",
+			decString::Formatted("({:.3f}, {:.3f}, {:.3f})", right.x, right.y, right.z));
+		
+		igdeCommonDialogs::ShowInformation(*GetOwner().GetParentWindow(), GetText(), dict);
+	}
+};
+
+}
+
+
+// igdeCamera::MetaProperties::Position
+igdeCamera::MetaProperties::Position::Position() :
+MetaProperty("igde.camera.position", "Igde.WPCamera.Position"){
+}
+
+igdeCamera::MetaProperties::Position::~Position() = default;
+
+igdeMetaPropertyDVectorStorage::Storage &igdeCamera::MetaProperties::Position::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPPosition();
+}
+
+// igdeCamera::MetaProperties::Rotation
+igdeCamera::MetaProperties::Rotation::Rotation() :
+MetaProperty("igde.camera.rotation", "Igde.WPCamera.Rotation"){
+}
+
+igdeCamera::MetaProperties::Rotation::~Rotation() = default;
+
+igdeMetaPropertyVectorStorageQuaternion::Storage &igdeCamera::MetaProperties::Rotation::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPRotation();
+}
+
+// igdeCamera::MetaProperties::Distance
+igdeCamera::MetaProperties::Distance::Distance() :
+MetaProperty("igde.camera.distance", "Igde.WPCamera.OrbitDistance"){
+	SetLowerLimit(0.0f);
+	SetEnableLowerLimit(true);
+}
+
+igdeCamera::MetaProperties::Distance::~Distance() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::Distance::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPDistance();
+}
+
+// igdeCamera::MetaProperties::Fov
+igdeCamera::MetaProperties::Fov::Fov() :
+MetaProperty("igde.camera.fov", "Igde.WPCamera.FieldOfView"){
+	SetLowerLimit(0.0f);
+	SetEnableLowerLimit(true);
+	SetUpperLimit(180.0f);
+	SetEnableUpperLimit(true);
+	SetTickSpacing(15.0f);
+	SetDefaultValue(90.0f);
+}
+
+igdeCamera::MetaProperties::Fov::~Fov() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::Fov::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPFov();
+}
+
+// igdeCamera::MetaProperties::FovRatio
+igdeCamera::MetaProperties::FovRatio::FovRatio() :
+MetaProperty("igde.camera.fovRatio", "Igde.WPCamera.FieldOfViewRatio"){
+	SetLowerLimit(0.01f);
+	SetEnableLowerLimit(true);
+	SetDefaultValue(1.0f);
+}
+
+igdeCamera::MetaProperties::FovRatio::~FovRatio() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::FovRatio::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPFovRatio();
+}
+
+// igdeCamera::MetaProperties::ImageDistance
+igdeCamera::MetaProperties::ImageDistance::ImageDistance() :
+MetaProperty("igde.camera.imageDistance", "Igde.WPCamera.ImageDistance"){
+	SetLowerLimit(1e-4f);
+	SetEnableLowerLimit(true);
+	SetDefaultValue(0.01f);
+}
+
+igdeCamera::MetaProperties::ImageDistance::~ImageDistance() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::ImageDistance::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPImageDistance();
+}
+
+// igdeCamera::MetaProperties::ViewDistance
+igdeCamera::MetaProperties::ViewDistance::ViewDistance() :
+MetaProperty("igde.camera.viewDistance", "Igde.WPCamera.ViewDistance"){
+	SetLowerLimit(1e-3f);
+	SetEnableLowerLimit(true);
+	SetDefaultValue(200.0f);
+}
+
+igdeCamera::MetaProperties::ViewDistance::~ViewDistance() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::ViewDistance::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPViewDistance();
+}
+
+// igdeCamera::MetaProperties::EnableHDRR
+igdeCamera::MetaProperties::EnableHDRR::EnableHDRR() :
+MetaProperty("igde.camera.enableHDRR", "Igde.WPCamera.Action.EnableHDRR"){
+	SetDefaultValue(true);
+}
+
+igdeCamera::MetaProperties::EnableHDRR::~EnableHDRR() = default;
+
+igdeMetaPropertyBooleanStorage::Storage &igdeCamera::MetaProperties::EnableHDRR::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPEnableHDRR();
+}
+
+// igdeCamera::MetaProperties::EnableGI
+igdeCamera::MetaProperties::EnableGI::EnableGI() :
+MetaProperty("igde.camera.enableGI", "Igde.WPCamera.Action.EnableGI"){
+	SetDefaultValue(true);
+}
+
+igdeCamera::MetaProperties::EnableGI::~EnableGI() = default;
+
+igdeMetaPropertyBooleanStorage::Storage &igdeCamera::MetaProperties::EnableGI::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPEnableGI();
+}
+
+// igdeCamera::MetaProperties::Exposure
+igdeCamera::MetaProperties::Exposure::Exposure() :
+MetaProperty("igde.camera.exposure", "Igde.WPCamera.Exposure"){
+	SetLowerLimit(0.0f);
+	SetEnableLowerLimit(true);
+	SetDefaultValue(1.0f);
+}
+
+igdeCamera::MetaProperties::Exposure::~Exposure() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::Exposure::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPExposure();
+}
+
+// igdeCamera::MetaProperties::LowestIntensity
+igdeCamera::MetaProperties::LowestIntensity::LowestIntensity() :
+MetaProperty("igde.camera.lowestIntensity", "Igde.WPCamera.LowerIntensity"){
+	SetLowerLimit(0.0f);
+	SetEnableLowerLimit(true);
+	SetDefaultValue(1.0f);
+}
+
+igdeCamera::MetaProperties::LowestIntensity::~LowestIntensity() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::LowestIntensity::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPLowestIntensity();
+}
+
+// igdeCamera::MetaProperties::HighestIntensity
+igdeCamera::MetaProperties::HighestIntensity::HighestIntensity() :
+MetaProperty("igde.camera.highestIntensity", "Igde.WPCamera.HigherIntensity"){
+	SetLowerLimit(0.0f);
+	SetEnableLowerLimit(true);
+	SetDefaultValue(1.0f);
+}
+
+igdeCamera::MetaProperties::HighestIntensity::~HighestIntensity() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::HighestIntensity::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPHighestIntensity();
+}
+
+// igdeCamera::MetaProperties::AdaptionTime
+igdeCamera::MetaProperties::AdaptionTime::AdaptionTime() :
+MetaProperty("igde.camera.adaptionTime", "Igde.WPCamera.AdaptionTime"){
+	SetLowerLimit(0.0f);
+	SetEnableLowerLimit(true);
+	SetDefaultValue(0.1f);
+}
+
+igdeCamera::MetaProperties::AdaptionTime::~AdaptionTime() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::AdaptionTime::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPAdaptionTime();
+}
+
+// igdeCamera::MetaProperties::WhiteIntensity
+igdeCamera::MetaProperties::WhiteIntensity::WhiteIntensity() :
+MetaProperty("igde.camera.whiteIntensity", "Igde.WPCamera.WhiteIntensity"){
+	SetLowerLimit(0.01f);
+	SetEnableLowerLimit(true);
+	SetDefaultValue(2.0f);
+}
+
+igdeCamera::MetaProperties::WhiteIntensity::~WhiteIntensity() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::WhiteIntensity::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPWhiteIntensity();
+}
+
+// igdeCamera::MetaProperties::BloomIntensity
+igdeCamera::MetaProperties::BloomIntensity::BloomIntensity() :
+MetaProperty("igde.camera.bloomIntensity", "Igde.WPCamera.BloomIntensity"){
+	SetLowerLimit(0.0f);
+	SetEnableLowerLimit(true);
+	SetDefaultValue(1.0f);
+}
+
+igdeCamera::MetaProperties::BloomIntensity::~BloomIntensity() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomIntensity::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPBloomIntensity();
+}
+
+// igdeCamera::MetaProperties::BloomStrength
+igdeCamera::MetaProperties::BloomStrength::BloomStrength() :
+MetaProperty("igde.camera.bloomStrength", "Igde.WPCamera.BloomStrength"){
+	SetLowerLimit(0.0f);
+	SetEnableLowerLimit(true);
+	SetDefaultValue(0.25f);
+}
+
+igdeCamera::MetaProperties::BloomStrength::~BloomStrength() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomStrength::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPBloomStrength();
+}
+
+// igdeCamera::MetaProperties::BloomBlend
+igdeCamera::MetaProperties::BloomBlend::BloomBlend() :
+MetaProperty("igde.camera.bloomBlend", "Igde.WPCamera.BloomBlend"){
+	SetLowerLimit(0.0f);
+	SetEnableLowerLimit(true);
+	SetUpperLimit(1.0f);
+	SetEnableUpperLimit(true);
+	SetDefaultValue(1.0f);
+}
+
+igdeCamera::MetaProperties::BloomBlend::~BloomBlend() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomBlend::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPBloomBlend();
+}
+
+// igdeCamera::MetaProperties::BloomSize
+igdeCamera::MetaProperties::BloomSize::BloomSize() :
+MetaProperty("igde.camera.bloomSize", "Igde.WPCamera.BloomSize"){
+	SetLowerLimit(0.0f);
+	SetEnableLowerLimit(true);
+	SetUpperLimit(1.0f);
+	SetEnableUpperLimit(true);
+	SetDefaultValue(0.25f);
+}
+
+igdeCamera::MetaProperties::BloomSize::~BloomSize() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomSize::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPBloomSize();
+}
+
+// igdeCamera::MetaProperties::ToneMapCurve
+igdeCamera::MetaProperties::ToneMapCurve::ToneMapCurve() :
+MetaProperty("igde.camera.toneMapCurve", "Igde.WPCamera.ToneMapCurve"){
+	SetClampMin(decVector2(0.0f, 0.0f));
+	SetClampMax(decVector2(3.0f, 1.0f));
+	SetClamp(true);
+	// default is empty curve
+}
+
+igdeCamera::MetaProperties::ToneMapCurve::~ToneMapCurve() = default;
+
+igdeMetaPropertyCurveBezierStorage::Storage &igdeCamera::MetaProperties::ToneMapCurve::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPToneMapCurve();
+}
+
+// Properties
+
+igdeCamera::MetaProperties igdeCamera::MetaProperties::global;
+
+igdeCamera::MetaProperties::MetaProperties() :
+position(deTObjectReference<Position>::New()),
+rotation(deTObjectReference<Rotation>::New()),
+distance(deTObjectReference<Distance>::New()),
+enableHDRR(deTObjectReference<EnableHDRR>::New()),
+enableGI(deTObjectReference<EnableGI>::New()),
+
+fov(deTObjectReference<Fov>::New()),
+fovRatio(deTObjectReference<FovRatio>::New()),
+imageDistance(deTObjectReference<ImageDistance>::New()),
+viewDistance(deTObjectReference<ViewDistance>::New()),
+groupInternal(deTObjectReference<igdeMetaPropertyGroup>::New("igde.camera.groupInternal",
+	"Igde.WPCamera.InternalParameters", decTObjectOrderedSet<igdeMetaProperty>(devctag,
+		fov, fovRatio, imageDistance, viewDistance), true)),
+
+exposure(deTObjectReference<Exposure>::New()),
+lowestIntensity(deTObjectReference<LowestIntensity>::New()),
+highestIntensity(deTObjectReference<HighestIntensity>::New()),
+adaptionTime(deTObjectReference<AdaptionTime>::New()),
+groupExposure(deTObjectReference<igdeMetaPropertyGroup>::New("igde.camera.groupExposure",
+	"Igde.WPCamera.ExposureControls", decTObjectOrderedSet<igdeMetaProperty>(devctag,
+		exposure, lowestIntensity, highestIntensity, adaptionTime), true)),
+
+whiteIntensity(deTObjectReference<WhiteIntensity>::New()),
+toneMapCurve(deTObjectReference<ToneMapCurve>::New()),
+groupToneMap(deTObjectReference<igdeMetaPropertyGroup>::New("igde.camera.groupToneMap",
+	"Igde.WPCamera.ToneMapping", decTObjectOrderedSet<igdeMetaProperty>(devctag,
+		whiteIntensity, toneMapCurve), true)),
+
+bloomIntensity(deTObjectReference<BloomIntensity>::New()),
+bloomStrength(deTObjectReference<BloomStrength>::New()),
+bloomBlend(deTObjectReference<BloomBlend>::New()),
+bloomSize(deTObjectReference<BloomSize>::New()),
+groupBloom(deTObjectReference<igdeMetaPropertyGroup>::New("igde.camera.groupBloom",
+	"Igde.WPCamera.BloomOverbright", decTObjectOrderedSet<igdeMetaProperty>(devctag,
+		bloomIntensity, bloomStrength, bloomBlend, bloomSize), true)),
+
+properties(igdeMetaContext::PropertyList::Ref::New(decTObjectOrderedSet<igdeMetaProperty>(devctag,
+	position, rotation, distance, enableHDRR, enableGI,
+	groupInternal, groupExposure, groupToneMap, groupBloom))){
+}
+
 
 // Class igdeCamera
 /////////////////////
 
+decString igdeCamera::lastCameraFile("Camera.decamera");
+
 // Constructor, destructor
 ////////////////////////////
 
-igdeCamera::igdeCamera(deEngine *engine) :
+igdeCamera::igdeCamera(igdeEnvironment &environment, deEngine *engine) :
+pEnvironment(environment),
+pUndoSystem(nullptr),
+pMetaContext(CreateMetaContext(this)),
+pName("Camera"),
 pEngine(engine),
-pEnableHDRR(true),
-pEnableGI(true),
-pDistance(0.0f)
+pMPPosition(MetaProperties::global.position, pMetaContext),
+pMPRotation(MetaProperties::global.rotation, pMetaContext),
+pMPDistance(MetaProperties::global.distance, pMetaContext),
+pMPFov(MetaProperties::global.fov, pMetaContext),
+pMPFovRatio(MetaProperties::global.fovRatio, pMetaContext),
+pMPImageDistance(MetaProperties::global.imageDistance, pMetaContext),
+pMPViewDistance(MetaProperties::global.viewDistance, pMetaContext),
+pMPEnableHDRR(MetaProperties::global.enableHDRR, pMetaContext),
+pMPEnableGI(MetaProperties::global.enableGI, pMetaContext),
+pMPExposure(MetaProperties::global.exposure, pMetaContext),
+pMPLowestIntensity(MetaProperties::global.lowestIntensity, pMetaContext),
+pMPHighestIntensity(MetaProperties::global.highestIntensity, pMetaContext),
+pMPAdaptionTime(MetaProperties::global.adaptionTime, pMetaContext),
+pMPWhiteIntensity(MetaProperties::global.whiteIntensity, pMetaContext),
+pMPBloomIntensity(MetaProperties::global.bloomIntensity, pMetaContext),
+pMPBloomStrength(MetaProperties::global.bloomStrength, pMetaContext),
+pMPBloomBlend(MetaProperties::global.bloomBlend, pMetaContext),
+pMPBloomSize(MetaProperties::global.bloomSize, pMetaContext),
+pMPToneMapCurve(MetaProperties::global.toneMapCurve, pMetaContext)
 {
 	DEASSERT_NOTNULL(engine)
 	
 	pEngCamera = engine->GetCameraManager()->CreateCamera();
 	
-	pFov = pEngCamera->GetFov() * RAD2DEG;
-	pFovRatio = pEngCamera->GetFovRatio();
-	pImageDistance = pEngCamera->GetImageDistance();
-	pViewDistance = pEngCamera->GetViewDistance();
+	pMPFov.SetValue(pEngCamera->GetFov() * RAD2DEG, false);
+	pMPFovRatio.SetValue(pEngCamera->GetFovRatio(), false);
+	pMPImageDistance.SetValue(pEngCamera->GetImageDistance(), false);
+	pMPViewDistance.SetValue(pEngCamera->GetViewDistance(), false);
 	
-	pEngCamera->SetEnableGI(pEnableGI);
-	pEngCamera->SetEnableHDRR(pEnableHDRR);
-	pExposure = pEngCamera->GetExposure();
-	pLowestIntensity = pEngCamera->GetLowestIntensity();
-	pHighestIntensity = pEngCamera->GetHighestIntensity();
-	pAdaptionTime = pEngCamera->GetAdaptionTime();
+	pEngCamera->SetEnableGI(pMPEnableGI);
+	pEngCamera->SetEnableHDRR(pMPEnableHDRR);
 	
-	pWhiteIntensity = pEngCamera->GetWhiteIntensity();
-	pBloomIntensity = pEngCamera->GetBloomIntensity();
-	pBloomStrength = pEngCamera->GetBloomStrength();
-	pBloomBlend = pEngCamera->GetBloomBlend();
-	pBloomSize = pEngCamera->GetBloomSize();
-	pToneMapCurve = pEngCamera->GetToneMapCurve();
+	pMPExposure.SetValue(pEngCamera->GetExposure(), false);
+	pMPLowestIntensity.SetValue(pEngCamera->GetLowestIntensity(), false);
+	pMPHighestIntensity.SetValue(pEngCamera->GetHighestIntensity(), false);
+	pMPAdaptionTime.SetValue(pEngCamera->GetAdaptionTime(), false);
 	
-	SetName("Camera");
+	pMPWhiteIntensity.SetValue(pEngCamera->GetWhiteIntensity(), false);
+	pMPBloomIntensity.SetValue(pEngCamera->GetBloomIntensity(), false);
+	pMPBloomStrength.SetValue(pEngCamera->GetBloomStrength(), false);
+	pMPBloomBlend.SetValue(pEngCamera->GetBloomBlend(), false);
+	pMPBloomSize.SetValue(pEngCamera->GetBloomSize(), false);
+	pMPToneMapCurve.SetValue(pEngCamera->GetToneMapCurve(), false);
+	
+	pMPPosition.onValueChanged = [this](){
+		pUpdateViewMatrix();
+		pUpdateCameraPosition();
+		GeometryChanged();
+		onChanged();
+	};
+	pMPRotation.onValueChanged = pMPPosition.onValueChanged;
+	
+	pMPDistance.onValueChanged = [this](){
+		pUpdateViewMatrix();
+		pUpdateCameraPosition();
+		onChanged();
+	};
+	
+	pMPFov.onValueChanged = [this](){
+		pEngCamera->SetFov(pMPFov * DEG2RAD);
+		GeometryChanged();
+		onChanged();
+	};
+	
+	pMPFovRatio.onValueChanged = [this](){
+		pEngCamera->SetFovRatio(pMPFovRatio);
+		GeometryChanged();
+		onChanged();
+	};
+	
+	pMPImageDistance.onValueChanged = [this](){
+		pEngCamera->SetImageDistance(pMPImageDistance);
+		GeometryChanged();
+		onChanged();
+	};
+	
+	pMPViewDistance.onValueChanged = [this](){
+		pEngCamera->SetViewDistance(pMPViewDistance);
+		GeometryChanged();
+		onChanged();
+	};
+	
+	pMPEnableHDRR.onValueChanged = [this](){
+		pEngCamera->SetEnableHDRR(pMPEnableHDRR);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPEnableGI.onValueChanged = [this](){
+		pEngCamera->SetEnableGI(pMPEnableGI);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPExposure.onValueChanged = [this](){
+		pEngCamera->SetExposure(pMPExposure);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPLowestIntensity.onValueChanged = [this](){
+		pEngCamera->SetLowestIntensity(pMPLowestIntensity);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPHighestIntensity.onValueChanged = [this](){
+		pEngCamera->SetHighestIntensity(pMPHighestIntensity);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPAdaptionTime.onValueChanged = [this](){
+		pEngCamera->SetAdaptionTime(pMPAdaptionTime);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPWhiteIntensity.onValueChanged = [this](){
+		pEngCamera->SetWhiteIntensity(pMPWhiteIntensity);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPBloomIntensity.onValueChanged = [this](){
+		pEngCamera->SetBloomIntensity(pMPBloomIntensity);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPBloomStrength.onValueChanged = [this](){
+		pEngCamera->SetBloomStrength(pMPBloomStrength);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPBloomBlend.onValueChanged = [this](){
+		pEngCamera->SetBloomBlend(pMPBloomBlend);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPBloomSize.onValueChanged = [this](){
+		pEngCamera->SetBloomSize(pMPBloomSize);
+		AdaptionChanged();
+		onChanged();
+	};
+	
+	pMPToneMapCurve.onValueChanged = [this](){
+		pEngCamera->SetToneMapCurve(pMPToneMapCurve);
+		AdaptionChanged();
+		onChanged();
+	};
 }
 
 igdeCamera::~igdeCamera(){
@@ -82,6 +665,10 @@ igdeCamera::~igdeCamera(){
 
 // Management
 ///////////////
+
+void igdeCamera::SetUndoSystem(igdeUndoSystem *undoSystem){
+	pUndoSystem = undoSystem;
+}
 
 void igdeCamera::SetEngineWorld(deWorld *world){
 	if(world == pEngWorld){
@@ -101,248 +688,84 @@ void igdeCamera::SetEngineWorld(deWorld *world){
 	WorldChanged();
 }
 
-void igdeCamera::SetName(const char *name){
-	pName = name;
+void igdeCamera::SetName(const char *value){
+	pName = value;
 }
 
-void igdeCamera::SetPosition(const decDVector &position){
-	if(position.IsEqualTo(pPosition)){
-		return;
-	}
-	
-	pPosition = position;
-	
-	pUpdateViewMatrix();
-	pUpdateCameraPosition();
-	
-	GeometryChanged();
+void igdeCamera::SetPosition(const decDVector &value){
+	pMPPosition = value;
 }
 
-void igdeCamera::SetOrientation(const decVector &orientation){
-	if(orientation.IsEqualTo(pOrientation)){
-		return;
-	}
-	
-	pOrientation = orientation;
-	
-	pUpdateViewMatrix();
-	pUpdateCameraPosition();
-	
-	GeometryChanged();
-}	
-
-void igdeCamera::SetFov(float fov){
-	if(fabs(fov - pFov) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pFov = fov;
-	
-	pEngCamera->SetFov(pFov * DEG2RAD);
-	
-	GeometryChanged();
+void igdeCamera::SetOrientation(const decVector &value){
+	pMPRotation = value;
 }
 
-void igdeCamera::SetFovRatio(float fovRatio){
-	if(fabs(fovRatio - pFovRatio) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pFovRatio = fovRatio;
-	
-	pEngCamera->SetFovRatio(pFovRatio);
-	
-	GeometryChanged();
+void igdeCamera::SetFov(float value){
+	pMPFov = value;
 }
 
-void igdeCamera::SetImageDistance(float imageDistance){
-	if(fabs(imageDistance - pImageDistance) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pImageDistance = imageDistance;
-	
-	pEngCamera->SetImageDistance(imageDistance);
-	
-	GeometryChanged();
+void igdeCamera::SetFovRatio(float value){
+	pMPFovRatio = value;
 }
 
-void igdeCamera::SetViewDistance(float viewDistance){
-	if(fabs(viewDistance - pViewDistance) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pViewDistance = viewDistance;
-	
-	pEngCamera->SetViewDistance(viewDistance);
-	
-	GeometryChanged();
+void igdeCamera::SetImageDistance(float value){
+	pMPImageDistance = value;
 }
 
-void igdeCamera::SetEnableHDRR(bool enable){
-	if(enable == pEnableHDRR){
-		return;
-	}
-	
-	pEnableHDRR = enable;
-	pEngCamera->SetEnableHDRR(enable);
-	
-	AdaptionChanged();
+void igdeCamera::SetViewDistance(float value){
+	pMPViewDistance = value;
 }
 
-void igdeCamera::SetExposure(float exposure){
-	exposure = decMath::max(exposure, 0.0f);
-	if(fabs(exposure - pExposure) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pExposure = exposure;
-	pEngCamera->SetExposure(exposure);
-	
-	AdaptionChanged();
+void igdeCamera::SetEnableHDRR(bool value){
+	pMPEnableHDRR = value;
 }
 
-void igdeCamera::SetLowestIntensity(float lowestIntensity){
-	lowestIntensity = decMath::max(lowestIntensity, 0.0f);
-	if(fabs(lowestIntensity - pLowestIntensity) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pLowestIntensity = lowestIntensity;
-	pEngCamera->SetLowestIntensity(lowestIntensity);
-	
-	AdaptionChanged();
+void igdeCamera::SetExposure(float value){
+	pMPExposure = value;
 }
 
-void igdeCamera::SetHighestIntensity(float highestIntensity){
-	highestIntensity = decMath::max(highestIntensity, 0.0f);
-	if(fabs(highestIntensity - pHighestIntensity) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pHighestIntensity = highestIntensity;
-	pEngCamera->SetHighestIntensity(highestIntensity);
-	
-	AdaptionChanged();
+void igdeCamera::SetLowestIntensity(float value){
+	pMPLowestIntensity = value;
 }
 
-void igdeCamera::SetAdaptionTime(float adaptionTime){
-	adaptionTime = decMath::max(adaptionTime, 0.0f);
-	if(fabs(adaptionTime - pAdaptionTime) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pAdaptionTime = adaptionTime;
-	pEngCamera->SetAdaptionTime(adaptionTime);
-	
-	AdaptionChanged();
+void igdeCamera::SetHighestIntensity(float value){
+	pMPHighestIntensity = value;
 }
 
-
-
-void igdeCamera::SetEnableGI(bool enable){
-	if(enable == pEnableGI){
-		return;
-	}
-	
-	pEnableGI = enable;
-	pEngCamera->SetEnableGI(enable);
-	
-	AdaptionChanged();
+void igdeCamera::SetAdaptionTime(float value){
+	pMPAdaptionTime = value;
 }
 
-
-
-void igdeCamera::SetWhiteIntensity(float intensity){
-	intensity = decMath::max(intensity, 0.1f);
-	
-	if(fabs(intensity - pWhiteIntensity) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pWhiteIntensity = intensity;
-	pEngCamera->SetWhiteIntensity(intensity);
-	
-	AdaptionChanged();
+void igdeCamera::SetEnableGI(bool value){
+	pMPEnableGI = value;
 }
 
-void igdeCamera::SetBloomIntensity(float intensity){
-	intensity = decMath::max(intensity, 0.0f);
-	
-	if(fabs(intensity - pBloomIntensity) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pBloomIntensity = intensity;
-	pEngCamera->SetBloomIntensity(intensity);
-	
-	AdaptionChanged();
+void igdeCamera::SetWhiteIntensity(float value){
+	pMPWhiteIntensity = value;
 }
 
-void igdeCamera::SetBloomStrength(float strength){
-	strength = decMath::max(strength, 0.0f);
-	
-	if(fabs(strength - pBloomStrength) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pBloomStrength = strength;
-	pEngCamera->SetBloomStrength(strength);
-	
-	AdaptionChanged();
+void igdeCamera::SetBloomIntensity(float value){
+	pMPBloomIntensity = value;
 }
 
-void igdeCamera::SetBloomBlend(float blend){
-	blend = decMath::clamp(blend, 0.0f, 1.0f);
-	
-	if(fabs(blend - pBloomBlend) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pBloomBlend = blend;
-	pEngCamera->SetBloomBlend(blend);
-	
-	AdaptionChanged();
+void igdeCamera::SetBloomStrength(float value){
+	pMPBloomStrength = value;
 }
 
-void igdeCamera::SetBloomSize(float size){
-	size = decMath::clamp(size, 0.0f, 1.0f);
-	
-	if(fabs(size - pBloomSize) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pBloomSize = size;
-	pEngCamera->SetBloomSize(size);
-	
-	AdaptionChanged();
+void igdeCamera::SetBloomBlend(float value){
+	pMPBloomBlend = value;
 }
 
-
+void igdeCamera::SetBloomSize(float value){
+	pMPBloomSize = value;
+}
 
 void igdeCamera::SetToneMapCurve(const decCurveBezier &curve){
-	if(curve == pToneMapCurve){
-		return;
-	}
-	
-	pToneMapCurve = curve;
-	pEngCamera->SetToneMapCurve(curve);
-	
-	AdaptionChanged();
+	pMPToneMapCurve = curve;
 }
 
-
-
-void igdeCamera::SetDistance(float distance){
-	distance = decMath::max(distance, 0.01f);
-	if(fabs(distance - pDistance) <= FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pDistance = distance;
-	
-	pUpdateViewMatrix();
-	pUpdateCameraPosition();
+void igdeCamera::SetDistance(float value){
+	pMPDistance = value;
 }
 
 void igdeCamera::Reset(){
@@ -355,8 +778,8 @@ decVector igdeCamera::GetDirectionFor(int width, int height, int x, int y) const
 	int halfWidth = width / 2;
 	decVector direction;
 	
-	direction.x = tanf(pFov * DEG2RAD * 0.5f) * ((float)(x - halfWidth) / (float)halfWidth);
-	direction.y = tanf(pFov * DEG2RAD * pFovRatio * 0.5f)
+	direction.x = tanf(pMPFov * DEG2RAD * 0.5f) * ((float)(x - halfWidth) / (float)halfWidth);
+	direction.y = tanf(pMPFov * DEG2RAD * pMPFovRatio * 0.5f)
 		* ( ( float )( halfHeight - y ) / ( float )halfHeight ) / aspectRatio;
 	direction.z = 1.0f;
 	
@@ -364,49 +787,74 @@ decVector igdeCamera::GetDirectionFor(int width, int height, int x, int y) const
 	return pViewMatrix.TransformNormal(direction).ToVector();
 }
 
-void igdeCamera::SetDefaultParameters(float lowestIntensity, float highestIntensity, float adaptionTime){
+void igdeCamera::SetDefaultParameters(float alowestIntensity, float ahighestIntensity, float aadaptionTime){
 	const deCamera::Ref camera(pEngine->GetCameraManager()->CreateCamera());
 	
-	pFov = camera->GetFov() * RAD2DEG;
-	pFovRatio = camera->GetFovRatio();
-	pImageDistance = camera->GetImageDistance();
-	pViewDistance = camera->GetViewDistance();
+	pMPFov.SetValue(camera->GetFov() * RAD2DEG, false);
+	pMPFovRatio.SetValue(camera->GetFovRatio(), false);
+	pMPImageDistance.SetValue(camera->GetImageDistance(), false);
+	pMPViewDistance.SetValue(camera->GetViewDistance(), false);
 	
-	pEnableGI = true;
-	pEnableHDRR = true;
-	pExposure = camera->GetExposure();
-	pLowestIntensity = lowestIntensity;
-	pHighestIntensity = highestIntensity;
-	pAdaptionTime = adaptionTime;
+	pMPEnableGI.SetValue(true, false);
+	pMPEnableHDRR.SetValue(true, false);
+	pMPExposure.SetValue(camera->GetExposure(), false);
+	pMPLowestIntensity.SetValue(alowestIntensity, false);
+	pMPHighestIntensity.SetValue(ahighestIntensity, false);
+	pMPAdaptionTime.SetValue(aadaptionTime, false);
 	
-	pWhiteIntensity = camera->GetWhiteIntensity();
-	pBloomIntensity = camera->GetBloomIntensity();
-	pBloomStrength = camera->GetBloomStrength();
-	pBloomBlend = camera->GetBloomBlend();
-	pBloomSize = camera->GetBloomSize();
-	pToneMapCurve = camera->GetToneMapCurve();
+	pMPWhiteIntensity.SetValue(camera->GetWhiteIntensity(), false);
+	pMPBloomIntensity.SetValue(camera->GetBloomIntensity(), false);
+	pMPBloomStrength.SetValue(camera->GetBloomStrength(), false);
+	pMPBloomBlend.SetValue(camera->GetBloomBlend(), false);
+	pMPBloomSize.SetValue(camera->GetBloomSize(), false);
+	pMPToneMapCurve.SetValue(camera->GetToneMapCurve(), false);
 	
-	pEngCamera->SetFov(pFov * DEG2RAD);
-	pEngCamera->SetFovRatio(pFovRatio);
-	pEngCamera->SetImageDistance(pImageDistance);
-	pEngCamera->SetViewDistance(pViewDistance);
-	pEngCamera->SetEnableHDRR(pEnableHDRR);
-	pEngCamera->SetExposure(pExposure);
-	pEngCamera->SetLowestIntensity(pLowestIntensity);
-	pEngCamera->SetHighestIntensity(pHighestIntensity);
-	pEngCamera->SetAdaptionTime(pAdaptionTime);
-	pEngCamera->SetEnableGI(pEnableGI);
-	pEngCamera->SetWhiteIntensity(pWhiteIntensity);
-	pEngCamera->SetBloomIntensity(pBloomIntensity);
-	pEngCamera->SetBloomStrength(pBloomStrength);
-	pEngCamera->SetBloomBlend(pBloomBlend);
-	pEngCamera->SetBloomSize(pBloomSize);
-	pEngCamera->SetToneMapCurve(pToneMapCurve);
+	pEngCamera->SetFov(pMPFov * DEG2RAD);
+	pEngCamera->SetFovRatio(pMPFovRatio);
+	pEngCamera->SetImageDistance(pMPImageDistance);
+	pEngCamera->SetViewDistance(pMPViewDistance);
+	pEngCamera->SetEnableHDRR(pMPEnableHDRR);
+	pEngCamera->SetExposure(pMPExposure);
+	pEngCamera->SetLowestIntensity(pMPLowestIntensity);
+	pEngCamera->SetHighestIntensity(pMPHighestIntensity);
+	pEngCamera->SetAdaptionTime(pMPAdaptionTime);
+	pEngCamera->SetEnableGI(pMPEnableGI);
+	pEngCamera->SetWhiteIntensity(pMPWhiteIntensity);
+	pEngCamera->SetBloomIntensity(pMPBloomIntensity);
+	pEngCamera->SetBloomStrength(pMPBloomStrength);
+	pEngCamera->SetBloomBlend(pMPBloomBlend);
+	pEngCamera->SetBloomSize(pMPBloomSize);
+	pEngCamera->SetToneMapCurve(pMPToneMapCurve);
 	
 	GeometryChanged();
 	AdaptionChanged();
+	onChanged();
 }
 
+void igdeCamera::AddContextMenuEntries(igdeMenuCascade &menu, igdeWidget &owner){
+	auto &env = menu.GetEnvironment();
+	auto &helper = env.GetUIHelper();
+	if(menu.GetChildren().IsNotEmpty()){
+		helper.Separator(menu);
+	}
+	auto submenu = igdeMenuCascade::Ref::New(env, "@Igde.WPCamera.Action.SetDefault",
+		env.GetStockIcon(igdeEnvironment::esiSearch));
+	helper.MenuCommand(submenu, deTObjectReference<cActionSetDefaultParams>::New(
+		*this, owner, pMetaContext, 1.0f, 1.0f, 0.1f, "Igde.WPCamera.Action.SetDefaultIndoor"));
+	helper.MenuCommand(submenu, deTObjectReference<cActionSetDefaultParams>::New(
+		*this, owner, pMetaContext, 20.0f, 20.0f, 0.1f, "Igde.WPCamera.Action.SetDefaultDay"));
+	helper.MenuCommand(submenu, deTObjectReference<cActionSetDefaultParams>::New(
+		*this, owner, pMetaContext, 0.1f, 0.1f, 0.1f, "Igde.WPCamera.Action.SetDefaultNight"));
+	helper.MenuCommand(submenu, deTObjectReference<cActionSetDefaultParams>::New(
+		*this, owner, pMetaContext, 1.0f, 20.0f, 0.1f, "Igde.WPCamera.Action.SetDefaultDynamic"));
+	menu.AddChild(submenu);
+	
+	helper.MenuCommand(menu, deTObjectReference<cActionLoad>::New(*this, owner, pMetaContext));
+	helper.MenuCommand(menu, deTObjectReference<cActionSave>::New(*this, owner, pMetaContext));
+	helper.Separator(menu);
+	
+	helper.MenuCommand(menu, deTObjectReference<cActionShowInfo>::New(*this, owner, pMetaContext));
+}
 
 
 void igdeCamera::WorldChanged(){
@@ -428,6 +876,10 @@ void igdeCamera::AdaptionChanged(){
 
 void igdeCamera::pCleanUp(){
 	SetEngineWorld(nullptr);
+	
+	if(pMetaContext){
+		pMetaContext->Dispose();
+	}
 }
 
 void igdeCamera::pUpdateCameraPosition(){
@@ -436,6 +888,6 @@ void igdeCamera::pUpdateCameraPosition(){
 }
 
 void igdeCamera::pUpdateViewMatrix(){
-	pViewMatrix = decDMatrix::CreateTranslation(0.0, 0.0, -pDistance)
-		* decDMatrix::CreateRT( pOrientation * DEG2RAD, pPosition );
+	pViewMatrix = decDMatrix::CreateTranslation(0.0, 0.0, -(double)pMPDistance)
+		* decDMatrix::CreateWorld(pMPPosition, pMPRotation);
 }

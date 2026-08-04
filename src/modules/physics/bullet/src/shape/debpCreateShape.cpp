@@ -22,14 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "debpCreateShape.h"
 #include "debpShapeSphere.h"
 #include "debpShapeBox.h"
 #include "debpShapeCylinder.h"
 #include "debpShapeCapsule.h"
+#include "debpShapeHull.h"
 
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/shape/decShapeSphere.h>
@@ -84,14 +82,16 @@ void debpCreateShape::VisitShapeBox(decShapeBox &box){
 
 #include "debpShapeHackBox.h"
 void debpCreateShape::VisitShapeCylinder(decShapeCylinder &cylinder){
+#if 0
 	// hack required because of debpCollisionWorld::contactTest with USE_BULLET_COLLISION disabled
 	printf("[TEMPORARY HACK] debpCreateShape::VisitShapeCylinder\n");
 	const float radius = cylinder.GetTopRadius() / 1.414213f;
 	pShape = debpShapeHackBox::Ref::New(decShapeBox::Ref::New(
 		decVector(radius, cylinder.GetHalfHeight(), radius),
 		cylinder.GetPosition(), cylinder.GetOrientation()));
-	
-	//pShape = debpShapeCylinder::Ref::New(&cylinder);
+#else
+	pShape = debpShapeCylinder::Ref::New(&cylinder);
+#endif
 }
 
 void debpCreateShape::VisitShapeCapsule(decShapeCapsule &capsule){
@@ -99,6 +99,5 @@ void debpCreateShape::VisitShapeCapsule(decShapeCapsule &capsule){
 }
 
 void debpCreateShape::VisitShapeHull(decShapeHull &hull){
-	// not supported
-	VisitShape(hull);
+	pShape = debpShapeHull::Ref::New(&hull);
 }

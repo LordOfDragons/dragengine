@@ -41,7 +41,9 @@
 
 /**
  * \brief Ordered element set template class.
- * Elements can be included only once in the set.
+ * 
+ * Elements can be included only once in the set. Sets are equal if they contain the same
+ * elements in the same order.
  */
 template<typename T, typename TP = T>
 class decTOrderedSet{
@@ -758,7 +760,7 @@ public:
 		}
 		
 		for(p=0; p<pCount; p++){
-			if(!set.Has(pElements[p])){
+			if(pElements[p] != set.pElements[p]){
 				return false;
 			}
 		}
@@ -2053,6 +2055,43 @@ public:
 		int i;
 		for(i=0; i<set.pCount; i++){
 			nset.Add(set.pElements[i]);
+		}
+		
+		return nset;
+	}
+	
+	/** \brief New set containing all elements of this set followed by another element if absent. */
+	decTOrderedSet<T,TP> operator+(const T &element) const{
+		decTOrderedSet<T,TP> nset(pCount + 1);
+		std::copy_n(pElements, pCount, nset.pElements);
+		nset.pCount = pCount;
+		
+		nset.Add(element);
+		
+		return nset;
+	}
+	
+	/** \brief New set containing all elements of this set except elements present in another set. */
+	decTOrderedSet<T,TP> operator-(const decTOrderedSet<T,TP> &set) const{
+		decTOrderedSet<T,TP> nset(pCount);
+		int i;
+		for(i=0; i<pCount; i++){
+			if(!set.Has(pElements[i])){
+				nset.Add(pElements[i]);
+			}
+		}
+		
+		return nset;
+	}
+	
+	/** \brief New set containing all elements of this set except a specific element. */
+	decTOrderedSet<T,TP> operator-(const T &element) const{
+		decTOrderedSet<T,TP> nset(pCount);
+		int i;
+		for(i=0; i<pCount; i++){
+			if(pElements[i] != element){
+				nset.Add(pElements[i]);
+			}
 		}
 		
 		return nset;

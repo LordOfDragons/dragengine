@@ -262,7 +262,6 @@ public:
 	typedef deTObjectReference<cEditWorldProperties> Ref;
 	cEditWorldProperties(gdeWPGameDefinition &panel) :
 	gdeWPPropertyList(panel.GetEnvironment()), pPanel(panel){
-		SetClipboard(&panel.GetWindowProperties().GetWindowMain().GetClipboard());
 	}
 	
 	igdeUndo::Ref UndoAdd(gdeProperty *property) override{
@@ -351,7 +350,6 @@ public:
 	typedef deTObjectReference<cEditDecalProperties> Ref;
 	cEditDecalProperties(gdeWPGameDefinition &panel) :
 	gdeWPPropertyList(panel.GetEnvironment()), pPanel(panel){
-		SetClipboard(&panel.GetWindowProperties().GetWindowMain().GetClipboard());
 	}
 	
 	igdeUndo::Ref UndoAdd(gdeProperty *property) override{

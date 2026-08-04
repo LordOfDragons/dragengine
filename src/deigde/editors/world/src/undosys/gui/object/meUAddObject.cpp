@@ -58,7 +58,7 @@ meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const cha
 	
 	SetShortInfo("@World.UAddObject.AddObject");
 	SetLongInfo(decString::Formatted(
-		world->GetEnvironment()->GetTranslationManager().Translate("World.UAddObject.PositionClass").ToUTF8(),
+		world->GetEnvironment().GetTranslationManager().Translate("World.UAddObject.PositionClass").ToUTF8(),
 		position.x, position.y, position.z, classname));
 	
 	pWorld = nullptr;
@@ -66,7 +66,7 @@ meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const cha
 	
 	try{
 		pWorld = world;
-		pObject = meObject::Ref::New(world->GetEnvironment());
+		pObject = meObject::Ref::New(&world->GetEnvironment());
 		pObject->SetPosition(position);
 		pObject->SetSize(decVector(0.5f, 0.5f, 0.5f));
 		pObject->SetClassName(classname);

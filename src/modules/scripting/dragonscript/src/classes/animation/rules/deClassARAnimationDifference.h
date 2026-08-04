@@ -115,6 +115,7 @@ private:
 	DEF_NATFUNC(nfSetEnableOrientation);
 	DEF_NATFUNC(nfSetEnableSize);
 	DEF_NATFUNC(nfSetEnableVertexPositionSet);
+	DEF_NATFUNC(nfSetUseComponentSpace);
 #undef DEF_NATFUNC
 };
 

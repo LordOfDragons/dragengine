@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Copy Color Downsample</name>
+	<stage>fragment</stage>
+	<source>copycolor_downsample.frag.glsl</source>
+	
+	<output name='outColor' location='0'/>
+	
+	<!-- <define>DECODE_IN_DEPTH</define> -->
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
+</shaderSource>

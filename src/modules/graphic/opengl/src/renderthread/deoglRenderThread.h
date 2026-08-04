@@ -29,6 +29,7 @@
 #include "../deoglBasics.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../configuration/deoglConfigurationSets.h"
 #include "../debug/deoglDebugInformation.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../pipeline/deoglPipelineManager.h"
@@ -48,7 +49,6 @@
 
 class deGraphicOpenGl;
 class deoglCapabilities;
-class deoglConfiguration;
 class deoglDeferredRendering;
 class deoglDelayedOperations;
 class deoglEnvMapSlotManager;
@@ -115,6 +115,7 @@ private:
 	decDMatrix pVRDebugPanelMatrix;
 	
 	deoglConfiguration pConfiguration;
+	deoglConfigurationSets pConfigurationSets;
 	deoglRTLeakTracker pLeakTracker;
 	deoglMemoryManager pMemoryManager;
 	decTObjectOrderedSet<deoglRRenderWindow> pRRenderWindowList;
@@ -271,6 +272,9 @@ public:
 	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
+	
+	/** Configuration sets. */
+	inline const deoglConfigurationSets &GetConfigurationSets() const{ return pConfigurationSets; }
 	
 	/** Render render window list. */
 	inline decTObjectOrderedSet<deoglRRenderWindow> &GetRRenderWindowList(){ return pRRenderWindowList; }

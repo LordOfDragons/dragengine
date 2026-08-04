@@ -173,15 +173,13 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	#define pSSRPowEdge (pSSRParams1.z)
 	#define pSSRPowRayLen (pSSRParams1.w)
 	
-	vec4 pSSRParams2; // clipReflDirNearDist, roughnessTapCountScale, minMaxTCFactor(xy)
+	vec4 pSSRParams2; // clipReflDirNearDist, roughnessTapCountScale, roughnessToPixelRadius, n/a
 	#define pSSRClipReflDirNearDist (pSSRParams2.x)
 	#define pSSRRoughnessTapCountScale (pSSRParams2.y)
-	#define pSSRMinMaxTCScale (pSSRParams2.zw)
+	#define pSSRRoughnessToPixelRadius (pSSRParams2.z)
 	
-	ivec4 pSSRParams3; // stepCount, subStepCount, maxRayLength, roughnessMaxTaps
+	ivec4 pSSRParams3; // stepCount, n/a, n/a, roughnessMaxTaps
 	#define pSSRStepCount (pSSRParams3.x)
-	#define pSSRSubStepCount (pSSRParams3.y)
-	#define pSSRMaxRayLength (pSSRParams3.z)
 	#define pSSRRoughnessMapTaps (pSSRParams3.w)
 	
 	
@@ -189,6 +187,17 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	// lighting
 	vec2 pAOSelfShadow; // minShadowIntensity, smoothAngle
 	vec2 pLumFragCoordScale;
+	
+	// screen space shadow casting
+	vec4 pSSShadowParams1; // maxLength.base, maxLength.scalePerMeter, thickness.base, thickness.scalePerMeter
+	#define pSSShadowMaxLengthBase (pSSShadowParams1.x)
+	#define pSSShadowMaxLengthScalePerMeter (pSSShadowParams1.y)
+	#define pSSShadowThicknessBase (pSSShadowParams1.z)
+	#define pSSShadowThicknessScalePerMeter (pSSShadowParams1.w)
+	
+	vec4 pSSShadowParams2; // stepCount, borderBlendRange, n/a, n/a
+	#define pSSShadowStepCount (pSSShadowParams2.x)
+	#define pSSShadowBorderBlendRange (pSSShadowParams2.y)
 	
 	// global illumination rays
 	mat4x3 pGIRayMatrix; // transform from GI space to camera space
@@ -250,18 +259,18 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 };
 
 // helper functions
-vec2 fsquadScreenCoordToTexCoord( in vec2 screenCoord ){
+vec2 fsquadScreenCoordToTexCoord(in vec2 screenCoord){
 	return screenCoord * pFSScreenCoordToTexCoord.xy + pFSScreenCoordToTexCoord.zw;
 }
 
-vec2 fsquadTexCoordToScreenCoord( in vec2 texCoord ){
+vec2 fsquadTexCoordToScreenCoord(in vec2 texCoord){
 	return texCoord * pFSTexCoordToScreenCoord.xy + pFSTexCoordToScreenCoord.zw;
 }
 
-vec2 fragCoordToTexCoord( in ivec2 fragCoord ){
-	return vec2( fragCoord ) * pFSFragCoordToTexCoord.xy + pFSFragCoordToTexCoord.zw;
+vec2 fragCoordToTexCoord(in ivec2 fragCoord){
+	return vec2(fragCoord) * pFSFragCoordToTexCoord.xy + pFSFragCoordToTexCoord.zw;
 }
 
-vec2 fragCoordToScreenCoord( in ivec2 fragCoord ){
-	return vec2( fragCoord ) * pFSFragCoordToScreenCoord.xy + pFSFragCoordToScreenCoord.zw;
+vec2 fragCoordToScreenCoord(in ivec2 fragCoord){
+	return vec2(fragCoord) * pFSFragCoordToScreenCoord.xy + pFSFragCoordToScreenCoord.zw;
 }

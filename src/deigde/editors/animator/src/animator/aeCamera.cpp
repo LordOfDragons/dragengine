@@ -22,13 +22,10 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "aeCamera.h"
 #include "aeAnimator.h"
 #include "locomotion/aeAnimatorLocomotion.h"
+#include "../gui/aeWindowMain.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -44,14 +41,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeCamera::aeCamera(aeAnimator *animator, deEngine *engine) : igdeCamera(engine){
-	if(!animator) DETHROW(deeInvalidParam);
-	
-	pAnimator = animator;
+aeCamera::aeCamera(aeAnimator &animator, deEngine *engine) :
+igdeCamera(animator.GetEnvironment(), engine),
+pAnimator(animator),
+mpAttachToBone(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachToBone, animator.GetMetaContextView()),
+mpBone(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachBone, animator.GetMetaContextView()),
+mpRelativePosition(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachRelativePosition, animator.GetMetaContextView()),
+mpRelativeRotation(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachRelativeRotation, animator.GetMetaContextView())
+{
 	
 	pFreeDistance = 0.0f;
 	pDirty = false;
-	pAttachToBone = false;
+	
+	mpAttachToBone.onValueChanged = [this](){
+		pDirty = true;
+	};
+	
+	mpBone.onValueChanged = [this](){
+		pDirty = true;
+	};
+	
+	mpRelativePosition.onValueChanged = [this](){
+		pDirty = true;
+	};
+	mpRelativeRotation.onValueChanged = mpRelativePosition.onValueChanged;
 }
 
 aeCamera::~aeCamera(){
@@ -62,23 +75,10 @@ aeCamera::~aeCamera(){
 // Management
 ///////////////
 
-void aeCamera::SetBone(const char *bone){
-	if(pBone == bone){
-		return;
-	}
-	
-	pBone = bone;
-	pDirty = true;
-	
-	pAnimator->NotifyCameraChanged();
-}
-
 void aeCamera::SetFreePosition(const decDVector &freePosition){
 	if(!freePosition.IsEqualTo(pFreePosition)){
 		pFreePosition = freePosition;
 		pDirty = true;
-		
-		pAnimator->NotifyCameraChanged();
 	}
 }
 
@@ -86,8 +86,6 @@ void aeCamera::SetFreeOrientation(const decVector &freeOrientation){
 	if(!freeOrientation.IsEqualTo(pFreeOrientation)){
 		pFreeOrientation = freeOrientation;
 		pDirty = true;
-		
-		pAnimator->NotifyCameraChanged();
 	}
 }
 
@@ -95,53 +93,24 @@ void aeCamera::SetFreeDistance(float freeDistance){
 	if(fabsf(freeDistance - pFreeDistance) > 1e-5f){
 		pFreeDistance = freeDistance;
 		pDirty = true;
-		
-		pAnimator->NotifyCameraChanged();
-	}
-}
-
-void aeCamera::SetRelativePosition(const decVector &relativePosition){
-	if(!relativePosition.IsEqualTo(pRelPosition)){
-		pRelPosition = relativePosition;
-		pDirty = true;
-		
-		pAnimator->NotifyCameraChanged();
-	}
-}
-
-void aeCamera::SetRelativeOrientation(const decVector &relativeOrientation){
-	if(!relativeOrientation.IsEqualTo(pRelOrientation)){
-		pRelOrientation = relativeOrientation;
-		pDirty = true;
-		
-		pAnimator->NotifyCameraChanged();
-	}
-}
-
-void aeCamera::SetAttachToBone(bool attachToBone){
-	if(pAttachToBone != attachToBone){
-		pAttachToBone = attachToBone;
-		pDirty = true;
-		
-		pAnimator->NotifyCameraChanged();
 	}
 }
 
 void aeCamera::Update(){
-	aeAnimatorLocomotion &locomotion = pAnimator->GetLocomotion();
+	aeAnimatorLocomotion &locomotion = pAnimator.GetLocomotion();
 	
-	if(pDirty || pAttachToBone || locomotion.GetEnabled()){
-		if(pAttachToBone){
-			decMatrix matrix(decMatrix::CreateRT(pRelOrientation * DEG2RAD, pRelPosition));
-			deComponent *engComponent = pAnimator->GetEngineComponent();
+	if(pDirty || mpAttachToBone || locomotion.GetEnabled()){
+		if(mpAttachToBone){
+			decMatrix matrix(decMatrix::CreateWorld(mpRelativePosition, mpRelativeRotation));
+			deComponent *engComponent = pAnimator.GetEngineComponent();
 			
 			if(engComponent){
 				decMatrix compMat;
 				
 				engComponent->PrepareBones();
 				
-				if(!pBone.IsEmpty() && engComponent->GetRig()){
-					const int index = engComponent->GetRig()->IndexOfBoneNamed(pBone);
+				if(!mpBone->IsEmpty() && engComponent->GetRig()){
+					const int index = engComponent->GetRig()->IndexOfBoneNamed(mpBone);
 					if(index != -1){
 						compMat = engComponent->GetBoneAt(index).GetMatrix();
 					}
@@ -178,8 +147,6 @@ void aeCamera::Update(){
 			
 			pDirty = false;
 		}
-		
-		pAnimator->NotifyCameraViewChanged();
 	}
 }
 
@@ -189,12 +156,12 @@ void aeCamera::Reset(){
 	igdeCamera::Reset();
 	
 	pFreeDistance = 5.0f;
-	pBone.Empty();
+	mpBone = "";
 	pFreePosition.Set(0.0, 1.5, 0.0);
 	pFreeOrientation.Set(0.0f, 180.0f, 0.0f);
-	pRelPosition.Set(0.0f, 0.0f, 0.0f);
-	pRelOrientation.Set(0.0f, 0.0f, 0.0f);
-	pAttachToBone = false;
+	mpRelativePosition = decVector();
+	mpRelativeRotation = decQuaternion();
+	mpAttachToBone = false;
 	
 	SetExposure(1.0f); // 2.0f
 	SetLowestIntensity(20.0f);
@@ -206,18 +173,4 @@ void aeCamera::Reset(){
 //	SetHighestIntensity( 2500.0f );
 	
 	pDirty = true;
-	
-	pAnimator->NotifyCameraChanged();
-}
-
-void aeCamera::ParameterChanged(){
-	igdeCamera::ParameterChanged();
-	
-	pAnimator->NotifyCameraChanged();
-}
-
-void aeCamera::AdaptionChanged(){
-	igdeCamera::AdaptionChanged();
-	
-	pAnimator->NotifyCameraChanged();
 }

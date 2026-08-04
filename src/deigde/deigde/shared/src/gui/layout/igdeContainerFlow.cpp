@@ -40,24 +40,30 @@
 ////////////////////////////
 
 igdeContainerFlow::igdeContainerFlow(igdeEnvironment &environment, eAxis axis,
-	eStretching stretching, int spacing) :
+	eStretching stretching, int spacing, bool autoScroll) :
 igdeContainer(environment),
 pAxis(axis),
 pStretching(stretching),
-pSpacing(spacing)
+pSpacing(spacing),
+pAutoScroll(autoScroll)
 {
-	if(spacing < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(spacing >= 0)
 }
 
-igdeContainerFlow::~igdeContainerFlow(){
-}
+igdeContainerFlow::~igdeContainerFlow() = default;
 
 
 
 // Management
 ///////////////
+
+void igdeContainerFlow::AddChild(igdeWidget *child){
+	igdeContainer::AddChild(child);
+	
+	if(GetNativeWidget()){
+		igdeNativeContainerFlow::ChildAdded(*this, GetNativeWidget());
+	}
+}
 
 void igdeContainerFlow::RemoveChild(igdeWidget *child){
 	igdeContainer::RemoveChild(child);

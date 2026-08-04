@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUScaleObject::meUScaleObject(meWorld *world, const meObject::List &objects) :
-meBaseUndoScale(*world->GetEnvironment())
+meBaseUndoScale(world->GetEnvironment())
 {
 	DEASSERT_NOTNULL(world)
 	

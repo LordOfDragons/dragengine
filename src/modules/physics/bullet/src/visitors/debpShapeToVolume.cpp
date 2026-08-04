@@ -30,6 +30,7 @@
 #include "../coldet/collision/debpDCollisionBox.h"
 #include "../coldet/collision/debpDCollisionCylinder.h"
 #include "../coldet/collision/debpDCollisionCapsule.h"
+#include "../coldet/collision/debpDCollisionHull.h"
 
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/shape/decShapeSphere.h>
@@ -46,29 +47,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpShapeToVolume::debpShapeToVolume(){
-	pSphere = nullptr;
-	pBox = nullptr;
-	pCylinder = nullptr;
-	pCapsule = nullptr;
-	pVolume = nullptr;
-	
-	try{
-		pSphere = new debpDCollisionSphere;
-		pBox = new debpDCollisionBox;
-		pCylinder = new debpDCollisionCylinder;
-		pCapsule = new debpDCollisionCapsule;
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+debpShapeToVolume::debpShapeToVolume() :
+pSphere(deTUniqueReference<debpDCollisionSphere>::New()),
+pBox(deTUniqueReference<debpDCollisionBox>::New()),
+pCylinder(deTUniqueReference<debpDCollisionCylinder>::New()),
+pCapsule(deTUniqueReference<debpDCollisionCapsule>::New()),
+pHull(deTUniqueReference<debpDCollisionHull>::New()),
+pVolume(nullptr){
 }
 
-debpShapeToVolume::~debpShapeToVolume(){
-	pCleanUp();
-}
-
+debpShapeToVolume::~debpShapeToVolume() = default;
 
 
 // Management
@@ -79,20 +67,14 @@ void debpShapeToVolume::SetMatrix(const decDMatrix &matrix){
 }
 
 
-
 // Convenience Function
 /////////////////////////
 
 debpDCollisionVolume *debpShapeToVolume::GetVolumeFor(decShape *shape){
-	if(!shape){
-		DETHROW(deeInvalidParam);
-	}
-	
+	DEASSERT_NOTNULL(shape)
 	shape->Visit(*this);
-	
 	return pVolume;
 }
-
 
 
 // Visiting
@@ -141,25 +123,14 @@ void debpShapeToVolume::VisitShapeCapsule(decShapeCapsule &capsule){
 }
 
 void debpShapeToVolume::VisitShapeHull(decShapeHull &hull) {
-	VisitShape(hull);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void debpShapeToVolume::pCleanUp(){
-	if(pCapsule){
-		delete pCapsule;
-	}
-	if(pCylinder){
-		delete pCylinder;
-	}
-	if(pBox){
-		delete pBox;
-	}
-	if(pSphere){
-		delete pSphere;
-	}
+	pHull->SetPosition(pMatrix * hull.GetPosition());
+	pHull->SetOrientation((decDMatrix::CreateFromQuaternion(hull.GetOrientation()) * pMatrix).ToQuaternion());
+	
+	debpDCollisionHull::PointList points(hull.GetPoints().GetCount());
+	hull.GetPoints().Visit([&points](const decVector &point){
+		points.Add(decDVector(point));
+	});
+	pHull->SetPoints(points);
+	
+	pVolume = pHull;
 }

@@ -25,6 +25,7 @@
 #ifndef _RERIG_H_
 #define _RERIG_H_
 
+#include "reCamera.h"
 #include "reRigTexture.h"
 #include "bone/reRigBone.h"
 #include "push/reRigPush.h"
@@ -34,6 +35,7 @@
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
@@ -48,8 +50,6 @@
 class reRigConstraintDof;
 class igdeGameDefinition;
 class igdeEnvironment;
-class igdeWSky;
-class reCamera;
 class reSelectionBones;
 class reSelectionPushes;
 class reSelectionShapes;
@@ -130,7 +130,7 @@ private:
 	
 	reRigTexture::List pComponentTextures;
 	
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	igdeWObject::Ref pEnvObject;
 	
 	deRig::Ref pEngRig;
@@ -149,7 +149,7 @@ private:
 	bool pUseRestPose;
 	bool pPlaybackMove;
 	
-	reCamera *pCamera;
+	reCamera::Ref pCamera;
 	
 	reRigBone::List pBones;
 	reRigBone::Ref pRootBone;
@@ -363,7 +363,7 @@ public:
 	/** Retrieves the engine rig. */
 	inline const deRig::Ref &GetEngineRig() const{ return pEngRig; }
 	/** Retrieves the camera. */
-	inline reCamera *GetCamera() const{ return pCamera; }
+	inline const reCamera::Ref &GetCamera() const{ return pCamera; }
 	/** Updates the world. */
 	void UpdateWorld(float elapsed);
 	
@@ -386,7 +386,7 @@ public:
 	void InitDelegates();
 	
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline const igdeWSky::Ref &GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	/*@}*/

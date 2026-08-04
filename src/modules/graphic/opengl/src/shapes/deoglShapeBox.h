@@ -47,7 +47,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Calculate matrix for box parameters. */
-	void CalcMatrix(decMatrix &matrix, const decVector &position, const decQuaternion &orientation, const decVector  &halfExtends);
+	void CalcMatrix(decMatrix &matrix1, decMatrix &matrix2, const decVector &position,
+		const decQuaternion &orientation, const decVector  &halfExtends, const decVector2 &tapering);
 	
 	/** Add lines data. */
 	void AddVBOLines(sVBOData *data) override;

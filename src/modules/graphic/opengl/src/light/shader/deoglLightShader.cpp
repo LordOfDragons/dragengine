@@ -482,7 +482,7 @@ void deoglLightShader::GenerateDefines(deoglShaderDefines &defines){
 		break;
 	}
 	
-	if(pConfig.GetTextureNoise()){
+	if(pConfig.GetNoiseTap()){
 		defines.SetDefines("NOISE_TAP");
 	}
 	

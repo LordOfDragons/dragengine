@@ -55,7 +55,7 @@ pAlign(false)
 	
 	SetShortInfo("@World.UObjectDropToGround.DropObjectsToGround");
 	
-	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	igdeTranslationManager &tm = world->GetEnvironment().GetTranslationManager();
 	
 	decString text;
 	if(objects.GetCount() > 1){

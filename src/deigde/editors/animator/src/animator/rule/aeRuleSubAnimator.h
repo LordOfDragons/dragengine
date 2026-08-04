@@ -28,12 +28,15 @@
 #include "aeRule.h"
 #include "../controller/aeController.h"
 
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyPath.h>
+
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/deAnimator.h>
 
 class aeLoadSaveSystem;
 class deAnimatorRuleSubAnimator;
-
 
 
 /**
@@ -43,70 +46,77 @@ class aeRuleSubAnimator : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleSubAnimator>;
 	
-	using ConnectionList = decTObjectList<aeController>;
 	
+	class Connection : public deObject{
+	public:
+		using Ref = deTObjectReference<Connection>;
+		
+		using MetaContext = igdeMetaContextType<Connection>;
+		static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, Connection *connection);
+		
+		template<typename T>
+		using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+		
+		aeWindowMain &windowMain;
+		MetaContext::Ref metaContext;
+		igdeMetaPropertyStringStorage::Storage mpTarget;
+		igdeMetaPropertyObjectStorage<aeController>::Storage mpController;
+		aeRuleSubAnimator *parentRule = nullptr;
+		int targetIndex = -1;
+		
+		explicit Connection(aeWindowMain &windowMain);
+		Connection(const Connection &copy);
+		
+		igdeEnvironment &GetEnvironment() const;
+		igdeUndoSystem *GetUndoSystem() const;
+		
+	protected:
+		~Connection() override;
+	};
+	
+	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleSubAnimator, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleSubAnimator *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
 private:
-	decString pPathSubAnimator;
 	deAnimator::Ref pSubAnimator;
 	
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
-	
-	ConnectionList pConnections;
+public:
+	igdeMetaPropertyPathStorage::Storage mpPathSubAnimator;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyListStorage<Connection>::Storage mpConnections;
+	igdeMetaPropertyContextStorage::Storage mpConnection;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleSubAnimator() = delete;
+	
 	/** Create a new sub animator rule. */
-	explicit aeRuleSubAnimator(const char *name);
+	aeRuleSubAnimator(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a sub animator rule. */
 	aeRuleSubAnimator(const aeRuleSubAnimator &copy);
 	/** Clean up the sub animator rule. */
 protected:
 	~aeRuleSubAnimator() override;
+private:
+	aeRuleSubAnimator(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieve the path to the sub animator. */
-	inline const decString &GetPathSubAnimator() const{ return pPathSubAnimator; }
-	/** Set the path to the sub animator. */
-	void SetPathSubAnimator(const char *path);
 	/** Retrieve the sub animator or nullptr if not existing. */
 	inline const deAnimator::Ref &GetSubAnimator() const{ return pSubAnimator; }
+	
 	/** Load the sub animator using the stored path. */
 	void LoadSubAnimator();
-	
-	/** Connections. */
-	inline const ConnectionList &GetConnections() const{ return pConnections; }
-	
-	/** Set controller for target controller or \em nullptr. */
-	void SetControllerAt(int position, aeController *controller);
-	
-	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
-	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
-	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool enabled);
-	
-	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
-	
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
-	
-	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
@@ -117,21 +127,20 @@ public:
 	/** Create a copy of this rule. */
 	aeRule::Ref CreateCopy() const override;
 	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
-	
 	/** Parent animator changed. */
 	void OnParentAnimatorChanged() override;
+	
+	/** Update engine connections. */
+	void UpdateEngineConnections() const;
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another sub animator rule to this sub animator rule. */
-	virtual aeRuleSubAnimator &operator=(const aeRuleSubAnimator &copy);
+	aeRuleSubAnimator &operator=(const aeRuleSubAnimator &copy) = delete;
 	/*@}*/
 	
 private:
-	void pUpdateConnections(deAnimatorRuleSubAnimator &rule) const;
+	void pUpdateEngineConnections(deAnimatorRuleSubAnimator &rule) const;
 };
 
 #endif

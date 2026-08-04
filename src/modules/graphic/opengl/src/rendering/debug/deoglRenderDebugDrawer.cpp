@@ -40,6 +40,7 @@
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTLogger.h"
 #include "../../pipeline/deoglPipelineManager.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
@@ -256,10 +257,8 @@ void deoglRenderDebugDrawer::pCleanUp(){
 
 void deoglRenderDebugDrawer::pRenderDDSShapes(const deoglRenderPlan &plan,
 const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
-	const int shapeCount = debugDrawer.GetShapes().GetCount();
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglVolumeShape visitor(renderThread);
-	int i, j;
 	
 	const deoglPipeline &pipeline = debugDrawer.GetXRay()
 		? (plan.GetRenderStereo() ? *pPipelineShapeXRayStereo : *pPipelineShapeXRay)
@@ -271,15 +270,11 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	for(i=0; i<shapeCount; i++){
-		const deoglDebugDrawerShape &ddshape = debugDrawer.GetShapeAt(i);
-		
+	debugDrawer.GetShapes().Visit([&](const deoglDebugDrawerShape &ddshape){
 		// render debug drawer volume
 		const decShape::List &shapeList = ddshape.GetShapeList();
-		const int shapeShapeCount = shapeList.GetCount();
-		
-		if(shapeShapeCount == 0){
-			continue;
+		if(shapeList.IsEmpty()){
+			return;
 		}
 		
 		// determine render color
@@ -296,35 +291,56 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
 		const bool lineVisible = (edgeColor.a > 0.001f);
 		const bool fillVisible = (fillColor.a > 0.001f);
 		if(!lineVisible && !fillVisible){
-			continue;
+			return;
 		}
 		
 		// determine the matrix
 		const decDMatrix matrixModelShape(decDMatrix(ddshape.GetMatrix()) * matrixModel);
 		
-		// render shapes if existing
-		for(j=0; j<shapeShapeCount; j++){
-			shapeList.GetAt(j)->Visit(visitor);
+		// render shapes supported by shapes manager. this is the majority of cases
+		shapeList.Visit([&](decShape &shape){
+			shape.Visit(visitor);
+			if(!visitor.GetShape()){
+				return;
+			}
 			
-			// set matrix
 			shader.SetParameterDMatrix4x3(sprMatrixModel, decDMatrix(visitor.GetMatrix1()) * matrixModelShape);
 			shader.SetParameterDMatrix4x3(sprMatrixModel2, decDMatrix(visitor.GetMatrix2()) * matrixModelShape);
 			
-			if(visitor.GetShape() && (fillVisible || lineVisible)){
-				visitor.GetShape()->ActivateVAO();
-				
-				if(fillVisible){
-					shader.SetParameterColor4(sprColor, fillColor);
-					visitor.GetShape()->RenderFaces(plan);
-				}
-				
-				if(lineVisible){
-					shader.SetParameterColor4(sprColor, edgeColor);
-					visitor.GetShape()->RenderLines(plan);
-				}
+			visitor.GetShape()->ActivateVAO();
+			
+			if(fillVisible){
+				shader.SetParameterColor4(sprColor, fillColor);
+				visitor.GetShape()->RenderFaces(plan);
+			}
+			
+			if(lineVisible){
+				shader.SetParameterColor4(sprColor, edgeColor);
+				visitor.GetShape()->RenderLines(plan);
+			}
+		});
+		
+		// render hull shapes. this is done separately since they can not be shared
+		if(ddshape.GetHullShape() && (ddshape.GetHullShape()->GetPointCountFaces() > 0
+		|| ddshape.GetHullShape()->GetPointCountLines() > 0)){
+			const auto &hullShape = ddshape.GetHullShape();
+			
+			shader.SetParameterDMatrix4x3(sprMatrixModel, matrixModelShape);
+			shader.SetParameterDMatrix4x3(sprMatrixModel2, matrixModelShape);
+			
+			hullShape->ActivateVAO();
+			
+			if(fillVisible && hullShape->GetPointCountFaces() > 0){
+				shader.SetParameterColor4(sprColor, fillColor);
+				hullShape->RenderFaces(plan);
+			}
+			
+			if(lineVisible && hullShape->GetPointCountLines() > 0){
+				shader.SetParameterColor4(sprColor, edgeColor);
+				hullShape->RenderLines(plan);
 			}
 		}
-	}
+	});
 }
 
 void deoglRenderDebugDrawer::pRenderDDSFaces(const deoglRenderPlan &plan,

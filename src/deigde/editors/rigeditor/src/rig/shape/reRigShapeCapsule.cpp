@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "reRigShapeCapsule.h"
 #include "../reRig.h"
 #include "../bone/reRigBone.h"
@@ -43,20 +39,21 @@
 
 
 // Class reRigShapeCapsule
-////////////////////////
+////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-reRigShapeCapsule::reRigShapeCapsule(deEngine *engine) : reRigShape(engine, estCapsule){
-	pTopRadius = 0.5f;
-	pBottomRadius = 0.5f;
-	pHalfHeight = 0.5f;
+reRigShapeCapsule::reRigShapeCapsule(deEngine *engine) :
+reRigShape(engine, estCapsule),
+pTopRadius(0.5f),
+pBottomRadius(0.5f),
+pHalfHeight(0.5f),
+pTopAxisScaling(1.0f, 1.0f),
+pBottomAxisScaling(1.0f, 1.0f){
 }
 
-reRigShapeCapsule::~reRigShapeCapsule(){
-}
-
+reRigShapeCapsule::~reRigShapeCapsule() = default;
 
 
 // Management
@@ -83,13 +80,33 @@ void reRigShapeCapsule::SetBottomRadius(float bottomRadius){
 	}
 }
 
+void reRigShapeCapsule::SetTopAxisScaling(const decVector2 &axisScaling){
+	if(axisScaling.IsEqualTo(pTopAxisScaling)){
+		return;
+	}
+	
+	pTopAxisScaling = axisScaling;
+	NotifyShapeChanged();
+}
+
+void reRigShapeCapsule::SetBottomAxisScaling(const decVector2 &axisScaling){
+	if(axisScaling.IsEqualTo(pBottomAxisScaling)){
+		return;
+	}
+	
+	pBottomAxisScaling = axisScaling;
+	NotifyShapeChanged();
+}
+
 reRigShape::Ref reRigShapeCapsule::Duplicate() const{
 	const reRigShapeCapsule::Ref shape(reRigShapeCapsule::Ref::New(GetEngine()));
 	shape->SetPosition(GetPosition());
 	shape->SetOrientation(GetOrientation());
-	shape->SetHalfHeight(GetHalfHeight());
-	shape->SetTopRadius(GetTopRadius());
-	shape->SetBottomRadius(GetBottomRadius());
+	shape->SetHalfHeight(pHalfHeight);
+	shape->SetTopRadius(pTopRadius);
+	shape->SetBottomRadius(pBottomRadius);
+	shape->SetTopAxisScaling(pTopAxisScaling);
+	shape->SetBottomAxisScaling(pBottomAxisScaling);
 	return shape;
 }
 
@@ -102,5 +119,6 @@ void reRigShapeCapsule::Scale(float scale){
 
 decShape::Ref reRigShapeCapsule::CreateShape(){
 	return decShapeCapsule::Ref::New(pHalfHeight, pTopRadius, pBottomRadius,
-		GetPosition(), decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
+		pTopAxisScaling, pBottomAxisScaling, GetPosition(),
+		decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
 }

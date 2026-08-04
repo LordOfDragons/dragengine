@@ -42,7 +42,6 @@ from .de_tool_removeemptyvertexgroups import \
     OBJECT_OT_ToolRemoveEmptyVertexGroups
 
 from .de_tool_eclassproperty import OBJECT_OT_DEToolEClassProperty
-from .de_tool_gbuffernormgen import OBJECT_OT_ToolGBufferNormGen
 from .de_tool_loderrorcalc import OBJECT_OT_DEToolLODInfo
 from .de_tool_mirroranim import OBJECT_OT_DEToolMirrorAnimation
 from .de_tool_projectuv import TypeDETProjectUVTemplate, OBJECT_OT_ToolProjectUV
@@ -331,7 +330,7 @@ class VIEW3D_PT_DragengineMeshGenerators(bpy.types.Panel):
 
         layout.row(align=True)
         col = layout.column(align=True)
-        layOpRow(col, OBJECT_OT_ToolGBufferNormGen)
+        # layOpRow(col, OBJECT_OT_ToolGBufferNormGen)
 
 
 class VIEW3D_PT_DragengineMeshLodTesting(bpy.types.Panel):
@@ -784,9 +783,19 @@ bpy.types.Object.dragengine_navspacetype = bpy.props.EnumProperty(
         ('VOLUME', "Volume", "Volume type navigation space")),
     default = 'NONE')
 
-bpy.types.Object.dragengine_hasnoseams = bpy.props.BoolProperty(name="No Seams",
-    description="Object has no UV-Seams. If not set exporters stop if UV-Seams are missing",
-    default=False)
+def baseUVMapItems(self, _context):
+    items = []
+    if self.type == 'MESH' and self.data:
+        mesh = self.data
+        for l in mesh.uv_layers:
+            items.append((l.name, l.name, f"Use UV map '{l.name}' as base texture coordinate set"))
+    return items
+
+bpy.types.Object.dragengine_baseuvmap = bpy.props.EnumProperty(
+    name="Base UV Map",
+    description="UV map to use as base texture coordinate set for export if more than one UV map exists. Other UV maps will be additional sets.",
+    items=baseUVMapItems,
+    default=None)
 
 bpy.types.Object.dragengine_maxweights = bpy.props.IntProperty(
     name="Max Weights", description="Maximum number of weights per weight-set",
@@ -812,7 +821,7 @@ class OBJECT_PT_DragengineObject(bpy.types.Panel):
         row.prop(rd, "dragengine_scaling", expand=True)
         row.prop(rd, "dragengine_maxweights", expand=True)
         row = layout.row(align=True)
-        row.prop(rd, "dragengine_hasnoseams", expand=True)
+        row.prop(rd, "dragengine_baseuvmap", expand=False)
         #row.prop(rd, "dragengine_splitseam", expand=True)
         #row.prop(rd, "dragengine_tangentfromseam", expand=True)
         row = layout.row(align=True)

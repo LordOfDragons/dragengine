@@ -25,6 +25,16 @@
 #ifndef _IGDECAMERA_H_
 #define _IGDECAMERA_H_
 
+#include "../meta/igdeMetaContext.h"
+#include "../meta/property/igdeMetaPropertyBoolean.h"
+#include "../meta/property/igdeMetaPropertyFloat.h"
+#include "../meta/property/igdeMetaPropertyDVector.h"
+#include "../meta/property/igdeMetaPropertyVector.h"
+#include "../meta/property/igdeMetaPropertyString.h"
+#include "../meta/property/igdeMetaPropertyCurveBezier.h"
+#include "../meta/property/igdeMetaPropertyGroup.h"
+#include "../undo/igdeUndoSystem.h"
+
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/common/curve/decCurveBezier.h>
@@ -34,6 +44,7 @@
 class deCamera;
 class deEngine;
 class deWorld;
+class igdeEnvironment;
 
 
 
@@ -45,60 +56,374 @@ class deWorld;
  * as seen by this camera. The camera is managed in a lazy way. Hence
  * the engine is not create or updated until it is acquired by the user.
  */
-class DE_DLL_EXPORT igdeCamera{
+class DE_DLL_EXPORT igdeCamera : public deObject{
+public:
+	/** \brief Reference. */
+	using Ref = deTObjectReference<igdeCamera>;
+	
+	
+	/** \brief Meta context. */
+	using MetaContext = igdeMetaContextType<igdeCamera>;
+	static MetaContext::Ref CreateMetaContext(igdeCamera *camera);
+	
+	/** \brief Meta properties. */
+	class DE_DLL_EXPORT MetaProperties{
+	public:
+		template<typename T>
+		class MetaProperty : public igdeMetaPropertyMCT<T, MetaContext>{
+		public:
+			using igdeMetaPropertyMCT<T, MetaContext>::igdeMetaPropertyMCT;
+			
+			void AddContextMenuEntries(igdeMenuCascade& menu,
+			const igdeMetaContext::Ref& context, igdeWidget& owner) override{
+				this->Owner(context).AddContextMenuEntries(menu, owner);
+			}
+		};
+		
+		class DE_DLL_EXPORT Position : public MetaProperty<igdeMetaPropertyDVectorStorage>{
+		public:
+			Position();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Position() override;
+		};
+		
+		class DE_DLL_EXPORT Rotation : public MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
+		public:
+			Rotation();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Rotation() override;
+		};
+		
+		class DE_DLL_EXPORT Distance : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			Distance();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Distance() override;
+		};
+		
+		class DE_DLL_EXPORT Fov : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			Fov();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Fov() override;
+		};
+		
+		class DE_DLL_EXPORT FovRatio : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			FovRatio();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~FovRatio() override;
+		};
+		
+		class DE_DLL_EXPORT ImageDistance : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			ImageDistance();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~ImageDistance() override;
+		};
+		
+		class DE_DLL_EXPORT ViewDistance : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			ViewDistance();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~ViewDistance() override;
+		};
+		
+		class DE_DLL_EXPORT EnableHDRR : public MetaProperty<igdeMetaPropertyBooleanStorage>{
+		public:
+			EnableHDRR();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~EnableHDRR() override;
+		};
+		
+		class DE_DLL_EXPORT EnableGI : public MetaProperty<igdeMetaPropertyBooleanStorage>{
+		public:
+			EnableGI();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~EnableGI() override;
+		};
+		
+		class DE_DLL_EXPORT Exposure : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			Exposure();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Exposure() override;
+		};
+		
+		class DE_DLL_EXPORT LowestIntensity : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			LowestIntensity();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~LowestIntensity() override;
+		};
+		
+		class DE_DLL_EXPORT HighestIntensity : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			HighestIntensity();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~HighestIntensity() override;
+		};
+		
+		class DE_DLL_EXPORT AdaptionTime : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			AdaptionTime();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~AdaptionTime() override;
+		};
+		
+		class DE_DLL_EXPORT WhiteIntensity : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			WhiteIntensity();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~WhiteIntensity() override;
+		};
+		
+		class DE_DLL_EXPORT BloomIntensity : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			BloomIntensity();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~BloomIntensity() override;
+		};
+		
+		class DE_DLL_EXPORT BloomStrength : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			BloomStrength();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~BloomStrength() override;
+		};
+		
+		class DE_DLL_EXPORT BloomBlend : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			BloomBlend();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~BloomBlend() override;
+		};
+		
+		class DE_DLL_EXPORT BloomSize : public MetaProperty<igdeMetaPropertyFloatStorage>{
+		public:
+			BloomSize();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~BloomSize() override;
+		};
+		
+		class DE_DLL_EXPORT ToneMapCurve : public MetaProperty<igdeMetaPropertyCurveBezierStorage>{
+		public:
+			ToneMapCurve();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~ToneMapCurve() override;
+		};
+		
+	private:
+		MetaProperties();
+		
+	public:
+		deTObjectReference<Position> position;
+		deTObjectReference<Rotation> rotation;
+		deTObjectReference<Distance> distance;
+		deTObjectReference<EnableHDRR> enableHDRR;
+		deTObjectReference<EnableGI> enableGI;
+		
+		deTObjectReference<Fov> fov;
+		deTObjectReference<FovRatio> fovRatio;
+		deTObjectReference<ImageDistance> imageDistance;
+		deTObjectReference<ViewDistance> viewDistance;
+		deTObjectReference<igdeMetaPropertyGroup> groupInternal;
+		
+		deTObjectReference<Exposure> exposure;
+		deTObjectReference<LowestIntensity> lowestIntensity;
+		deTObjectReference<HighestIntensity> highestIntensity;
+		deTObjectReference<AdaptionTime> adaptionTime;
+		deTObjectReference<igdeMetaPropertyGroup> groupExposure;
+		
+		deTObjectReference<WhiteIntensity> whiteIntensity;
+		deTObjectReference<ToneMapCurve> toneMapCurve;
+		deTObjectReference<igdeMetaPropertyGroup> groupToneMap;
+		
+		deTObjectReference<BloomIntensity> bloomIntensity;
+		deTObjectReference<BloomStrength> bloomStrength;
+		deTObjectReference<BloomBlend> bloomBlend;
+		deTObjectReference<BloomSize> bloomSize;
+		deTObjectReference<igdeMetaPropertyGroup> groupBloom;
+		
+		const igdeMetaContext::PropertyList::Ref properties;
+		
+		static MetaProperties global;
+	};
+	
+	
 private:
+	igdeEnvironment &pEnvironment;
+	igdeUndoSystem *pUndoSystem;
+	
+	MetaContext::Ref pMetaContext;
+	
+	decString pName;
 	deEngine *pEngine;
 	deCamera::Ref pEngCamera;
 	deWorld::Ref pEngWorld;
 	
-	decString pName;
-	decDVector pPosition;
-	decVector pOrientation;
-	float pFov;
-	float pFovRatio;
-	float pImageDistance;
-	float pViewDistance;
-	
-	bool pEnableHDRR;
-	float pExposure;
-	float pLowestIntensity;
-	float pHighestIntensity;
-	float pAdaptionTime;
-	
-	bool pEnableGI;
-	
-	float pWhiteIntensity;
-	float pBloomIntensity;
-	float pBloomStrength;
-	float pBloomBlend;
-	float pBloomSize;
-	
-	decCurveBezier pToneMapCurve;
-	
-	float pDistance;
-	
 	decDMatrix pViewMatrix;
 	
+	igdeMetaPropertyDVectorStorage::Storage pMPPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage pMPRotation;
+	igdeMetaPropertyFloatStorage::Storage pMPDistance;
+	igdeMetaPropertyFloatStorage::Storage pMPFov;
+	igdeMetaPropertyFloatStorage::Storage pMPFovRatio;
+	igdeMetaPropertyFloatStorage::Storage pMPImageDistance;
+	igdeMetaPropertyFloatStorage::Storage pMPViewDistance;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableHDRR;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableGI;
+	igdeMetaPropertyFloatStorage::Storage pMPExposure;
+	igdeMetaPropertyFloatStorage::Storage pMPLowestIntensity;
+	igdeMetaPropertyFloatStorage::Storage pMPHighestIntensity;
+	igdeMetaPropertyFloatStorage::Storage pMPAdaptionTime;
+	igdeMetaPropertyFloatStorage::Storage pMPWhiteIntensity;
+	igdeMetaPropertyFloatStorage::Storage pMPBloomIntensity;
+	igdeMetaPropertyFloatStorage::Storage pMPBloomStrength;
+	igdeMetaPropertyFloatStorage::Storage pMPBloomBlend;
+	igdeMetaPropertyFloatStorage::Storage pMPBloomSize;
+	igdeMetaPropertyCurveBezierStorage::Storage pMPToneMapCurve;
+	
+public:
+	/** \brief Last used camera file. */
+	static decString lastCameraFile;
+	
+	/** \brief Camera changed event. */
+	igdeTEvent<> onChanged;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create camera. */
-	igdeCamera(deEngine *engine);
+	igdeCamera(igdeEnvironment &environment, deEngine *engine);
 	
+	igdeCamera(const igdeCamera &) = delete;
+	igdeCamera(igdeCamera &&) = delete;
+	igdeCamera &operator=(const igdeCamera &) = delete;
+	igdeCamera &operator=(igdeCamera &&) = delete;
+	
+protected:
 	/** \brief Clean up camera object. */
-	virtual ~igdeCamera();
+	~igdeCamera() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Meta property position. */
+	inline igdeMetaPropertyDVectorStorage::Storage &GetMPPosition(){ return pMPPosition; }
+	
+	/** \brief Meta property rotation. */
+	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPRotation(){ return pMPRotation; }
+	
+	/** \brief Meta property distance. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPDistance(){ return pMPDistance; }
+	
+	/** \brief Meta property field of view. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPFov(){ return pMPFov; }
+	
+	/** \brief Meta property field of view ratio. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPFovRatio(){ return pMPFovRatio; }
+	
+	/** \brief Meta property image distance. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPImageDistance(){ return pMPImageDistance; }
+	
+	/** \brief Meta property view distance. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPViewDistance(){ return pMPViewDistance; }
+	
+	/** \brief Meta property enable HDRR. */
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableHDRR(){ return pMPEnableHDRR; }
+	
+	/** \brief Meta property enable GI. */
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableGI(){ return pMPEnableGI; }
+	
+	/** \brief Meta property exposure. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPExposure(){ return pMPExposure; }
+	
+	/** \brief Meta property lowest intensity. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPLowestIntensity(){ return pMPLowestIntensity; }
+	
+	/** \brief Meta property highest intensity. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPHighestIntensity(){ return pMPHighestIntensity; }
+	
+	/** \brief Meta property adaption time. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdaptionTime(){ return pMPAdaptionTime; }
+	
+	/** \brief Meta property white intensity. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPWhiteIntensity(){ return pMPWhiteIntensity; }
+	
+	/** \brief Meta property bloom intensity. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPBloomIntensity(){ return pMPBloomIntensity; }
+	
+	/** \brief Meta property bloom strength. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPBloomStrength(){ return pMPBloomStrength; }
+	
+	/** \brief Meta property bloom blend. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPBloomBlend(){ return pMPBloomBlend; }
+	
+	/** \brief Meta property bloom size. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPBloomSize(){ return pMPBloomSize; }
+	
+	/** \brief Meta property tone map curve. */
+	inline igdeMetaPropertyCurveBezierStorage::Storage &GetMPToneMapCurve(){ return pMPToneMapCurve; }
+	
+	
+	/** \brief Environment. */
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	
+	/** \brief Undo system or nullptr. */
+	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
+	
+	/** \brief Set undo system or nullptr. */
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
+	
+	/** \brief Meta context. */
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
+	
 	/** \brief Game engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
-	/** \brief Eengine camera. */
+	/** \brief Engine camera. */
 	inline const deCamera::Ref &GetEngineCamera() const{ return pEngCamera; }
 	
 	/** \brief World the camera is attached to. */
@@ -114,37 +439,37 @@ public:
 	void SetName(const char *name);
 	
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{ return pMPPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation of the camera. */
-	inline const decVector &GetOrientation() const{ return pOrientation; }
+	inline const decVector &GetOrientation() const{ return pMPRotation; }
 	
 	/** \brief Set orientation of the camera. */
 	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Field of view in radians. */
-	inline float GetFov() const{ return pFov; }
+	inline float GetFov() const{ return pMPFov; }
 	
 	/** \brief Set field of view in radians. */
 	void SetFov(float fov);
 	
 	/** \brief Aspect ratio of the horizontal field of view to the vertical field of view. */
-	inline float GetFovRatio() const{ return pFovRatio; }
+	inline float GetFovRatio() const{ return pMPFovRatio; }
 	
 	/** \brief Set aspect ratio of the horizonral field of view to the vertical field of view. */
 	void SetFovRatio(float ratio);
 	
 	/** \brief Distance to the image plane. */
-	inline float GetImageDistance() const{ return pImageDistance; }
+	inline float GetImageDistance() const{ return pMPImageDistance; }
 	
 	/** \brief Set distance to the image plane. */
 	void SetImageDistance(float distance);
 	
 	/** \brief View distance. */
-	inline float GetViewDistance() const{ return pViewDistance; }
+	inline float GetViewDistance() const{ return pMPViewDistance; }
 	
 	/** \brief Set view distance. */
 	void SetViewDistance(float viewDistance);
@@ -152,37 +477,37 @@ public:
 	
 	
 	/** \brief Enable high definition range rendering (HDRR) if supported. */
-	inline bool GetEnableHDRR() const{ return pEnableHDRR; }
+	inline bool GetEnableHDRR() const{ return pMPEnableHDRR; }
 	
 	/** \brief Set to enable high definition range rendering (HDRR) if supported. */
 	void SetEnableHDRR(bool enable);
 	
 	/** \brief Exposure. */
-	inline float GetExposure() const{ return pExposure; }
+	inline float GetExposure() const{ return pMPExposure; }
 	
 	/** \brief Set exposure. */
 	void SetExposure(float exposure);
 	
 	/** \brief Lowest intensity the eye can adapt to. */
-	inline float GetLowestIntensity() const{ return pLowestIntensity; }
+	inline float GetLowestIntensity() const{ return pMPLowestIntensity; }
 	
 	/** \brief Set lowest intensity the eye can adapt to. */
 	void SetLowestIntensity(float lowestIntensity);
 	
 	/** \brief Highest intensity the eye can adapt to. */
-	inline float GetHighestIntensity() const{ return pHighestIntensity; }
+	inline float GetHighestIntensity() const{ return pMPHighestIntensity; }
 	
 	/** \brief Set highest intensity the eye can adapt to. */
 	void SetHighestIntensity(float highestIntensity);
 	
 	/** \brief Adaption time of the eye in seconds. */
-	inline float GetAdaptionTime() const{ return pAdaptionTime; }
+	inline float GetAdaptionTime() const{ return pMPAdaptionTime; }
 	
 	/** \brief Set adaption time of the eye in seconds. */
 	void SetAdaptionTime(float adaptionTime);
 	
 	/** \brief Distance of camera to the center point along the view direction. */
-	inline float GetDistance() const{ return pDistance; }
+	inline float GetDistance() const{ return pMPDistance; }
 	
 	/** \brief Set distance of camera to the center point along the view direction. */
 	void SetDistance(float distance);
@@ -190,7 +515,7 @@ public:
 	
 	
 	/** \brief Enable global illumination (GI) if supported. */
-	inline bool GetEnableGI() const{ return pEnableGI; }
+	inline bool GetEnableGI() const{ return pMPEnableGI; }
 	
 	/** \brief Set to enable global illumination (GI) if supported. */
 	void SetEnableGI(bool enable);
@@ -201,7 +526,7 @@ public:
 	 * \brief White intensity multiplier.
 	 * \version 1.21
 	 */
-	inline float GetWhiteIntensity() const{ return pWhiteIntensity; }
+	inline float GetWhiteIntensity() const{ return pMPWhiteIntensity; }
 	
 	/**
 	 * \brief Set white intensity multiplier.
@@ -213,7 +538,7 @@ public:
 	 * \brief Bloom intensity multiplier.
 	 * \version 1.21
 	 */
-	inline float GetBloomIntensity() const{ return pBloomIntensity; }
+	inline float GetBloomIntensity() const{ return pMPBloomIntensity; }
 	
 	/**
 	 * \brief Set bloom intensity multiplier.
@@ -225,7 +550,7 @@ public:
 	 * \brief Bloom strength as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	inline float GetBloomStrength() const{ return pBloomStrength; }
+	inline float GetBloomStrength() const{ return pMPBloomStrength; }
 	
 	/**
 	 * \brief Set bloom strength as multiplier of intensity beyond bloom intensity.
@@ -237,7 +562,7 @@ public:
 	 * \brief Bloom blend as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	inline float GetBloomBlend() const{ return pBloomBlend; }
+	inline float GetBloomBlend() const{ return pMPBloomBlend; }
 	
 	/**
 	 * \brief Set bloom blend as multiplier of intensity beyond bloom intensity.
@@ -249,7 +574,7 @@ public:
 	 * \brief Bloom size as percentage of screen width.
 	 * \version 1.21
 	 */
-	inline float GetBloomSize() const{ return pBloomSize; }
+	inline float GetBloomSize() const{ return pMPBloomSize; }
 	
 	/**
 	 * \brief Bloom size as percentage of screen width.
@@ -263,7 +588,7 @@ public:
 	 * \brief Custom tone mapping curve or empty curve to disable.
 	 * \version 1.21
 	 */
-	inline const decCurveBezier &GetToneMapCurve() const{ return pToneMapCurve; }
+	inline const decCurveBezier &GetToneMapCurve() const{ return pMPToneMapCurve; }
 	
 	/**
 	 * \brief Set custom tone mapping curve or empty curve to disable.
@@ -290,6 +615,9 @@ public:
 	 */
 	void SetDefaultParameters(float lowestIntensity, float highestIntensity, float adaptionTime);
 	
+	
+	/** \brief Add shared camera context menu entries. */
+	void AddContextMenuEntries(igdeMenuCascade &menu, igdeWidget &owner);
 	
 	
 	/** \brief Reset camera. */

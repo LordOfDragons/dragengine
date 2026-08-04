@@ -253,13 +253,13 @@ public:
 	}
 };
 
-class cActionReset : public igdeAction{
+class cActionPlaybackReset : public igdeAction{
 	igdeWPTriggerTable &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionReset> Ref;
+	typedef deTObjectReference<cActionPlaybackReset> Ref;
 	
-	cActionReset(igdeWPTriggerTable &panel) :
+	cActionPlaybackReset(igdeWPTriggerTable &panel) :
 	igdeAction("@Igde.WPTriggerTable.Action.ResetTarget", nullptr, "@Igde.WPTriggerTable.Action.ResetTarget.ToolTip"),
 	pPanel(panel){}
 	
@@ -476,7 +476,7 @@ void igdeWPTriggerTable::pCreateContent(){
 	pActionAdd = cActionAdd::Ref::New(*this);
 	pActionRemove = cActionRemove::Ref::New(*this);
 	pActionFire = cActionFire::Ref::New(*this);
-	pActionReset = cActionReset::Ref::New(*this);
+	pActionReset = cActionPlaybackReset::Ref::New(*this);
 	pActionFullReset = cActionFullReset::Ref::New(*this);
 	
 	helper.ListBox(*this, 8, "@Igde.WPTriggerTable.ListBox.ToolTip", pListTriggerTable, cListTable::Ref::New(*this));

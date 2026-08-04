@@ -22,17 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpBulletCompoundShape.h"
 
 #include "BulletCollision/CollisionShapes/btCompoundShape.h"
 #include "BulletCollision/CollisionShapes/btCollisionShape.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class debpBulletCompoundShape
@@ -45,17 +40,13 @@ debpBulletCompoundShape::debpBulletCompoundShape(btCompoundShape *shape) :
 debpBulletShape(shape){
 }
 
-debpBulletCompoundShape::~debpBulletCompoundShape(){
-}
-
+debpBulletCompoundShape::~debpBulletCompoundShape() = default;
 
 
 // Management
 ///////////////
 
 void debpBulletCompoundShape::AddChildShape(debpBulletShape *shape){
-	if(!shape){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(shape)
 	pChildShapes.Add(shape);
 }

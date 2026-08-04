@@ -1,0 +1,314 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include "igdeMetaPropertySet.h"
+#include "widget/igdeMetaPropertySetWidget.h"
+#include "../igdeMetaContextItemInfo.h"
+#include "../../gui/igdeUIHelper.h"
+#include "../../gui/dialog/igdeDialogSetSelect.h"
+#include "../../environment/igdeEnvironment.h"
+#include "../../undo/igdeUndoSystem.h"
+#include "../../localization/igdeTranslationManager.h"
+
+
+// Class igdeMetaPropertySet::Listener
+////////////////////////////////////////
+
+void igdeMetaPropertySet::Listener::OnActiveChanged(
+igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+}
+
+void igdeMetaPropertySet::Listener::OnSelectionChanged(
+igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+}
+
+void igdeMetaPropertySet::Listener::OnObjectItemInfoChanged(
+igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+}
+
+
+// Class igdeMetaPropertySet::ActionDuplicate
+///////////////////////////////////////////////
+
+igdeMetaPropertySet::ActionDuplicate::ActionDuplicate(igdeMetaPropertySet &property,
+	igdeWidget &owner, const ContextRef &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.Duplicate",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate),
+	"@Igde.MetaPropertyList.Action.Duplicate.ToolTip"),
+pPropertySet(property){
+}
+
+void igdeMetaPropertySet::ActionDuplicate::OnAction(){
+	const auto &context = GetContext();
+	if(!pPropertySet.IsValid(context)){
+		return;
+	}
+	
+	const auto oldValuedData = pPropertySet.GetPropertyValue(context);
+	igdeMetaPropertySet::Set copiedObjects;
+	auto newValue = oldValuedData;
+	
+	if(pPropertySet.GetMultiSelection()){
+		const auto selection = pPropertySet.GetSelection(context);
+		if(selection.IsEmpty()){
+			return;
+		}
+		
+		selection.Visit([&](const deObject::Ref &object){
+			const auto copiedObject = pPropertySet.CopyObject(context, newValue, object);
+			if(copiedObject){
+				newValue.Add(copiedObject);
+				copiedObjects.Add(copiedObject);
+			}
+		});
+		
+	}else{
+		const auto active = pPropertySet.GetActiveObject(context);
+		if(!active){
+			return;
+		}
+		
+		const auto copiedObject = pPropertySet.CopyObject(context, newValue, active);
+		if(copiedObject){
+			newValue.Add(copiedObject);
+			copiedObjects.Add(copiedObject);
+		}
+	}
+	
+	if(newValue == oldValuedData){
+		return;
+	}
+	
+	pPropertySet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertySet));
+	
+	if(copiedObjects.IsNotEmpty()){
+		pPropertySet.SetActiveObject(context, copiedObjects.GetAt(0));
+		
+		if(pPropertySet.GetMultiSelection()){
+			pPropertySet.SetSelection(context, copiedObjects);
+		}
+	}
+}
+
+void igdeMetaPropertySet::ActionDuplicate::Update(){
+	const auto &context = GetContext();
+	SetEnabled(pPropertySet.IsValid(context) && pPropertySet.GetActiveObject(context));
+}
+
+
+// Class igdeMetaPropertySet::ActionRemove
+////////////////////////////////////////////
+
+igdeMetaPropertySet::ActionRemove::ActionRemove(igdeMetaPropertySet &property,
+	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.Remove",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"@Igde.MetaPropertyList.Action.Remove.ToolTip"),
+pPropertySet(property){
+}
+
+void igdeMetaPropertySet::ActionRemove::OnAction(){
+	const auto &context = GetContext();
+	if(!pPropertySet.IsValid(context)){
+		return;
+	}
+	
+	if(pPropertySet.GetMultiSelection()){
+		const auto selection = pPropertySet.GetSelection(context);
+		if(selection.IsEmpty()){
+			return;
+		}
+		
+		auto newValue = pPropertySet.GetPropertyValue(context);
+		selection.Visit([&](const deObject::Ref &data){
+			newValue.Remove(data);
+		});
+		
+		pPropertySet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertySet));
+		
+	}else{
+		const auto active = pPropertySet.GetActiveObject(context);
+		if(!active){
+			return;
+		}
+		
+		auto newValue = pPropertySet.GetPropertyValue(context);
+		newValue.Remove(active);
+		
+		pPropertySet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertySet));
+	};
+}
+
+void igdeMetaPropertySet::ActionRemove::Update(){
+	const auto &context = GetContext();
+	SetEnabled(pPropertySet.IsValid(context) && pPropertySet.GetActiveObject(context));
+}
+
+
+// Class igdeMetaPropertySet::ActionRemoveAll
+///////////////////////////////////////////////
+
+igdeMetaPropertySet::ActionRemoveAll::ActionRemoveAll(igdeMetaPropertySet &property,
+	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.RemoveAll",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
+	"@Igde.MetaPropertyList.Action.RemoveAll.ToolTip"),
+pPropertySet(property){
+}
+
+void igdeMetaPropertySet::ActionRemoveAll::OnAction(){
+	const auto &context = GetContext();
+	if(pPropertySet.IsValid(context) && pPropertySet.GetPropertyValue(context).IsNotEmpty()){
+		pPropertySet.ChangePropertyValue(context, {}, BuildUndoInfo(pPropertySet));
+	}
+}
+
+void igdeMetaPropertySet::ActionRemoveAll::Update(){
+	const auto &context = GetContext();
+	SetEnabled(pPropertySet.IsValid(context) && pPropertySet.GetPropertyValue(context).IsNotEmpty());
+}
+
+
+// Class igdeMetaPropertySet
+//////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+igdeMetaPropertySet::igdeMetaPropertySet(const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description),
+pRows(4),
+pMultiSelection(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
+}
+
+igdeMetaPropertySet::igdeMetaPropertySet(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pRows(4),
+pMultiSelection(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
+}
+
+igdeMetaPropertySet::~igdeMetaPropertySet() = default;
+
+
+// Management
+///////////////
+
+void igdeMetaPropertySet::SetRows(int rows){
+	pRows = decMath::max(rows, 1);
+}
+
+void igdeMetaPropertySet::SetMultiSelection(bool multiSelection){
+	pMultiSelection = multiSelection;
+}
+
+void igdeMetaPropertySet::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
+}
+
+void igdeMetaPropertySet::NotifyActiveChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnActiveChanged(this, context);
+	});
+}
+
+void igdeMetaPropertySet::NotifySelectionChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnSelectionChanged(this, context);
+	});
+}
+
+void igdeMetaPropertySet::NotifyObjectItemInfoChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnObjectItemInfoChanged(this, context);
+	});
+}
+
+
+igdeMetaPropertySetUndo::Ref igdeMetaPropertySet::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const Set &newValue,
+const char *undoInfo, const char *undoInfoLong){
+	if(context->GetUndoSystem() && GetCanUndo()){
+		const auto undo = igdeMetaPropertySetUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
+}
+
+igdeMetaPropertySet::Set igdeMetaPropertySet::GetSelection(
+const igdeMetaContext::Ref &context) const{
+	auto active = GetActiveObject(context);
+	return active ? Set(devctag, active) : Set();
+}
+
+void igdeMetaPropertySet::SetSelection(const igdeMetaContext::Ref&, const Set&){
+}
+
+igdeMetaPropertySet::ObjectRef igdeMetaPropertySet::CopyObject(const ContextRef &context,
+const Set &existingObjects, const ObjectRef &object) const{
+	return {};
+}
+
+igdeMetaProperty::Action::Ref igdeMetaPropertySet::CreateButtonAction(TargetButton, igdeWidget&){
+	return {};
+}
+
+igdeMetaPropertyWidget::Ref igdeMetaPropertySet::CreateWidget(){
+	return igdeMetaPropertySetWidget::Ref::New(*this);
+}
+
+void igdeMetaPropertySet::AddDefaultContextMenuEntries(igdeMenuCascade &menu,
+const igdeMetaContext::Ref &context, igdeWidget &owner){
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	
+	if(menu.GetChildren().IsNotEmpty()){
+		helper.MenuSeparator(menu);
+	}
+	helper.MenuCommand(menu, ActionDuplicate::Ref::New(*this, owner, context));
+	
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, ActionRemove::Ref::New(*this, owner, context));
+	helper.MenuCommand(menu, ActionRemoveAll::Ref::New(*this, owner, context));
+}
+
+igdeMetaPropertySet::Action::Ref igdeMetaPropertySet::CreateDefaultButtonAction(
+TargetButton target, igdeWidget &owner){
+	switch(target){
+	case TargetButton::remove:
+		return ActionRemove::Ref::New(*this, owner);
+		
+	default:
+		return {};
+	}
+}

@@ -135,7 +135,7 @@ deoglRenderBase(renderThread)
 	
 	renderThread.GetShader().SetCommonDefines(commonDefines);
 	if(useInverseDepth){
-		defines.SetDefines("INVERSE_DEPTH");
+		commonDefines.SetDefines("INVERSE_DEPTH");
 	}
 	
 	
@@ -523,7 +523,7 @@ DBG_ENTER("DownsampleDepth")
 	
 	deoglShaderCompiled &shader = pipeline.GetShader();
 	
-	tsmgr.EnableArrayTexture(0, texture, GetSamplerClampNearest());
+	tsmgr.EnableArrayTexture(0, texture, GetSamplerClampNearestMipMap());
 	
 	for(i=1; i<=mipMapLevelCount; i++){
 		defren.ActivateFBODepthLevel(i);

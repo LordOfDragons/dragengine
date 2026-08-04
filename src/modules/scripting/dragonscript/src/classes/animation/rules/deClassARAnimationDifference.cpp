@@ -69,7 +69,7 @@ struct sARAnimDiffNatDat{
 // Native Functions
 /////////////////////
 
-// public func new()
+// func new()
 deClassARAnimationDifference::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -85,7 +85,7 @@ void deClassARAnimationDifference::nfNew::RunFunction(dsRunTime *rt, dsValue *my
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
-// public func destructor()
+// func destructor()
 deClassARAnimationDifference::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -100,7 +100,7 @@ void deClassARAnimationDifference::nfDestructor::RunFunction(dsRunTime *rt, dsVa
 
 
 
-// public func void setEnablePosition( bool enabled )
+// func void setEnablePosition( bool enabled )
 deClassARAnimationDifference::nfSetEnablePosition::nfSetEnablePosition(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 "setEnablePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // enabled
@@ -115,7 +115,7 @@ void deClassARAnimationDifference::nfSetEnablePosition::RunFunction(dsRunTime *r
 	}
 }
 
-// public func void setEnableOrientation( bool enabled )
+// func void setEnableOrientation( bool enabled )
 deClassARAnimationDifference::nfSetEnableOrientation::nfSetEnableOrientation(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 "setEnableOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // enabled
@@ -130,7 +130,7 @@ void deClassARAnimationDifference::nfSetEnableOrientation::RunFunction(dsRunTime
 	}
 }
 
-// public func void setEnableSize( bool enabled )
+// func void setEnableSize( bool enabled )
 deClassARAnimationDifference::nfSetEnableSize::nfSetEnableSize(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 "setEnableSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // enabled
@@ -145,7 +145,7 @@ void deClassARAnimationDifference::nfSetEnableSize::RunFunction(dsRunTime *rt, d
 	}
 }
 
-// public func void setEnableVertexPositionSet( bool enabled )
+// func void setEnableVertexPositionSet( bool enabled )
 deClassARAnimationDifference::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet(const sInitData &init) :
 dsFunction(init.clsARAnimDiff, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // enabled
@@ -160,7 +160,22 @@ void deClassARAnimationDifference::nfSetEnableVertexPositionSet::RunFunction(dsR
 	}
 }
 
-// public func void targetAddLink( ARAnimationDifferenceTarget target, int link )
+// func void setUseComponentSpace(bool useComponentSpace)
+deClassARAnimationDifference::nfSetUseComponentSpace::nfSetUseComponentSpace(const sInitData &init) : dsFunction(init.clsARAnimDiff,
+"setUseComponentSpace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // useComponentSpace
+}
+void deClassARAnimationDifference::nfSetUseComponentSpace::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARAnimDiffNatDat &nd = dedsGetNativeData<sARAnimDiffNatDat>(p_GetNativeData(myself));
+	
+	nd.rule->SetUseComponentSpace(rt->GetValue(0)->GetBool());
+	
+	if(nd.animator){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// func void targetAddLink( ARAnimationDifferenceTarget target, int link )
 deClassARAnimationDifference::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 "targetAddLink", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsARAnimationDifferenceTarget); // target
@@ -199,7 +214,7 @@ void deClassARAnimationDifference::nfTargetAddLink::RunFunction(dsRunTime *rt, d
 	}
 }
 
-// public func void targetRemoveAllLinks( ARAnimationDifferenceTarget target )
+// func void targetRemoveAllLinks( ARAnimationDifferenceTarget target )
 deClassARAnimationDifference::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 "targetRemoveAllLinks", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsARAnimationDifferenceTarget); // target
@@ -238,7 +253,7 @@ void deClassARAnimationDifference::nfTargetRemoveAllLinks::RunFunction(dsRunTime
 
 
 
-// public func void setLeadingMoveName( String move )
+// func void setLeadingMoveName( String move )
 deClassARAnimationDifference::nfSetLeadingMoveName::nfSetLeadingMoveName(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 "setLeadingMoveName", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // move
@@ -254,7 +269,7 @@ void deClassARAnimationDifference::nfSetLeadingMoveName::RunFunction(dsRunTime *
 	}
 }
 
-// public func void setLeadingMoveTime( float time )
+// func void setLeadingMoveTime( float time )
 deClassARAnimationDifference::nfSetLeadingMoveTime::nfSetLeadingMoveTime(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 "setLeadingMoveTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // time
@@ -269,7 +284,7 @@ void deClassARAnimationDifference::nfSetLeadingMoveTime::RunFunction(dsRunTime *
 	}
 }
 
-// public func void setReferenceMoveName( String move )
+// func void setReferenceMoveName( String move )
 deClassARAnimationDifference::nfSetReferenceMoveName::nfSetReferenceMoveName(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 "setReferenceMoveName", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // move
@@ -284,7 +299,7 @@ void deClassARAnimationDifference::nfSetReferenceMoveName::RunFunction(dsRunTime
 	}
 }
 
-// public func void setReferenceMoveTime( float time )
+// func void setReferenceMoveTime( float time )
 deClassARAnimationDifference::nfSetReferenceMoveTime::nfSetReferenceMoveTime(const sInitData &init) : dsFunction(init.clsARAnimDiff,
 "setReferenceMoveTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // time
@@ -352,6 +367,7 @@ void deClassARAnimationDifference::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfSetEnableOrientation(init));
 	AddFunction(new nfSetEnableSize(init));
 	AddFunction(new nfSetEnableVertexPositionSet(init));
+	AddFunction(new nfSetUseComponentSpace(init));
 	
 	AddFunction(new nfTargetAddLink(init));
 	AddFunction(new nfTargetRemoveAllLinks(init));

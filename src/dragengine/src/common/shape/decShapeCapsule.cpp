@@ -41,7 +41,9 @@ decShapeCapsule::decShapeCapsule(float halfHeight, float radius){
 	pBottomAxisScaling.Set(1.0f, 1.0f);
 }
 
-decShapeCapsule::decShapeCapsule(float halfHeight, float radius, const decVector &position) : decShape(position){
+decShapeCapsule::decShapeCapsule(float halfHeight, float radius, const decVector &position) :
+decShape(position)
+{
 	SetHalfHeight(halfHeight);
 	SetRadius(radius);
 	pTopAxisScaling.Set(1.0f, 1.0f);
@@ -49,7 +51,9 @@ decShapeCapsule::decShapeCapsule(float halfHeight, float radius, const decVector
 }
 
 decShapeCapsule::decShapeCapsule(float halfHeight, float radius, const decVector &position,
-const decQuaternion &orientation) : decShape(position, orientation){
+	const decQuaternion &orientation) :
+decShape(position, orientation)
+{
 	SetHalfHeight(halfHeight);
 	SetRadius(radius);
 	pTopAxisScaling.Set(1.0f, 1.0f);
@@ -64,7 +68,10 @@ decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius, float bottom
 	pBottomAxisScaling.Set(1.0f, 1.0f);
 }
 
-decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius, float bottomRadius, const decVector &position) : decShape(position){
+decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius,
+	float bottomRadius, const decVector &position) :
+decShape(position)
+{
 	SetHalfHeight(halfHeight);
 	SetTopRadius(topRadius);
 	SetBottomRadius(bottomRadius);
@@ -73,7 +80,9 @@ decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius, float bottom
 }
 
 decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
-const decVector &position, const decQuaternion &orientation) : decShape(position, orientation){
+	const decVector &position, const decQuaternion &orientation) :
+decShape(position, orientation)
+{
 	SetHalfHeight(halfHeight);
 	SetTopRadius(topRadius);
 	SetBottomRadius(bottomRadius);
@@ -81,8 +90,9 @@ const decVector &position, const decQuaternion &orientation) : decShape(position
 	pBottomAxisScaling.Set(1.0f, 1.0f);
 }
 
-decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius, float bottomRadius, const decVector2 &topAxisScaling,
-const decVector2 &bottomAxisScaling){
+decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
+	const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling)
+{
 	SetHalfHeight(halfHeight);
 	SetTopRadius(topRadius);
 	SetBottomRadius(bottomRadius);
@@ -90,8 +100,10 @@ const decVector2 &bottomAxisScaling){
 	SetBottomAxisScaling(bottomAxisScaling);
 }
 
-decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius, float bottomRadius, const decVector2 &topAxisScaling,
-const decVector2 &bottomAxisScaling, const decVector &position) : decShape(position){
+decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
+	const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling, const decVector &position) :
+decShape(position)
+{
 	SetHalfHeight(halfHeight);
 	SetTopRadius(topRadius);
 	SetBottomRadius(bottomRadius);
@@ -99,8 +111,11 @@ const decVector2 &bottomAxisScaling, const decVector &position) : decShape(posit
 	SetBottomAxisScaling(bottomAxisScaling);
 }
 
-decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius, float bottomRadius, const decVector2 &topAxisScaling,
-const decVector2 &bottomAxisScaling, const decVector &position, const decQuaternion &orientation) : decShape(position, orientation){
+decShapeCapsule::decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
+	const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling,
+	const decVector &position, const decQuaternion &orientation) :
+decShape(position, orientation)
+{
 	SetHalfHeight(halfHeight);
 	SetTopRadius(topRadius);
 	SetBottomRadius(bottomRadius);

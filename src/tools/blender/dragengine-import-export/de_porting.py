@@ -39,7 +39,7 @@ def delog(message):
 
 def make_annotations(cls):
     """Converts class fields to annotations if running with Blender 2.8"""
-    if bpy.app.version < (2, 80):
+    if bpy.app.version < (2, 80) or bpy.app.version >= (4, 0):
         return cls
     bl_props = {k: v for k, v in cls.__dict__.items() if isinstance(v, tuple)}
     if bl_props:

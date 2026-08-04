@@ -391,12 +391,8 @@ void deoglRTCBUnixWaylandEGL::pChooseConfig(){
 	};
 	
 	EGLint numConfigs = 0;
-	if(pEglChooseConfig(pEGLDisplay, configAttribsHdr, &pEGLConfig, 1, &numConfigs) == EGL_FALSE){
-		DETHROW_INFO(deeInvalidAction, decString::Formatted(
-			"eglChooseConfig for Wayland failed (0x{:x})", pEglGetError()));
-	}
-	
-	if(numConfigs > 0){
+	if(pEglChooseConfig(pEGLDisplay, configAttribsHdr, &pEGLConfig, 1, &numConfigs) == EGL_TRUE
+	&& numConfigs > 0){
 		pEglSupportsHdr = true;
 		logger.LogInfo("RTCBUnixWaylandEGL: HDR EGL config selected");
 		

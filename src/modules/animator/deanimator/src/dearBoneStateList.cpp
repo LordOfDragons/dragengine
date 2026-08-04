@@ -119,6 +119,11 @@ void dearBoneStateList::SetFrom(const dearBoneStateList &stateList){
 	*this = stateList;
 }
 
+void dearBoneStateList::ResetStates(){
+	pStates.Visit([](dearBoneState &state){
+		state.Reset();
+	});
+}
 
 
 void dearBoneStateList::UpdateStates(){

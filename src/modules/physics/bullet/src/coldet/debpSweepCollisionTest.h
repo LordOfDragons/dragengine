@@ -29,7 +29,7 @@
 
 #include "LinearMath/btTransform.h"
 
-#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeVisitor.h>
 #include <dragengine/common/shape/decShape.h>
@@ -58,14 +58,15 @@ public:
 	*/
 	class cShape{
 	private:
-		btConvexShape *pShape;
+		deTUniqueReference<btConvexShape> pShape;
 		btTransform pTransform;
 		
 	public:
 		/** \name Constructors and Destructors */
 		/*@{*/
 		/** \brief Creates a new collision test shape. */
-		cShape(btConvexShape *shape, const btTransform &transform);
+		cShape(deTUniqueReference<btConvexShape> &&shape, const btTransform &transform);
+		
 		/** \brief Cleans up the shape. */
 		~cShape();
 		/*@}*/
@@ -73,7 +74,8 @@ public:
 		/** \name Management */
 		/*@{*/
 		/** \brief Retrieves the convex shape. */
-		inline const btConvexShape *GetShape() const{ return pShape; }
+		inline const deTUniqueReference<btConvexShape> &GetShape() const{ return pShape; }
+		
 		/** \brief Retrieves the transform. */
 		inline const btTransform &GetTransform() const{ return pTransform; }
 		/*@}*/
@@ -81,7 +83,7 @@ public:
 	
 private:
 	debpCollisionDetection &pColDet;
-	decTList<cShape*> pShapeList;
+	decTUniqueList<cShape> pShapeList;
 	decVector pScale;
 	
 	
@@ -99,7 +101,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the list of cShape pointers. */
-	inline const decTList<cShape*> &GetShapeList() const{ return pShapeList; }
+	inline const decTUniqueList<cShape> &GetShapeList() const{ return pShapeList; }
 	
 	/** \brief Add a shape from a decShape. */
 	void AddShape(decShape &shape, const decVector &scale);

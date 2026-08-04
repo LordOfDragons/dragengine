@@ -353,6 +353,9 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("referenceMoveTime")
 				rule.setReferenceMoveTime(element.getFirstCDataFloat())
 				
+			elif tagName.equals("useComponentSpace")
+				rule.setUseComponentSpace(element.getFirstCDataBool())
+				
 			elif tagName.equals("enablePosition")
 				rule.setEnablePosition(element.getFirstCDataBool())
 				

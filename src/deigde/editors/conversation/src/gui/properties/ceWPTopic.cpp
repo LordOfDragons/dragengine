@@ -345,8 +345,8 @@ public:
 	
 	void OnAction() override{
 		ceConversation * const conversation = pPanel.GetConversation();
-		ceClipboardDataFile * const clip = (ceClipboardDataFile*)pPanel.GetWindowProperties().GetWindowMain()
-			.GetClipboard().GetWithTypeName(ceClipboardDataFile::TYPE_NAME);
+		auto clip = pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			GetWithTypeName(ceClipboardDataFile::TYPE_NAME).DynamicCast<ceClipboardDataFile>();
 		if(!conversation || !clip){
 			return;
 		}
@@ -646,8 +646,8 @@ public:
 	
 	void OnAction() override{
 		ceConversationFile * const file = pPanel.GetFile();
-		ceClipboardDataTopic * const clip = (ceClipboardDataTopic*)pPanel.GetWindowProperties().GetWindowMain()
-			.GetClipboard().GetWithTypeName(ceClipboardDataTopic::TYPE_NAME);
+		auto clip = pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			GetWithTypeName(ceClipboardDataTopic::TYPE_NAME).DynamicCast<ceClipboardDataTopic>();
 		if(!file || !clip){
 			return;
 		}

@@ -153,7 +153,6 @@ seWindowMain::~seWindowMain(){
 	}
 	
 	SetSkin(nullptr);
-	pClipboard.ClearAll();
 	
 	if(pConfiguration){
 		delete pConfiguration;

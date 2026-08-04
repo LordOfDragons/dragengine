@@ -78,7 +78,8 @@ void deoglLightPipelinesSky::pPreparePipelines(deoglBatchedShaderLoading &batche
 	baseShaderConfig.SetShadowMappingAlgorithm1(deoglLightShaderConfig::esma2D);
 	baseShaderConfig.SetHWDepthCompare(true);
 	baseShaderConfig.SetDecodeInShadow(false);
-	baseShaderConfig.SetTextureNoise(false);
+	baseShaderConfig.SetTextureNoise(true);
+	baseShaderConfig.SetNoiseTap(false);
 	baseShaderConfig.SetFullScreenQuad(true);
 	
 	// create pipelines for each type and all valid modifications

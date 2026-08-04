@@ -54,10 +54,10 @@ deoglShapeBox::~deoglShapeBox(){
 // Management
 ///////////////
 
-void deoglShapeBox::CalcMatrix(decMatrix &matrix, const decVector &position, const decQuaternion &orientation, const decVector &halfExtends){
-	matrix = decMatrix::CreateScale(halfExtends)
-		* decMatrix::CreateFromQuaternion( orientation )
-		* decMatrix::CreateTranslation( position );
+void deoglShapeBox::CalcMatrix(decMatrix &matrix1, decMatrix &matrix2, const decVector &position,
+const decQuaternion &orientation, const decVector &halfExtends, const decVector2 &tapering){
+	matrix1.SetWorld(position, orientation, halfExtends);
+	matrix2 = decMatrix::CreateScale(tapering.x, 1.0f, tapering.y) * matrix1;
 }
 
 void deoglShapeBox::AddVBOLines(sVBOData *data){
@@ -69,14 +69,14 @@ void deoglShapeBox::AddVBOLines(sVBOData *data){
 	sVBOData points[8];
 	int i;
 	
-	points[0].SetSelFalse(-1.0f,  1.0f, -1.0f);
-	points[1].SetSelFalse(1.0f,  1.0f, -1.0f);
-	points[2].SetSelFalse(1.0f,  1.0f,  1.0f);
-	points[3].SetSelFalse(-1.0f,  1.0f,  1.0f);
-	points[4].SetSelFalse(-1.0f, -1.0f, -1.0f);
-	points[5].SetSelFalse(1.0f, -1.0f, -1.0f);
-	points[6].SetSelFalse(1.0f, -1.0f,  1.0f);
-	points[7].SetSelFalse(-1.0f, -1.0f,  1.0f);
+	points[0].Set(-1.0f,  1.0f, -1.0f, true);
+	points[1].Set( 1.0f,  1.0f, -1.0f, true);
+	points[2].Set( 1.0f,  1.0f,  1.0f, true);
+	points[3].Set(-1.0f,  1.0f,  1.0f, true);
+	points[4].Set(-1.0f, -1.0f, -1.0f, false);
+	points[5].Set( 1.0f, -1.0f, -1.0f, false);
+	points[6].Set( 1.0f, -1.0f,  1.0f, false);
+	points[7].Set(-1.0f, -1.0f,  1.0f, false);
 	
 	for(i=0; i<24; i++){
 		data[i].SetFrom(points[indices[i]]);
@@ -95,14 +95,14 @@ void deoglShapeBox::AddVBOFaces(sVBOData *data){
 	sVBOData points[8];
 	int i;
 	
-	points[0].SetSelFalse(-1.0f,  1.0f, -1.0f);
-	points[1].SetSelFalse(1.0f,  1.0f, -1.0f);
-	points[2].SetSelFalse(1.0f,  1.0f,  1.0f);
-	points[3].SetSelFalse(-1.0f,  1.0f,  1.0f);
-	points[4].SetSelFalse(-1.0f, -1.0f, -1.0f);
-	points[5].SetSelFalse(1.0f, -1.0f, -1.0f);
-	points[6].SetSelFalse(1.0f, -1.0f,  1.0f);
-	points[7].SetSelFalse(-1.0f, -1.0f,  1.0f);
+	points[0].Set(-1.0f,  1.0f, -1.0f, true);
+	points[1].Set( 1.0f,  1.0f, -1.0f, true);
+	points[2].Set( 1.0f,  1.0f,  1.0f, true);
+	points[3].Set(-1.0f,  1.0f,  1.0f, true);
+	points[4].Set(-1.0f, -1.0f, -1.0f, false);
+	points[5].Set( 1.0f, -1.0f, -1.0f, false);
+	points[6].Set( 1.0f, -1.0f,  1.0f, false);
+	points[7].Set(-1.0f, -1.0f,  1.0f, false);
 	
 	for(i=0; i<36; i++){
 		data[i].SetFrom(points[indices[i]]);

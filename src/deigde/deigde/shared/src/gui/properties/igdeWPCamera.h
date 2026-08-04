@@ -27,6 +27,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
+#include "../igdeCamera.h"
 #include "../igdeTextField.h"
 #include "../igdeCheckBox.h"
 #include "../igdeButton.h"
@@ -37,9 +38,6 @@
 #include "../filedialog/igdeFilePattern.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../curveedit/igdeViewCurveBezier.h"
-
-
-class igdeCamera;
 
 
 /**
@@ -62,7 +60,7 @@ public:
 	
 	
 private:
-	igdeCamera *pCamera;
+	igdeCamera::Ref pCamera;
 	
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;
@@ -118,7 +116,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Camera or nullptr if not set. */
-	inline igdeCamera *GetCamera() const{ return pCamera; }
+	inline const igdeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Set camera or nullptr if not set. */
 	void SetCamera(igdeCamera *camera);

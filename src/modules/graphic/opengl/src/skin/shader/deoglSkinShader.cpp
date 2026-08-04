@@ -440,6 +440,9 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender(deoglRenderThread &renderT
 	spb->GetParameterAt(erutAOSelfShadow).SetAll(deoglSPBParameter::evtFloat, 2, 1, 1); // vec2
 	spb->GetParameterAt(erutLumFragCoordScale).SetAll(deoglSPBParameter::evtFloat, 2, 1, 1); // vec2
 	
+	spb->GetParameterAt(erutSSShadowParams1).SetAll(deoglSPBParameter::evtFloat, 4, 1, 1); // vec4
+	spb->GetParameterAt(erutSSShadowParams2).SetAll(deoglSPBParameter::evtFloat, 4, 1, 1); // vec4
+	
 	spb->GetParameterAt(erutGIRayMatrix).SetAll(deoglSPBParameter::evtFloat, 4, 3, 1); // mat4x3
 	spb->GetParameterAt(erutGIRayMatrixNormal).SetAll(deoglSPBParameter::evtFloat, 3, 3, 1); // mat3
 	

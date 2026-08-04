@@ -158,7 +158,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	ceConfiguration::Ref pConfiguration;
-	igdeClipboard pClipboard;
 	ceLoadSaveSystem::Ref pLoadSaveSystem;
 	
 	ceViewConversation::Ref pViewConversation;
@@ -200,8 +199,8 @@ public:
 	inline const ceConfiguration::Ref &GetConfiguration() const{ return pConfiguration; }
 	
 	/** Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
-	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** Load save system. */
 	inline const ceLoadSaveSystem::Ref &GetLoadSaveSystem() const{ return pLoadSaveSystem; }

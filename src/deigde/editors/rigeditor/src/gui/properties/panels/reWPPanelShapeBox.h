@@ -28,6 +28,7 @@
 #include "reWPPanelShape.h"
 
 #include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 
 class reRigShapeBox;
 
@@ -44,6 +45,7 @@ private:
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;
 	igdeEditVector::Ref pEditHalfExtends;
+	igdeEditVector2::Ref pEditTapering;
 	
 	
 	

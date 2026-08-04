@@ -25,20 +25,29 @@
 #include "debpBulletShapeModel.h"
 #include "debpModel.h"
 #include "debpModelOctree.h"
+#include "debpShapeGenerator.h"
 #include "../dePhysicsBullet.h"
 #include "../coldet/octree/debpDefaultDOctree.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelBone.h>
 #include <dragengine/resources/model/deModelFace.h>
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelVertex.h>
 #include <dragengine/resources/model/deModelWeight.h>
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/rig/deRigBone.h>
+#include <dragengine/resources/rig/deRigBuilder.h>
+#include <dragengine/resources/rig/deRigManager.h>
 
 #include "BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h"
 #include "BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h"
 #include "BulletCollision/CollisionShapes/btTriangleMeshShape.h"
+#include "LinearMath/btConvexHull.h"
+#include "Extras/VHACD/public/VHACD.h"
 
 
 
@@ -53,7 +62,10 @@ pBullet(bullet),
 pModel(model),
 pOctree(NULL),
 pCanDeform(false),
-pHasWeightlessExtends(false)
+pHasWeightlessExtends(false),
+pModelShapeConvexHullThreshold(0.0f),
+pBoneShapesConvexHullThreshold(0.0f),
+pBoneShapesWeightThreshold(0.0f)
 {
 	(void)pBullet;
 	
@@ -264,6 +276,288 @@ void debpModel::PrepareShape(){
 		meshShape, ivarray, std::move(vertices), std::move(faces));
 }
 
+
+void debpModel::PrepareModelShapes(float convexHullThreshold){
+	if(pModelShapesGenerated
+	&& fabsf(pModelShapeConvexHullThreshold - convexHullThreshold) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	// decompose mesh into multiple convex hulls
+	const deModelLOD &lod = pModel.GetLODs().First();
+	const int faceCount = lod.GetFaces().GetCount();
+	if(faceCount == 0){
+		pModelShapes.Clear();
+		pModelShapeConvexHullThreshold = convexHullThreshold;
+		pModelShapesGenerated = true;
+		return;
+	}
+	
+	// collect weightless vertices and their indices
+	const int vertexCount = lod.GetVertices().GetCount();
+	decTList<double> vertices;
+	decTList<int> indices;
+	decTList<int> vertexIndexMap(vertexCount, -1);
+	
+	lod.GetVertices().VisitIndexed([&](int i, const deModelVertex &vertex){
+		if(vertex.GetWeightSet() != -1){
+			return;
+		}
+		
+		vertexIndexMap[i] = vertices.GetCount() / 3;
+		const decVector &position = vertex.GetPosition();
+		vertices.Add((double)position.x);
+		vertices.Add((double)position.y);
+		vertices.Add((double)position.z);
+	});
+	
+	if(vertices.GetCount() < 12){ // less than 4 vertices
+		pModelShapes.Clear();
+		pModelShapeConvexHullThreshold = convexHullThreshold;
+		pModelShapesGenerated = true;
+		return;
+	}
+	
+	// build triangle indices
+	lod.GetFaces().Visit([&](const deModelFace &face){
+		int i0 = vertexIndexMap[face.GetVertex1()];
+		int i1 = vertexIndexMap[face.GetVertex2()];
+		int i2 = vertexIndexMap[face.GetVertex3()];
+		
+		// only add faces where all vertices are weightless
+		if(i0 == -1 || i1 == -1 || i2 == -1){
+			return;
+		}
+		
+		indices.Add(i0);
+		indices.Add(i1);
+		indices.Add(i2);
+	});
+	
+	if(indices.GetCount() < 9){ // less than 3 triangles
+		pModelShapes.Clear();
+		pModelShapeConvexHullThreshold = convexHullThreshold;
+		pModelShapesGenerated = true;
+		return;
+	}
+	
+	// apply decomposition
+	class AutoReleaseVHACD{
+		VHACD::IVHACD* pVHACD;
+		
+	public:
+		AutoReleaseVHACD(VHACD::IVHACD* pointer) : pVHACD(pointer){}
+		~AutoReleaseVHACD(){
+			if(pVHACD){
+				pVHACD->Release();
+			}
+		}
+		VHACD::IVHACD* operator->(){ return pVHACD; }
+		operator bool() const{ return pVHACD != nullptr; }
+	};
+	
+	auto vhacd = AutoReleaseVHACD(VHACD::CreateVHACD());
+	if(!vhacd){
+		pModelShapes.Clear();
+		pModelShapeConvexHullThreshold = convexHullThreshold;
+		pModelShapesGenerated = true;
+		return;
+	}
+	
+	// decompose
+	VHACD::IVHACD::Parameters params;
+	params.m_resolution = 100000;
+	params.m_depth = 10;
+	params.m_concavity = 0.01;
+	params.m_planeDownsampling = 8; // higher=faster
+	params.m_convexhullDownsampling = 8; // higher=faster
+	params.m_alpha = 0.05; // axis alignment weight
+	params.m_beta = 0.05; // clipping plane weight
+	params.m_gamma = 0.0005; // scaling weight
+	params.m_maxNumVerticesPerCH = 32; // max vertices per convex hull, prevent tiny fragments
+	params.m_minVolumePerCH = 0.001; // min volume threshold, prevent tiny fragments
+	params.m_mode = 0; // 0: voxel-based, 1: tetrahedron-based
+	params.m_convexhullApproximation = 1; // boolean value hidden as int;
+	
+	if(!vhacd->Compute(vertices.GetArrayPointer(), 3, vertices.GetCount() / 3,
+	indices.GetArrayPointer(), 3, indices.GetCount() / 3, params)){
+		pModelShapes.Clear();
+		pModelShapeConvexHullThreshold = convexHullThreshold;
+		pModelShapesGenerated = true;
+		return;
+	}
+	
+	// process convex hulls
+	debpShapeGenerator generator;
+	unsigned int hullCount = vhacd->GetNConvexHulls();
+	
+	pModelShapes = deTUniqueReference<decShape::List>::New();
+	
+	for(unsigned int h=0; h<hullCount; h++){
+		VHACD::IVHACD::ConvexHull hull;
+		vhacd->GetConvexHull(h, hull);
+		if(hull.m_nPoints < 4){
+			continue; // degenerate hull
+		}
+		
+		debpShapeGenerator::WeightList weights;
+		for(unsigned int i=0; i<hull.m_nPoints; i++){
+			const double * const p = &hull.m_points[i * 3];
+			weights.Add({{(float)p[0], (float)p[1], (float)p[2]}, 1.0f});
+		}
+		
+		auto shapes = generator.Create(weights, convexHullThreshold);
+		if(shapes){
+			shapes->Visit([&](const decShape::Ref &shape){
+				pModelShapes->Add(std::move(shape->Copy()));
+			});
+		}
+	}
+	
+	pModelShapesGenerated = true;
+	pModelShapeConvexHullThreshold = convexHullThreshold;
+}
+
+void debpModel::PrepareBoneShapes(float convexHullThreshold, float weightThreshold){
+	if(pBoneShapesPrepared
+		&& fabsf(pBoneShapesConvexHullThreshold - convexHullThreshold) < FLOAT_SAFE_EPSILON
+		&& fabsf(pBoneShapesWeightThreshold - weightThreshold) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	const deModelLOD &lod = pModel.GetLODs().First();
+	const deModelBone::List &bones = pModel.GetBones();
+	if(bones.IsEmpty() || lod.GetVertices().IsEmpty()){
+		pBoneShapes.RemoveAll();
+		pBoneShapesConvexHullThreshold = convexHullThreshold;
+		pBoneShapesWeightThreshold = weightThreshold;
+		pBoneShapesPrepared = true;
+		return;
+	}
+	
+	// collect vertices per bone with weights
+	const int boneCount = bones.GetCount();
+	decTList<debpShapeGenerator::WeightList> weights(boneCount, debpShapeGenerator::WeightList());
+	
+	lod.GetVertices().Visit([&](const deModelVertex &vertex){
+		if(vertex.GetWeightSet() == -1){
+			return;
+		}
+		
+		const sWeightSet &weightSet = pWeightSets[vertex.GetWeightSet()];
+		if(weightSet.count < 1){
+			return;
+		}
+		
+		// the idea here is the following. weights of 50% to 100% are used for the main
+		// deformation bone. weights of 25% to 50% are used for the neightbor bones to properly
+		// deform joints. weights below 25% are used to smoothen the deformation. of all these
+		// weights the main deformation bone is the important one for physics to avoid bone
+		// collision shapes overlapping. some overlap though helps to avoid other colliders
+		// slipping in and getting stuck inside joints. for this reason a threshold of 35% is
+		// used to catch extend collision shapes into neighbor collision shapes without bloating
+		// them up too much in size. the threshold is applied to the maximum weight since weights
+		// in models are not required to be normalized
+		
+		if(weightSet.count > 1){
+			float maxWeight = 0.0f;
+			for(int w=0; w<weightSet.count; w++){
+				maxWeight = decMath::max(maxWeight, weightSet.first[w].GetWeight());
+			}
+			
+			const float wsWeightThreshold = maxWeight * weightThreshold;
+			
+			for(int w=0; w<weightSet.count; w++){
+				const deModelWeight &modelWeight = weightSet.first[w];
+				
+				const int bone = modelWeight.GetBone();
+				if(bone < 0 || bone >= boneCount){
+					continue;
+				}
+				
+				const float weight = modelWeight.GetWeight();
+				if(weight < wsWeightThreshold){
+					continue;
+				}
+				
+				weights[bone].Add({bones[bone]->GetInverseMatrix() * vertex.GetPosition(), weight});
+			}
+			
+		}else{
+			const int bone = weightSet.first->GetBone();
+			if(bone >= 0 && bone < boneCount){
+				weights[bone].Add({bones[bone]->GetInverseMatrix() * vertex.GetPosition(), 1.0f});
+			}
+		}
+	});
+	
+	// create analytic shapes for each bone
+	pBoneShapes.RemoveAll();
+	pBoneShapes.EnlargeCapacity(boneCount);
+	
+	debpShapeGenerator generator;
+	weights.Visit([&](const debpShapeGenerator::WeightList &w){
+		pBoneShapes.Add(generator.Create(w, convexHullThreshold));
+	});
+	
+	pBoneShapesConvexHullThreshold = convexHullThreshold;
+	pBoneShapesWeightThreshold = weightThreshold;
+	pBoneShapesPrepared = true;
+}
+
+deRig::Ref debpModel::GenerateCollisionShapes(float convexHullThreshold, float weightThreshold){
+	class cRigBuilder : public deRigBuilder{
+	public:
+		debpModel &pModel;
+		
+		cRigBuilder(debpModel &model) : pModel(model){}
+		
+		void BuildRig(deRig *rig) override{
+			const auto &bones = pModel.GetModel().GetBones();
+			
+			if(bones.IsNotEmpty()){
+				const auto &bonesShapes = pModel.GetBoneShapes();
+				int rootBoneIndex = -1;
+				
+				bones.VisitIndexed([&](int i, const deModelBone &modelBone){
+					auto rigBone = deRigBone::Ref::New(modelBone.GetName());
+					rigBone->SetPosition(modelBone.GetPosition());
+					rigBone->SetRotation(modelBone.GetOrientation().GetEulerAngles());
+					
+					const auto &shapes = bonesShapes.GetAt(i);
+					if(shapes){
+						rigBone->SetShapes(shapes);
+					}
+					
+					rigBone->SetParent(modelBone.GetParent());
+					if(rigBone->GetParent() == -1 && rootBoneIndex == -1){
+						rootBoneIndex = i;
+					}
+					
+					rig->AddBone(std::move(rigBone));
+				});
+				
+				rig->SetRootBone(rootBoneIndex);
+				
+			}else{
+				const auto &modelShapes = pModel.GetModelShapes();
+				if(modelShapes){
+					rig->SetShapes(modelShapes);
+				}
+			}
+		}
+	};
+	
+	if(pModel.GetBones().IsNotEmpty()){
+		PrepareBoneShapes(convexHullThreshold, weightThreshold);
+		
+	}else{
+		PrepareModelShapes(convexHullThreshold);
+	}
+	
+	cRigBuilder builder(*this);
+	return pBullet.GetGameEngine()->GetRigManager()->CreateRig("", builder);
+}
 
 
 // private functions

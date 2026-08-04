@@ -27,7 +27,10 @@
 
 #include "aeRule.h"
 
-
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
 
 /**
  * Animator rule animation difference.
@@ -36,105 +39,58 @@ class aeRuleAnimationDifference : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleAnimationDifference>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleAnimationDifference, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleAnimationDifference *rule);
 	
-private:
-	decString pMove1Name;
-	float pMove1Time;
-	decString pMove2Name;
-	float pMove2Time;
-	bool pUseSameMove;
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
-	
-	aeControllerTarget::Ref pTargetLeadMoveTime;
-	aeControllerTarget::Ref pTargetRefMoveTime;
+public:
+	igdeMetaPropertyStringStorage::Storage mpLeadingMoveName;
+	igdeMetaPropertyFloatStorage::Storage mpLeadingMoveTime;
+	igdeMetaPropertyStringStorage::Storage mpReferenceMoveName;
+	igdeMetaPropertyFloatStorage::Storage mpReferenceMoveTime;
+	igdeMetaPropertyBooleanStorage::Storage mpUseComponentSpace;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetLeadingMoveTime;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetReferenceMoveTime;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleAnimationDifference() = delete;
+	
 	/** Create a new animator difference rule. */
-	explicit aeRuleAnimationDifference(const char *name);
+	explicit aeRuleAnimationDifference(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of an animator difference rule. */
 	aeRuleAnimationDifference(const aeRuleAnimationDifference &copy);
 	/** Cleans up the animator difference rule. */
 protected:
 	~aeRuleAnimationDifference() override;
+private:
+	aeRuleAnimationDifference(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieve the name of the leading animation move. */
-	inline const decString &GetLeadingMoveName() const{ return pMove1Name; }
-	/** Set the leading animation move name. */
-	void SetLeadingMoveName(const char *moveName);
-	/** Retrieve the leading animation move time. */
-	inline float GetLeadingMoveTime() const{ return pMove1Time; }
-	/** Set the leading animation move time. */
-	void SetLeadingMoveTime(float moveTime);
-	/** Retrieve the name of the reference animation move. */
-	inline const decString &GetReferenceMoveName() const{ return pMove2Name; }
-	/** Set the reference animation move name. */
-	void SetReferenceMoveName(const char *moveName);
-	/** Retrieve the reference animation move time. */
-	inline float GetReferenceMoveTime() const{ return pMove2Time; }
-	/** Set the reference animation move time. */
-	void SetReferenceMoveTime(float moveTime);
-	/** Determine if the reference move is the same as the leading move. */
-	inline bool GetUseSameMove() const{ return pUseSameMove; }
-	/** Set if the reference move is the same as the leading move. */
-	void SetUseSameMove(bool useSameMove);
-	
-	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
-	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
-	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool enabled);
-	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
-	
-	/** Determine if vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
-	
-	/** Retrieve the leading move time target. */
-	inline const aeControllerTarget::Ref &GetTargetLeadingMoveTime() const{ return pTargetLeadMoveTime; }
-	
-	/** Retrieve the reference move time target. */
-	inline const aeControllerTarget::Ref &GetTargetReferenceMoveTime() const{ return pTargetRefMoveTime; }
-	
 	/** Creates an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
-	/** Removes a link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	/** Removes all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
 	aeRule::Ref CreateCopy() const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another animator difference rule to this animator difference rule. */
-	virtual aeRuleAnimationDifference &operator=(const aeRuleAnimationDifference &copy);
+	aeRuleAnimationDifference &operator=(const aeRuleAnimationDifference &copy) = delete;
 	/*@}*/
 };
 

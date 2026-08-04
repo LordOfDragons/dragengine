@@ -644,8 +644,6 @@ void deoglRenderPlan::pPlanDominance(){
 }
 
 void deoglRenderPlan::pPlanShadowCasting(){
-	const deoglConfiguration &config = pRenderThread.GetConfiguration();
-	
 #if 0
 	// largest screen size
 	int renderSize = pViewportWidth;
@@ -720,9 +718,10 @@ void deoglRenderPlan::pPlanShadowCasting(){
 		//unclampedSize = pShadowMapSize;
 	}
 #endif
-	pShadowMapSize = deoglShadowMapper::ShadowMapSize(config);
-	pShadowCubeSize = deoglShadowMapper::ShadowCubeSize(config);
-	pShadowSkySize = pShadowMapSize;
+	const auto &shadowQuality = pRenderThread.GetConfigurationSets().ShadowQuality();
+	pShadowMapSize = shadowQuality.shadowMapSize;
+	pShadowCubeSize = shadowQuality.shadowCubeSize;
+	pShadowSkySize = shadowQuality.shadowSkySize;
 	
 	//printf( "shadow map size: rendersize=%i forced=%i shift=%i size=%i cube=%i sky=%i config=%i\n", renderSize, pForceShadowMapSize, shiftSize, pShadowMapSize, pShadowCubeSize, pShadowSkySize, shadowMapSize );
 }
@@ -782,7 +781,7 @@ void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask
 
 void deoglRenderPlan::pPlanGI(){
 	if(pUseConstGIState || !pUseGIState || pDisableLights
-	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff){
+	|| !pRenderThread.GetConfigurationSets().GIQuality().enable){
 		return;
 	}
 	
@@ -1823,7 +1822,7 @@ void deoglRenderPlan::SetOcclusionTestMatrixStereo(const decMatrix &matrix){
 
 deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
 	if(pUseGIState && !pUseConstGIState && !pDisableLights
-	&& pRenderThread.GetConfiguration().GetGIQuality() != deoglConfiguration::egiqOff
+	&& pRenderThread.GetConfigurationSets().GIQuality().enable
 	&& pRenderVR != ervrRightEye){
 		return pGIState;
 	}
@@ -1831,8 +1830,7 @@ deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
 }
 
 deoglGIState *deoglRenderPlan::GetRenderGIState() const{
-	if(!pUseGIState || pDisableLights
-	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff){
+	if(!pUseGIState || pDisableLights || !pRenderThread.GetConfigurationSets().GIQuality().enable){
 		return nullptr;
 		
 	}else if(pUseConstGIState){

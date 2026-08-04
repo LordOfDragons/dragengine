@@ -27,8 +27,15 @@
 
 #include "aeRule.h"
 
-#include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyList.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/utils/igdeUniqueNameGenerator.h>
 
+#include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 
 
 /**
@@ -38,95 +45,53 @@ class aeRuleGroup : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleGroup>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleGroup, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleGroup *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
 private:
-	aeRule::List pRules;
-	
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
-	
-	bool pUseCurrentState;
-	deAnimatorRuleGroup::eApplicationTypes pApplicationType;
-	
-	aeControllerTarget::Ref pTargetSelect;
-	
 	bool pTreeListExpanded;
+	
+public:
+	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage mpRules;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyBooleanStorage::Storage mpUseCurrentState;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>::Storage mpApplicationType;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetSelect;
+	
+public:
+	igdeUniqueNameGenerator uniqueNameRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleGroup() = delete;
+	
 	/** Create a new group rule. */
-	explicit aeRuleGroup(const char *name);
+	explicit aeRuleGroup(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a group rule. */
 	aeRuleGroup(const aeRuleGroup &copy);
 	/** Clean up the group rule. */
 protected:
 	~aeRuleGroup() override;
+private:
+	aeRuleGroup(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** Rules. */
-	inline const aeRule::List &GetRules() const{ return pRules; }
-	/** Add a new rule. */
-	void AddRule(aeRule *rule);
-	/** Insert a new rule. */
-	void InsertRuleAt(aeRule *rule, int index);
-	/** Move a rule to a new position. */
-	void MoveRuleTo(aeRule *rule, int index);
-	/** Remove the given rule. */
-	void RemoveRule(aeRule *rule);
-	/** Remove all rules. */
-	void RemoveAllRules();
-	
-	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
-	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
-	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool enabled);
-	
-	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
-	
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
-	
-	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
-	
-	/** Use current animation state instead of empty state. */
-	inline bool GetUseCurrentState() const{ return pUseCurrentState; }
-	
-	/** Set if current animation state is used instead of empty state. */
-	void SetUseCurrentState(bool useCurrentState);
-	
-	/** Retrieve the rule application type. */
-	inline deAnimatorRuleGroup::eApplicationTypes GetApplicationType() const{ return pApplicationType; }
-	/** Set the rule application type. */
-	void SetApplicationType(deAnimatorRuleGroup::eApplicationTypes type);
-	
-	/** Retrieve the select target. */
-	inline const aeControllerTarget::Ref &GetTargetSelect() const{ return pTargetSelect; }
-	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
-	/** Removes a link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	/** Removes all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
 	
 	/** Tree list expanded state. */
 	inline bool GetTreeListExpanded() const{ return pTreeListExpanded; }
@@ -137,21 +102,18 @@ public:
 	/** Create a copy of this rule. */
 	aeRule::Ref CreateCopy() const override;
 	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
-	
 	/** Parent animator changed. */
 	void OnParentAnimatorChanged() override;
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copies another group rule to this group rule. */
-	virtual aeRuleGroup &operator=(const aeRuleGroup &copy);
+	aeRuleGroup &operator=(const aeRuleGroup &copy) = delete;
 	/*@}*/
 	
 private:
 	void pCleanUp();
+	void pUpdateRuleIndices();
 };
 
 #endif

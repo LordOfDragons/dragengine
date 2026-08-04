@@ -545,15 +545,6 @@ debpColliderAttachment *debpCollider::GetAttachmentAt(int index) const{
 
 
 
-// Constraints
-////////////////
-
-debpColliderConstraint *debpCollider::GetConstraintAt(int index) const{
-	return pConstraints.GetAt(index);
-}
-
-
-
 // Attachments
 ////////////////
 

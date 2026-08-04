@@ -31,6 +31,7 @@
 #include "link/skyeLink.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/igdeCamera.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 
@@ -42,8 +43,6 @@
 #include <dragengine/resources/world/deWorld.h>
 
 class skyeBody;
-
-class igdeCamera;
 
 class deLogger;
 
@@ -63,7 +62,7 @@ private:
 	bool pNeedsRebuildSky;
 	
 	igdeWObject::Ref pEnvObject;
-	igdeCamera *pCamera;
+	igdeCamera::Ref pCamera;
 	
 	deDebugDrawer::Ref pDDHorizon;
 	igdeWDebugDrawerShape::Ref pDDSHorizon;
@@ -109,7 +108,7 @@ public:
 	inline const deSkyInstance::Ref &GetEngineSkyInstance() const{ return pEngSkyInstance; }
 	
 	/** \brief Camera. */
-	inline igdeCamera *GetCamera() const{ return pCamera; }
+	inline const igdeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** \brief Environment wrapper object. */
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }

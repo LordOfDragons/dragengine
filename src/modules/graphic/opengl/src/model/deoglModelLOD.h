@@ -95,6 +95,7 @@ public:
 	decTList<deoglModelLODTexCoordSet> pTexCoordSets;
 	decTList<deoglModelLODVertPosSet> pVertPosSets;
 	int pVertPosSetPosCount;
+	int pTexCoordSetCount;
 	
 	deoglSharedVBOBlock::Ref pVBOBlock;
 	deoglSharedVBOBlock::Ref pVBOBlockPositionWeight;
@@ -212,6 +213,9 @@ public:
 	
 	/** Vertex position sets. */
 	inline const decTList<deoglModelLODVertPosSet> &GetVertexPositionSets() const{ return pVertPosSets; }
+	
+	/** Texture coordinate set count. */
+	inline int GetTextureCoordSetCount() const{ return pTexCoordSetCount; }
 	
 	/** Octree or \em NULL if there is none. */
 	inline deoglModelOctree *GetOctree() const{ return pOctree; }

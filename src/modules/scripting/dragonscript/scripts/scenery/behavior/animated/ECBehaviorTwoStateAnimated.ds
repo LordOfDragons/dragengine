@@ -560,6 +560,10 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
+			
+			if pTrigger == null and pECBehavior.getStartActivated().getValue(stub)
+				setActivated()
+			end
 		end
 		
 		/**
@@ -1358,6 +1362,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	var Array pListenerFactories
 	var ECComposeBTSM pBTSMs
 	var String pPrefix
+	var ECPBoolean pStartActivated
 	
 	
 	
@@ -1406,6 +1411,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		eclass.addProperty(pAnimator = ECPAnimator.new(prefix + "animator", loaders.getAnimator()))
 		eclass.addProperty(pAnimation = ECPAnimation.new(prefix + "animation"))
 		eclass.addProperty(pPlaySpeed = ECPFloat.new(prefix + "playSpeed", 1, 0.001))
+		eclass.addProperty(pStartActivated = ECPBoolean.new(prefix + "startActivated", false))
 		
 		pTrigger = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
 		
@@ -1452,6 +1458,14 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	/** \brief Play speed. */
 	func ECPFloat getPlaySpeed()
 		return pPlaySpeed
+	end
+	
+	/**
+	 * \brief Start activated.
+	 * \version 1.33
+	 */
+	func ECPBoolean getStartActivated()
+		return pStartActivated
 	end
 	
 	/** \brief Trigger activate. */

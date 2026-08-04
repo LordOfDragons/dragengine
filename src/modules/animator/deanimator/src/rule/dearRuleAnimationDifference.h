@@ -30,7 +30,10 @@
 #include "../dearMapAnimationVPS.h"
 #include "../animation/dearAnimationMove.h"
 
+#include <dragengine/resources/animator/rule/deAnimatorRuleAnimationDifference.h>
+
 class dearAnimationState;
+class dearBoneStateList;
 class deAnimatorRuleAnimationDifference;
 
 
@@ -44,16 +47,14 @@ private:
 	dearMapAnimationBones pMapAnimationBones;
 	dearMapAnimationVPS pMapAnimationVPS;
 	
-	dearAnimationMove::Ref pMove1;
-	dearAnimationMove::Ref pMove2;
+	dearAnimationMove::Ref pMove1, pMove2;
 	
-	dearControllerTarget pTargetLeadingMoveTime;
-	dearControllerTarget pTargetReferenceMoveTime;
+	dearControllerTarget pTargetLeadingMoveTime, pTargetReferenceMoveTime;
+	const bool pUseComponentSpace;
 	
-	const bool pEnablePosition;
-	const bool pEnableOrientation;
-	const bool pEnableSize;
-	const bool pEnableVPS;
+	const bool pEnablePosition, pEnableOrientation, pEnableSize, pEnableVPS;
+	
+	dearBoneStateList *pStateListL, *pStateListR;
 	
 public:
 	/** \name Constructors and Destructors */

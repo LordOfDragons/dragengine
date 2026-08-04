@@ -67,6 +67,10 @@ public:
 	/** Calculate convex hull. */
 	void CalculateHull();
 	/*@}*/
+	
+	
+private:
+	bool pArePointsCoplanar(const decTList<decVector> &points) const;
 };
 
 #endif

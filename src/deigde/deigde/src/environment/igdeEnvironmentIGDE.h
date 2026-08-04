@@ -156,6 +156,9 @@ public:
 	/** \brief Translation manager. */
 	igdeTranslationManager &GetTranslationManager() override;
 	
+	/** \brief Clipboard. */
+	igdeClipboard &GetClipboard() override;
+	
 	
 	
 	/** \brief Sets the visibility of the progress bar in the status bar. */
@@ -175,6 +178,9 @@ public:
 	
 	/** \brief Activate editor and bring it to the front. */
 	void ActivateEditor(igdeEditorModule *editor) override;
+	
+	/** \brief Meta contexts changed. */
+	void MetaContextsChanged() override;
 	
 	
 	
@@ -290,6 +296,9 @@ public:
 	
 	/** \brief Close application. */
 	void CloseApplication() override;
+	
+	/** \brief Open URL. */
+	void OpenUrl(const char *url) override;
 	/*@}*/
 };
 

@@ -62,21 +62,21 @@ deoglShapeSphere::~deoglShapeSphere(){
 // Management
 ///////////////
 
-void deoglShapeSphere::CalcMatrix(decMatrix &matrix, const decVector &position, float radius){
-	matrix = decMatrix::CreateScale(radius, radius, radius) * decMatrix::CreateTranslation(position);
+void deoglShapeSphere::CalcMatrix(decMatrix &matrix, const decVector &position,
+float radius, const decVector2 &axisScaling, const decQuaternion &orientation){
+	matrix.SetWorld(position, orientation, {radius * axisScaling.x, radius, radius * axisScaling.y});
 }
 
 void deoglShapeSphere::AddVBOLines(sVBOData *data){
 	const float stepAngleSegment = PI * 2.0f / (float)(SEGMENT_COUNT);
 	const float stepAngleRing = PI / (float)(RING_COUNT + 1);
-	float radius, angle, height, x, z;
 	int i, j, base;
 	
 	base = 0;
 	for(i=0; i<RING_COUNT; i++){
-		angle = stepAngleRing * (float)(i + 1); // first ring is actually at i=1
-		radius = sinf(angle);
-		height = cosf(angle);
+		float angle = stepAngleRing * (float)(i + 1); // first ring is actually at i=1
+		float radius = sinf(angle);
+		float height = cosf(angle);
 		
 		for(j=0; j<SEGMENT_COUNT; j++){
 			angle = stepAngleSegment * (float)j;
@@ -88,13 +88,13 @@ void deoglShapeSphere::AddVBOLines(sVBOData *data){
 	}
 	
 	for(i=0; i<SEGMENT_COUNT; i++){
-		angle = stepAngleSegment * (float)i;
-		x = sinf(angle);
-		z = cosf(angle);
+		float angle = stepAngleSegment * (float)i;
+		float x = sinf(angle);
+		float z = cosf(angle);
 		
 		for(j=0; j<RING_COUNT+1; j++){
 			angle = stepAngleRing * (float)j;
-			radius = sinf(angle);
+			float radius = sinf(angle);
 			data[base++].SetSelFalse(x * radius, cosf(angle), z * radius);
 			
 			angle = stepAngleRing * (float)(j + 1);
@@ -107,18 +107,17 @@ void deoglShapeSphere::AddVBOLines(sVBOData *data){
 void deoglShapeSphere::AddVBOFaces(sVBOData *data){
 	const float stepAngleSegment = PI * 2.0f / (float)(SEGMENT_COUNT);
 	const float stepAngleRing = PI / (float)(RING_COUNT + 1);
-	float radius1, radius2, angle1, height1, height2, angle2;
 	int i, j, base;
 	
 	base = 0;
 	for(i=0; i<RING_COUNT+1; i++){
-		angle1 = stepAngleRing * (float)i;
-		radius1 = sinf(angle1);
-		height1 = cosf(angle1);
+		float angle1 = stepAngleRing * (float)i;
+		float radius1 = sinf(angle1);
+		float height1 = cosf(angle1);
 		
-		angle2 = stepAngleRing * (float)(i + 1);
-		radius2 = sinf(angle2);
-		height2 = cosf(angle2);
+		float angle2 = stepAngleRing * (float)(i + 1);
+		float radius2 = sinf(angle2);
+		float height2 = cosf(angle2);
 		
 		if(i == 0){
 			for(j=0; j<SEGMENT_COUNT; j++){

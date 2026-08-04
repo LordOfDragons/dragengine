@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "aeRuleSubAnimator.h"
 #include "../aeAnimator.h"
 #include "../controller/aeController.h"
@@ -49,71 +45,166 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 
 
-
 // Definitions
 ////////////////
 
 #define LOGSOURCE "Animator Editor"
 
 
+// Class aeRuleSubAnimator::Connection
+////////////////////////////////////////
+
+aeRuleSubAnimator::Connection::MetaContext::Ref aeRuleSubAnimator::Connection::CreateMetaContext(
+aeWindowMain &windowMain, Connection *connection){
+	return MetaContext::Ref::New("animator.rule_subanimator_connection",
+		"Connection", "Connection properties",
+		windowMain.GetMCAnimatorProperties().ruleSubAnimator.connection.metaProperties, connection);
+}
+
+aeRuleSubAnimator::Connection::Connection(aeWindowMain &awindowMain) :
+windowMain(awindowMain),
+metaContext(CreateMetaContext(windowMain, this)),
+mpTarget(windowMain.GetMCAnimatorProperties().ruleSubAnimator.connection.target, metaContext),
+mpController(windowMain.GetMCAnimatorProperties().ruleSubAnimator.connection.controller, metaContext)
+{
+	mpTarget.onValueChanged = [this](){
+		if(parentRule){
+			const auto sa = parentRule->GetSubAnimator();
+			targetIndex = sa ? sa->GetControllers().IndexOfNamed(mpTarget) : -1;
+			
+			parentRule->UpdateEngineConnections();
+			parentRule->NotifyRuleChanged();
+			
+		}else{
+			targetIndex = -1;
+		}
+	};
+	mpController.onValueChanged = mpTarget.onValueChanged;
+}
+
+aeRuleSubAnimator::Connection::Connection(const Connection &copy) :
+Connection(copy.windowMain){
+	mpTarget.SetValue(copy.mpTarget, false);
+	mpController.SetValue(copy.mpController, false);
+}
+
+aeRuleSubAnimator::Connection::~Connection(){
+	if(metaContext){
+		metaContext->Dispose();
+	}
+}
+
+igdeEnvironment &aeRuleSubAnimator::Connection::GetEnvironment() const{
+	return windowMain.GetEnvironment();
+}
+
+igdeUndoSystem *aeRuleSubAnimator::Connection::GetUndoSystem() const{
+	return windowMain.GetAnimator()->GetUndoSystem();
+}
+
 
 // Class aeRuleSubAnimator
 ////////////////////////////
 
+aeRuleSubAnimator::MetaContext::Ref aeRuleSubAnimator::CreateMetaContext(aeWindowMain &windowMain, aeRuleSubAnimator *rule){
+	return MetaContext::Ref::New("animator.rule_sub_animator", "Rule Sub Animator", "Rule sub animator properties",
+		windowMain.GetMCAnimatorProperties().ruleSubAnimator.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleSubAnimator::aeRuleSubAnimator(const char *name) :
-aeRule(deAnimatorRuleVisitorIdentify::ertSubAnimator, name),
-pEnablePosition(true),
-pEnableOrientation(true),
-pEnableSize(true),
-pEnableVertexPositionSet(true){
+aeRuleSubAnimator::aeRuleSubAnimator(aeWindowMain &windowMain, const char *aname) :
+aeRuleSubAnimator(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleSubAnimator::aeRuleSubAnimator(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertSubAnimator, aname),
+mpPathSubAnimator(windowMain.GetMCAnimatorProperties().ruleSubAnimator.pathSubAnimator, metaContext),
+mpEnablePosition(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enablePosition, metaContext),
+mpEnableOrientation(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableOrientation, metaContext),
+mpEnableSize(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableSize, metaContext),
+mpEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableVertexPositionSet, metaContext),
+mpConnections(windowMain.GetMCAnimatorProperties().ruleSubAnimator.connection.connections, metaContext),
+mpConnection(windowMain.GetMCAnimatorProperties().ruleSubAnimator.connection.connection, metaContext)
+{
+	mpPathSubAnimator.onValueChanged = [this](){
+		NotifyRuleChanged();
+		LoadSubAnimator();
+	};
+	
+	mpEnablePosition.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnablePosition(mpEnablePosition);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpEnableOrientation.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableOrientation(mpEnableOrientation);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpEnableSize.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableSize(mpEnableSize);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpEnableVertexPositionSet.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableVertexPositionSet(mpEnableVertexPositionSet);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpConnections.onValueChanged = [this](){
+		UpdateEngineConnections();
+		NotifyRuleChanged();
+	};
+	mpConnections.onObjectAdded = [this](const Connection::Ref &connection){
+		connection->parentRule = this;
+	};
+	mpConnections.onObjectRemoved = [this](const Connection::Ref &connection){
+		connection->parentRule = nullptr;
+	};
+	mpConnections.onActiveChanged = [this](){
+		mpConnection = mpConnections.GetActive()
+			? mpConnections.GetActive()->metaContext
+			: mpConnection.Property().GetDefaultValue();
+	};
 }
 
 aeRuleSubAnimator::aeRuleSubAnimator(const aeRuleSubAnimator &copy) :
-aeRule(copy),
-pPathSubAnimator(copy.pPathSubAnimator),
-pEnablePosition(copy.pEnablePosition),
-pEnableOrientation(copy.pEnableOrientation),
-pEnableSize(copy.pEnableSize),
-pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
-pConnections(copy.pConnections)
+aeRuleSubAnimator(copy.GetWindowMain(), copy.mpName)
 {
-	pSubAnimator = copy.pSubAnimator;
+	pInitCopy(copy);
+	mpPathSubAnimator.SetValue(copy.mpPathSubAnimator, false);
+	mpEnablePosition.SetValue(copy.mpEnablePosition, false);
+	mpEnableOrientation.SetValue(copy.mpEnableOrientation, false);
+	mpEnableSize.SetValue(copy.mpEnableSize, false);
+	mpEnableVertexPositionSet.SetValue(copy.mpEnableVertexPositionSet, false);
+	
+	auto connections = igdeMetaPropertyListStorage<Connection>::Storage::ListType();
+	copy.mpConnections->Visit([&](const Connection::Ref &connection){
+		connections.Add(Connection::Ref::New(connection));
+	});
+	mpConnections.SetValue(connections, false);
 }
 
-aeRuleSubAnimator::~aeRuleSubAnimator(){
-}
-
+aeRuleSubAnimator::~aeRuleSubAnimator() = default;
 
 
 // Management
 ///////////////
 
-void aeRuleSubAnimator::SetPathSubAnimator(const char *path){
-	if(pPathSubAnimator == path){
-		return;
-	}
-	
-	pPathSubAnimator = path;
-	NotifyRuleChanged();
-}
-
 void aeRuleSubAnimator::LoadSubAnimator(){
-	// clear connections only if not manually set
-	const bool autoConnections = !pConnections.HasMatching([](const aeController *controller){
-		return controller != nullptr;
+	mpConnections->Visit([](Connection &connection){
+		connection.targetIndex = -1;
 	});
-	
-	if(autoConnections){
-		pConnections.RemoveAll();
-	}
-	
-	// release the sub animator
-	if(pSubAnimator){
-		pSubAnimator = nullptr;
-	}
+	pSubAnimator.Clear();
 	
 	// if there is no parent animator no loading can be done
 	aeAnimator * const parentAnimator = GetAnimator();
@@ -122,20 +213,18 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	}
 	
 	// otherwise try loading the animator
-	deAnimatorRuleSubAnimator *rule = (deAnimatorRuleSubAnimator*)GetEngineRule();
-	deEngine *engine = parentAnimator->GetEngine();
-	aeAnimator::Ref animator;
+	auto rule = dynamic_cast<deAnimatorRuleSubAnimator*>(GetEngineRule());
+	auto engine = parentAnimator->GetEngine();
 	
 	// try to load the animator
-	if(!pPathSubAnimator.IsEmpty()){
+	if(!mpPathSubAnimator->IsEmpty()){
 		parentAnimator->GetLogger()->LogInfoFormat(LOGSOURCE,
-			"Rule Sub Animator: Loading animator %s...", pPathSubAnimator.GetString());
+			"Rule Sub Animator: Loading animator %s...", mpPathSubAnimator->GetString());
 		
 		try{
 			// load from file
-			animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator(
-				decPath::AbsolutePathUnix(pPathSubAnimator, parentAnimator->GetDirectoryPath()).GetPathUnix());
-			
+			const auto animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator(
+				decPath::AbsolutePathUnix(mpPathSubAnimator, parentAnimator->GetDirectoryPath()).GetPathUnix());
 			
 			// create animator
 			pSubAnimator = engine->GetAnimatorManager()->CreateAnimator();
@@ -143,44 +232,42 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 			pSubAnimator->SetAnimation(animator->GetEngineAnimator()->GetAnimation());
 			
 			// add controllers
-			animator->GetControllers().Visit([&](const aeController &controller){
-				const deAnimatorController::Ref engController(deAnimatorController::Ref::New());
-				engController->SetName(controller.GetName());
-				engController->SetValueRange(controller.GetMinimumValue(), controller.GetMaximumValue());
-				engController->SetCurrentValue(controller.GetCurrentValue());
-				engController->SetFrozen(controller.GetFrozen());
-				engController->SetClamp(controller.GetClamp());
-				engController->SetVector(controller.GetVector());
-				
+			animator->mpControllers->Visit([&](const aeController &controller){
+				auto engController = deAnimatorController::Ref::New();
+				engController->SetName(controller.mpName);
+				engController->SetValueRange(controller.mpMinimumValue, controller.mpMaximumValue);
+				engController->SetCurrentValue(controller.mpCurrentValue);
+				engController->SetFrozen(controller.mpFrozen);
+				engController->SetClamp(controller.mpClamp);
+				engController->SetVector(controller.mpVector);
 				pSubAnimator->AddController(engController);
 			});
 			
 			// add links
-			animator->GetLinks().Visit([&](const aeLink &link){
-				const deAnimatorLink::Ref engLink(deAnimatorLink::Ref::New());
+			animator->mpLinks->Visit([&](const aeLink &link){
+				auto engLink = deAnimatorLink::Ref::New();
 				
-				if(link.GetController()){
-					engLink->SetController(animator->GetControllers().IndexOf(link.GetController()));
+				if(link.mpController){
+					engLink->SetController(animator->mpControllers->IndexOf(link.mpController));
 					
 				}else{
 					engLink->SetController(-1);
 				}
 				
-				engLink->SetCurve(link.GetCurve());
-				engLink->SetRepeat(link.GetRepeat());
-				engLink->SetBone(link.GetBone());
-				engLink->SetBoneParameter(link.GetBoneParameter());
-				engLink->SetBoneValueRange(link.GetBoneMinimum(), link.GetBoneMaximum());
-				engLink->SetVertexPositionSet(link.GetVertexPositionSet());
-				engLink->SetVertexPositionSetValueRange(
-					link.GetVertexPositionSetMinimum(), link.GetVertexPositionSetMaximum());
+				engLink->SetCurve(link.mpCurve);
+				engLink->SetRepeat(link.mpRepeat);
+				engLink->SetBone(link.mpBone);
+				engLink->SetBoneParameter(link.mpBoneParameter);
+				engLink->SetBoneValueRange(link.mpBoneMinimum, link.mpBoneMaximum);
+				engLink->SetVertexPositionSet(link.mpVertexPositionSet);
+				engLink->SetVertexPositionSetValueRange(link.mpVpsMinimum, link.mpVpsMaximum);
 				
 				pSubAnimator->AddLink(engLink);
 			});
 			
 			// add rules
-			animator->GetRules().Visit([&](aeRule &rule2){
-				pSubAnimator->AddRule(rule2.CreateEngineRule());
+			animator->mpRules->Visit([&](const aeRule::Ref &rule2){
+				pSubAnimator->AddRule(rule2->CreateEngineRule());
 			});
 			
 			// free the loaded animator as it is no more needed
@@ -189,10 +276,13 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 		}
 	}
 	
-	if(pSubAnimator && autoConnections){
-		while(pConnections.GetCount() < pSubAnimator->GetControllers().GetCount()){
-			pConnections.Add(nullptr);
-		}
+	if(pSubAnimator){
+		mpConnections->Visit([&](Connection &connection){
+			const auto &target = connection.mpTarget.GetValue();
+			if(!target.IsEmpty()){
+				connection.targetIndex = pSubAnimator->GetControllers().IndexOfNamed(target);
+			}
+		});
 	}
 	
 	// if the engine rule exists assign sub animator
@@ -202,92 +292,25 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	
 	rule->SetSubAnimator(pSubAnimator);
 	
-	pUpdateConnections(*rule);
+	pUpdateEngineConnections(*rule);
 	NotifyRuleChanged();
 }
-
-
-
-void aeRuleSubAnimator::SetControllerAt(int position, aeController *controller){
-	if(controller == pConnections.GetAt(position)){
-		return;
-	}
-	
-	pConnections.SetAt(position, controller);
-	
-	deAnimatorRuleSubAnimator * const rule = (deAnimatorRuleSubAnimator*)GetEngineRule();
-	if(rule){
-		pUpdateConnections(*rule);
-	}
-	
-	NotifyRuleChanged();
-}
-
-
-
-void aeRuleSubAnimator::SetEnablePosition(bool enabled){
-	if(enabled != pEnablePosition){
-		pEnablePosition = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnablePosition(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-void aeRuleSubAnimator::SetEnableOrientation(bool enabled){
-	if(enabled != pEnableOrientation){
-		pEnableOrientation = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableOrientation(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-void aeRuleSubAnimator::SetEnableSize(bool enabled){
-	if(enabled != pEnableSize){
-		pEnableSize = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableSize(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-void aeRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
-	if(enabled != pEnableVertexPositionSet){
-		pEnableVertexPositionSet = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableVertexPositionSet(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
 
 
 deAnimatorRule::Ref aeRuleSubAnimator::CreateEngineRule(){
-	const deAnimatorRuleSubAnimator::Ref engRule(deAnimatorRuleSubAnimator::Ref::New());
+	auto engRule = deAnimatorRuleSubAnimator::Ref::New();
 	
 	InitEngineRule(engRule);
 	
 	engRule->SetSubAnimator(pSubAnimator);
-	
-	pUpdateConnections(*engRule);
-	
-	engRule->SetEnablePosition(pEnablePosition);
-	engRule->SetEnableOrientation(pEnableOrientation);
-	engRule->SetEnableSize(pEnableSize);
-	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	pUpdateEngineConnections(*engRule);
+	engRule->SetEnablePosition(mpEnablePosition);
+	engRule->SetEnableOrientation(mpEnableOrientation);
+	engRule->SetEnableSize(mpEnableSize);
+	engRule->SetEnableVertexPositionSet(mpEnableVertexPositionSet);
 	
 	return engRule;
 }
-
 
 
 void aeRuleSubAnimator::UpdateCompAnim(){
@@ -299,74 +322,44 @@ void aeRuleSubAnimator::UpdateCompAnim(){
 }
 
 
-
-// Operators
-//////////////
-
-aeRuleSubAnimator &aeRuleSubAnimator::operator=(const aeRuleSubAnimator &copy){
-	SetPathSubAnimator(copy.pPathSubAnimator);
-	
-	SetEnablePosition(copy.pEnablePosition);
-	SetEnableOrientation(copy.pEnableOrientation);
-	SetEnableSize(copy.pEnableSize);
-	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
-	
-	pSubAnimator = copy.pSubAnimator;
-	pConnections = copy.pConnections;
-	
-	deAnimatorRuleSubAnimator * const rule = static_cast<deAnimatorRuleSubAnimator*>(GetEngineRule());
-	if(rule){
-		pUpdateConnections(*rule);
-	}
-	
-	aeRule::operator=(copy);
-	return *this;
-}
-
-
-
 aeRule::Ref aeRuleSubAnimator::CreateCopy() const{
 	return Ref::New(*this);
-}
-
-void aeRuleSubAnimator::ListLinks(aeLink::List &list){
-	aeRule::ListLinks(list);
 }
 
 void aeRuleSubAnimator::OnParentAnimatorChanged(){
 	LoadSubAnimator();
 }
 
+void aeRuleSubAnimator::UpdateEngineConnections() const{
+	auto rule = dynamic_cast<deAnimatorRuleSubAnimator*>(GetEngineRule());
+	if(rule){
+		pUpdateEngineConnections(*rule);
+	}
+}
 
 
 // Private Functions
 //////////////////////
 
-void aeRuleSubAnimator::pUpdateConnections(deAnimatorRuleSubAnimator &rule) const{
-	if(pConnections.HasMatching([](const aeController *controller){
-		return controller != nullptr;
-	})){
-		// custom connections
-		pConnections.VisitIndexed([&](int i, const aeController *controller){
-			int engController = -1;
-			if(controller){
-				engController = controller->GetEngineControllerIndex();
-			}
-			rule.SetConnectionAt(i, engController);
-		});
-		
-	}else{
-		// auto connections
-		if(GetAnimator()){
-			const aeController::List &controllers = GetAnimator()->GetControllers();
-			int i;
-			for(i=0; i<pConnections.GetCount(); i++){
-				const decString &name = pSubAnimator->GetControllers().GetAt(i)->GetName();
-				rule.SetConnectionAt(i, controllers.IndexOfNamed(name));
-			}
-			
-		}else{
-			rule.ClearConnections();
-		}
+void aeRuleSubAnimator::pUpdateEngineConnections(deAnimatorRuleSubAnimator &rule) const{
+	if(mpConnections->IsEmpty()){
+		rule.SetMatchingConnections(GetAnimator()->GetEngineAnimator());
+		return;
 	}
+	
+	rule.ClearConnections();
+	
+	mpConnections->Visit([&](const Connection &connection){
+		if(connection.targetIndex == -1){
+			return;
+		}
+		
+		const auto &name = connection.mpTarget.GetValue();
+		if(name.IsEmpty()){
+			return;
+		}
+		
+		const auto &controller = connection.mpController;
+		rule.SetConnectionAt(connection.targetIndex, controller ? controller->GetIndex() : -1);
+	});
 }

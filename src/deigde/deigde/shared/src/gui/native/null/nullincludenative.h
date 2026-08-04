@@ -39,6 +39,7 @@
 #include "igdeNativeNullIconListBox.h"
 #include "igdeNativeNullLabel.h"
 #include "igdeNativeNullListBox.h"
+#include "igdeNativeNullListBoxFilter.h"
 #include "igdeNativeNullMainWindow.h"
 #include "igdeNativeNullProgressBar.h"
 #include "igdeNativeNullRenderView.h"

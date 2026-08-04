@@ -38,7 +38,7 @@
 ////////////////////////////
 
 meUMoveObject::meUMoveObject(meWorld *world, const meObject::List &objects) :
-meBaseUndoMove(*world->GetEnvironment())
+meBaseUndoMove(world->GetEnvironment())
 {
 	if(!world){
 		DETHROW(deeInvalidParam);

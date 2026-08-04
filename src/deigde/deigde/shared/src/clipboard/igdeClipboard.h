@@ -25,9 +25,9 @@
 #ifndef _IGDECLIPBOARD_H_
 #define _IGDECLIPBOARD_H_
 
-#include <dragengine/common/collection/decTList.h>
+#include "igdeClipboardData.h"
 
-class igdeClipboardData;
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -69,7 +69,7 @@ public:
 	bool HasWithTypeName(const char *typeName) const;
 	
 	/** \brief Data matching type name or nullptr if absent. */
-	igdeClipboardData *GetWithTypeName(const char *typeName) const;
+	igdeClipboardData::Ref GetWithTypeName(const char *typeName) const;
 	
 	/** \brief Set data replacing data with the same type name if present. */
 	void Set(igdeClipboardData *data);

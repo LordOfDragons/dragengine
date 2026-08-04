@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "igdeWObject.h"
 #include "object/igdeWOSubObject.h"
 #include "object/igdeWOSOBillboard.h"
@@ -38,6 +34,8 @@
 #include "object/igdeWOSONavigationBlocker.h"
 #include "object/igdeWOSOComponent.h"
 #include "object/igdeWOSOWorld.h"
+#include "../igdeUIHelper.h"
+#include "../browse/igdeDialogBrowserObjectClass.h"
 #include "../../codec/igdeCodecPropertyString.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../engine/igdeEngineController.h"
@@ -128,7 +126,6 @@ public:
 };
 
 
-
 // Trigger listener
 /////////////////////
 
@@ -151,7 +148,6 @@ public:
 };
 
 
-
 // Asynchronous load finished listener
 ////////////////////////////////////////
 
@@ -168,6 +164,189 @@ void igdeWObject::cAsyncLoadFinished::ExtendsChanged(igdeWObject&){
 }
 
 
+// Class igdeWObject::MetaContext
+///////////////////////////////////
+
+namespace{
+
+class cActionMPSelectClass : public igdeMetaProperty::Action{
+	igdeWObject::MetaProperties::ObjectClass &pPropertyClass;
+	
+public:
+	cActionMPSelectClass(igdeWObject::MetaProperties::ObjectClass &property,
+		igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	Action(owner, context, "@Igde.MetaPropertyPath.Action.BrowseGameDef",
+		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch),
+		"@Igde.MetaPropertyPath.Action.BrowseGameDef.ToolTip"),
+	pPropertyClass(property){}
+	
+	void OnAction() override{
+		const auto &context = GetContext();
+		if(!pPropertyClass.IsValid(context)){
+			return;
+		}
+		
+		igdeGDClass *gdClass = pPropertyClass.Owner(context).GetGDClass();
+		if(igdeDialogBrowserObjectClass::SelectObjectClass(&GetOwner(), gdClass)){
+			pPropertyClass.ChangePropertyValue(context, gdClass->GetName());
+		}
+	}
+};
+
+}
+
+igdeWObject::MetaContext::Ref igdeWObject::CreateMetaContext(igdeWObject *wrapper){
+	return igdeWObject::MetaContext::Ref::New("igde.wobject",
+		"Object Wrapper", "Object Wrapper properties",
+		igdeWObject::MetaProperties::global.properties, wrapper);
+}
+
+
+// Class igdeWObject::MetaProperties
+//////////////////////////////////////
+
+// ObjectClass
+
+igdeWObject::MetaProperties::ObjectClass::ObjectClass() :
+igdeMetaPropertyMCT("igde.wobject.class", "Igde.WPWObject.Class"){
+	SetEnableAllowed(true);
+}
+
+igdeWObject::MetaProperties::ObjectClass::~ObjectClass() = default;
+
+igdeMetaPropertyStringStorage::Storage &igdeWObject::MetaProperties::ObjectClass::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPObjectClass();
+}
+
+decStringSet igdeWObject::MetaProperties::ObjectClass::GetPropertyAllowedStrings(const ContextRef &context) const{
+	decStringSet set;
+	Owner(context).GetEnvironment().GetGameProject()->GetGameDefinition()->GetClassManager()->
+		GetClasses().Visit([&](const igdeGDClass &gdClass){
+			set.Add(gdClass.GetName());
+		});
+	return set;
+}
+
+void igdeWObject::MetaProperties::ObjectClass::AddContextMenuEntries(
+igdeMenuCascade &menu, const ContextRef &context, igdeWidget &owner){
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	helper.MenuCommand(menu, deTObjectReference<cActionMPSelectClass>::New(*this, owner, context));
+}
+
+
+// World
+
+igdeWObject::MetaProperties::World::World() :
+igdeMetaPropertyMCT("igde.wobject.world", "Igde.WPWObject.World", igdeEnvironment::eFilePatternListTypes::efpltWorld){
+}
+
+igdeWObject::MetaProperties::World::~World() = default;
+
+igdeMetaPropertyPathStorage::Storage &igdeWObject::MetaProperties::World::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPWorld();
+}
+
+
+// Position
+
+igdeWObject::MetaProperties::Position::Position() :
+igdeMetaPropertyMCT("igde.wobject.position", "Igde.WPWObject.Position"){
+}
+
+igdeWObject::MetaProperties::Position::~Position() = default;
+
+igdeMetaPropertyDVectorStorage::Storage &igdeWObject::MetaProperties::Position::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPPosition();
+}
+
+
+// Rotation
+
+igdeWObject::MetaProperties::Rotation::Rotation() :
+igdeMetaPropertyMCT("igde.wobject.rotation", "Igde.WPWObject.Orientation"){
+}
+
+igdeWObject::MetaProperties::Rotation::~Rotation() = default;
+
+igdeMetaPropertyVectorStorageQuaternion::Storage &igdeWObject::MetaProperties::Rotation::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPRotation();
+}
+
+
+// Scaling
+
+igdeWObject::MetaProperties::Scaling::Scaling() :
+igdeMetaPropertyMCT("igde.wobject.scaling", "Igde.WPWObject.Scaling"){
+	SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
+}
+
+igdeWObject::MetaProperties::Scaling::~Scaling() = default;
+
+igdeMetaPropertyVectorStorage::Storage &igdeWObject::MetaProperties::Scaling::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPScaling();
+}
+
+igdeMetaPropertyVectorUndo::Ref igdeWObject::MetaProperties::Scaling::ChangePropertyValue(
+const ContextRef &context, const decVector &newValue, const char *undoInfo, const char *undoInfoLong){
+	const auto absScaling = newValue.Absolute();
+	return igdeMetaPropertyMCT::ChangePropertyValue(context, decVector(
+		absScaling.x > 1e-5f ? newValue.x : (newValue.x > 0.0f ? 1e-5f : -1e-5f),
+		absScaling.y > 1e-5f ? newValue.y : (newValue.y > 0.0f ? 1e-5f : -1e-5f),
+		absScaling.z > 1e-5f ? newValue.z : (newValue.z > 0.0f ? 1e-5f : -1e-5f)),
+			undoInfo, undoInfoLong);
+}
+
+
+// Visible
+
+igdeWObject::MetaProperties::Visible::Visible() :
+igdeMetaPropertyMCT("igde.wobject.visible", "Igde.WPWObject.Visible"){
+	SetDefaultValue(true);
+}
+
+igdeWObject::MetaProperties::Visible::~Visible() = default;
+
+igdeMetaPropertyBooleanStorage::Storage &igdeWObject::MetaProperties::Visible::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPVisible();
+}
+
+
+// DynamicCollider
+
+igdeWObject::MetaProperties::DynamicCollider::DynamicCollider() :
+igdeMetaPropertyMCT("igde.wobject.dynamicCollider", "Igde.WPWObject.DynamicCollider"){
+}
+
+igdeWObject::MetaProperties::DynamicCollider::~DynamicCollider() = default;
+
+igdeMetaPropertyBooleanStorage::Storage &igdeWObject::MetaProperties::DynamicCollider::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPDynamicCollider();
+}
+
+
+// Properties
+
+igdeWObject::MetaProperties igdeWObject::MetaProperties::global;
+
+igdeWObject::MetaProperties::MetaProperties() :
+objectClass(deTObjectReference<ObjectClass>::New()),
+world(deTObjectReference<World>::New()),
+position(deTObjectReference<Position>::New()),
+rotation(deTObjectReference<Rotation>::New()),
+scaling(deTObjectReference<Scaling>::New()),
+visible(deTObjectReference<Visible>::New()),
+dynamicCollider(deTObjectReference<DynamicCollider>::New()),
+properties(igdeMetaContext::PropertyList::Ref::New(decTObjectOrderedSet<igdeMetaProperty>(devctag,
+	objectClass, world, position, rotation, scaling, visible, dynamicCollider))){
+}
+
 
 // Class igdeWObject
 //////////////////////
@@ -177,14 +356,13 @@ void igdeWObject::cAsyncLoadFinished::ExtendsChanged(igdeWObject&){
 
 igdeWObject::igdeWObject(igdeEnvironment &environment) :
 pEnvironment(environment),
+pUndoSystem(nullptr),
+pMetaContext(CreateMetaContext(this)),
 pColliderUserPointer(nullptr),
-pScaling(1.0f, 1.0f, 1.0f),
 pRenderLayerMask(0x1),
 pRenderEnvMapMask(0x2),
 pAudioLayerMask(0x4),
-pDynamicCollider(false),
 pRequiresInteraction(false),
-pVisible(true),
 pPartiallyHidden(false),
 pListenerCollider(nullptr),
 pTriggerTable(nullptr),
@@ -194,7 +372,14 @@ pDirtyFallbackColliderShape(false),
 pOutlineColor(1.0f, 0.0f, 0.0f),
 pAsyncLoadFinished(nullptr),
 pAsyncLoadCounter(0),
-pAnyContentVisible(false)
+pAnyContentVisible(false),
+pMPObjectClass(MetaProperties::global.objectClass, pMetaContext),
+pMPWorld(MetaProperties::global.world, pMetaContext),
+pMPPosition(MetaProperties::global.position, pMetaContext),
+pMPRotation(MetaProperties::global.rotation, pMetaContext),
+pMPScaling(MetaProperties::global.scaling, pMetaContext),
+pMPVisible(MetaProperties::global.visible, pMetaContext),
+pMPDynamicCollider(MetaProperties::global.dynamicCollider, pMetaContext)
 {
 	try{
 		pTriggerListener = igdeWObjectTriggerListener::Ref::New(*this);
@@ -217,6 +402,52 @@ pAnyContentVisible(false)
 		pCleanUp();
 		throw;
 	}
+	
+	pMPObjectClass.onValueChanged = [this](){
+		SetGDClass(pEnvironment.GetGameProject()->GetGameDefinition()->
+			GetClassManager()->GetClasses().FindNamed(pMPObjectClass));
+		onChanged();
+	};
+	
+	pMPWorld.onValueChanged = [this](){
+		pDestroySubObjects();
+		DetachCollider();
+		pWorldGDClass.Clear();
+		pUpdateContent();
+		onChanged();
+	};
+	
+	pMPPosition.onValueChanged = [this](){
+		pUpdateMatrices();
+		pColliderFallback->SetPosition(pMPPosition);
+		pSubObjectsUpdateGeometry();
+		onChanged();
+	};
+	
+	pMPRotation.onValueChanged = [this](){
+		pUpdateMatrices();
+		pColliderFallback->SetOrientation(pMPRotation);
+		pSubObjectsUpdateGeometry();
+		onChanged();
+	};
+	
+	pMPScaling.onValueChanged = [this](){
+		pDirtyFallbackColliderShape = true;
+		pUpdateMatrices();
+		pSubObjectsUpdateGeometry();
+		pUpdateColliderShapes();
+		onChanged();
+	};
+	
+	pMPVisible.onValueChanged = [this](){
+		pUpdateVisiblity();
+		onChanged();
+	};
+	
+	pMPDynamicCollider.onValueChanged = [this](){
+		pUpdateColliderResponseType();
+		onChanged();
+	};
 }
 
 igdeWObject::~igdeWObject(){
@@ -224,12 +455,15 @@ igdeWObject::~igdeWObject(){
 }
 
 
-
 // Management
 ///////////////
 
-void igdeWObject::SetWorld(deWorld *world){
-	if(world == pWorld){
+void igdeWObject::SetUndoSystem(igdeUndoSystem *undoSystem){
+	pUndoSystem = undoSystem;
+}
+
+void igdeWObject::SetWorld(deWorld *value){
+	if(value == pWorld){
 		return;
 	}
 	
@@ -239,15 +473,15 @@ void igdeWObject::SetWorld(deWorld *world){
 		pWorld->RemoveCollider(pColliderFallback);
 	}
 	
-	pWorld = world;
+	pWorld = value;
 	
-	if(world){
-		world->AddCollider(pColliderFallback);
+	if(pWorld){
+		pWorld->AddCollider(pColliderFallback);
 	}
 	
 	pUpdateVisiblity();
 	
-	if(world){
+	if(pWorld){
 		pCreateSubObjects();
 	}
 }
@@ -278,21 +512,11 @@ void igdeWObject::SetGDClass(igdeGDClass *gdClass){
 }
 
 void igdeWObject::SetGDClassName(const char *gdClassName){
-	SetGDClass(pEnvironment.GetGameProject()->GetGameDefinition()->GetClassManager()->GetClasses().FindNamed(gdClassName));
+	pMPObjectClass = gdClassName;
 }
 
 void igdeWObject::SetPathWorld(const char *path){
-	if(path == pPathWorld){
-		return;
-	}
-	
-	pDestroySubObjects();
-	DetachCollider();
-	pWorldGDClass.Clear();
-	
-	pPathWorld = path;
-	
-	pUpdateContent();
+	pMPWorld = path;
 }
 
 void igdeWObject::SetTriggerTable(igdeTriggerTargetList *triggerTable){
@@ -309,57 +533,22 @@ void igdeWObject::SetTriggerTable(igdeTriggerTargetList *triggerTable){
 
 
 
-void igdeWObject::SetPosition(const decDVector &position){
-	if(position.IsEqualTo(pPosition)){
-		return;
-	}
-	
-	pPosition = position;
-	pUpdateMatrices();
-	
-	pColliderFallback->SetPosition(position);
-	pSubObjectsUpdateGeometry();
+void igdeWObject::SetPosition(const decDVector &value){
+	pMPPosition = value;
 }
 
-void igdeWObject::SetOrientation(const decQuaternion &orientation){
-	if(orientation.IsEqualTo(pOrientation)){
-		return;
-	}
-	
-	pOrientation = orientation;
-	pUpdateMatrices();
-	
-	pColliderFallback->SetOrientation(orientation);
-	pSubObjectsUpdateGeometry();
+void igdeWObject::SetOrientation(const decQuaternion &value){
+	pMPRotation = value;
 }
 
-void igdeWObject::SetScaling(const decVector &scaling){
-	if(scaling.IsEqualTo(pScaling)){
-		return;
-	}
-	
-	const decVector absScaling(scaling.Absolute());
-	
-	pScaling.x = absScaling.x > 1e-5f ? scaling.x : (scaling.x > 0.0f ? 1e-5f : -1e-5f);
-	pScaling.y = absScaling.y > 1e-5f ? scaling.y : (scaling.y > 0.0f ? 1e-5f : -1e-5f);
-	pScaling.z = absScaling.z > 1e-5f ? scaling.z : (scaling.z > 0.0f ? 1e-5f : -1e-5f);
-	pDirtyFallbackColliderShape = true;
-	
-	pUpdateMatrices();
-	
-	pSubObjectsUpdateGeometry();
-	pUpdateColliderShapes();
+void igdeWObject::SetScaling(const decVector &value){
+	pMPScaling = value;
 }
 
 
 
-void igdeWObject::SetVisible(bool visible){
-	if(visible == pVisible){
-		return;
-	}
-	
-	pVisible = visible;
-	pUpdateVisiblity();
+void igdeWObject::SetVisible(bool value){
+	pMPVisible = value;
 }
 
 void igdeWObject::SetPartiallyHidden(bool partiallyHidden){
@@ -464,12 +653,7 @@ void igdeWObject::SetCollisionFilterInteract(const decCollisionFilter &collision
 }
 
 void igdeWObject::SetDynamicCollider(bool dynamic){
-	if(dynamic == pDynamicCollider){
-		return;
-	}
-	
-	pDynamicCollider = dynamic;
-	pUpdateColliderResponseType();
+	pMPDynamicCollider = dynamic;
 }
 
 void igdeWObject::SetRequiresInteraction(bool requiresInteraction){
@@ -516,6 +700,7 @@ bool igdeWObject::AllSubObjectsFinishedLoading() const{
 
 
 void igdeWObject::OnGameDefinitionChanged(){
+	pMPObjectClass.Property().NotifyAllowedStringsChanged(pMetaContext);
 	if(pGDClass){
 		SetGDClassName(pGDClass->GetName());
 	}
@@ -621,7 +806,7 @@ void igdeWObject::AttachColliderRig(deColliderComponent *parentCollider){
 }
 
 void igdeWObject::AttachColliderBone(deColliderComponent *parentCollider, const char *bone,
-const decVector &position, const decQuaternion &orientation){
+const decVector &aposition, const decQuaternion &aorientation){
 	if(!parentCollider || !bone){
 		DETHROW(deeInvalidParam);
 	}
@@ -633,16 +818,16 @@ const decVector &position, const decQuaternion &orientation){
 			auto attachment = deColliderAttachment::Ref::New(pColliderComponent);
 			attachment->SetAttachType(deColliderAttachment::eatBone);
 			attachment->SetTrackBone(bone);
-			attachment->SetPosition(position);
-			attachment->SetOrientation(orientation);
+			attachment->SetPosition(aposition);
+			attachment->SetOrientation(aorientation);
 			parentCollider->AddAttachment(std::move(attachment));
 		}
 		
 		auto attachment = deColliderAttachment::Ref::New(pColliderFallback);
 		attachment->SetAttachType(deColliderAttachment::eatBone);
 		attachment->SetTrackBone(bone);
-		attachment->SetPosition(position);
-		attachment->SetOrientation(orientation);
+		attachment->SetPosition(aposition);
+		attachment->SetOrientation(aorientation);
 		parentCollider->AddAttachment(std::move(attachment));
 		
 		pAttachToBone = bone;
@@ -672,8 +857,8 @@ void igdeWObject::DetachCollider(){
 	pAttachToBone.Empty();
 	
 	// reset position and orientation otherwise our state and the collider state are out of sync
-	pColliderFallback->SetPosition(pPosition);
-	pColliderFallback->SetOrientation(pOrientation);
+	pColliderFallback->SetPosition(pMPPosition);
+	pColliderFallback->SetOrientation(pMPRotation);
 	
 	pSubObjectsUpdateGeometry();
 }
@@ -764,7 +949,7 @@ void igdeWObject::SetInteractCollider(deColliderComponent *collider){
 		pEnvironment.SetColliderDelegee(pColliderComponent, nullptr);
 		pEnvironment.SetColliderUserPointer(pColliderComponent, nullptr);
 		pColliderComponent = nullptr;
-		pColliderFallback->SetEnabled(pVisible && !pPartiallyHidden);
+		pColliderFallback->SetEnabled(pMPVisible && !pPartiallyHidden);
 	}
 	
 	pCollidersInteraction.Visit([&](deCollider *c){
@@ -843,6 +1028,10 @@ void igdeWObject::pCleanUp(){
 	if(pListenerCollider){
 		delete pListenerCollider;
 	}
+	
+	if(pMetaContext){
+		pMetaContext->Dispose();
+	}
 }
 
 
@@ -866,7 +1055,7 @@ void igdeWObject::pUpdateContent(){
 }
 
 void igdeWObject::pUpdateVisiblity(){
-	const bool partiallyVisible = (pVisible && !pPartiallyHidden);
+	const bool partiallyVisible = (pMPVisible && !pPartiallyHidden);
 	pColliderFallback->SetEnabled(!pColliderComponent && partiallyVisible);
 	
 	pSubObjectsUpdateVisibility();
@@ -875,7 +1064,7 @@ void igdeWObject::pUpdateVisiblity(){
 igdeGDClass::Ref igdeWObject::pCreateWorldGDClass(){
 	auto gdclass = igdeGDClass::Ref::New("_World");
 	auto gdcworld = igdeGDCWorld::Ref::New();
-	gdcworld->SetPath(pPathWorld);
+	gdcworld->SetPath(pMPWorld);
 	gdclass->AddWorld(gdcworld);
 	return gdclass;
 }
@@ -887,7 +1076,7 @@ void igdeWObject::pCreateSubObjects(){
 		if(pGDClass){
 			pCreateSubObjects("", pGDClass, igdeGDClass::FilterSubObjectsAll);
 			
-		}else if(!pPathWorld.IsEmpty()){
+		}else if(!pMPWorld->IsEmpty()){
 			if(!pWorldGDClass){
 				pWorldGDClass = pCreateWorldGDClass();
 			}
@@ -1167,7 +1356,7 @@ void igdeWObject::pUpdateColliderResponseType(){
 	if(pColliderComponent){
 		responseType = pColliderComponent->GetResponseType();
 		
-	}else if(pDynamicCollider){
+	}else if(pMPDynamicCollider){
 		responseType = deCollider::ertDynamic;
 		
 	}else{
@@ -1186,6 +1375,7 @@ void igdeWObject::pUpdateColliderShapes(){
 	pDirtyFallbackColliderShape = false;
 	decShape::List shapeList;
 	
+	const decVector &s = pMPScaling;
 	pSubObjects.Visit([&](igdeWOSubObject &so){
 		if(!so.HasBoxExtends()){
 			return;
@@ -1196,12 +1386,12 @@ void igdeWObject::pUpdateColliderShapes(){
 		decVector boxSize((boxMaxExtend - boxMinExtend) * 0.5f);
 		decVector boxCenter((boxMinExtend + boxMaxExtend) * 0.5f);
 		
-		boxSize.x *= pScaling.x;
-		boxSize.y *= pScaling.y;
-		boxSize.z *= pScaling.z;
-		boxCenter.x *= pScaling.x;
-		boxCenter.y *= pScaling.y;
-		boxCenter.z *= pScaling.z;
+		boxSize.x *= s.x;
+		boxSize.y *= s.y;
+		boxSize.z *= s.z;
+		boxCenter.x *= s.x;
+		boxCenter.y *= s.y;
+		boxCenter.z *= s.z;
 		
 		shapeList.Add(decShapeBox::Ref::New(boxSize, boxCenter));
 	});
@@ -1259,6 +1449,6 @@ void igdeWObject::pPrepareExtends(){
 }
 
 void igdeWObject::pUpdateMatrices(){
-	pMatrix.SetWorld(pPosition, pOrientation, pScaling);
+	pMatrix.SetWorld(pMPPosition.GetValue(), pMPRotation.GetQuaternion(), pMPScaling.GetValue());
 	pInvMatrix = pMatrix.QuickInvert();
 }

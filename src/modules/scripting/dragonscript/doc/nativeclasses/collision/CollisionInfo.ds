@@ -19,6 +19,14 @@ class CollisionInfo
 	/** \brief Create collision information. */
 	private func new()
 	end
+	
+	/**
+	 * \brief Create copy of collision information.
+	 * \version 1.33
+	 */
+	func CollisionInfo copy()
+		return null
+	end
 	/*@}*/
 	
 	
@@ -26,110 +34,110 @@ class CollisionInfo
 	/** \name Management */
 	/*@{*/
 	/** \brief Owner bone or -1 if not applicable. */
-	public func int getOwnerBone()
+	func int getOwnerBone()
 		return 0
 	end
 	
 	/** \brief Owner shape or -1 if not applicable. */
-	public func int getOwnerShape()
+	func int getOwnerShape()
 		return 0
 	end
 	
 	/** \brief Owner face or -1 if not applicable. */
-	public func int getOwnerFace()
+	func int getOwnerFace()
 		return 0
 	end
 	
 	
 	
 	/** \brief Ccollider or \em null if hit something else. */
-	public func Collider getCollider()
+	func Collider getCollider()
 		return null
 	end
 	
 	/** \brief Collider bone or -1 if hit something else. */
-	public func int getBone()
+	func int getBone()
 		return 0
 	end
 	
 	/** \brief Collider rig (bone) shape or -1 if hit something else. */
-	public func int getShape()
+	func int getShape()
 		return 0
 	end
 	
 	/** \brief Collider bone or -1 if hit something else. */
-	public func int getFace()
+	func int getFace()
 		return 0
 	end
 	
 	/** \brief Collision has occurred. */
-	public func bool hasCollision()
+	func bool hasCollision()
 		return false
 	end
 	
 	/** \brief Collision with collider occurred, */
-	public func bool isCollider()
+	func bool isCollider()
 		return false
 	end
 	
 	/** \brief Collision with collider bone occurred. */
-	public func bool hasBone()
+	func bool hasBone()
 		return false
 	end
 	
 	/** \brief Collision with collider rig (bone) shape occurred. */
-	public func bool hasShape()
+	func bool hasShape()
 		return false
 	end
 	
 	/** \brief Collision with collider face occurred. */
-	public func bool hasFace()
+	func bool hasFace()
 		return false
 	end
 	
 	
 	
 	/** \brief Particle lifetime. */
-	public func float getParticleLifetime()
+	func float getParticleLifetime()
 		return 0.0
 	end
 	
 	/** \brief Particle mass. */
-	public func float getParticleMass()
+	func float getParticleMass()
 		return 0.0
 	end
 	
 	/** \brief Particle position. */
-	public func DVector getParticlePosition()
+	func DVector getParticlePosition()
 		return null
 	end
 	
 	/** \brief Set particle position. */
-	public func void setParticlePosition( DVector position )
+	func void setParticlePosition( DVector position )
 	end
 	
 	/** \brief Particle velocity. */
-	public func Vector getParticleVelocity()
+	func Vector getParticleVelocity()
 		return null
 	end
 	
 	/** \brief Set particle velocity. */
-	public func void setParticleVelocity( Vector velocity )
+	func void setParticleVelocity( Vector velocity )
 	end
 	
 	/** \brief Collision response to apply to particle. */
-	public func ParticleCollisionResponse getParticleResponse()
+	func ParticleCollisionResponse getParticleResponse()
 		return null
 	end
 	
 	/** \brief Set collision response to apply to particle. */
-	public func void setParticleResponse( ParticleCollisionResponse respone )
+	func void setParticleResponse( ParticleCollisionResponse respone )
 	end
 	
 	
 	
 	/** \brief Distance relative to displacement vector resulting in collision. */
-	public func float getDistance()
+	func float getDistance()
 		return 0.0
 	end
 	
@@ -140,7 +148,7 @@ class CollisionInfo
 	 * hit normal can not be defined. In this case the physics module sets
 	 * a reasonable hit normal. Hit normals are well defined with ray casts.
 	 */
-	public func Vector getNormal()
+	func Vector getNormal()
 		return null
 	end
 	
@@ -151,7 +159,7 @@ class CollisionInfo
 	 * a reasonable hit position in world space. A typical use is to play
 	 * a sound or emit particles at this location.
 	 */
-	public func DVector getPosition()
+	func DVector getPosition()
 		return null
 	end
 	
@@ -161,19 +169,19 @@ class CollisionInfo
 	 * Set by the physics module for dynamic collision response to a reasonable
 	 * hit impulse relative between both collision objects.
 	 */
-	public func float getImpulse()
+	func float getImpulse()
 		return 0.0
 	end
 	
 	
 	
 	/** \brief Collision detection has to stop. */
-	public func bool getStopTesting()
+	func bool getStopTesting()
 		return false
 	end
 	
 	/** \brief Set if collision detection has to stop. */
-	public func void setStopTesting( bool stopTesting )
+	func void setStopTesting( bool stopTesting )
 	end
 	/*@}*/
 end

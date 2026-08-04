@@ -748,7 +748,6 @@ void meWPWorld::SetWorld(meWorld *world){
 	meWPPropertyList &editProperties = (meWPPropertyList&)(igdeWidget&)pEditProperties;
 	
 	if(pWorld){
-		editProperties.SetClipboard(nullptr);
 		editProperties.SetUndoSystem(nullptr);
 		editProperties.SetTriggerTargetList(nullptr);
 		editProperties.SetIdentifiers(decStringSet());
@@ -760,7 +759,6 @@ void meWPWorld::SetWorld(meWorld *world){
 	
 	if(world){
 		world->AddNotifier(pListener);
-		editProperties.SetClipboard(&pWindowProperties.GetWindowMain().GetClipboard());
 		editProperties.SetUndoSystem(world->GetUndoSystem());
 		editProperties.SetTriggerTargetList(&world->GetTriggerTable());
 	}

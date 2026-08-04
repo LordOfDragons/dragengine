@@ -63,11 +63,15 @@ y((float)p.y){
 ///////////////
 
 float decVector2::Length() const{
-	return sqrtf(x * x + y * y);
+	return sqrtf(LengthSquared());
+}
+
+float decVector2::LengthSquared() const{
+	return x * x + y * y;
 }
 
 void decVector2::Normalize(){
-	const float len = sqrtf(x * x + y * y);
+	const float len = Length();
 	if(len == 0.0f){
 		DETHROW(deeDivisionByZero);
 	}
@@ -77,7 +81,7 @@ void decVector2::Normalize(){
 }
 
 decVector2 decVector2::Normalized() const{
-	const float len = sqrtf(x * x + y * y);
+	const float len = Length();
 	if(len == 0.0f){
 		DETHROW(deeDivisionByZero);
 	}

@@ -264,6 +264,10 @@ void igdeUIHelper::FormLineStretchFirst(igdeContainer &form, const char *label,
 const char *description, igdeContainer::Ref &line, int labelAlignment){
 	igdeLabel::Ref wlabel(igdeLabel::Ref::New(pEnvironment, label, description, labelAlignment));
 	form.AddChild(wlabel);
+	FormLineStretchFirst(form, line);
+}
+
+void igdeUIHelper::FormLineStretchFirst(igdeContainer &form, igdeContainer::Ref &line){
 	line = igdeContainerFlow::Ref::New(pEnvironment, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	form.AddChild(line);
 }
@@ -289,8 +293,8 @@ igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
 }
 
 void igdeUIHelper::EditString(igdeContainer &form, const char *label, const char *description,
-int rows, igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
-	EditString(description, rows, textField, listener);
+int columns, igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
+	EditString(description, columns, textField, listener);
 	FormLine(form, label, description, textField);
 }
 
@@ -300,9 +304,9 @@ igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
 	parent.AddChild(textField);
 }
 
-void igdeUIHelper::EditString(igdeContainer &parent, const char *description, int rows,
+void igdeUIHelper::EditString(igdeContainer &parent, const char *description, int columns,
 igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
-	EditString(description, rows, textField, listener);
+	EditString(description, columns, textField, listener);
 	parent.AddChild(textField);
 }
 
@@ -311,9 +315,9 @@ const igdeTextFieldListener::Ref &listener){
 	EditString(description, 15, textField, listener);
 }
 
-void igdeUIHelper::EditString(const char *description, int rows,
+void igdeUIHelper::EditString(const char *description, int columns,
 igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
-	textField = igdeTextField::Ref::New(pEnvironment, rows, description);
+	textField = igdeTextField::Ref::New(pEnvironment, columns, description);
 	if(listener){
 		textField->AddListener(listener);
 	}
@@ -1033,6 +1037,28 @@ const igdeListBoxListener::Ref &listener){
 
 
 
+void igdeUIHelper::ListBoxFilter(igdeContainer &form, const char *label, int rows,
+const char *description, igdeListBoxFilter::Ref &listBox, const igdeListBoxListener::Ref &listener){
+	ListBoxFilter(rows, description, listBox, listener);
+	FormLine(form, label, description, listBox, igdeLabel::eaLeft | igdeLabel::eaTop);
+}
+
+void igdeUIHelper::ListBoxFilter(igdeContainer &parent, int rows, const char *description,
+igdeListBoxFilter::Ref &listBox, const igdeListBoxListener::Ref &listener){
+	ListBoxFilter(rows, description, listBox, listener);
+	parent.AddChild(listBox);
+}
+
+void igdeUIHelper::ListBoxFilter(int rows, const char *description, igdeListBoxFilter::Ref &listBox,
+const igdeListBoxListener::Ref &listener){
+	listBox = igdeListBoxFilter::Ref::New(pEnvironment, rows, description);
+	if(listener){
+		listBox->AddListener(listener);
+	}
+}
+
+
+
 void igdeUIHelper::IconListBox(igdeContainer &parent, igdeIconListBox::Ref &listBox,
 const sColumnHeader *headers, int headerCount, const char *description, const igdeIconListBoxListener::Ref &listener){
 	IconListBox(headers, headerCount, description, listBox, listener);
@@ -1133,7 +1159,6 @@ void igdeUIHelper::Label(igdeLabel::Ref &label, const char *text,
 const char *description, int alignment){
 	label = igdeLabel::Ref::New(pEnvironment, text, description, alignment);
 }
-
 
 
 void igdeUIHelper::ScrollBar(igdeContainer &parent, bool horizontal, int lower, int upper,
@@ -1335,19 +1360,38 @@ const char *text, const char *description){
 
 
 
-void igdeUIHelper::ToolBarButton(igdeToolBar &toolBar, const igdeAction::Ref &action){
-	igdeButton::Ref widget(igdeButton::Ref::New(pEnvironment, action, igdeButton::ebsToolBar));
-	toolBar.AddChild(widget);
+void igdeUIHelper::ToolBarButton(igdeContainer &container, const igdeAction::Ref &action){
+	igdeButton::Ref button;
+	ToolBarButton(container, button, action);
 }
 
-void igdeUIHelper::ToolBarToggleButton(igdeToolBar &toolBar, const igdeAction::Ref &action){
-	igdeToggleButton::Ref widget(igdeToggleButton::Ref::New(
-		pEnvironment, action, igdeToggleButton::ebsToolBar));
-	toolBar.AddChild(widget);
+void igdeUIHelper::ToolBarButton(igdeContainer &container, igdeButton::Ref &button,
+const igdeAction::Ref &action){
+	ToolBarButton(button, action);
+	container.AddChild(button);
 }
 
-void igdeUIHelper::ToolBarSeparator(igdeToolBar &toolBar){
-	toolBar.AddChild(igdeToolBarSeparator::Ref::New(pEnvironment));
+void igdeUIHelper::ToolBarButton(igdeButton::Ref &button, const igdeAction::Ref &action){
+	button = igdeButton::Ref::New(pEnvironment, action, igdeButton::ebsToolBar);
+}
+
+void igdeUIHelper::ToolBarToggleButton(igdeContainer &container, const igdeAction::Ref &action){
+	igdeToggleButton::Ref button;
+	ToolBarToggleButton(container, button, action);
+}
+
+void igdeUIHelper::ToolBarToggleButton(igdeContainer &container, igdeToggleButton::Ref &button,
+const igdeAction::Ref &action){
+	ToolBarToggleButton(button, action);
+	container.AddChild(button);
+}
+
+void igdeUIHelper::ToolBarToggleButton(igdeToggleButton::Ref &button, const igdeAction::Ref &action){
+	button = igdeToggleButton::Ref::New(pEnvironment, action, igdeToggleButton::ebsToolBar);
+}
+
+void igdeUIHelper::ToolBarSeparator(igdeContainer &container){
+	container.AddChild(igdeToolBarSeparator::Ref::New(pEnvironment));
 }
 
 

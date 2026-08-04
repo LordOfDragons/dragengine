@@ -65,7 +65,6 @@ public:
 private:
 	const gdeProperty::List *pPropertyList;
 	gdeGameDefinition *pGameDefinition;
-	igdeClipboard *pClipboard;
 	
 	igdeIcon::Ref pIconIdentifierUsage;
 	igdeIcon::Ref pIconIdentifierNoUsage;
@@ -142,11 +141,8 @@ public:
 	/** \brief Undo system or nullptr. */
 	igdeUndoSystem *GetUndoSystem() const;
 	
-	/** \brief Clipboard or nullptr. */
-	inline igdeClipboard *GetClipboard() const{ return pClipboard; }
-	
-	/** \brief Set clipboard or nullptr. */
-	void SetClipboard(igdeClipboard *clipboard);
+	/** \brief Clipboard. */
+	igdeClipboard &GetClipboard() const;
 	
 	
 	

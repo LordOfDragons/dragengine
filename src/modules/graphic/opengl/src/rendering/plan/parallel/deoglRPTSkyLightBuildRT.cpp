@@ -95,8 +95,8 @@ void deoglRPTSkyLightBuildRT::Run(){
 	lodCalculator.SetMaxPixelError(2);
 	
 	try{
-		const bool useDitherShadow = deoglShadowMapper::UseShadowDither(
-			pPlan.GetPlan().GetRenderThread().GetConfiguration());
+		const bool useDitherShadow = pPlan.GetPlan().GetRenderThread().
+			GetConfigurationSets().ShadowQuality().ditherShadows;
 		const deoglPipeline * const pipeline = pPlan.GetPlan().GetRenderThread().
 			GetRenderers().GetLight().GetRenderLightSky().GetPipelineOccMesh();
 		decTimer timer;

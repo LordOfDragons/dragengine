@@ -31,6 +31,7 @@
 #include "aeAnimatorLocomotionLeg.h"
 #include "../aeAnimator.h"
 #include "../controller/aeController.h"
+#include "../../gui/aeWindowMain.h"
 #include "../../visitors/aeCLClosestHit.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -58,18 +59,26 @@
 // Class aeAnimatorLocomotionLeg
 //////////////////////////////////
 
+aeAnimatorLocomotionLeg::MetaContext::Ref aeAnimatorLocomotionLeg::CreateMetaContext(aeWindowMain &windowMain, aeAnimatorLocomotionLeg *leg){
+	return MetaContext::Ref::New("animator.animator_locomotion_leg", "Leg", "Animator locomotion leg properties",
+		windowMain.GetMCAnimatorProperties().locomotion.leg.metaProperties, leg);
+}
+
 // Constructor, destructor
 ////////////////////////////
-
-aeAnimatorLocomotionLeg::aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotion){
-	if(!locomotion) DETHROW(deeInvalidParam);
+	
+aeAnimatorLocomotionLeg::aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotion) :
+pLocomotion(locomotion),
+pMetaContext(CreateMetaContext(GetLocomotionRef().GetAnimatorRef().GetWindowMain(), this)),
+mpLiftOffTime(locomotion->GetAnimator()->GetWindowMain().GetMCAnimatorProperties().locomotion.leg.liftOffTime, pMetaContext),
+mpPutDownTime(locomotion->GetAnimator()->GetWindowMain().GetMCAnimatorProperties().locomotion.leg.putDownTime, pMetaContext),
+mpPutDownPositionStand(locomotion->GetAnimator()->GetWindowMain().GetMCAnimatorProperties().locomotion.leg.putDownPosStand, pMetaContext),
+mpPutDownPositionWalk(locomotion->GetAnimator()->GetWindowMain().GetMCAnimatorProperties().locomotion.leg.putDownPosWalk, pMetaContext),
+mpPutDownPositionRun(locomotion->GetAnimator()->GetWindowMain().GetMCAnimatorProperties().locomotion.leg.putDownPosRun, pMetaContext)
+{
+	DEASSERT_NOTNULL(locomotion)
 	
 	deDebugDrawer *debugDrawer = locomotion->GetDebugDrawer();
-	
-	pLocomotion = locomotion;
-	
-	pLiftOffTime = 0.0f;
-	pPutDownTime = 0.5f;
 	
 	pPositionLocked = false;
 	
@@ -91,6 +100,17 @@ aeAnimatorLocomotionLeg::aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotio
 	pDDSPredict->SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
 	
 	UpdateShapes();
+	
+	mpLiftOffTime.onValueChanged = [this](){
+		auto animator = pLocomotion->GetAnimator();
+		if(animator){
+			animator->SetChanged(true);
+		}
+	};
+	mpPutDownTime.onValueChanged = mpLiftOffTime.onValueChanged;
+	mpPutDownPositionStand.onValueChanged = mpLiftOffTime.onValueChanged;
+	mpPutDownPositionWalk.onValueChanged = mpLiftOffTime.onValueChanged;
+	mpPutDownPositionRun.onValueChanged = mpLiftOffTime.onValueChanged;
 }
 
 aeAnimatorLocomotionLeg::~aeAnimatorLocomotionLeg(){
@@ -101,65 +121,23 @@ aeAnimatorLocomotionLeg::~aeAnimatorLocomotionLeg(){
 // Management
 ///////////////
 
+aeAnimatorLocomotion &aeAnimatorLocomotionLeg::GetLocomotionRef() const{
+	DEASSERT_NOTNULL(pLocomotion)
+	return *pLocomotion;
+}
+
+igdeEnvironment &aeAnimatorLocomotionLeg::GetEnvironment() const{
+	return GetLocomotionRef().GetAnimatorRef().GetEnvironment();
+}
+
+igdeUndoSystem *aeAnimatorLocomotionLeg::GetUndoSystem() const{
+	return GetLocomotionRef().GetAnimatorRef().GetUndoSystem();
+}
+
 void aeAnimatorLocomotionLeg::SetName(const char *name){
 	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
-}
-
-void aeAnimatorLocomotionLeg::SetPutDownPositionStand(const decVector &position){
-	if(position.IsEqualTo(pPutDownPosStand)){
-		return;
-	}
-	
-	pPutDownPosStand = position;
-	
-	pLocomotion->GetAnimator()->NotifyLocomotionChanged();
-	pLocomotion->GetAnimator()->SetChanged(true);
-}
-
-void aeAnimatorLocomotionLeg::SetPutDownPositionWalk(const decVector &position){
-	if(position.IsEqualTo(pPutDownPosWalk)){
-		return;
-	}
-	
-	pPutDownPosWalk = position;
-	
-	pLocomotion->GetAnimator()->NotifyLocomotionChanged();
-	pLocomotion->GetAnimator()->SetChanged(true);
-}
-
-void aeAnimatorLocomotionLeg::SetPutDownPositionRun(const decVector &position){
-	if(position.IsEqualTo(pPutDownPosRun)){
-		return;
-	}
-	
-	pPutDownPosRun = position;
-	
-	pLocomotion->GetAnimator()->NotifyLocomotionChanged();
-	pLocomotion->GetAnimator()->SetChanged(true);
-}
-
-void aeAnimatorLocomotionLeg::SetLiftOffTime(float time){
-	if(fabsf(time - pLiftOffTime) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pLiftOffTime = time;
-	
-	pLocomotion->GetAnimator()->NotifyLocomotionChanged();
-	pLocomotion->GetAnimator()->SetChanged(true);
-}
-
-void aeAnimatorLocomotionLeg::SetPutDownTime(float time){
-	if(fabsf(time - pPutDownTime) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pPutDownTime = time;
-	
-	pLocomotion->GetAnimator()->NotifyLocomotionChanged();
-	pLocomotion->GetAnimator()->SetChanged(true);
 }
 
 void aeAnimatorLocomotionLeg::SetVisBoneName(const char *name){
@@ -182,7 +160,7 @@ void aeAnimatorLocomotionLeg::Reset(){
 	decDVector castOrigin;
 	float distance;
 	
-	pPredictPosition = locoMatrix * decDVector(pPutDownPosStand);
+	pPredictPosition = locoMatrix * decDVector(mpPutDownPositionStand);
 	
 	// project the predict position down to get the ik location
 	castOrigin = pPredictPosition + decDVector(0.0, movedist, 0.0);
@@ -232,8 +210,8 @@ void aeAnimatorLocomotionLeg::Update(float elapsed){
 	
 	//deColliderVolume *castCollider = pLocomotion->
 	float velocity = pLocomotion->GetMovingSpeed();
-	float speedWalk = pLocomotion->GetWalkSpeed();
-	float speedRun = pLocomotion->GetRunSpeed();
+	float speedWalk = pLocomotion->mpSpeedWalk.GetValue();
+	float speedRun = pLocomotion->mpSpeedRun.GetValue();
 	aeCLClosestHit closestHit;
 	float blendFactor = 0.0f;
 	decDVector planeVector;
@@ -251,13 +229,13 @@ void aeAnimatorLocomotionLeg::Update(float elapsed){
 			blendFactor = velocity / speedWalk;
 		}
 		
-		pPredictPosition = locoMatrix * decDVector(pPutDownPosStand * (1.0f - blendFactor) + pPutDownPosWalk * blendFactor);
+		pPredictPosition = locoMatrix * decDVector(mpPutDownPositionStand->Mix(mpPutDownPositionWalk.GetValue(), blendFactor));
 		
-		putDownTime = pPutDownTime;
-		liftOffTime = pLiftOffTime;
-		if(animator.GetControllers().GetCount() >= 2){
-			const aeController &controller = *animator.GetControllers().GetAt(1); // hack
-			motionTime = controller.GetCurrentValue();
+		putDownTime = mpPutDownTime;
+		liftOffTime = mpLiftOffTime;
+		if(animator.mpControllers->GetCount() >= 2){
+			const aeController &controller = *animator.mpControllers->GetAt(1); // hack
+			motionTime = controller.mpCurrentValue;
 		}
 		
 	}else if(velocity < speedRun){
@@ -265,23 +243,23 @@ void aeAnimatorLocomotionLeg::Update(float elapsed){
 			blendFactor = (velocity - speedWalk) / (speedRun - speedWalk);
 		}
 		
-		pPredictPosition = locoMatrix * decDVector(pPutDownPosWalk * (1.0f - blendFactor) + pPutDownPosRun * blendFactor);
+		pPredictPosition = locoMatrix * decDVector(mpPutDownPositionWalk->Mix(mpPutDownPositionRun.GetValue(), blendFactor));
 		
-		putDownTime = pPutDownTime;
-		liftOffTime = pLiftOffTime;
-		if(animator.GetControllers().GetCount() >= 2){
-			const aeController &controller = *animator.GetControllers().GetAt(1); // hack
-			motionTime = controller.GetCurrentValue();
+		putDownTime = mpPutDownTime;
+		liftOffTime = mpLiftOffTime;
+		if(animator.mpControllers->GetCount() >= 2){
+			const aeController &controller = *animator.mpControllers->GetAt(1); // hack
+			motionTime = controller.mpCurrentValue;
 		}
 		
 	}else{
-		pPredictPosition.Set(pPutDownPosRun);
+		pPredictPosition = decDVector(mpPutDownPositionRun);
 		
-		putDownTime = pPutDownTime;
-		liftOffTime = pLiftOffTime;
-		if(animator.GetControllers().GetCount() >= 2){
-			const aeController &controller = *animator.GetControllers().GetAt(1); // hack
-			motionTime = controller.GetCurrentValue();
+		putDownTime = mpPutDownTime;
+		liftOffTime = mpLiftOffTime;
+		if(animator.mpControllers->GetCount() >= 2){
+			const aeController &controller = *animator.mpControllers->GetAt(1); // hack
+			motionTime = controller.mpCurrentValue;
 		}
 	}
 	

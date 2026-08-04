@@ -240,7 +240,7 @@ public:
 	void *GetSelectedItemData() const;
 	
 	/** \brief Selected item reference data or nullptr. */
-	deObject::Ref GetSelectedItemRefData() const;
+	const deObject::Ref &GetSelectedItemRefData() const;
 	
 	/** \brief Set index of selected item or -1. */
 	void SetSelection(int selection);

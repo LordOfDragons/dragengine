@@ -46,18 +46,17 @@ public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deAnimatorRuleAnimationDifference>;
 	
-	
 private:
 	decString pMove1Name;
 	float pMove1Time;
 	decString pMove2Name;
 	float pMove2Time;
-	bool pUseSameMove;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
+	bool pUseComponentSpace;
 	
 	deAnimatorControllerTarget pTargetLeadMoveTime;
 	deAnimatorControllerTarget pTargetRefMoveTime;
@@ -107,12 +106,6 @@ public:
 	/** \brief Set reference animation move time. */
 	void SetReferenceMoveTime(float moveTime);
 	
-	/** \brief Reference move is the same as the leading move. */
-	inline bool GetUseSameMove() const{ return pUseSameMove; }
-	
-	/** \brief Set if reference move is the same as the leading move. */
-	void SetUseSameMove(bool useSameMove);
-	
 	/** \brief Determines if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
@@ -136,6 +129,18 @@ public:
 	
 	/** \brief Set if vertex position sets are enabled. */
 	void SetEnableVertexPositionSet(bool enabled);
+	
+	/**
+	 * \brief Use component space.
+	 * \version 1.33
+	 */
+	inline bool GetUseComponentSpace() const{ return pUseComponentSpace; }
+	
+	/**
+	 * \brief Set use component space.
+	 * \version 1.33
+	 */
+	void SetUseComponentSpace(bool useComponentSpace);
 	
 	/** \brief Leading move time target. */
 	inline deAnimatorControllerTarget &GetTargetLeadingMoveTime(){ return pTargetLeadMoveTime; }

@@ -754,7 +754,8 @@ void deoglRenderDevMode::RenderLightInfos(deoglRenderPlan &plan){
 			
 			shapeCylinder.CalcMatrices(matrix1, matrix2, decVector(0.0f, 0.0f, cutOffDist * 0.5f),
 				orientationCylinder, cutOffDist * 0.5f, 0.0f,
-				sinf(light.GetSpotAngle() * 0.5f) * cutOffDist * 2.0f);
+				sinf(light.GetSpotAngle() * 0.5f) * cutOffDist * 2.0f,
+				decVector2(1.0f, 1.0f), decVector2(1.0f, 1.0f));
 			
 			matrixMVP = light.GetMatrix() * matrixVP;
 			

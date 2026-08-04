@@ -901,7 +901,7 @@ void meWPView::UpdateCamera(){
 	
 	pPreventUpdateCamera = true;
 	try{
-		meCamera * const camera = pWorld ? pWorld->GetActiveCamera() : nullptr;
+		meCamera * const camera = pWorld ? pWorld->GetActiveCamera().Pointer() : nullptr;
 		
 		if(camera){
 			pEditActiveCamera->SetText(camera->GetName());

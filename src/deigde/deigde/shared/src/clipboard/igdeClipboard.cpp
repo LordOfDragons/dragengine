@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeClipboard.h"
 #include "igdeClipboardData.h"
 
@@ -56,7 +52,7 @@ bool igdeClipboard::HasWithTypeName(const char *typeName) const{
 	});
 }
 
-igdeClipboardData *igdeClipboard::GetWithTypeName(const char *typeName) const{
+igdeClipboardData::Ref igdeClipboard::GetWithTypeName(const char *typeName) const{
 	return pData.FindOrDefault([&](const igdeClipboardData &data){
 		return data.GetTypeName() == typeName;
 	});

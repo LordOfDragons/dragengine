@@ -81,6 +81,9 @@ public:
 	/** Copy another state list to this list. */
 	void SetFrom(const dearBoneStateList &stateList);
 	
+	/** Reset all states to their default values. */
+	void ResetStates();
+	
 	/** Updates the states. */
 	void UpdateStates();
 	/** Mark dirty. */

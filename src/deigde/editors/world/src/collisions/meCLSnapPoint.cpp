@@ -155,7 +155,7 @@ void meCLSnapPoint::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	}
 	
 	const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
-		*pWorld.GetEnvironment(), info->GetCollider() );
+		pWorld.GetEnvironment(), info->GetCollider() );
 	if(!colliderOwner){
 		return;
 	}

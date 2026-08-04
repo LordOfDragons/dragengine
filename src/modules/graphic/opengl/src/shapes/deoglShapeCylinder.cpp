@@ -61,30 +61,34 @@ deoglShapeCylinder::~deoglShapeCylinder(){
 // Management
 ///////////////
 
-void deoglShapeCylinder::CalcMatrices(decMatrix &matrix1, decMatrix &matrix2, const decVector &position,
-const decQuaternion &orientation, float halfHeight, float topRadius, float bottomRadius){
-	const decMatrix baseMatrix = decMatrix::CreateFromQuaternion(orientation) * decMatrix::CreateTranslation(position);
+void deoglShapeCylinder::CalcMatrices(decMatrix &matrix1, decMatrix &matrix2,
+const decVector &position, const decQuaternion &orientation,
+float halfHeight, float topRadius, float bottomRadius,
+const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling){
+	const decMatrix baseMatrix(decMatrix::CreateFromQuaternion(orientation).
+		QuickMultiply(decMatrix::CreateTranslation(position)));
 	
-	matrix1 = decMatrix::CreateScale(topRadius, topRadius, topRadius)
-		* decMatrix::CreateTranslation( 0.0f, halfHeight, 0.0f )
-		* baseMatrix;
+	matrix1 =
+		decMatrix::CreateScale(
+			topRadius * topAxisScaling.x, topRadius, topRadius * topAxisScaling.y).
+		QuickMultiply(decMatrix::CreateTranslation(0.0f, halfHeight, 0.0f)).
+		QuickMultiply(baseMatrix);
 	
-	matrix2 = decMatrix::CreateScale(bottomRadius, bottomRadius, bottomRadius)
-		* decMatrix::CreateTranslation( 0.0f, -halfHeight, 0.0f )
-		* baseMatrix;
+	matrix2 =
+		decMatrix::CreateScale(
+			bottomRadius * bottomAxisScaling.x, bottomRadius, bottomRadius * bottomAxisScaling.y).
+		QuickMultiply(decMatrix::CreateTranslation(0.0f, -halfHeight, 0.0f)).
+		QuickMultiply(baseMatrix);
 }
 
 void deoglShapeCylinder::AddVBOLines(sVBOData *data){
 	const float stepAngle = PI * 2.0f / (float)(SEGMENT_COUNT);
 	const int segmentPointCount = SEGMENT_COUNT * 2;
-	int i, base;
-	float angle;
-	
-	base = 0;
+	int i, base = 0;
 	
 	// top ring
 	for(i=0; i<SEGMENT_COUNT; i++){
-		angle = stepAngle * (float)i;
+		float angle = stepAngle * (float)i;
 		data[base++].SetSelFalse(sinf(angle), 0.0f, cosf(angle));
 		
 		angle = stepAngle * (float)(i + 1);

@@ -41,6 +41,7 @@ public:
 	
 private:
 	decVector pHalfExtends;
+	decVector2 pTapering;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -59,6 +60,12 @@ public:
 	inline const decVector &GetHalfExtends() const{ return pHalfExtends; }
 	/** Sets the half extends. */
 	void SetHalfExtends(const decVector &halfExtends);
+	
+	/** Tapering. */
+	inline const decVector2 &GetTapering() const{ return pTapering; }
+	
+	/** Set tapering. */
+	void SetTapering(const decVector2 &tapering);
 	
 	/** Creates a copy of this shape. */
 	reRigShape::Ref Duplicate() const override;

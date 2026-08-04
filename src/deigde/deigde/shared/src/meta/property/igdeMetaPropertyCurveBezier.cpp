@@ -1,0 +1,132 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include "igdeMetaPropertyCurveBezier.h"
+#include "widget/igdeMetaPropertyCurveBezierWidget.h"
+#include "../igdeMetaContext.h"
+#include "../../undo/igdeUndoSystem.h"
+
+
+// Class igdeMetaPropertyCurveBezier
+///////////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+igdeMetaPropertyCurveBezier::igdeMetaPropertyCurveBezier(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description),
+pClampMin(0.0f, 0.0f),
+pClampMax(1.0f, 1.0f),
+pClamp(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
+}
+
+igdeMetaPropertyCurveBezier::igdeMetaPropertyCurveBezier(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pClampMin(0.0f, 0.0f),
+pClampMax(1.0f, 1.0f),
+pClamp(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
+}
+
+igdeMetaPropertyCurveBezier::~igdeMetaPropertyCurveBezier() = default;
+
+
+// Management
+///////////////
+
+void igdeMetaPropertyCurveBezier::SetClampMin(const decVector2 &clamp){
+	pClampMin = clamp;
+}
+
+void igdeMetaPropertyCurveBezier::SetClampMax(const decVector2 &clamp){
+	pClampMax = clamp;
+}
+
+void igdeMetaPropertyCurveBezier::SetClamp(bool clamp){
+	pClamp = clamp;
+}
+
+void igdeMetaPropertyCurveBezier::SetDefaultValue(const decCurveBezier &value){
+	pDefaultValue = value;
+}
+
+void igdeMetaPropertyCurveBezier::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
+}
+
+igdeMetaPropertyCurveBezierUndo::Ref igdeMetaPropertyCurveBezier::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const decCurveBezier &newValue,
+const char *undoInfo, const char *undoInfoLong){
+	if(context->GetUndoSystem() && GetCanUndo()){
+		const auto undo = igdeMetaPropertyCurveBezierUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
+}
+
+igdeMetaPropertyCurveBezier::PresetList igdeMetaPropertyCurveBezier::GetPropertyPresets(
+const ContextRef&) const{
+	return {};
+}
+
+igdeMetaPropertyWidget::Ref igdeMetaPropertyCurveBezier::CreateWidget(){
+	return igdeMetaPropertyCurveBezierWidget::Ref::New(*this);
+}
+
+
+// igdeMetaPropertyCurveBezierStorage
+///////////////////////////////////////
+
+igdeMetaPropertyCurveBezierStorage::igdeMetaPropertyCurveBezierStorage(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyCurveBezier(id, name, description){
+}
+
+igdeMetaPropertyCurveBezierStorage::igdeMetaPropertyCurveBezierStorage(
+	const char *id, const char *translationTag) :
+igdeMetaPropertyCurveBezier(id, translationTag){
+}
+
+igdeMetaPropertyCurveBezierStorage::~igdeMetaPropertyCurveBezierStorage() = default;
+
+const decCurveBezier &igdeMetaPropertyCurveBezierStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyCurveBezierStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decCurveBezier &value){
+	GetStorage(context).SetValue(value);
+}

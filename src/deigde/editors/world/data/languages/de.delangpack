@@ -744,12 +744,19 @@ Standardwert: "{1}"</translation>
 	<translation name="World.WPSObjectShape.RadiusBottom">Radius unten:</translation>
 	<translation name="World.WPSObjectShape.RadiusOfSphere.ToolTip">Radius der Kugel.</translation>
 	<translation name="World.WPSObjectShape.RadiusTop">Radius oben:</translation>
+	<translation name="World.WPSObjectShape.RotationOfSphere.ToolTip">Drehung der Kugel.</translation>
 	<translation name="World.WPSObjectShape.RotationOfBox.ToolTip">Drehung des Kastens.</translation>
 	<translation name="World.WPSObjectShape.RotationOfCapsule.ToolTip">Drehung der Kapsel.</translation>
 	<translation name="World.WPSObjectShape.RotationOfCylinder.ToolTip">Drehung des Zylinders.</translation>
 	<translation name="World.WPSObjectShape.Sphere">Kugel:</translation>
+	<translation name="World.WPSObjectShape.AxisScalingOfSphere.ToolTip">Achsen-Skalierung der Kugel.</translation>
+	<translation name="World.WPSObjectShape.TaperingOfBox.ToolTip">Verjüngung des Kastens.</translation>
 	<translation name="World.WPSObjectShape.TopRadiusOfCapsule.ToolTip">Oberer Radius der Kapsel.</translation>
 	<translation name="World.WPSObjectShape.TopRadiusOfCylinder.ToolTip">Oberer Radius des Zylinders.</translation>
+	<translation name="World.WPSObjectShape.TopAxisScalingOfCylinder.ToolTip">Obere Achsen-Skalierung des Zylinders.</translation>
+	<translation name="World.WPSObjectShape.BottomAxisScalingOfCylinder.ToolTip">Untere Achsen-Skalierung des Zylinders.</translation>
+	<translation name="World.WPSObjectShape.TopAxisScalingOfCapsule.ToolTip">Obere Achsen-Skalierung der Kapsel.</translation>
+	<translation name="World.WPSObjectShape.BottomAxisScalingOfCapsule.ToolTip">Untere Achsen-Skalierung der Kapsel.</translation>
 	
 	<!-- WPSensors -->
 	<translation name="World.WPSensors.Action.TrackCamera">Kamera folgen</translation>
@@ -1557,14 +1564,13 @@ Standard: ''</translation>
 	<translation name="World.WPSObject.TextureMenu">Textur</translation>
 	
 	<!-- WPSObjectShape -->
-	<translation name="World.WPSObjectShape.PositionBox">Position:</translation>
-	<translation name="World.WPSObjectShape.PositionCapsule">Position:</translation>
-	<translation name="World.WPSObjectShape.PositionCylinder">Position:</translation>
-	<translation name="World.WPSObjectShape.PositionSphere">Position:</translation>
-	<translation name="World.WPSObjectShape.RotationBox">Drehung:</translation>
-	<translation name="World.WPSObjectShape.RotationCapsule">Drehung:</translation>
-	<translation name="World.WPSObjectShape.RotationCylinder">Drehung:</translation>
-	
+	<translation name="World.WPSObjectShape.Position">Position:</translation>
+	<translation name="World.WPSObjectShape.Rotation">Drehung:</translation>
+	<translation name="World.WPSObjectShape.Radius">Radius:</translation>
+	<translation name="World.WPSObjectShape.AxisScaling">Achsen-Skalierung:</translation>
+	<translation name="World.WPSObjectShape.Tapering">Verjüngung:</translation>
+	<translation name="World.WPSObjectShape.TopAxisScaling">Obere Achsen-Skalierung:</translation>
+	<translation name="World.WPSObjectShape.BottomAxisScaling">Untere Achsen-Skalierung:</translation>
 	<!-- WPSensors -->
 	<translation name="World.WPSensors.Label.Position">Position:</translation>
 	

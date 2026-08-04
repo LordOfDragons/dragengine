@@ -36,24 +36,38 @@
 // Constructors, destructors
 //////////////////////////////
 
-decShapeSphere::decShapeSphere(float radius){
+decShapeSphere::decShapeSphere(float radius) :
+pAxisScaling(1.0f, 1.0f)
+{
 	SetRadius(radius);
-	pAxisScaling.Set(1.0f, 1.0f);
 }
 
-decShapeSphere::decShapeSphere(float radius, const decVector &position) : decShape(position){
+decShapeSphere::decShapeSphere(float radius, const decVector &position) :
+decShape(position),
+pAxisScaling(1.0f, 1.0f)
+{
 	SetRadius(radius);
-	pAxisScaling.Set(1.0f, 1.0f);
 }
 
-decShapeSphere::decShapeSphere(float radius, const decVector2 &axisScaling){
+decShapeSphere::decShapeSphere(float radius, const decVector2 &axisScaling) :
+pAxisScaling(axisScaling)
+{
 	SetRadius(radius);
-	SetAxisScaling(axisScaling);
 }
 
-decShapeSphere::decShapeSphere(float radius, const decVector2 &axisScaling, const decVector &position) : decShape(position){
+decShapeSphere::decShapeSphere(float radius, const decVector2 &axisScaling, const decVector &position) :
+decShape(position),
+pAxisScaling(axisScaling)
+{
 	SetRadius(radius);
-	SetAxisScaling(axisScaling);
+}
+
+decShapeSphere::decShapeSphere(float radius, const decVector2 &axisScaling,
+	const decVector &position, const decQuaternion &orientation) :
+decShape(position, orientation),
+pAxisScaling(axisScaling)
+{
+	SetRadius(radius);
 }
 
 decShapeSphere::~decShapeSphere(){
@@ -69,13 +83,13 @@ void decShapeSphere::SetRadius(float radius){
 }
 
 void decShapeSphere::SetAxisScaling(const decVector2 &axisScaling){
-	pAxisScaling = axisScaling.Largest(decVector2(0.0f, 0.0f));
+	pAxisScaling = axisScaling.Largest(decVector2());
 }
 
 
 
 decShape::Ref decShapeSphere::Copy() const{
-	return Ref::New(pRadius, pAxisScaling, GetPosition());
+	return Ref::New(pRadius, pAxisScaling, GetPosition(), GetOrientation());
 }
 
 

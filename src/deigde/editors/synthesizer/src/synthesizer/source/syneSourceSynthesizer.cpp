@@ -142,7 +142,7 @@ void syneSourceSynthesizer::UpdateChildSynthesizer(){
 			}
 			
 		}catch(const deException &){
-			GetSynthesizer()->GetEnvironment()->GetLogger()->LogInfoFormat("Synthesizer Editor",
+			GetSynthesizer()->GetEnvironment().GetLogger()->LogInfoFormat("Synthesizer Editor",
 				"Failed to load child synthesizer '%s' (base directory '%s')", pPathSynthesizer.GetString(), basePath.GetString());
 		}
 	}

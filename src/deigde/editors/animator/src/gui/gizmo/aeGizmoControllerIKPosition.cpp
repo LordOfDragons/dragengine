@@ -66,11 +66,11 @@ aeGizmoControllerIKPosition::~aeGizmoControllerIKPosition(){
 ///////////////
 
 decDVector aeGizmoControllerIKPosition::GetObjectPosition(){
-	return decDVector(pController.GetVector());
+	return decDVector(pController.mpVector);
 }
 
 void aeGizmoControllerIKPosition::SetObjectPosition(const decDVector &position){
-	pController.SetVector(position.ToVector());
+	pController.mpVector = position.ToVector();
 }
 
 

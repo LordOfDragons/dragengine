@@ -1,0 +1,258 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#ifndef _IGDEMETAPROPERTYINTEGER_H_
+#define _IGDEMETAPROPERTYINTEGER_H_
+
+#include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageInteger.h"
+#include "../../clipboard/igdeClipboardData.h"
+
+class igdeMetaPropertyIntegerUndo;
+
+
+/**
+ * \brief Integer meta property.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyInteger : public igdeMetaProperty{
+public:
+	/** \brief Reference type. */
+	using Ref = deTObjectReference<igdeMetaPropertyInteger>;
+	
+	/** \brief Present. */
+	using Preset = TPreset<int>;
+	
+	/** \brief Present list. */
+	using PresetList = decTObjectOrderedSet<Preset>;
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<int>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.Integer";
+		
+		explicit ClipboardData(const igdeMetaProperty &property, int value) :
+			igdeTClipboardData<int>(property.GetClipboardDataTypeName(), value){}
+		
+		explicit ClipboardData(const char *typeName, int value) :
+			igdeTClipboardData<int>(typeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
+	
+	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyInteger>{
+	public:
+		/** \brief Limits changed. */
+		virtual void OnLimitsChanged(igdeMetaPropertyInteger *property, const ContextRef &context);
+	};
+	
+	
+private:
+	int pDefaultValue;
+	int pLowerLimit, pUpperLimit, pTickSpacing;
+	bool pEnableLowerLimit, pEnableUpperLimit;
+	bool pEnableSpin;
+	igdeTListenerList<Listener> pListeners;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	
+	/** \brief Create integer meta property with label and description. */
+	igdeMetaPropertyInteger(const char *id, const char *name, const char *description);
+	
+	/** \brief Create integer meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyInteger(const char *id, const char *translationTag);
+	
+protected:
+	/** \brief Clean up integer meta property. */
+	~igdeMetaPropertyInteger() override;
+	
+public:
+	/*@}*/
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Default value. */
+	inline int GetDefaultValue() const{ return pDefaultValue; }
+	
+	/** \brief Set default value. */
+	void SetDefaultValue(int value);
+	
+	
+	/** \brief Lower limit. */
+	inline int GetLowerLimit() const{ return pLowerLimit; }
+	
+	/** \brief Set lower limit. */
+	void SetLowerLimit(int value);
+	
+	/** \brief Upper limit. */
+	inline int GetUpperLimit() const{ return pUpperLimit; }
+	
+	/** \brief Set upper limit. */
+	void SetUpperLimit(int value);
+	
+	/** \brief Tick spacing. */
+	inline int GetTickSpacing() const{ return pTickSpacing; }
+	
+	/** \brief Set tick spacing. */
+	void SetTickSpacing(int value);
+	
+	/** \brief Enable lower limit. */
+	inline bool GetEnableLowerLimit() const{ return pEnableLowerLimit; }
+	
+	/** \brief Set enable lower limit. */
+	void SetEnableLowerLimit(bool enable);
+	
+	/** \brief Enable upper limit. */
+	inline bool GetEnableUpperLimit() const{ return pEnableUpperLimit; }
+	
+	/** \brief Set enable upper limit. */
+	void SetEnableUpperLimit(bool enable);
+	
+	/** \brief Enable spin widget. */
+	inline bool GetEnableSpin() const{ return pEnableSpin; }
+	
+	/** \brief Set enable spin widget. */
+	void SetEnableSpin(bool enable);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const ContextRef &context);
+	
+	/** \brief Notify listeners about limits change. */
+	void NotifyLimitsChanged(const ContextRef &context);
+	
+	/**
+	 * \brief Capture context.
+	 * 
+	 * This returns an immutable context always returning the necessary state for getting or setting the property.
+	 */
+	virtual ContextRef Capture(const ContextRef &context) const = 0;
+	
+	/**
+	 * \brief Property is valid.
+	 * 
+	 * This means calling GetPropertyValue() nor SetPropertyValue() throws an exception.
+	 */
+	virtual bool IsValid(const ContextRef &context) const = 0;
+	
+	/**
+	 * \brief Get property value matching context.
+	 * 
+	 * Implemented by subclass.
+	 */
+	virtual int GetPropertyValue(const ContextRef &context) const = 0;
+	
+	/**
+	 * \brief Set property value matching context.
+	 * 
+	 * Implemented by subclass.
+	 */
+	virtual void SetPropertyValue(const ContextRef &context, int value) = 0;
+	
+	/**
+	 * \brief Change property value matching context with undo support.
+	 * 
+	 * If the context has an undo system the change is recorded as an undo action.
+	 * Otherwise SetPropertyValue() is called directly.
+	 */
+	virtual deTObjectReference<igdeMetaPropertyIntegerUndo> ChangePropertyValue(
+		const ContextRef &context, int newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
+	
+	/** \brief Get property lower limit matching context. */
+	virtual int GetPropertyLowerLimit(const ContextRef &context) const;
+	
+	/** \brief Get property upper limit matching context. */
+	virtual int GetPropertyUpperLimit(const ContextRef &context) const;
+	
+	/** \brief Get property tick spacing matching context. */
+	virtual int GetPropertyTickSpacing(const ContextRef &context) const;
+	
+	/** \brief Presets. */
+	virtual PresetList GetPropertyPresets(const ContextRef &context) const;
+	
+	/**
+	 * \brief Create UI widget.
+	 * 
+	 * This object is able to add itself to a widget holder in the appropriate way.
+	 */
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
+	/*@}*/
+};
+
+
+/**
+ * \brief Integer meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyIntegerStorage : public igdeMetaPropertyInteger{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageInteger<igdeMetaPropertyIntegerStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create integer meta property with label and description. */
+	igdeMetaPropertyIntegerStorage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyIntegerStorage(const char *id, const char *translationTag);
+	
+protected:
+	/** \brief Clean up integer meta property. */
+	~igdeMetaPropertyIntegerStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	int GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, int value) override;
+	int GetPropertyLowerLimit(const ContextRef &context) const override;
+	int GetPropertyUpperLimit(const ContextRef &context) const override;
+	int GetPropertyTickSpacing(const ContextRef &context) const override;
+};
+
+
+#include "undo/igdeMetaPropertyIntegerUndo.h"
+
+#endif

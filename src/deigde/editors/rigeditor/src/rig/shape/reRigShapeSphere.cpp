@@ -48,13 +48,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigShapeSphere::reRigShapeSphere(deEngine *engine) : reRigShape(engine, estSphere){
-	pRadius = 0.5f;
+reRigShapeSphere::reRigShapeSphere(deEngine *engine) : reRigShape(engine, estSphere),
+pRadius(0.5f),
+pAxisScaling(1.0f, 1.0f){
 }
 
-reRigShapeSphere::~reRigShapeSphere(){
-}
-
+reRigShapeSphere::~reRigShapeSphere() = default;
 
 
 // Management
@@ -67,11 +66,21 @@ void reRigShapeSphere::SetRadius(float radius){
 	}
 }
 
+void reRigShapeSphere::SetAxisScaling(const decVector2 &axisScaling){
+	if(axisScaling.IsEqualTo(pAxisScaling)){
+		return;
+	}
+	
+	pAxisScaling = axisScaling;
+	NotifyShapeChanged();
+}
+
 reRigShape::Ref reRigShapeSphere::Duplicate() const{
 	const reRigShapeSphere::Ref shape(reRigShapeSphere::Ref::New(GetEngine()));
 	shape->SetPosition(GetPosition());
 	shape->SetOrientation(GetOrientation());
 	shape->SetRadius(GetRadius());
+	shape->SetAxisScaling(pAxisScaling);
 	return shape;
 }
 
@@ -81,5 +90,6 @@ void reRigShapeSphere::Scale(float scale){
 }
 
 decShape::Ref reRigShapeSphere::CreateShape(){
-	return decShapeSphere::Ref::New(pRadius, GetPosition());
+	return decShapeSphere::Ref::New(pRadius, pAxisScaling, GetPosition(),
+		decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
 }

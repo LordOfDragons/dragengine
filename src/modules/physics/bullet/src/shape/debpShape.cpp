@@ -37,14 +37,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpShape::debpShape(int type, decShape *shape) :
+debpShape::debpShape(eShapeTypes type, decShape *shape) :
 pType(type),
 pShape(shape),
-pCollisionVolume(nullptr)
-{
-	if(type < estSphere || type > estCapsule || !shape){
-		DETHROW(deeInvalidParam);
-	}
+pCollisionVolume(nullptr){
 }
 
 debpShape::~debpShape(){

@@ -75,6 +75,16 @@ void deClassCollisionInfo::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mys
 	dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).~sCINatDat();
 }
 
+// public func CollisionInfo copy()
+deClassCollisionInfo::nfCopy::nfCopy(const sInitData &init) : dsFunction(init.clsCI,
+"copy", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCI){
+}
+void deClassCollisionInfo::nfCopy::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
+	auto clsCI = *static_cast<deClassCollisionInfo*>(GetOwnerClass());
+	
+	clsCI.PushInfo(rt, deCollisionInfo::Ref::New(info));
+}
 
 
 // public func int getOwnerBone()
@@ -82,7 +92,7 @@ deClassCollisionInfo::nfGetOwnerBone::nfGetOwnerBone(const sInitData &init) : ds
 "getOwnerBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCollisionInfo::nfGetOwnerBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	rt->PushInt(info.GetOwnerBone());
 }
 
@@ -91,7 +101,7 @@ deClassCollisionInfo::nfGetOwnerShape::nfGetOwnerShape(const sInitData &init) : 
 "getOwnerShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCollisionInfo::nfGetOwnerShape::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	rt->PushInt(info.GetOwnerShape());
 }
 
@@ -100,7 +110,7 @@ deClassCollisionInfo::nfGetOwnerFace::nfGetOwnerFace(const sInitData &init) : ds
 "getOwnerFace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCollisionInfo::nfGetOwnerFace::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	rt->PushInt(info.GetOwnerFace());
 }
 
@@ -139,7 +149,7 @@ deClassCollisionInfo::nfGetShape::nfGetShape(const sInitData &init) : dsFunction
 "getShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCollisionInfo::nfGetShape::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	
 	if(info.IsCollider()){
 		rt->PushInt(info.GetShape());
@@ -198,7 +208,7 @@ deClassCollisionInfo::nfHasShape::nfHasShape(const sInitData &init) : dsFunction
 "hasShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassCollisionInfo::nfHasShape::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	
 	rt->PushBool(info.GetShape() != -1);
 }
@@ -220,7 +230,7 @@ deClassCollisionInfo::nfGetParticleLifetime::nfGetParticleLifetime(const sInitDa
 "getParticleLifetime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassCollisionInfo::nfGetParticleLifetime::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	
 	rt->PushFloat(info.GetParticleLifetime());
 }
@@ -230,7 +240,7 @@ deClassCollisionInfo::nfGetParticleMass::nfGetParticleMass(const sInitData &init
 "getParticleMass", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassCollisionInfo::nfGetParticleMass::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	
 	rt->PushFloat(info.GetParticleMass());
 }
@@ -240,7 +250,7 @@ deClassCollisionInfo::nfGetParticlePosition::nfGetParticlePosition(const sInitDa
 "getParticlePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassCollisionInfo::nfGetParticlePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	const deScriptingDragonScript &ds = *static_cast<deClassCollisionInfo*>(GetOwnerClass())->GetScriptModule();
 	
 	ds.GetClassDVector()->PushDVector(rt, info.GetParticlePosition());
@@ -252,7 +262,7 @@ deClassCollisionInfo::nfSetParticlePosition::nfSetParticlePosition(const sInitDa
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassCollisionInfo::nfSetParticlePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	const deScriptingDragonScript &ds = *static_cast<deClassCollisionInfo*>(GetOwnerClass())->GetScriptModule();
 	
 	info.SetParticlePosition(ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject()));
@@ -263,7 +273,7 @@ deClassCollisionInfo::nfGetParticleVelocity::nfGetParticleVelocity(const sInitDa
 "getParticleVelocity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassCollisionInfo::nfGetParticleVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	const deScriptingDragonScript &ds = *static_cast<deClassCollisionInfo*>(GetOwnerClass())->GetScriptModule();
 	
 	ds.GetClassVector()->PushVector(rt, info.GetParticleVelocity());
@@ -275,7 +285,7 @@ deClassCollisionInfo::nfSetParticleVelocity::nfSetParticleVelocity(const sInitDa
 	p_AddParameter(init.clsVec); // velocity
 }
 void deClassCollisionInfo::nfSetParticleVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	const deScriptingDragonScript &ds = *static_cast<deClassCollisionInfo*>(GetOwnerClass())->GetScriptModule();
 	
 	info.SetParticleVelocity(ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject()));
@@ -287,7 +297,7 @@ dsFunction(init.clsCI, "getParticleResponse", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsParticleCollisionResponse){
 }
 void deClassCollisionInfo::nfGetParticleResponse::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	const deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	rt->PushValue(static_cast<deClassCollisionInfo*>(GetOwnerClass())->GetClassParticleCollisionResponse()
 		->GetVariable(info.GetParticleResponse())->GetStaticValue());
 }
@@ -303,7 +313,7 @@ void deClassCollisionInfo::nfSetParticleResponse::RunFunction(dsRunTime *rt, dsV
 		DSTHROW(dueNullPointer);
 	}
 	
-	deCollisionInfo &info = *(dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info);
+	deCollisionInfo &info = dedsGetNativeData<sCINatDat>(p_GetNativeData(myself)).info;
 	info.SetParticleResponse((deParticleEmitterType::eCollisionResponses)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
@@ -445,6 +455,7 @@ void deClassCollisionInfo::CreateClassMembers(dsEngine *engine){
 	// add functions
 	AddFunction(new nfNew(init));
 	AddFunction(new nfDestructor(init));
+	AddFunction(new nfCopy(init));
 	
 	AddFunction(new nfGetOwnerBone(init));
 	AddFunction(new nfGetOwnerShape(init));

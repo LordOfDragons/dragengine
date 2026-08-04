@@ -70,8 +70,8 @@ bool aeTaskSyncGameDefinition::Step(){
 	animator.GetSky()->OnGameDefinitionChanged();
 	animator.GetEnvObject()->OnGameDefinitionChanged();
 	
-	animator.GetAttachments().Visit([&](aeAttachment *attachment){
-		attachment->GetObjectWrapper()->OnGameDefinitionChanged();
+	animator.mpAttachments->Visit([&](const aeAttachment &attachment){
+		attachment.GetObjectWrapper()->OnGameDefinitionChanged();
 	});
 	
 	return false;

@@ -62,14 +62,14 @@ gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCLightPaste",
 ///////////////
 
 igdeUndo::Ref gdeMAOCLightPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
-		.GetWithTypeName(gdeClipboardDataOCLight::TYPE_NAME));
+	auto clip = pWindowMain.GetClipboard().
+		GetWithTypeName(gdeClipboardDataOCLight::TYPE_NAME).DynamicCast<gdeClipboardDataOCLight>();
 	if(!clip){
 		return {};
 	}
 	
 	const igdeUndo::Ref undo = gdeUOCAddLight::Ref::New(&objectClass, 
-		gdeOCLight::Ref::New(*clip.DynamicCast<gdeClipboardDataOCLight>()->GetLight()));
+		gdeOCLight::Ref::New(*clip->GetLight()));
 	
 	undo->SetShortInfo("@GameDefinition.Undo.PasteOCLight");
 	return undo;

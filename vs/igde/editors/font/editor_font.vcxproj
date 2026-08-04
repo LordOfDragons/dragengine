@@ -269,8 +269,6 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feClipboard.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfiguration.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfigurationXML.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\feIGDEModule.cpp" />
@@ -312,8 +310,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feClipboard.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfiguration.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfigurationXML.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\feIGDEModule.h" />

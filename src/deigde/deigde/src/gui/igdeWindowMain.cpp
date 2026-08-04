@@ -62,6 +62,7 @@
 #include <deigde/gui/filedialog/igdeFilePattern.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
+#include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/logger/igdeWindowLogger.h>
 #include <deigde/gui/menu/igdeMenuBar.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
@@ -525,6 +526,8 @@ pFirstEngineRun(true)
 		
 		pResourceLoader = new igdeResourceLoader(pEnvironmentIGDE);
 		
+		pClipboard = deTUniqueReference<igdeClipboard>::New();
+		
 		CreateEngineController(); // uses methods provided by base class
 		GetEngineController().UpdateEngine(nullptr, pConfiguration.GetPathIGDEData(),
 			pConfiguration.GetPathIGDEEditorData());
@@ -643,12 +646,19 @@ pFirstEngineRun(true)
 		
 		
 		// center
+		auto splitted = igdeContainerSplitted::Ref::New(pEnvironmentIGDE,
+			igdeContainerSplitted::espRight, igdeApplication::app().DisplayScaled(400));
+		content->AddChild(splitted, igdeContainerBorder::eaCenter);
+		
+		// pWPMetaContextList = igdeWPMetaContextList::Ref::New(pEnvironmentIGDE);
+		// splitted->AddChild(pWPMetaContextList, igdeContainerSplitted::eaSide);
+		
 		pSwiContent = igdeSwitcher::Ref::New(pEnvironmentIGDE);
 		
 		igdeContainerBorder::Ref emptyContainer(igdeContainerBorder::Ref::New(pEnvironmentIGDE));
 		pSwiContent->AddChild(emptyContainer);
 		
-		content->AddChild(pSwiContent, igdeContainerBorder::eaCenter);
+		splitted->AddChild(pSwiContent, igdeContainerSplitted::eaCenter);
 		
 		
 		// fill it
@@ -899,6 +909,10 @@ void igdeWindowMain::ActiveModuleSharedToolBarsChanged(){
 	RebuildToolBars();
 }
 
+void igdeWindowMain::MetaContextsChanged(){
+	pUpdateWPContextList();
+}
+
 void igdeWindowMain::ActivateEditor(igdeEditorModule *editor){
 	DEASSERT_NOTNULL(editor)
 	
@@ -992,6 +1006,8 @@ void igdeWindowMain::SwitchToModuleWindow(){
 	if(index != -1){
 		pSwiContent->SetCurrent(index);
 	}
+	
+	pUpdateWPContextList();
 }
 
 void igdeWindowMain::RebuildWindowMenu(){
@@ -1613,6 +1629,15 @@ void igdeWindowMain::pCleanUp(){
 		pMenuWindow->RemoveAllChildren();
 	}
 	
+	// drop data potentially containing memory allocated by modules
+	if(pWPMetaContextList){
+		pWPMetaContextList->SetData({});
+		pWPMetaContextList->ClearCache();
+	}
+	if(pClipboard){
+		pClipboard->ClearAll();
+	}
+	
 	// shut down all modules. this is faster than shutting down the game engine first
 	// and prevents potential problems
 	deLogger * const logger = GetLogger();
@@ -2227,6 +2252,23 @@ void igdeWindowMain::pUpdateMenuWindow(igdeMenuCascade &menu){
 		menu.AddChild(igdeMenuOption::Ref::New(pEnvironmentIGDE, cActionWindowEditor::Ref::New(
 			*this, *pModuleManager->GetModuleWithID(name), true)));
 	});
+}
+
+void igdeWindowMain::pUpdateWPContextList(){
+	if(!pWPMetaContextList){
+		return;
+	}
+	
+	auto activeModule = pModuleManager->GetActiveModule();
+	if(activeModule){
+		auto module = activeModule->GetModule();
+		if(module){
+			pWPMetaContextList->SetData(module->GetEditorWindow()->GetMetaContexts());
+			return;
+		}
+	}
+	
+	pWPMetaContextList->SetData({});
 }
 
 

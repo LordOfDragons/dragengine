@@ -173,7 +173,6 @@ reWPPanelShape(wpShapes, reRigShape::estHull)
 	
 	helper.EditVector(groupHull, "@Rig.PanelShapeHull.Position", "@Rig.PanelShapeHull.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	
 	helper.EditVector(groupHull, "@Rig.PanelShapeHull.Rotation", "@Rig.PanelShapeHull.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	

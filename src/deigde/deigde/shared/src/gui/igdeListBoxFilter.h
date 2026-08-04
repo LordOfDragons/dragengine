@@ -1,0 +1,148 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#ifndef _IGDELISTBOXFILTER_H_
+#define _IGDELISTBOXFILTER_H_
+
+#include "igdeListBox.h"
+
+
+
+/**
+ * \brief List box with filtering support.
+ *
+ * igdeListBox extended with the ability to filter the list entries. For this an additional
+ * igdeTextField is appended to the bottom of the list box enabling the user to enter a
+ * filter string. The list box list is altered to display only entries that contain the
+ * filter string. By default the filtered list box behaves like a conventional list box.
+ * To achieve the filtering behavior first fill the list box with all the required entries
+ * and optionally sorting them. Then call StoreFilterItems() to create a copy of the list to
+ * be used as the original entries. This list contains references to the original igdeListItem
+ * and not real copies of them. As soon as the filter string is changed the list box content
+ * is replaced with the entries from the copied list matching the filter string. If no copy
+ * exists no filtering is done.
+ */
+class DE_DLL_EXPORT igdeListBoxFilter : public igdeListBox{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeListBoxFilter>;
+	
+	
+	class cNativeListBoxFilter : public cNativeListBox{
+	public:
+		virtual ~cNativeListBoxFilter() override = default;
+		virtual void UpdateFilterString() = 0;
+	};
+	
+	
+private:
+	igdeListItem::List pFilterItems;
+	bool pFilterCaseInsensitive;
+	decString pFilterString;
+	
+	
+protected:
+	cNativeListBoxFilter *pNativeListBoxFilter;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create list box. */
+	igdeListBoxFilter(igdeEnvironment &environment, int rows, const char *description = "");
+	
+	
+	
+protected:
+	/** \brief Clean up filtered list box. */
+	~igdeListBoxFilter() override;
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Store items for filtering. */
+	void StoreFilterItems();
+	
+	/** \brief Release filter items. */
+	void ReleaseFilterItems();
+	
+	/** \brief Replace items with filter items matching filter string. */
+	void FilterItems();
+	
+	/** \brief Filter case insensitive. */
+	inline bool GetFilterCaseInsensitive() const{ return pFilterCaseInsensitive; }
+	
+	/** \brief Set if filtering is case insensitive. */
+	void SetFilterCaseInsensitive(bool caseInsensitive);
+	
+	/** \brief Filter string. */
+	inline const decString &GetFilterString() const{ return pFilterString; }
+	
+	/**
+	 * \brief Set filter string.
+	 *
+	 * Calls FilterItems() if the filter string changed.
+	 */
+	void SetFilterString(const char *filterString);
+	
+	/** \brief Filter items. */
+	inline const igdeListItem::List &GetFilterItems() const{ return pFilterItems; }
+	/*@}*/
+	
+	
+	
+	/**
+	 * \name IGDE Internal Use Only
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	/*@{*/
+	/**
+	 * \brief Create native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void CreateNativeWidget() override;
+	
+	/**
+	 * \brief Destroy native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DestroyNativeWidget() override;
+	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
+	
+	
+protected:
+	/** \brief Filter string changed. */
+	virtual void OnFilterStringChanged();
+	/*@}*/
+};
+
+#endif

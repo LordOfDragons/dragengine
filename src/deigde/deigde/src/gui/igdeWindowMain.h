@@ -30,6 +30,7 @@
 #include "../configuration/igdeConfigurationLocal.h"
 #include "../template/igdeTemplate.h"
 
+#include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gameproject/igdeGameProject.h>
@@ -49,10 +50,12 @@
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
+#include <deigde/gui/properties/igdeWPMetaContextList.h>
 #include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/resourceloader/igdeResourceLoader.h>
 #include <deigde/localization/igdeTranslationManager.h>
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -107,6 +110,7 @@ private:
 	igdeResourceLoader *pResourceLoader;
 	igdeUIHelper *pUIHelper;
 	igdeUIHelper *pUIHelperProperties;
+	deTUniqueReference<igdeClipboard> pClipboard;
 	igdeTimer::Ref pTimerFrameUpdate;
 	igdeTimer::Ref pTimerSyncProject;
 	
@@ -162,6 +166,7 @@ private:
 	igdeStatusBar::Ref pStatusBar;
 	igdeProgressBar::Ref pSBProgress;
 	igdeSwitcher::Ref pSwiContent;
+	igdeWPMetaContextList::Ref pWPMetaContextList;
 	
 	igdeToolBar::Ref pTBGame;
 	igdeContainer::Ref pFraEditors;
@@ -260,6 +265,9 @@ public:
 	/** UI Helper. */
 	inline igdeUIHelper &GetUIHelper() const{ return *pUIHelper; }
 	
+	/** Clipboard. */
+	inline const deTUniqueReference<igdeClipboard> &GetClipboard() const{ return pClipboard; }
+	
 	/** UI Helper for properties panels. */
 	inline igdeUIHelper &GetUIHelperProperties() const{ return *pUIHelperProperties; }
 	
@@ -306,6 +314,9 @@ public:
 	/** Active module shared toolbars changed. */
 	void ActiveModuleSharedToolBarsChanged();
 	
+	/** Meta contexts changed. */
+	void MetaContextsChanged();
+	
 	/** Activate editor and bring it to the front. */
 	void ActivateEditor(igdeEditorModule *editor);
 	
@@ -337,6 +348,9 @@ public:
 	
 	/** Content switcher. */
 	inline const igdeSwitcher::Ref &GetContentSwitcher() const{ return pSwiContent; }
+	
+	/** Meta context list. */
+	inline const igdeWPMetaContextList::Ref &GetMetaContextList() const{ return pWPMetaContextList; }
 	
 	/** Game toolbar. */
 	inline const igdeToolBar::Ref &GetToolBarGame() const{ return pTBGame; }
@@ -507,6 +521,7 @@ private:
 	void pCreateMenuSettings(igdeMenuCascade &menu);
 	void pUpdateMenuRecentProjects(igdeMenuCascade &menu);
 	void pUpdateMenuWindow(igdeMenuCascade &menu);
+	void pUpdateWPContextList();
 	
 	void pUpdatePauseUpdating();
 	
