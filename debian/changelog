@@ -1,3 +1,9 @@
+dragengine (1.33-ubuntu2~ubuntu20.10-ppa1) noble; urgency=medium
+
+  * Changelog 1.33: https://dragondreams.ch/index.php/changelog-release-1-33
+
+ -- Roland Plüss <roland@rptd.ch>  Tue, 04 Aug 2026 15:50:34 +0000
+
 dragengine (1.32.3-ubuntu2~ubuntu20.10-ppa1) noble; urgency=medium
 
   * Changelog 1.32.3: https://dragondreams.ch/index.php/changelog-release-1-32
