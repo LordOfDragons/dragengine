@@ -27,7 +27,11 @@
 
 #include "aeRule.h"
 
-
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
 
 /**
  * Animator rule state manipulator.
@@ -36,33 +40,37 @@ class aeRuleStateManipulator : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleStateManipulator>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleStateManipulator, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleStateManipulator *rule);
 	
-private:
-	decVector pMinPosition;
-	decVector pMaxPosition;
-	decVector pMinRotation;
-	decVector pMaxRotation;
-	decVector pMinSize;
-	decVector pMaxSize;
-	float pMinVertexPositionSet;
-	float pMaxVertexPositionSet;
-	bool pEnablePosition;
-	bool pEnableRotation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-	aeControllerTarget::Ref pTargetPosition;
-	aeControllerTarget::Ref pTargetRotation;
-	aeControllerTarget::Ref pTargetSize;
-	aeControllerTarget::Ref pTargetVertexPositionSet;
-	
-	
+public:
+	igdeMetaPropertyVectorStorage::Storage mpMinPosition;
+	igdeMetaPropertyVectorStorage::Storage mpMaxPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage mpMinRotation;
+	igdeMetaPropertyVectorStorageQuaternion::Storage mpMaxRotation;
+	igdeMetaPropertyVectorStorage::Storage mpMinSize;
+	igdeMetaPropertyVectorStorage::Storage mpMaxSize;
+	igdeMetaPropertyFloatStorage::Storage mpMinVertexPositionSet;
+	igdeMetaPropertyFloatStorage::Storage mpMaxVertexPositionSet;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableRotation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetRotation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetSize;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleStateManipulator() = delete;
+	
 	/** Create rule. */
-	explicit aeRuleStateManipulator(const char *name);
+	aeRuleStateManipulator(aeWindowMain &windowMain, const char *name);
 	
 	/** Create copy of rule. */
 	aeRuleStateManipulator(const aeRuleStateManipulator &copy);
@@ -70,6 +78,8 @@ public:
 	/** Clean up rule. */
 protected:
 	~aeRuleStateManipulator() override;
+private:
+	aeRuleStateManipulator(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	
@@ -77,96 +87,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Minimum position. */
-	inline const decVector &GetMinimumPosition() const{ return pMinPosition; }
-	
-	/** Set minimum position. */
-	void SetMinimumPosition(const decVector &position);
-	
-	/** Maximum position. */
-	inline const decVector &GetMaximumPosition() const{ return pMaxPosition; }
-	
-	/** Set maximum position. */
-	void SetMaximumPosition(const decVector &position);
-	
-	/** Minimum rotation. */
-	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
-	
-	/** Set minimum rotation. */
-	void SetMinimumRotation(const decVector &rotation);
-	
-	/** Maximum rotation. */
-	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
-	
-	/** Set maximum rotation. */
-	void SetMaximumRotation(const decVector &rotation);
-	
-	/** Minimum size. */
-	inline const decVector &GetMinimumSize() const{ return pMinSize; }
-	
-	/** Set minimum size. */
-	void SetMinimumSize(const decVector &size);
-	
-	/** Maximum size. */
-	inline const decVector &GetMaximumSize() const{ return pMaxSize; }
-	
-	/** Set maximum size. */
-	void SetMaximumSize(const decVector &size);
-	
-	/** Minimum vertex position set. */
-	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
-	
-	/** Set minimum vertex position set. */
-	void SetMinimumVertexPositionSet(float weight);
-	
-	/** Maximum vertex position set. */
-	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
-	
-	/** Set maximum vertex position set. */
-	void SetMaximumVertexPositionSet(float weight);
-	
-	
-	
-	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
-	
-	/** Rotation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableRotation; }
-	
-	/** Set if rotation manipulation is enabled. */
-	void SetEnableRotation(bool enabled);
-	
-	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
-	
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
-	
-	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
-	
-	
-	
-	/** Position target. */
-	inline const aeControllerTarget::Ref &GetTargetPosition() const{ return pTargetPosition; }
-	
-	/** Rotation target. */
-	inline const aeControllerTarget::Ref &GetTargetRotation() const{ return pTargetRotation; }
-	
-	/** Size target. */
-	inline const aeControllerTarget::Ref &GetTargetSize() const{ return pTargetSize; }
-	
-	/** Vertex position set target. */
-	inline const aeControllerTarget::Ref &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
-	
-	
-	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	
@@ -176,29 +96,16 @@ public:
 	/** Retrieve the number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
 	
-	/** Remove a link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	
-	/** Remove all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
-	
-	
 	
 	/** Create a copy of this rule. */
 	aeRule::Ref CreateCopy() const override;
-	
-	
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another state manipulator rule to this state manipulator rule. */
-	virtual aeRuleStateManipulator &operator=(const aeRuleStateManipulator &copy);
+	aeRuleStateManipulator &operator=(const aeRuleStateManipulator &copy) = delete;
 	/*@}*/
 };
 

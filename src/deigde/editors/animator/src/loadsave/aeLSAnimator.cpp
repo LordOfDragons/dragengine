@@ -30,7 +30,6 @@
 #include "aeLoadSaveSystem.h"
 #include "../animator/aeAnimator.h"
 #include "../animator/controller/aeController.h"
-#include "../animator/controller/aeControllerTarget.h"
 #include "../animator/link/aeLink.h"
 #include "../animator/locomotion/aeAnimatorLocomotion.h"
 #include "../animator/locomotion/aeAnimatorLocomotionLeg.h"
@@ -152,7 +151,6 @@ void aeLSAnimator::LoadAnimator(aeAnimator *animator, decBaseFileReader *file){
 
 void aeLSAnimator::SaveAnimator(aeAnimator *animator, decBaseFileWriter *file){
 	if(!animator || !file) DETHROW(deeInvalidParam);
-	int i, count;
 	
 	decXmlWriter writer(file);
 	
@@ -164,45 +162,36 @@ void aeLSAnimator::SaveAnimator(aeAnimator *animator, decBaseFileWriter *file){
 	pSaveDisplay(writer, *animator);
 	
 	// animator properties
-	writer.WriteDataTagString("rig", animator->GetRigPath());
-	writer.WriteDataTagString("animation", animator->GetAnimationPath());
+	writer.WriteDataTagString("rig", animator->mpRigPath.GetValue());
+	writer.WriteDataTagString("animation", animator->mpAnimationPath.GetValue());
 	
 	// write bones
-	const decStringSet &boneList = animator->GetListBones();
-	
-	count = boneList.GetCount();
-	for(i=0; i<count; i++){
-		writer.WriteDataTagString("bone", boneList.GetAt(i));
-	}
+	animator->mpAffectedBones->Visit([&](const decString &bone){
+		writer.WriteDataTagString("bone", bone);
+	});
 	
 	// write vertex position sets
-	const decStringSet &vpsList = animator->GetListVertexPositionSets();
-	
-	count = vpsList.GetCount();
-	for(i=0; i<count; i++){
-		writer.WriteDataTagString("vertexPositionSet", vpsList.GetAt(i));
-	}
+	animator->mpAffectedVps->Visit([&](const decString &vps){
+		writer.WriteDataTagString("vertexPositionSet", vps);
+	});
 	
 	// write controllers
-	count = animator->GetControllers().GetCount();
-	for(i=0; i<count; i++){
+	animator->mpControllers->Visit([&](const aeController &controller){
 		writer.WriteNewline();
-		pSaveController(writer, *animator->GetControllers().GetAt(i));
-	}
+		pSaveController(writer, controller);
+	});
 	
 	// write links
-	count = animator->GetLinks().GetCount();
-	for(i=0; i<count; i++){
+	animator->mpLinks->Visit([&](const aeLink &link){
 		writer.WriteNewline();
-		pSaveLink(writer, *animator, *animator->GetLinks().GetAt(i));
-	}
+		pSaveLink(writer, *animator, link);
+	});
 	
 	// write rules
-	count = animator->GetRules().GetCount();
-	for(i=0; i<count; i++){
+	animator->mpRules->Visit([&](const aeRule &rule){
 		writer.WriteNewline();
-		pSaveRule(writer, *animator, *animator->GetRules().GetAt(i));
-	}
+		pSaveRule(writer, *animator, rule);
+	});
 	
 	// write footer
 	writer.WriteClosingTag("animator", true);
@@ -222,13 +211,13 @@ void aeLSAnimator::pSaveDisplay(decXmlWriter &writer, const aeAnimator &animator
 	writer.WriteOpeningTag("display");
 	
 	if(saveExplainingComments) writer.WriteComment("Path to model to use.");
-	writer.WriteDataTagString("model", animator.GetDisplayModelPath());
+	writer.WriteDataTagString("model", animator.mpDisplayModelPath.GetValue());
 	
 	if(saveExplainingComments) writer.WriteComment("Path to skin to use.");
-	writer.WriteDataTagString("skin", animator.GetDisplaySkinPath());
+	writer.WriteDataTagString("skin", animator.mpDisplaySkinPath.GetValue());
 	
 	if(saveExplainingComments) writer.WriteComment("Path to rig to use.");
-	writer.WriteDataTagString("rig", animator.GetDisplayRigPath());
+	writer.WriteDataTagString("rig", animator.mpDisplayRigPath.GetValue());
 	
 //	if( saveExplainingComments ) writer.WriteComment( "Path to animation to use." );
 //	writer.WriteDataTagString( "animation", animator.GetAnimationPath() );
@@ -240,11 +229,10 @@ void aeLSAnimator::pSaveDisplay(decXmlWriter &writer, const aeAnimator &animator
 
 void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &animator){
 	const aeAnimatorLocomotion &locomotion = animator.GetLocomotion();
-	int l, legCount = locomotion.GetLegs().GetCount();
 	
 	writer.WriteOpeningTag("locomotion");
 	
-	switch(locomotion.GetLocomotionType()){
+	switch(locomotion.mpLocomotionType){
 		case aeAnimatorLocomotion::eltNatural:
 			//writer.WriteDataTagString( "locomotionType", "natural" );
 			break;
@@ -261,76 +249,75 @@ void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &anima
 			break;
 	}
 	
-	if(fabsf(locomotion.GetLimitLookDown() - -90.0f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("limitLookDown", locomotion.GetLimitLookDown());
+	if(fabsf(locomotion.mpLimitLookDown - -90.0f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("limitLookDown", locomotion.mpLimitLookDown);
 	}
-	if(fabsf(locomotion.GetLimitLookUp() - 90.0f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("limitLookUp", locomotion.GetLimitLookUp());
+	if(fabsf(locomotion.mpLimitLookUp - 90.0f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("limitLookUp", locomotion.mpLimitLookUp);
 	}
-	if(fabsf(locomotion.GetLimitLookLeft() - -90.0f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("limitLookLeft", locomotion.GetLimitLookLeft());
+	if(fabsf(locomotion.mpLimitLookLeft - -90.0f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("limitLookLeft", locomotion.mpLimitLookLeft);
 	}
-	if(fabsf(locomotion.GetLimitLookRight() - 90.0f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("limitLookRight", locomotion.GetLimitLookRight());
-	}
-	
-	if(fabsf(locomotion.GetLookUpDown().GetAdjustTime()) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("adjustTimeUpDown", locomotion.GetLookUpDown().GetAdjustTime());
-	}
-	if(fabsf(locomotion.GetLookLeftRight().GetAdjustTime()) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("adjustTimeLeftRight", locomotion.GetLookLeftRight().GetAdjustTime());
-	}
-	if(fabsf(locomotion.GetStance().GetAdjustTime() - 0.5f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("adjustTimeStance", locomotion.GetStance().GetAdjustTime());
-	}
-	if(fabsf(locomotion.GetAdjustTimeTurnIP() - 1.0f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("adjustTimeTurnIP", locomotion.GetAdjustTimeTurnIP());
-	}
-	if(fabsf(locomotion.GetOrientation().GetAdjustTime() - 1.0f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("adjustTimeOrientation", locomotion.GetOrientation().GetAdjustTime());
-	}
-	if(fabsf(locomotion.GetLinearVelocity().GetAdjustTime() - 0.5f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("adjustTimeVelocity", locomotion.GetLinearVelocity().GetAdjustTime());
+	if(fabsf(locomotion.mpLimitLookRight - 90.0f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("limitLookRight", locomotion.mpLimitLookRight);
 	}
 	
-	if(fabsf(locomotion.GetWalkSpeed() - 1.25f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("speedWalk", locomotion.GetWalkSpeed());
+	if(fabsf(locomotion.mpAdjustTimeUpDown - 0.0f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("adjustTimeUpDown", locomotion.mpAdjustTimeUpDown);
 	}
-	if(fabsf(locomotion.GetRunSpeed() - 4.0f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("speedRun", locomotion.GetRunSpeed());
+	if(fabsf(locomotion.mpAdjustTimeLeftRight - 0.0f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("adjustTimeLeftRight", locomotion.mpAdjustTimeLeftRight);
+	}
+	if(fabsf(locomotion.mpAdjustTimeStance - 0.5f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("adjustTimeStance", locomotion.mpAdjustTimeStance);
+	}
+	if(fabsf(locomotion.mpAdjustTimeTurnIP - 1.0f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("adjustTimeTurnIP", locomotion.mpAdjustTimeTurnIP);
+	}
+	if(fabsf(locomotion.mpAdjustTimeOrientation - 1.0f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("adjustTimeOrientation", locomotion.mpAdjustTimeOrientation);
+	}
+	if(fabsf(locomotion.mpAdjustTimeVelocity - 0.5f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("adjustTimeVelocity", locomotion.mpAdjustTimeVelocity);
 	}
 	
-	if(fabsf(locomotion.GetLegBlendTime()) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("legBlendTime", locomotion.GetLegBlendTime());
+	if(fabsf(locomotion.mpSpeedWalk - 1.25f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("speedWalk", locomotion.mpSpeedWalk);
 	}
-	if(locomotion.GetUseLegPairCount() != 1){
-		writer.WriteDataTagInt("useLegPairs", locomotion.GetUseLegPairCount());
+	if(fabsf(locomotion.mpSpeedRun - 4.0f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("speedRun", locomotion.mpSpeedRun);
 	}
 	
-	for(l=0; l<legCount; l++){
-		const aeAnimatorLocomotionLeg &leg = *locomotion.GetLegs().GetAt(l);
-		const decVector &pdposStand = leg.GetPutDownPositionStand();
-		const decVector &pdposWalk = leg.GetPutDownPositionWalk();
-		const decVector &pdposRun = leg.GetPutDownPositionRun();
+	if(fabsf(locomotion.mpLegBlendTime) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("legBlendTime", locomotion.mpLegBlendTime);
+	}
+	if(locomotion.mpUseLegPairs != 1){
+		writer.WriteDataTagInt("useLegPairs", locomotion.mpUseLegPairs);
+	}
+	
+	locomotion.mpLegs->Visit([&](const aeAnimatorLocomotionLeg &leg){
+		const decVector &pdposStand = leg.mpPutDownPositionStand;
+		const decVector &pdposWalk = leg.mpPutDownPositionWalk;
+		const decVector &pdposRun = leg.mpPutDownPositionRun;
 		
-		const bool hasLiftOffTime = fabsf(leg.GetLiftOffTime()) > FLOAT_SAFE_EPSILON;
-		const bool hasPutDownTime = fabsf(leg.GetPutDownTime() - 0.5f) > FLOAT_SAFE_EPSILON;
+		const bool hasLiftOffTime = fabsf(leg.mpLiftOffTime) > FLOAT_SAFE_EPSILON;
+		const bool hasPutDownTime = fabsf(leg.mpPutDownTime - 0.5f) > FLOAT_SAFE_EPSILON;
 		const bool hasPdposStand = !pdposStand.IsZero();
 		const bool hasPdposWalk = !pdposWalk.IsZero();
 		const bool hasPdposRun = !pdposRun.IsZero();
 		
 		if(!hasLiftOffTime && !hasPutDownTime && !hasPdposStand && !hasPdposWalk && !hasPdposRun){
-			continue;
+			return;
 		}
 		
 		writer.WriteOpeningTag("leg");
 		
 		//writer.WriteDataTagString( "name", leg.GetName() );
 		if(hasLiftOffTime){
-			writer.WriteDataTagFloat("liftOffTime", leg.GetLiftOffTime());
+			writer.WriteDataTagFloat("liftOffTime", leg.mpLiftOffTime);
 		}
 		if(hasPutDownTime){
-			writer.WriteDataTagFloat("putDownTime", leg.GetPutDownTime());
+			writer.WriteDataTagFloat("putDownTime", leg.mpPutDownTime);
 		}
 		
 		if(hasPdposStand){
@@ -358,7 +345,7 @@ void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &anima
 		}
 		
 		writer.WriteClosingTag("leg");
-	}
+	});
 	
 	writer.WriteClosingTag("locomotion");
 }
@@ -366,21 +353,21 @@ void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &anima
 void aeLSAnimator::pSaveController(decXmlWriter &writer, const aeController &controller){
 	writer.WriteOpeningTag("controller");
 	
-	writer.WriteDataTagString("name", controller.GetName());
+	writer.WriteDataTagString("name", controller.mpName.GetValue());
 	
 	writer.WriteOpeningTagStart("limits");
-	writer.WriteAttributeFloat("min", controller.GetMinimumValue());
-	writer.WriteAttributeFloat("max", controller.GetMaximumValue());
+	writer.WriteAttributeFloat("min", controller.mpMinimumValue);
+	writer.WriteAttributeFloat("max", controller.mpMaximumValue);
 	writer.WriteOpeningTagEnd(true);
 	
-	if(controller.GetFrozen()){
-		writer.WriteDataTagBool("frozen", controller.GetFrozen());
+	if(controller.mpFrozen){
+		writer.WriteDataTagBool("frozen", controller.mpFrozen);
 	}
-	if(!controller.GetClamp()){
-		writer.WriteDataTagBool("clamp", controller.GetClamp());
+	if(!controller.mpClamp){
+		writer.WriteDataTagBool("clamp", controller.mpClamp);
 	}
 	
-	switch(controller.GetLocomotionAttribute()){
+	switch(controller.mpLocomotionAttribute){
 	case aeAnimatorLocomotion::eaElapsedTime:
 		writer.WriteDataTagString("locomotionAttribute", "elapsedTime");
 		break;
@@ -456,13 +443,16 @@ void aeLSAnimator::pSaveController(decXmlWriter &writer, const aeController &con
 	case aeAnimatorLocomotion::eaLegOrientation:
 		writer.WriteDataTagString("locomotionAttribute", "legOrientation");
 		break;
+		
+	case aeAnimatorLocomotion::eaNone:
+		break;
 	}
 	
-	if(controller.GetLocomotionLeg() > 0){
-		writer.WriteDataTagInt("locomotionLeg", controller.GetLocomotionLeg());
+	if(controller.mpLocomotionLeg > 0){
+		writer.WriteDataTagInt("locomotionLeg", controller.mpLocomotionLeg);
 	}
 	
-	switch(controller.GetVectorSimulation()){
+	switch(controller.mpVectorSimulation){
 	case aeController::evsPosition:
 		writer.WriteDataTagString("vectorSimulation", "position");
 		break;
@@ -475,11 +465,11 @@ void aeLSAnimator::pSaveController(decXmlWriter &writer, const aeController &con
 		break;
 	}
 	
-	if(fabsf(controller.GetDefaultValue()) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("value", controller.GetDefaultValue());
+	if(fabsf(controller.mpDefaultValue) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("value", controller.mpDefaultValue);
 	}
-	if(!controller.GetDefaultVector().IsZero()){
-		WriteVector(writer, "vector", controller.GetDefaultVector());
+	if(!controller.mpDefaultVector->IsZero()){
+		WriteVector(writer, "vector", controller.mpDefaultVector);
 	}
 	
 	writer.WriteClosingTag("controller");
@@ -488,22 +478,22 @@ void aeLSAnimator::pSaveController(decXmlWriter &writer, const aeController &con
 void aeLSAnimator::pSaveLink(decXmlWriter &writer, const aeAnimator &animator, const aeLink &link){
 	int controllerIndex = -1;
 	
-	if(link.GetController()){
-		controllerIndex = animator.GetControllers().IndexOf(link.GetController());
+	if(link.mpController){
+		controllerIndex = animator.mpControllers->IndexOf(link.mpController);
 	}
 	
 	writer.WriteOpeningTag("link");
 	
-	writer.WriteDataTagString("name", link.GetName().GetString());
+	writer.WriteDataTagString("name", link.mpName.GetValue());
 	writer.WriteDataTagInt("controller", controllerIndex);
-	if(link.GetRepeat() != 1){
-		writer.WriteDataTagInt("repeat", link.GetRepeat());
+	if(link.mpRepeat != 1){
+		writer.WriteDataTagInt("repeat", link.mpRepeat);
 	}
-	if(!link.GetBone().IsEmpty()){
-		writer.WriteDataTagString("bone", link.GetBone());
+	if(!link.mpBone->IsEmpty()){
+		writer.WriteDataTagString("bone", link.mpBone.GetValue());
 	}
 	
-	switch(link.GetBoneParameter()){
+	switch(link.mpBoneParameter){
 	case deAnimatorLink::ebpPositionX:
 		writer.WriteDataTagString("boneParameter", "positionX");
 		break;
@@ -541,78 +531,72 @@ void aeLSAnimator::pSaveLink(decXmlWriter &writer, const aeAnimator &animator, c
 		break;
 	}
 	
-	if(fabsf(link.GetBoneMinimum()) > FLOAT_SAFE_EPSILON
-	|| fabsf(link.GetBoneMaximum() - 1.0f) > FLOAT_SAFE_EPSILON){
+	if(fabsf(link.mpBoneMinimum) > FLOAT_SAFE_EPSILON
+	|| fabsf(link.mpBoneMaximum - 1.0f) > FLOAT_SAFE_EPSILON){
 		writer.WriteOpeningTagStart("boneLimits");
-		writer.WriteAttributeFloat("min", link.GetBoneMinimum());
-		writer.WriteAttributeFloat("max", link.GetBoneMaximum());
+		writer.WriteAttributeFloat("min", link.mpBoneMinimum);
+		writer.WriteAttributeFloat("max", link.mpBoneMaximum);
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(!link.GetVertexPositionSet().IsEmpty()){
-		writer.WriteDataTagString("vertexPositionSet", link.GetVertexPositionSet());
+	if(!link.mpVertexPositionSet->IsEmpty()){
+		writer.WriteDataTagString("vertexPositionSet", link.mpVertexPositionSet.GetValue());
 	}
 	
-	if(fabsf(link.GetVertexPositionSetMinimum()) > FLOAT_SAFE_EPSILON
-	|| fabsf(link.GetVertexPositionSetMaximum() - 1.0f) > FLOAT_SAFE_EPSILON){
+	if(fabsf(link.mpVpsMinimum) > FLOAT_SAFE_EPSILON
+	|| fabsf(link.mpVpsMaximum - 1.0f) > FLOAT_SAFE_EPSILON){
 		writer.WriteOpeningTagStart("vertexPositionSetLimits");
-		writer.WriteAttributeFloat("min", link.GetVertexPositionSetMinimum());
-		writer.WriteAttributeFloat("max", link.GetVertexPositionSetMaximum());
+		writer.WriteAttributeFloat("min", link.mpVpsMinimum);
+		writer.WriteAttributeFloat("max", link.mpVpsMaximum);
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(link.GetWrapY()){
-		writer.WriteDataTagBool("wrapY", link.GetWrapY());
+	if(link.mpWrapY){
+		writer.WriteDataTagBool("wrapY", link.mpWrapY.GetValue());
 	}
 	
-	const decCurveBezier &curve = link.GetCurve();
+	const decCurveBezier &curve = link.mpCurve;
 	if(curve.GetInterpolationMode() != decCurveBezier::eimLinear || curve.GetPointCount() != 2
 	|| !curve.GetPointAt(0).GetPoint().IsEqualTo(decVector2(0.0f, 0.0f))
 	|| !curve.GetPointAt(1).GetPoint().IsEqualTo(decVector2(1.0f, 1.0f))){
-		WriteCurveBezier(writer, "curve", link.GetCurve());
+		WriteCurveBezier(writer, "curve", link.mpCurve);
 	}
 	
 	writer.WriteClosingTag("link");
 }
 
 void aeLSAnimator::pSaveRuleCommon(decXmlWriter &writer, const aeAnimator &animator, const aeRule &rule){
-	int i, count;
-	
-	writer.WriteDataTagString("name", rule.GetName());
-	if(!rule.GetEnabled()){
-		writer.WriteDataTagBool("enabled", rule.GetEnabled());
+	writer.WriteDataTagString("name", rule.mpName.GetValue());
+	if(!rule.mpEnabled){
+		writer.WriteDataTagBool("enabled", rule.mpEnabled);
 	}
 	
-	if(rule.GetBlendMode() == deAnimatorRule::ebmBlend){
+	if(rule.mpBlendMode == deAnimatorRule::ebmBlend){
 		//writer.WriteDataTagString( "blendMode", "blend" ); // default value
 		
-	}else if(rule.GetBlendMode() == deAnimatorRule::ebmOverlay){
+	}else if(rule.mpBlendMode == deAnimatorRule::ebmOverlay){
 		writer.WriteDataTagString("blendMode", "overlay");
 		
 	}else{
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(fabsf(rule.GetBlendFactor() - 1.0f) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("blendFactor", rule.GetBlendFactor());
+	if(fabsf(rule.mpBlendFactor - 1.0f) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("blendFactor", rule.mpBlendFactor);
 	}
-	if(rule.GetInvertBlendFactor()){
-		writer.WriteDataTagBool("invertBlendFactor", rule.GetInvertBlendFactor());
-	}
-	
-	pSaveControllerTarget(writer, animator, rule.GetTargetBlendFactor(), "blendFactor");
-	
-	const decStringSet &boneList = rule.GetListBones();
-	count = boneList.GetCount();
-	for(i=0; i<count; i++){
-		writer.WriteDataTagString("bone", boneList.GetAt(i));
+	if(rule.mpInvertBlendFactor){
+		writer.WriteDataTagBool("invertBlendFactor", rule.mpInvertBlendFactor);
 	}
 	
-	const decStringSet &vpsList = rule.GetListVertexPositionSets();
-	count = vpsList.GetCount();
-	for(i=0; i<count; i++){
-		writer.WriteDataTagString("vertexPositionSet", vpsList.GetAt(i));
-	}
+	pSaveControllerTarget(writer, animator, rule.mpTargetBlendFactor, "blendFactor");
+	
+	rule.mpAffectedBones->Visit([&](const decString &bone){
+		writer.WriteDataTagString("bone", bone);
+	});
+	
+	rule.mpAffectedVps->Visit([&](const decString &vps){
+		writer.WriteDataTagString("vertexPositionSet", vps);
+	});
 }
 
 void aeLSAnimator::pSaveRule(decXmlWriter &writer, const aeAnimator &animator, const aeRule &rule){
@@ -658,8 +642,8 @@ void aeLSAnimator::pSaveRule(decXmlWriter &writer, const aeAnimator &animator, c
 }
 
 void aeLSAnimator::pSaveControllerTarget(decXmlWriter &writer, const aeAnimator &animator,
-const aeControllerTarget &target, const char *name){
-	if(target.GetLinks().IsEmpty()){
+const igdeMetaPropertyObjectSetStorage<aeLink>::Storage &target, const char *name){
+	if(target->IsEmpty()){
 		return;
 	}
 	
@@ -667,8 +651,9 @@ const aeControllerTarget &target, const char *name){
 	writer.WriteAttributeString("name", name);
 	writer.WriteOpeningTagEnd();
 	
-	target.GetLinks().Visit([&](aeLink *link){
-		writer.WriteDataTagInt("link", animator.GetLinks().IndexOf(link));
+	const auto &links = animator.mpLinks.GetValue();
+	target->Visit([&](aeLink *link){
+		writer.WriteDataTagInt("link", links.IndexOf(link));
 	});
 	
 	writer.WriteClosingTag("target");
@@ -680,23 +665,23 @@ const aeRuleAnimation &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	writer.WriteDataTagString("moveName", rule.GetMoveName());
-	writer.WriteDataTagFloat("moveTime", rule.GetMoveTime());
+	writer.WriteDataTagString("moveName", rule.mpMoveName.GetValue());
+	writer.WriteDataTagFloat("moveTime", rule.mpMoveTime);
 	
-	if(!rule.GetEnablePosition()){
-		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
+	if(!rule.mpEnablePosition){
+		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	if(!rule.GetEnableOrientation()){
-		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
+	if(!rule.mpEnableOrientation){
+		writer.WriteDataTagBool("enableOrientation", rule.mpEnableOrientation);
 	}
-	if(rule.GetEnableSize()){
-		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
+	if(rule.mpEnableSize){
+		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(!rule.GetEnableVertexPositionSet()){
-		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
+	if(!rule.mpEnableVertexPositionSet){
+		writer.WriteDataTagBool("enableVertexPositionSet", rule.mpEnableVertexPositionSet);
 	}
 	
-	pSaveControllerTarget(writer, animator, rule.GetTargetMoveTime(), "moveTime");
+	pSaveControllerTarget(writer, animator, rule.mpTargetMoveTime, "moveTime");
 	
 	writer.WriteClosingTag("ruleAnimation");
 }
@@ -707,29 +692,29 @@ const aeRuleAnimationDifference &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	writer.WriteDataTagString("leadingMoveName", rule.GetLeadingMoveName());
-	writer.WriteDataTagFloat("leadingMoveTime", rule.GetLeadingMoveTime());
-	writer.WriteDataTagString("referenceMoveName", rule.GetReferenceMoveName());
-	writer.WriteDataTagFloat("referenceMoveTime", rule.GetReferenceMoveTime());
-	if(rule.GetUseComponentSpace()){
+	writer.WriteDataTagString("leadingMoveName", rule.mpLeadingMoveName.GetValue());
+	writer.WriteDataTagFloat("leadingMoveTime", rule.mpLeadingMoveTime);
+	writer.WriteDataTagString("referenceMoveName", rule.mpReferenceMoveName.GetValue());
+	writer.WriteDataTagFloat("referenceMoveTime", rule.mpReferenceMoveTime);
+	if(rule.mpUseComponentSpace){
 		writer.WriteDataTagBool("useComponentSpace", true);
 	}
 	
-	if(!rule.GetEnablePosition()){
-		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
+	if(!rule.mpEnablePosition){
+		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	if(!rule.GetEnableOrientation()){
-		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
+	if(!rule.mpEnableOrientation){
+		writer.WriteDataTagBool("enableOrientation", rule.mpEnableOrientation);
 	}
-	if(rule.GetEnableSize()){
-		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
+	if(rule.mpEnableSize){
+		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(!rule.GetEnableVertexPositionSet()){
-		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
+	if(!rule.mpEnableVertexPositionSet){
+		writer.WriteDataTagBool("enableVertexPositionSet", rule.mpEnableVertexPositionSet);
 	}
 	
-	pSaveControllerTarget(writer, animator, rule.GetTargetLeadingMoveTime(), "leadingMoveTime");
-	pSaveControllerTarget(writer, animator, rule.GetTargetReferenceMoveTime(), "referenceMoveTime");
+	pSaveControllerTarget(writer, animator, rule.mpTargetLeadingMoveTime, "leadingMoveTime");
+	pSaveControllerTarget(writer, animator, rule.mpTargetReferenceMoveTime, "referenceMoveTime");
 	
 	writer.WriteClosingTag("ruleAnimationDifference");
 }
@@ -740,29 +725,25 @@ const aeRuleAnimationSelect &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	const decStringList &moves = rule.GetMoves();
-	const int moveCount = moves.GetCount();
-	int i;
+	rule.mpMoves->Visit([&](const decString &move){
+		writer.WriteDataTagString("move", move);
+	});
 	
-	for(i=0; i<moveCount; i++){
-		writer.WriteDataTagString("move", moves.GetAt(i));
+	if(!rule.mpEnablePosition){
+		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	
-	if(!rule.GetEnablePosition()){
-		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
+	if(!rule.mpEnableOrientation){
+		writer.WriteDataTagBool("enableOrientation", rule.mpEnableOrientation);
 	}
-	if(!rule.GetEnableOrientation()){
-		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
+	if(rule.mpEnableSize){
+		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(rule.GetEnableSize()){
-		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
-	}
-	if(!rule.GetEnableVertexPositionSet()){
-		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
+	if(!rule.mpEnableVertexPositionSet){
+		writer.WriteDataTagBool("enableVertexPositionSet", rule.mpEnableVertexPositionSet);
 	}
 	
-	pSaveControllerTarget(writer, animator, rule.GetTargetMoveTime(), "moveTime");
-	pSaveControllerTarget(writer, animator, rule.GetTargetSelect(), "selection");
+	pSaveControllerTarget(writer, animator, rule.mpTargetMoveTime, "moveTime");
+	pSaveControllerTarget(writer, animator, rule.mpTargetSelect, "selection");
 	
 	writer.WriteClosingTag("ruleAnimationSelect");
 }
@@ -773,70 +754,70 @@ const aeRuleBoneTransformator &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	if(!rule.GetMinimumTranslation().IsZero()){
+	if(!rule.mpMinTranslation->IsZero()){
 		writer.WriteOpeningTagStart("minimumTranslation");
-		writer.WriteAttributeFloat("x", rule.GetMinimumTranslation().x);
-		writer.WriteAttributeFloat("y", rule.GetMinimumTranslation().y);
-		writer.WriteAttributeFloat("z", rule.GetMinimumTranslation().z);
+		writer.WriteAttributeFloat("x", rule.mpMinTranslation->x);
+		writer.WriteAttributeFloat("y", rule.mpMinTranslation->y);
+		writer.WriteAttributeFloat("z", rule.mpMinTranslation->z);
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(!rule.GetMaximumTranslation().IsZero()){
+	if(!rule.mpMaxTranslation->IsZero()){
 		writer.WriteOpeningTagStart("maximumTranslation");
-		writer.WriteAttributeFloat("x", rule.GetMaximumTranslation().x);
-		writer.WriteAttributeFloat("y", rule.GetMaximumTranslation().y);
-		writer.WriteAttributeFloat("z", rule.GetMaximumTranslation().z);
+		writer.WriteAttributeFloat("x", rule.mpMaxTranslation->x);
+		writer.WriteAttributeFloat("y", rule.mpMaxTranslation->y);
+		writer.WriteAttributeFloat("z", rule.mpMaxTranslation->z);
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(!rule.GetMinimumRotation().IsZero()){
+	if(!rule.mpMinRotation.GetEulerAngles().IsZero()){
 		writer.WriteOpeningTagStart("minimumRotation");
-		writer.WriteAttributeFloat("x", rule.GetMinimumRotation().x);
-		writer.WriteAttributeFloat("y", rule.GetMinimumRotation().y);
-		writer.WriteAttributeFloat("z", rule.GetMinimumRotation().z);
+		writer.WriteAttributeFloat("x", rule.mpMinRotation.GetEulerAngles().x);
+		writer.WriteAttributeFloat("y", rule.mpMinRotation.GetEulerAngles().y);
+		writer.WriteAttributeFloat("z", rule.mpMinRotation.GetEulerAngles().z);
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(!rule.GetMaximumRotation().IsZero()){
+	if(!rule.mpMaxRotation.GetEulerAngles().IsZero()){
 		writer.WriteOpeningTagStart("maximumRotation");
-		writer.WriteAttributeFloat("x", rule.GetMaximumRotation().x);
-		writer.WriteAttributeFloat("y", rule.GetMaximumRotation().y);
-		writer.WriteAttributeFloat("z", rule.GetMaximumRotation().z);
+		writer.WriteAttributeFloat("x", rule.mpMaxRotation.GetEulerAngles().x);
+		writer.WriteAttributeFloat("y", rule.mpMaxRotation.GetEulerAngles().y);
+		writer.WriteAttributeFloat("z", rule.mpMaxRotation.GetEulerAngles().z);
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(!rule.GetMinimumScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
+	if(!rule.mpMinScaling->IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
 		writer.WriteOpeningTagStart("minimumScaling");
-		writer.WriteAttributeFloat("x", rule.GetMinimumScaling().x);
-		writer.WriteAttributeFloat("y", rule.GetMinimumScaling().y);
-		writer.WriteAttributeFloat("z", rule.GetMinimumScaling().z);
+		writer.WriteAttributeFloat("x", rule.mpMinScaling->x);
+		writer.WriteAttributeFloat("y", rule.mpMinScaling->y);
+		writer.WriteAttributeFloat("z", rule.mpMinScaling->z);
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(!rule.GetMaximumScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
+	if(!rule.mpMaxScaling->IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
 		writer.WriteOpeningTagStart("maximumScaling");
-		writer.WriteAttributeFloat("x", rule.GetMaximumScaling().x);
-		writer.WriteAttributeFloat("y", rule.GetMaximumScaling().y);
-		writer.WriteAttributeFloat("z", rule.GetMaximumScaling().z);
+		writer.WriteAttributeFloat("x", rule.mpMaxScaling->x);
+		writer.WriteAttributeFloat("y", rule.mpMaxScaling->y);
+		writer.WriteAttributeFloat("z", rule.mpMaxScaling->z);
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(!rule.GetAxis().IsEqualTo(decVector(0.0f, 0.0f, 1.0f))){
+	if(!rule.mpAxis->IsEqualTo(decVector(0.0f, 0.0f, 1.0f))){
 		writer.WriteOpeningTagStart("axis");
-		writer.WriteAttributeFloat("x", rule.GetAxis().x);
-		writer.WriteAttributeFloat("y", rule.GetAxis().y);
-		writer.WriteAttributeFloat("z", rule.GetAxis().z);
+		writer.WriteAttributeFloat("x", rule.mpAxis->x);
+		writer.WriteAttributeFloat("y", rule.mpAxis->y);
+		writer.WriteAttributeFloat("z", rule.mpAxis->z);
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(fabsf(rule.GetMinimumAngle()) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("minimumAngle", rule.GetMinimumAngle());
+	if(fabsf(rule.mpMinAngle) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("minimumAngle", rule.mpMinAngle);
 	}
-	if(fabsf(rule.GetMaximumAngle()) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("maximumAngle", rule.GetMaximumAngle());
+	if(fabsf(rule.mpMaxAngle) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("maximumAngle", rule.mpMaxAngle);
 	}
 	
-	switch(rule.GetCoordinateFrame()){
+	switch(rule.mpCoordinateFrame){
 	case deAnimatorRuleBoneTransformator::ecfBoneLocal:
 		writer.WriteDataTagString("cframe", "local");
 		break;
@@ -850,27 +831,27 @@ const aeRuleBoneTransformator &rule){
 		break;
 	}
 	
-	if(rule.GetEnablePosition()){
-		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
+	if(rule.mpEnablePosition){
+		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	if(!rule.GetEnableOrientation()){
-		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
+	if(!rule.mpEnableOrientation){
+		writer.WriteDataTagBool("enableOrientation", rule.mpEnableOrientation);
 	}
-	if(rule.GetEnableSize()){
-		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
+	if(rule.mpEnableSize){
+		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(rule.GetUseAxis()){
-		writer.WriteDataTagBool("useAxis", rule.GetUseAxis());
+	if(rule.mpUseAxis){
+		writer.WriteDataTagBool("useAxis", rule.mpUseAxis);
 	}
-	if(!rule.GetTargetBone().IsEmpty()){
-		writer.WriteDataTagString("targetBone", rule.GetTargetBone());
-	}
-	
-	if(!rule.GetInputBone().IsEmpty()){
-		writer.WriteDataTagString("inputBone", rule.GetInputBone());
+	if(!rule.mpTargetBone->IsEmpty()){
+		writer.WriteDataTagString("targetBone", rule.mpTargetBone.GetValue());
 	}
 	
-	switch(rule.GetInputSource()){
+	if(!rule.mpInputBone->IsEmpty()){
+		writer.WriteDataTagString("inputBone", rule.mpInputBone.GetValue());
+	}
+	
+	switch(rule.mpInputSource){
 	case deAnimatorRuleBoneTransformator::eisTargetBlend:
 		// writer.WriteDataTagString("inputSource", "targetBlend");
 		break;
@@ -888,9 +869,9 @@ const aeRuleBoneTransformator &rule){
 		break;
 	}
 	
-	pSaveControllerTarget(writer, animator, rule.GetTargetTranslation(), "translation");
-	pSaveControllerTarget(writer, animator, rule.GetTargetRotation(), "rotation");
-	pSaveControllerTarget(writer, animator, rule.GetTargetScaling(), "scaling");
+	pSaveControllerTarget(writer, animator, rule.mpTargetTranslation, "translation");
+	pSaveControllerTarget(writer, animator, rule.mpTargetRotation, "rotation");
+	pSaveControllerTarget(writer, animator, rule.mpTargetScaling, "scaling");
 	
 	writer.WriteClosingTag("ruleBoneTransformator");
 }
@@ -902,61 +883,61 @@ const aeRuleStateManipulator &rule){
 	pSaveRuleCommon(writer, animator, rule);
 	
 	writer.WriteOpeningTagStart("positionMinimum");
-	writer.WriteAttributeFloat("x", rule.GetMinimumPosition().x);
-	writer.WriteAttributeFloat("y", rule.GetMinimumPosition().y);
-	writer.WriteAttributeFloat("z", rule.GetMinimumPosition().z);
+	writer.WriteAttributeFloat("x", rule.mpMinPosition->x);
+	writer.WriteAttributeFloat("y", rule.mpMinPosition->y);
+	writer.WriteAttributeFloat("z", rule.mpMinPosition->z);
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteOpeningTagStart("positionMaximum");
-	writer.WriteAttributeFloat("x", rule.GetMaximumPosition().x);
-	writer.WriteAttributeFloat("y", rule.GetMaximumPosition().y);
-	writer.WriteAttributeFloat("z", rule.GetMaximumPosition().z);
+	writer.WriteAttributeFloat("x", rule.mpMaxPosition->x);
+	writer.WriteAttributeFloat("y", rule.mpMaxPosition->y);
+	writer.WriteAttributeFloat("z", rule.mpMaxPosition->z);
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteOpeningTagStart("rotationMinimum");
-	writer.WriteAttributeFloat("x", rule.GetMinimumRotation().x);
-	writer.WriteAttributeFloat("y", rule.GetMinimumRotation().y);
-	writer.WriteAttributeFloat("z", rule.GetMinimumRotation().z);
+	writer.WriteAttributeFloat("x", rule.mpMinRotation.GetEulerAngles().x);
+	writer.WriteAttributeFloat("y", rule.mpMinRotation.GetEulerAngles().y);
+	writer.WriteAttributeFloat("z", rule.mpMinRotation.GetEulerAngles().z);
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteOpeningTagStart("rotationMaximum");
-	writer.WriteAttributeFloat("x", rule.GetMaximumRotation().x);
-	writer.WriteAttributeFloat("y", rule.GetMaximumRotation().y);
-	writer.WriteAttributeFloat("z", rule.GetMaximumRotation().z);
+	writer.WriteAttributeFloat("x", rule.mpMaxRotation.GetEulerAngles().x);
+	writer.WriteAttributeFloat("y", rule.mpMaxRotation.GetEulerAngles().y);
+	writer.WriteAttributeFloat("z", rule.mpMaxRotation.GetEulerAngles().z);
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteOpeningTagStart("sizeMinimum");
-	writer.WriteAttributeFloat("x", rule.GetMinimumSize().x);
-	writer.WriteAttributeFloat("y", rule.GetMinimumSize().y);
-	writer.WriteAttributeFloat("z", rule.GetMinimumSize().z);
+	writer.WriteAttributeFloat("x", rule.mpMinSize->x);
+	writer.WriteAttributeFloat("y", rule.mpMinSize->y);
+	writer.WriteAttributeFloat("z", rule.mpMinSize->z);
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteOpeningTagStart("sizeMaximum");
-	writer.WriteAttributeFloat("x", rule.GetMaximumSize().x);
-	writer.WriteAttributeFloat("y", rule.GetMaximumSize().y);
-	writer.WriteAttributeFloat("z", rule.GetMaximumSize().z);
+	writer.WriteAttributeFloat("x", rule.mpMaxSize->x);
+	writer.WriteAttributeFloat("y", rule.mpMaxSize->y);
+	writer.WriteAttributeFloat("z", rule.mpMaxSize->z);
 	writer.WriteOpeningTagEnd(true);
 	
-	writer.WriteDataTagFloat("vertexPositionSetMinimum", rule.GetMinimumVertexPositionSet());
-	writer.WriteDataTagFloat("vertexPositionSetMaximum", rule.GetMaximumVertexPositionSet());
+	writer.WriteDataTagFloat("vertexPositionSetMinimum", rule.mpMinVertexPositionSet);
+	writer.WriteDataTagFloat("vertexPositionSetMaximum", rule.mpMaxVertexPositionSet);
 	
-	if(rule.GetEnablePosition()){
-		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
+	if(rule.mpEnablePosition){
+		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	if(!rule.GetEnableOrientation()){
-		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
+	if(!rule.mpEnableRotation){
+		writer.WriteDataTagBool("enableOrientation", rule.mpEnableRotation);
 	}
-	if(rule.GetEnableSize()){
-		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
+	if(rule.mpEnableSize){
+		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(!rule.GetEnableVertexPositionSet()){
-		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
+	if(!rule.mpEnableVertexPositionSet){
+		writer.WriteDataTagBool("enableVertexPositionSet", rule.mpEnableVertexPositionSet);
 	}
 	
-	pSaveControllerTarget(writer, animator, rule.GetTargetPosition(), "position");
-	pSaveControllerTarget(writer, animator, rule.GetTargetRotation(), "orientation");
-	pSaveControllerTarget(writer, animator, rule.GetTargetSize(), "size");
-	pSaveControllerTarget(writer, animator, rule.GetTargetVertexPositionSet(), "vertexPositionSet");
+	pSaveControllerTarget(writer, animator, rule.mpTargetPosition, "position");
+	pSaveControllerTarget(writer, animator, rule.mpTargetRotation, "orientation");
+	pSaveControllerTarget(writer, animator, rule.mpTargetSize, "size");
+	pSaveControllerTarget(writer, animator, rule.mpTargetVertexPositionSet, "vertexPositionSet");
 	
 	writer.WriteClosingTag("ruleStateManipulator");
 }
@@ -967,21 +948,21 @@ const aeRuleStateSnapshot &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	if(!rule.GetUseLastState()){
-		writer.WriteDataTagBool("useLastState", rule.GetUseLastState());
+	if(!rule.mpUseLastState){
+		writer.WriteDataTagBool("useLastState", rule.mpUseLastState);
 	}
 	
-	if(!rule.GetEnablePosition()){
-		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
+	if(!rule.mpEnablePosition){
+		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	if(!rule.GetEnableOrientation()){
-		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
+	if(!rule.mpEnableOrientation){
+		writer.WriteDataTagBool("enableOrientation", rule.mpEnableOrientation);
 	}
-	if(rule.GetEnableSize()){
-		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
+	if(rule.mpEnableSize){
+		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(!rule.GetEnableVertexPositionSet()){
-		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
+	if(!rule.mpEnableVertexPositionSet){
+		writer.WriteDataTagBool("enableVertexPositionSet", rule.mpEnableVertexPositionSet);
 	}
 	
 	writer.WriteClosingTag("ruleStateSnapshot");
@@ -993,51 +974,51 @@ const aeRuleInverseKinematic &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	const decVector &goalPosition = rule.GetGoalPosition();
+	const decVector &goalPosition = rule.mpGoalPosition;
 	writer.WriteOpeningTagStart("goalPosition");
 	writer.WriteAttributeFloat("x", goalPosition.x);
 	writer.WriteAttributeFloat("y", goalPosition.y);
 	writer.WriteAttributeFloat("z", goalPosition.z);
 	writer.WriteOpeningTagEnd(true);
 	
-	const decVector &goalOrientation = rule.GetGoalOrientation();
+	const decVector &goalOrientation = rule.mpGoalOrientation;
 	writer.WriteOpeningTagStart("goalOrientation");
 	writer.WriteAttributeFloat("x", goalOrientation.x);
 	writer.WriteAttributeFloat("y", goalOrientation.y);
 	writer.WriteAttributeFloat("z", goalOrientation.z);
 	writer.WriteOpeningTagEnd(true);
 	
-	const decVector &localPosition = rule.GetLocalPosition();
+	const decVector &localPosition = rule.mpLocalPosition;
 	writer.WriteOpeningTagStart("localPosition");
 	writer.WriteAttributeFloat("x", localPosition.x);
 	writer.WriteAttributeFloat("y", localPosition.y);
 	writer.WriteAttributeFloat("z", localPosition.z);
 	writer.WriteOpeningTagEnd(true);
 	
-	const decVector &localOrientation = rule.GetLocalOrientation();
+	const decVector &localOrientation = rule.mpLocalOrientation;
 	writer.WriteOpeningTagStart("localOrientation");
 	writer.WriteAttributeFloat("x", localOrientation.x);
 	writer.WriteAttributeFloat("y", localOrientation.y);
 	writer.WriteAttributeFloat("z", localOrientation.z);
 	writer.WriteOpeningTagEnd(true);
 	
-	if(rule.GetAdjustOrientation()){
-		writer.WriteDataTagBool("adjustOrientation", rule.GetAdjustOrientation());
+	if(rule.mpAdjustOrientation){
+		writer.WriteDataTagBool("adjustOrientation", rule.mpAdjustOrientation);
 	}
 	
-	if(!rule.GetSolverBone().IsEmpty()){
-		writer.WriteDataTagString("solverBone", rule.GetSolverBone());
+	if(!rule.mpSolverBone->IsEmpty()){
+		writer.WriteDataTagString("solverBone", rule.mpSolverBone.GetValue());
 	}
-	if(rule.GetUseSolverBone()){
-		writer.WriteDataTagBool("useSolverBone", rule.GetUseSolverBone());
-	}
-	
-	writer.WriteDataTagFloat("reachRange", rule.GetReachRange());
-	if(!rule.GetReachBone().IsEmpty()){
-		writer.WriteDataTagString("reachBone", rule.GetReachBone());
+	if(rule.mpUseSolverBone){
+		writer.WriteDataTagBool("useSolverBone", rule.mpUseSolverBone);
 	}
 	
-	const decVector &reachCenter = rule.GetReachCenter();
+	writer.WriteDataTagFloat("reachRange", rule.mpReachRange);
+	if(!rule.mpReachBone->IsEmpty()){
+		writer.WriteDataTagString("reachBone", rule.mpReachBone.GetValue());
+	}
+	
+	const decVector &reachCenter = rule.mpReachCenter;
 	if(!reachCenter.IsZero()){
 		writer.WriteOpeningTagStart("reachCenter");
 		writer.WriteAttributeFloat("x", reachCenter.x);
@@ -1046,12 +1027,12 @@ const aeRuleInverseKinematic &rule){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	pSaveControllerTarget(writer, animator, rule.GetTargetGoalPosition(), "goalPosition");
-	pSaveControllerTarget(writer, animator, rule.GetTargetGoalOrientation(), "goalOrientation");
-	pSaveControllerTarget(writer, animator, rule.GetTargetLocalPosition(), "localPosition");
-	pSaveControllerTarget(writer, animator, rule.GetTargetLocalOrientation(), "localOrientation");
-	pSaveControllerTarget(writer, animator, rule.GetTargetReachRange(), "reachRange");
-	pSaveControllerTarget(writer, animator, rule.GetTargetReachCenter(), "reachCenter");
+	pSaveControllerTarget(writer, animator, rule.mpTargetGoalPosition, "goalPosition");
+	pSaveControllerTarget(writer, animator, rule.mpTargetGoalOrientation, "goalOrientation");
+	pSaveControllerTarget(writer, animator, rule.mpTargetLocalPosition, "localPosition");
+	pSaveControllerTarget(writer, animator, rule.mpTargetLocalOrientation, "localOrientation");
+	pSaveControllerTarget(writer, animator, rule.mpTargetReachRange, "reachRange");
+	pSaveControllerTarget(writer, animator, rule.mpTargetReachCenter, "reachCenter");
 	
 	writer.WriteClosingTag("ruleInverseKinematic");
 }
@@ -1062,44 +1043,44 @@ const aeRuleForeignState &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	writer.WriteDataTagString("foreignBone", rule.GetForeignBone());
-	writer.WriteDataTagString("foreignVertexPositionSet", rule.GetForeignVertexPositionSet());
-	writer.WriteDataTagFloat("scalePosition", rule.GetScalePosition());
-	writer.WriteDataTagFloat("scaleOrientation", rule.GetScaleOrientation());
-	writer.WriteDataTagFloat("scaleSize", rule.GetScaleSize());
-	writer.WriteDataTagFloat("scaleVertexPositionSet", rule.GetScaleVertexPositionSet());
+	writer.WriteDataTagString("foreignBone", rule.mpForeignBone.GetValue());
+	writer.WriteDataTagString("foreignVertexPositionSet", rule.mpForeignVertexPositionSet.GetValue());
+	writer.WriteDataTagFloat("scalePosition", rule.mpScalePosition);
+	writer.WriteDataTagFloat("scaleOrientation", rule.mpScaleOrientation);
+	writer.WriteDataTagFloat("scaleSize", rule.mpScaleSize);
+	writer.WriteDataTagFloat("scaleVertexPositionSet", rule.mpScaleVertexPositionSet);
 	
-	if(!rule.GetEnablePosition()){
-		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
+	if(!rule.mpEnablePosition){
+		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	if(!rule.GetEnableOrientation()){
-		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
+	if(!rule.mpEnableOrientation){
+		writer.WriteDataTagBool("enableOrientation", rule.mpEnableOrientation);
 	}
-	if(rule.GetEnableSize()){
-		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
+	if(rule.mpEnableSize){
+		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(!rule.GetEnableVertexPositionSet()){
-		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
+	if(!rule.mpEnableVertexPositionSet){
+		writer.WriteDataTagBool("enableVertexPositionSet", rule.mpEnableVertexPositionSet);
 	}
 	
-	if(rule.GetSourceCoordinateFrame() == deAnimatorRuleForeignState::ecfBoneLocal){
+	if(rule.mpSourceCoordinateFrame == deAnimatorRuleForeignState::ecfBoneLocal){
 		writer.WriteDataTagString("srcCFrame", "local");
 		
 	}else{ // deAnimatorRuleForeignState::ecfComponent
 		writer.WriteDataTagString("srcCFrame", "component");
 	}
 	
-	if(rule.GetDestCoordinateFrame() == deAnimatorRuleForeignState::ecfBoneLocal){
+	if(rule.mpDestCoordinateFrame == deAnimatorRuleForeignState::ecfBoneLocal){
 		writer.WriteDataTagString("destCFrame", "local");
 		
 	}else{ // deAnimatorRuleForeignState::ecfComponent
 		writer.WriteDataTagString("destCFrame", "component");
 	}
 	
-	pSaveControllerTarget(writer, animator, rule.GetTargetPosition(), "position");
-	pSaveControllerTarget(writer, animator, rule.GetTargetOrientation(), "orientation");
-	pSaveControllerTarget(writer, animator, rule.GetTargetSize(), "size");
-	pSaveControllerTarget(writer, animator, rule.GetTargetVertexPositionSet(), "vertexPositionSet");
+	pSaveControllerTarget(writer, animator, rule.mpTargetPosition, "position");
+	pSaveControllerTarget(writer, animator, rule.mpTargetOrientation, "orientation");
+	pSaveControllerTarget(writer, animator, rule.mpTargetSize, "size");
+	pSaveControllerTarget(writer, animator, rule.mpTargetVertexPositionSet, "vertexPositionSet");
 	
 	writer.WriteClosingTag("ruleForeignState");
 }
@@ -1111,7 +1092,7 @@ const aeRuleMirror &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	switch(rule.GetMirrorAxis()){
+	switch(rule.mpMirrorAxis){
 	case deAnimatorRuleMirror::emaX:
 		writer.WriteDataTagString("mirrorAxis", "x");
 		break;
@@ -1125,16 +1106,16 @@ const aeRuleMirror &rule){
 		break;
 	}
 	
-	if(!rule.GetMirrorBone().IsEmpty()){
-		writer.WriteDataTagString("mirrorBone", rule.GetMirrorBone());
+	if(!rule.mpMirrorBone->IsEmpty()){
+		writer.WriteDataTagString("mirrorBone", rule.mpMirrorBone.GetValue());
 	}
 	
-	rule.GetMatchNames().Visit([&](const aeRuleMirror::MatchName &matchName){
+	rule.mpMatchNames->Visit([&](const aeRuleMirror::MatchName &matchName){
 		writer.WriteOpeningTagStart("matchName");
-		writer.WriteAttributeString("first", matchName.first);
-		writer.WriteAttributeString("second", matchName.second);
+		writer.WriteAttributeString("first", matchName.mpFirst.GetValue());
+		writer.WriteAttributeString("second", matchName.mpSecond.GetValue());
 		
-		switch(matchName.type){
+		switch(matchName.mpType){
 		case deAnimatorRuleMirror::emntFirst:
 			writer.WriteAttributeString("type", "first");
 			break;
@@ -1151,17 +1132,17 @@ const aeRuleMirror &rule){
 		writer.WriteOpeningTagEnd(true);
 	});
 	
-	if(!rule.GetEnablePosition()){
-		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
+	if(!rule.mpEnablePosition){
+		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	if(!rule.GetEnableOrientation()){
-		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
+	if(!rule.mpEnableOrientation){
+		writer.WriteDataTagBool("enableOrientation", rule.mpEnableOrientation);
 	}
-	if(rule.GetEnableSize()){
-		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
+	if(rule.mpEnableSize){
+		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(!rule.GetEnableVertexPositionSet()){
-		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
+	if(!rule.mpEnableVertexPositionSet){
+		writer.WriteDataTagBool("enableVertexPositionSet", rule.mpEnableVertexPositionSet);
 	}
 	
 	writer.WriteClosingTag("ruleMirror");
@@ -1173,31 +1154,29 @@ const aeRuleGroup &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	if(!rule.GetEnablePosition()){
-		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
+	if(!rule.mpEnablePosition){
+		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	if(!rule.GetEnableOrientation()){
-		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
+	if(!rule.mpEnableOrientation){
+		writer.WriteDataTagBool("enableOrientation", rule.mpEnableOrientation);
 	}
-	if(rule.GetEnableSize()){
-		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
+	if(rule.mpEnableSize){
+		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(!rule.GetEnableVertexPositionSet()){
-		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
+	if(!rule.mpEnableVertexPositionSet){
+		writer.WriteDataTagBool("enableVertexPositionSet", rule.mpEnableVertexPositionSet);
 	}
 	
-	const int count = rule.GetRules().GetCount();
-	int i;
-	for(i=0; i<count; i++){
+	rule.mpRules->Visit([&](const aeRule &each){
 		writer.WriteNewline();
-		pSaveRule(writer, animator, *rule.GetRules().GetAt(i));
+		pSaveRule(writer, animator, each);
+	});
+	
+	if(rule.mpUseCurrentState){
+		writer.WriteDataTagBool("useCurrentState", rule.mpUseCurrentState);
 	}
 	
-	if(rule.GetUseCurrentState()){
-		writer.WriteDataTagBool("useCurrentState", rule.GetUseCurrentState());
-	}
-	
-	switch(rule.GetApplicationType()){
+	switch(rule.mpApplicationType){
 	case deAnimatorRuleGroup::eatAll:
 		writer.WriteDataTagString("applicationType", "all");
 		break;
@@ -1207,7 +1186,7 @@ const aeRuleGroup &rule){
 		break;
 	}
 	
-	pSaveControllerTarget(writer, animator, rule.GetTargetSelect(), "selection");
+	pSaveControllerTarget(writer, animator, rule.mpTargetSelect, "selection");
 	
 	writer.WriteClosingTag("ruleGroup");
 }
@@ -1218,31 +1197,31 @@ const aeRuleSubAnimator &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	writer.WriteDataTagString("pathAnimator", rule.GetPathSubAnimator());
+	writer.WriteDataTagString("pathAnimator", rule.mpPathSubAnimator.GetValue());
 	
-	rule.GetConnections().VisitIndexed([&](int i, aeController *controller){
-		if(!controller){
+	rule.mpConnections->VisitIndexed([&](int i, const aeRuleSubAnimator::Connection &connection){
+		if(connection.mpTarget->IsEmpty()){
 			return;
 		}
 		
 		writer.WriteOpeningTagStart("connection");
-		writer.WriteAttributeInt("controller", animator.GetControllers().IndexOf(controller));
+		writer.WriteAttributeInt("controller", connection.mpController->GetIndex());
 		writer.WriteOpeningTagEnd(false, false);
-		writer.WriteTextString(rule.GetSubAnimator()->GetControllers().GetAt(i)->GetName());
+		writer.WriteTextString(connection.mpTarget.GetValue());
 		writer.WriteClosingTag("connection", false);
 	});
 	
-	if(!rule.GetEnablePosition()){
-		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
+	if(!rule.mpEnablePosition){
+		writer.WriteDataTagBool("enablePosition", rule.mpEnablePosition);
 	}
-	if(!rule.GetEnableOrientation()){
-		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
+	if(!rule.mpEnableOrientation){
+		writer.WriteDataTagBool("enableOrientation", rule.mpEnableOrientation);
 	}
-	if(!rule.GetEnableSize()){
-		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
+	if(!rule.mpEnableSize){
+		writer.WriteDataTagBool("enableSize", rule.mpEnableSize);
 	}
-	if(!rule.GetEnableVertexPositionSet()){
-		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
+	if(!rule.mpEnableVertexPositionSet){
+		writer.WriteDataTagBool("enableVertexPositionSet", rule.mpEnableVertexPositionSet);
 	}
 	
 	writer.WriteClosingTag("ruleSubAnimator");
@@ -1254,92 +1233,122 @@ const aeRuleTrackTo &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	writer.WriteDataTagString("trackBone", rule.GetTrackBone().GetString());
+	writer.WriteDataTagString("trackBone", rule.mpTrackBone.GetValue());
 	
-	if(rule.GetTrackAxis() == deAnimatorRuleTrackTo::etaPosX){
+	switch(rule.mpTrackAxis){
+	case deAnimatorRuleTrackTo::etaPosX:
 		writer.WriteDataTagString("trackAxis", "posX");
+		break;
 		
-	}else if(rule.GetTrackAxis() == deAnimatorRuleTrackTo::etaPosY){
+	case deAnimatorRuleTrackTo::etaPosY:
 		writer.WriteDataTagString("trackAxis", "posY");
+		break;
 		
-	}else if(rule.GetTrackAxis() == deAnimatorRuleTrackTo::etaPosZ){
+	case deAnimatorRuleTrackTo::etaPosZ:
 		writer.WriteDataTagString("trackAxis", "posZ");
+		break;
 		
-	}else if(rule.GetTrackAxis() == deAnimatorRuleTrackTo::etaNegX){
+	case deAnimatorRuleTrackTo::etaNegX:
 		writer.WriteDataTagString("trackAxis", "negX");
+		break;
 		
-	}else if(rule.GetTrackAxis() == deAnimatorRuleTrackTo::etaNegY){
+	case deAnimatorRuleTrackTo::etaNegY:
 		writer.WriteDataTagString("trackAxis", "negY");
+		break;
 		
-	}else{ // deAnimatorRuleTrackTo::etaNegZ
+	case deAnimatorRuleTrackTo::etaNegZ:
 		writer.WriteDataTagString("trackAxis", "negZ");
+		break;
 	}
 	
-	if(rule.GetUpAxis() == deAnimatorRuleTrackTo::etaPosX){
+	switch(rule.mpUpAxis){
+	case deAnimatorRuleTrackTo::etaPosX:
 		writer.WriteDataTagString("upAxis", "posX");
+		break;
 		
-	}else if(rule.GetUpAxis() == deAnimatorRuleTrackTo::etaPosY){
+	case deAnimatorRuleTrackTo::etaPosY:
 		writer.WriteDataTagString("upAxis", "posY");
+		break;
 		
-	}else if(rule.GetUpAxis() == deAnimatorRuleTrackTo::etaPosZ){
+	case deAnimatorRuleTrackTo::etaPosZ:
 		writer.WriteDataTagString("upAxis", "posZ");
+		break;
 		
-	}else if(rule.GetUpAxis() == deAnimatorRuleTrackTo::etaNegX){
+	case deAnimatorRuleTrackTo::etaNegX:
 		writer.WriteDataTagString("upAxis", "negX");
+		break;
 		
-	}else if(rule.GetUpAxis() == deAnimatorRuleTrackTo::etaNegY){
+	case deAnimatorRuleTrackTo::etaNegY:
 		writer.WriteDataTagString("upAxis", "negY");
+		break;
 		
-	}else{ // deAnimatorRuleTrackTo::etaNegZ
+	case deAnimatorRuleTrackTo::etaNegZ:
 		writer.WriteDataTagString("upAxis", "negZ");
+		break;
 	}
 	
-	if(rule.GetUpTarget() == deAnimatorRuleTrackTo::eutWorldX){
+	switch(rule.mpUpTarget){
+	case deAnimatorRuleTrackTo::eutWorldX:
 		writer.WriteDataTagString("upTarget", "worldX");
+		break;
 		
-	}else if(rule.GetUpTarget() == deAnimatorRuleTrackTo::eutWorldY){
+	case deAnimatorRuleTrackTo::eutWorldY:
 		writer.WriteDataTagString("upTarget", "worldY");
+		break;
 		
-	}else if(rule.GetUpTarget() == deAnimatorRuleTrackTo::eutWorldZ){
+	case deAnimatorRuleTrackTo::eutWorldZ:
 		writer.WriteDataTagString("upTarget", "worldZ");
+		break;
 		
-	}else if(rule.GetUpTarget() == deAnimatorRuleTrackTo::eutComponentX){
+	case deAnimatorRuleTrackTo::eutComponentX:
 		writer.WriteDataTagString("upTarget", "componentX");
+		break;
 		
-	}else if(rule.GetUpTarget() == deAnimatorRuleTrackTo::eutComponentY){
+	case deAnimatorRuleTrackTo::eutComponentY:
 		writer.WriteDataTagString("upTarget", "componentY");
+		break;
 		
-	}else if(rule.GetUpTarget() == deAnimatorRuleTrackTo::eutComponentZ){
+	case deAnimatorRuleTrackTo::eutComponentZ:
 		writer.WriteDataTagString("upTarget", "componentZ");
+		break;
 		
-	}else if(rule.GetUpTarget() == deAnimatorRuleTrackTo::eutTrackBoneX){
+	case deAnimatorRuleTrackTo::eutTrackBoneX:
 		writer.WriteDataTagString("upTarget", "trackBoneX");
+		break;
 		
-	}else if(rule.GetUpTarget() == deAnimatorRuleTrackTo::eutTrackBoneY){
+	case deAnimatorRuleTrackTo::eutTrackBoneY:
 		writer.WriteDataTagString("upTarget", "trackBoneY");
+		break;
 		
-	}else if(rule.GetUpTarget() == deAnimatorRuleTrackTo::eutTrackBoneZ){
+	case deAnimatorRuleTrackTo::eutTrackBoneZ:
 		writer.WriteDataTagString("upTarget", "trackBoneZ");
+		break;
 		
-	}else{ // deAnimatorRuleTrackTo::eutController
+	case deAnimatorRuleTrackTo::eutController:
 		writer.WriteDataTagString("upTarget", "controller");
+		break;
 	}
 	
-	if(rule.GetLockedAxis() == deAnimatorRuleTrackTo::elaNone){
+	switch(rule.mpLockedAxis){
+	case deAnimatorRuleTrackTo::elaNone:
 		writer.WriteDataTagString("lockedAxis", "none");
+		break;
 		
-	}else if(rule.GetLockedAxis() == deAnimatorRuleTrackTo::elaX){
+	case deAnimatorRuleTrackTo::elaX:
 		writer.WriteDataTagString("lockedAxis", "x");
+		break;
 		
-	}else if(rule.GetLockedAxis() == deAnimatorRuleTrackTo::elaY){
-		writer.WriteDataTagString("lockedAxis", "z");
+	case deAnimatorRuleTrackTo::elaY:
+		writer.WriteDataTagString("lockedAxis", "y");
+		break;
 		
-	}else{ // deAnimatorRuleTrackTo::elaZ
+	case deAnimatorRuleTrackTo::elaZ:
 		writer.WriteDataTagString("lockedAxis", "z");
+		break;
 	}
 	
-	pSaveControllerTarget(writer, animator, rule.GetTargetPosition(), "position");
-	pSaveControllerTarget(writer, animator, rule.GetTargetUp(), "up");
+	pSaveControllerTarget(writer, animator, rule.mpTargetPosition, "position");
+	pSaveControllerTarget(writer, animator, rule.mpTargetUp, "up");
 	
 	writer.WriteClosingTag("ruleTrackTo");
 }
@@ -1351,145 +1360,149 @@ const aeRuleLimit &rule){
 	pSaveRuleCommon(writer, animator, rule);
 	
 	writer.WriteOpeningTagStart("minimumPosition");
-	writer.WriteAttributeFloat("x", rule.GetMinimumPosition().x);
-	writer.WriteAttributeFloat("y", rule.GetMinimumPosition().y);
-	writer.WriteAttributeFloat("z", rule.GetMinimumPosition().z);
+	writer.WriteAttributeFloat("x", rule.mpMinPosition->x);
+	writer.WriteAttributeFloat("y", rule.mpMinPosition->y);
+	writer.WriteAttributeFloat("z", rule.mpMinPosition->z);
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteOpeningTagStart("maximumPosition");
-	writer.WriteAttributeFloat("x", rule.GetMaximumPosition().x);
-	writer.WriteAttributeFloat("y", rule.GetMaximumPosition().y);
-	writer.WriteAttributeFloat("z", rule.GetMaximumPosition().z);
+	writer.WriteAttributeFloat("x", rule.mpMaxPosition->x);
+	writer.WriteAttributeFloat("y", rule.mpMaxPosition->y);
+	writer.WriteAttributeFloat("z", rule.mpMaxPosition->z);
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteOpeningTagStart("minimumRotation");
-	writer.WriteAttributeFloat("x", rule.GetMinimumRotation().x);
-	writer.WriteAttributeFloat("y", rule.GetMinimumRotation().y);
-	writer.WriteAttributeFloat("z", rule.GetMinimumRotation().z);
+	writer.WriteAttributeFloat("x", rule.mpMinRotation.GetEulerAngles().x);
+	writer.WriteAttributeFloat("y", rule.mpMinRotation.GetEulerAngles().y);
+	writer.WriteAttributeFloat("z", rule.mpMinRotation.GetEulerAngles().z);
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteOpeningTagStart("maximumRotation");
-	writer.WriteAttributeFloat("x", rule.GetMaximumRotation().x);
-	writer.WriteAttributeFloat("y", rule.GetMaximumRotation().y);
-	writer.WriteAttributeFloat("z", rule.GetMaximumRotation().z);
+	writer.WriteAttributeFloat("x", rule.mpMaxRotation.GetEulerAngles().x);
+	writer.WriteAttributeFloat("y", rule.mpMaxRotation.GetEulerAngles().y);
+	writer.WriteAttributeFloat("z", rule.mpMaxRotation.GetEulerAngles().z);
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteOpeningTagStart("minimumScaling");
-	writer.WriteAttributeFloat("x", rule.GetMinimumScaling().x);
-	writer.WriteAttributeFloat("y", rule.GetMinimumScaling().y);
-	writer.WriteAttributeFloat("z", rule.GetMinimumScaling().z);
+	writer.WriteAttributeFloat("x", rule.mpMinScaling->x);
+	writer.WriteAttributeFloat("y", rule.mpMinScaling->y);
+	writer.WriteAttributeFloat("z", rule.mpMinScaling->z);
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteOpeningTagStart("maximumScaling");
-	writer.WriteAttributeFloat("x", rule.GetMaximumScaling().x);
-	writer.WriteAttributeFloat("y", rule.GetMaximumScaling().y);
-	writer.WriteAttributeFloat("z", rule.GetMaximumScaling().z);
+	writer.WriteAttributeFloat("x", rule.mpMaxScaling->x);
+	writer.WriteAttributeFloat("y", rule.mpMaxScaling->y);
+	writer.WriteAttributeFloat("z", rule.mpMaxScaling->z);
 	writer.WriteOpeningTagEnd(true);
 	
-	writer.WriteDataTagFloat("minimumVertexPositionSet", rule.GetMinimumVertexPositionSet());
-	writer.WriteDataTagFloat("maximumVertexPositionSet", rule.GetMaximumVertexPositionSet());
+	writer.WriteDataTagFloat("minimumVertexPositionSet", rule.mpMinVertexPositionSet);
+	writer.WriteDataTagFloat("maximumVertexPositionSet", rule.mpMaxVertexPositionSet);
 	
-	if(rule.GetCoordinateFrame() == deAnimatorRuleLimit::ecfBoneLocal){
+	switch(rule.mpCoordinateFrame){
+	case deAnimatorRuleLimit::ecfBoneLocal:
 		writer.WriteDataTagString("cframe", "local");
+		break;
 		
-	}else if(rule.GetCoordinateFrame() == deAnimatorRuleLimit::ecfComponent){
+	case deAnimatorRuleLimit::ecfComponent:
 		writer.WriteDataTagString("cframe", "component");
+		break;
 		
-	}else{ // deAnimatorRuleBoneTransformator::ecfRotationBone
+	case deAnimatorRuleLimit::ecfTargetBone:
 		writer.WriteDataTagString("cframe", "target");
+		break;
 	}
 	
-	writer.WriteDataTagString("targetBone", rule.GetTargetBone());
+	writer.WriteDataTagString("targetBone", rule.mpTargetBone.GetValue());
 	
-	if(rule.GetEnablePositionXMin() || rule.GetEnablePositionYMin() || rule.GetEnablePositionZMin()){
+	if(rule.mpEnablePositionXMin || rule.mpEnablePositionYMin || rule.mpEnablePositionZMin){
 		writer.WriteOpeningTagStart("enablePosMin");
-		if(rule.GetEnablePositionXMin()){
-			writer.WriteAttributeBool("x", rule.GetEnablePositionXMin());
+		if(rule.mpEnablePositionXMin){
+			writer.WriteAttributeBool("x", rule.mpEnablePositionXMin);
 		}
-		if(rule.GetEnablePositionYMin()){
-			writer.WriteAttributeBool("y", rule.GetEnablePositionYMin());
+		if(rule.mpEnablePositionYMin){
+			writer.WriteAttributeBool("y", rule.mpEnablePositionYMin);
 		}
-		if(rule.GetEnablePositionZMin()){
-			writer.WriteAttributeBool("z", rule.GetEnablePositionZMin());
+		if(rule.mpEnablePositionZMin){
+			writer.WriteAttributeBool("z", rule.mpEnablePositionZMin);
 		}
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(rule.GetEnablePositionXMax() || rule.GetEnablePositionYMax() || rule.GetEnablePositionZMax()){
+	if(rule.mpEnablePositionXMax || rule.mpEnablePositionYMax || rule.mpEnablePositionZMax){
 		writer.WriteOpeningTagStart("enablePosMax");
-		if(rule.GetEnablePositionXMax()){
-			writer.WriteAttributeBool("x", rule.GetEnablePositionXMax());
+		if(rule.mpEnablePositionXMax){
+			writer.WriteAttributeBool("x", rule.mpEnablePositionXMax);
 		}
-		if(rule.GetEnablePositionYMax()){
-			writer.WriteAttributeBool("y", rule.GetEnablePositionYMax());
+		if(rule.mpEnablePositionYMax){
+			writer.WriteAttributeBool("y", rule.mpEnablePositionYMax);
 		}
-		if(rule.GetEnablePositionZMax()){
-			writer.WriteAttributeBool("z", rule.GetEnablePositionZMax());
+		if(rule.mpEnablePositionZMax){
+			writer.WriteAttributeBool("z", rule.mpEnablePositionZMax);
 		}
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(rule.GetEnableRotationXMin() || rule.GetEnableRotationYMin() || rule.GetEnableRotationZMin()){
+	if(rule.mpEnableRotationXMin || rule.mpEnableRotationYMin || rule.mpEnableRotationZMin){
 		writer.WriteOpeningTagStart("enableRotMin");
-		if(rule.GetEnableRotationXMin()){
-			writer.WriteAttributeBool("x", rule.GetEnableRotationXMin());
+		if(rule.mpEnableRotationXMin){
+			writer.WriteAttributeBool("x", rule.mpEnableRotationXMin);
 		}
-		if(rule.GetEnableRotationYMin()){
-			writer.WriteAttributeBool("y", rule.GetEnableRotationYMin());
+		if(rule.mpEnableRotationYMin){
+			writer.WriteAttributeBool("y", rule.mpEnableRotationYMin);
 		}
-		if(rule.GetEnableRotationZMin()){
-			writer.WriteAttributeBool("z", rule.GetEnableRotationZMin());
+		if(rule.mpEnableRotationZMin){
+			writer.WriteAttributeBool("z", rule.mpEnableRotationZMin);
 		}
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(rule.GetEnableRotationXMax() || rule.GetEnableRotationYMax() || rule.GetEnableRotationZMax()){
+	if(rule.mpEnableRotationXMax || rule.mpEnableRotationYMax || rule.mpEnableRotationZMax){
 		writer.WriteOpeningTagStart("enableRotMax");
-		if(rule.GetEnableRotationXMax()){
-			writer.WriteAttributeBool("x", rule.GetEnableRotationXMax());
+		if(rule.mpEnableRotationXMax){
+			writer.WriteAttributeBool("x", rule.mpEnableRotationXMax);
 		}
-		if(rule.GetEnableRotationYMax()){
-			writer.WriteAttributeBool("y", rule.GetEnableRotationYMax());
+		if(rule.mpEnableRotationYMax){
+			writer.WriteAttributeBool("y", rule.mpEnableRotationYMax);
 		}
-		if(rule.GetEnableRotationZMax()){
-			writer.WriteAttributeBool("z", rule.GetEnableRotationZMax());
+		if(rule.mpEnableRotationZMax){
+			writer.WriteAttributeBool("z", rule.mpEnableRotationZMax);
 		}
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(rule.GetEnableScalingXMin() || rule.GetEnableScalingYMin() || rule.GetEnableScalingZMin()){
+	if(rule.mpEnableScalingXMin || rule.mpEnableScalingYMin || rule.mpEnableScalingZMin){
 		writer.WriteOpeningTagStart("enableScaleMin");
-		if(rule.GetEnableScalingXMin()){
-			writer.WriteAttributeBool("x", rule.GetEnableScalingXMin());
+		if(rule.mpEnableScalingXMin){
+			writer.WriteAttributeBool("x", rule.mpEnableScalingXMin);
 		}
-		if(rule.GetEnableScalingYMin()){
-			writer.WriteAttributeBool("y", rule.GetEnableScalingYMin());
+		if(rule.mpEnableScalingYMin){
+			writer.WriteAttributeBool("y", rule.mpEnableScalingYMin);
 		}
-		if(rule.GetEnableScalingZMin()){
-			writer.WriteAttributeBool("z", rule.GetEnableScalingZMin());
+		if(rule.mpEnableScalingZMin){
+			writer.WriteAttributeBool("z", rule.mpEnableScalingZMin);
 		}
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(rule.GetEnableScalingXMax() || rule.GetEnableScalingYMax() || rule.GetEnableScalingZMax()){
+	if(rule.mpEnableScalingXMax || rule.mpEnableScalingYMax || rule.mpEnableScalingZMax){
 		writer.WriteOpeningTagStart("enableScaleMax");
-		if(rule.GetEnableScalingXMax()){
-			writer.WriteAttributeBool("x", rule.GetEnableScalingXMax());
+		if(rule.mpEnableScalingXMax){
+			writer.WriteAttributeBool("x", rule.mpEnableScalingXMax);
 		}
-		if(rule.GetEnableScalingYMax()){
-			writer.WriteAttributeBool("y", rule.GetEnableScalingYMax());
+		if(rule.mpEnableScalingYMax){
+			writer.WriteAttributeBool("y", rule.mpEnableScalingYMax);
 		}
-		if(rule.GetEnableScalingZMax()){
-			writer.WriteAttributeBool("z", rule.GetEnableScalingZMax());
+		if(rule.mpEnableScalingZMax){
+			writer.WriteAttributeBool("z", rule.mpEnableScalingZMax);
 		}
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(rule.GetEnableVertexPositionSetMin()){
-		writer.WriteDataTagFloat("enableVertexPositionSetMin", rule.GetEnableVertexPositionSetMin());
+	if(rule.mpEnableVertexPositionSetMin){
+		writer.WriteDataTagFloat("enableVertexPositionSetMin", rule.mpEnableVertexPositionSetMin);
 	}
-	if(rule.GetEnableVertexPositionSetMax()){
-		writer.WriteDataTagFloat("enableVertexPositionSetMax", rule.GetEnableVertexPositionSetMax());
+	if(rule.mpEnableVertexPositionSetMax){
+		writer.WriteDataTagFloat("enableVertexPositionSetMax", rule.mpEnableVertexPositionSetMax);
 	}
 	
 	writer.WriteClosingTag("ruleLimit");
@@ -1547,6 +1560,7 @@ float aeLSAnimator::pGetAttributeFloat(decXmlElementTag *tag, const char *name) 
 
 void aeLSAnimator::pLoadAnimator(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	decStringSet affectedBones, affectedVps;
 	decXmlElementTag *tag;
 	int i;
 	
@@ -1558,19 +1572,19 @@ void aeLSAnimator::pLoadAnimator(decXmlElementTag *root, aeAnimator &animator){
 				
 			}else if(strcmp(tag->GetName(), "rig") == 0){
 				if(tag->GetFirstData()){
-					animator.SetRigPath(GetCDataString(*tag));
+					animator.mpRigPath = GetCDataString(*tag);
 				}
 				
 			}else if(strcmp(tag->GetName(), "animation") == 0){
 				if(tag->GetFirstData()){
-					animator.SetAnimationPath(GetCDataString(*tag));
+					animator.mpAnimationPath = GetCDataString(*tag);
 				}
 				
 			}else if(strcmp(tag->GetName(), "bone") == 0){
-				animator.AddBone(GetCDataString(*tag));
+				affectedBones.Add(GetCDataString(*tag));
 				
 			}else if(strcmp(tag->GetName(), "vertexPositionSet") == 0){
-				animator.AddVertexPositionSet(GetCDataString(*tag));
+				affectedVps.Add(GetCDataString(*tag));
 				
 			}else if(strcmp(tag->GetName(), "controller") == 0){
 				pLoadController(tag, animator);
@@ -1579,9 +1593,9 @@ void aeLSAnimator::pLoadAnimator(decXmlElementTag *root, aeAnimator &animator){
 				pLoadLink(tag, animator);
 				
 			}else{
-				const aeRule::Ref rule(pLoadRule(tag, animator));
+				const auto rule = pLoadRule(tag, animator);
 				if(rule){
-					animator.AddRule(rule);
+					animator.mpRules = animator.mpRules.GetValue() + rule;
 					
 				}else{
 					logger.LogWarnFormat(LOGSOURCE, "animator(%i:%i): Unknown Tag %s, ignoring",
@@ -1592,7 +1606,8 @@ void aeLSAnimator::pLoadAnimator(decXmlElementTag *root, aeAnimator &animator){
 		}
 	}
 	
-	pLoadSubAnimators(animator);
+	animator.mpAffectedBones = affectedBones;
+	animator.mpAffectedVps = affectedVps;
 }
 
 void aeLSAnimator::pLoadDisplay(decXmlElementTag *root, aeAnimator &animator){
@@ -1605,22 +1620,22 @@ void aeLSAnimator::pLoadDisplay(decXmlElementTag *root, aeAnimator &animator){
 		if(tag){
 			if(strcmp(tag->GetName(), "model") == 0){
 				if(tag->GetFirstData()){
-					animator.SetDisplayModelPath(GetCDataString(*tag));
+					animator.mpDisplayModelPath = GetCDataString(*tag);
 				}
 				
 			}else if(strcmp(tag->GetName(), "skin") == 0){
 				if(tag->GetFirstData()){
-					animator.SetDisplaySkinPath(GetCDataString(*tag));
+					animator.mpDisplaySkinPath = GetCDataString(*tag);
 				}
 				
 			}else if(strcmp(tag->GetName(), "rig") == 0){
 				if(tag->GetFirstData()){
-					animator.SetDisplayRigPath(GetCDataString(*tag));
+					animator.mpDisplayRigPath = GetCDataString(*tag);
 				}
 				
 			/*}else if( strcmp( tag->GetName(), "animation" ) == 0 ){
 				if(tag->GetFirstData()){
-					animator.SetAnimationPath(GetCDataString(*tag));
+					animator.mpAnimationPath = GetCDataString(*tag);
 				}*/
 				
 			}else if(strcmp(tag->GetName(), "locomotion") == 0){
@@ -1646,13 +1661,13 @@ void aeLSAnimator::pLoadLocomotion(decXmlElementTag *root, aeAnimator &animator)
 			if(strcmp(tag->GetName(), "locomotionType") == 0){
 				const decString cdata(GetCDataString(*tag));
 				if(cdata == "natural"){
-					locomotion.SetLocomotionType(aeAnimatorLocomotion::eltNatural);
+					locomotion.mpLocomotionType = aeAnimatorLocomotion::eltNatural;
 					
 				}else if(cdata == "fps"){
-					locomotion.SetLocomotionType(aeAnimatorLocomotion::eltNatural);
+					locomotion.mpLocomotionType = aeAnimatorLocomotion::eltFPS;
 					
 				}else if(cdata == "vehicle"){
-					locomotion.SetLocomotionType(aeAnimatorLocomotion::eltNatural);
+					locomotion.mpLocomotionType = aeAnimatorLocomotion::eltVehicle;
 					
 				}else{
 					LogErrorUnknownValue(*tag, cdata);
@@ -1660,16 +1675,16 @@ void aeLSAnimator::pLoadLocomotion(decXmlElementTag *root, aeAnimator &animator)
 				
 				
 			}else if(strcmp(tag->GetName(), "limitLookDown") == 0){
-				locomotion.SetLimitLookDown(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpLimitLookDown = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "limitLookUp") == 0){
-				locomotion.SetLimitLookUp(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpLimitLookUp = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "limitLookLeft") == 0){
-				locomotion.SetLimitLookLeft(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpLimitLookLeft = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "limitLookRight") == 0){
-				locomotion.SetLimitLookRight(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpLimitLookRight = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "limitLookUpDownSpeed") == 0){
 				// deprecated
@@ -1678,37 +1693,37 @@ void aeLSAnimator::pLoadLocomotion(decXmlElementTag *root, aeAnimator &animator)
 				// deprecated
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeUpDown") == 0){
-				locomotion.GetLookUpDown().SetAdjustTime(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpAdjustTimeUpDown = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeLeftRight") == 0){
-				locomotion.GetLookLeftRight().SetAdjustTime(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpAdjustTimeLeftRight = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeStance") == 0){
-				locomotion.GetStance().SetAdjustTime(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpAdjustTimeStance = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeTurnIP") == 0){
-				locomotion.SetAdjustTimeTurnIP(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpAdjustTimeTurnIP = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeOrientation") == 0){
-				locomotion.GetOrientation().SetAdjustTime(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpAdjustTimeOrientation = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeVelocity") == 0){
-				locomotion.GetLinearVelocity().SetAdjustTime(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpAdjustTimeVelocity = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "speedWalk") == 0){
-				locomotion.SetWalkSpeed(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpSpeedWalk = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "speedRun") == 0){
-				locomotion.SetRunSpeed(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpSpeedRun = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "legBlendTime") == 0){
-				locomotion.SetLegBlendTime(strtof(GetCDataString(*tag), nullptr));
+				locomotion.mpLegBlendTime = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "useLegPairs") == 0){
-				locomotion.SetUseLegPairCount((int)strtol(GetCDataString(*tag), nullptr, 10));
+				locomotion.mpUseLegPairs = (int)strtol(GetCDataString(*tag), nullptr, 10);
 				
 			}else if(strcmp(tag->GetName(), "leg") == 0){
-				if(leg >= locomotion.GetLegs().GetCount()){
+				if(leg >= locomotion.mpLegs->GetCount()){
 					logger.LogWarnFormat(LOGSOURCE, "animator(%i:%i): Too many leg definitions, ignoring",
 						tag->GetLineNumber(), tag->GetPositionNumber());
 					continue;
@@ -1727,7 +1742,7 @@ void aeLSAnimator::pLoadLocomotion(decXmlElementTag *root, aeAnimator &animator)
 
 void aeLSAnimator::pLoadLocomotionLeg(decXmlElementTag *root, aeAnimator &animator, int legnum){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeAnimatorLocomotionLeg &leg = *animator.GetLocomotion().GetLegs().GetAt(legnum);
+	aeAnimatorLocomotionLeg &leg = animator.GetLocomotion().mpLegs->GetAt(legnum);
 	decXmlElementTag *tag;
 	decVector vector;
 	int i;
@@ -1736,30 +1751,30 @@ void aeLSAnimator::pLoadLocomotionLeg(decXmlElementTag *root, aeAnimator &animat
 		tag = root->GetElementIfTag(i);
 		if(tag){
 			if(strcmp(tag->GetName(), "liftOffTime") == 0){
-				leg.SetLiftOffTime(strtof(GetCDataString(*tag), nullptr));
+				leg.mpLiftOffTime = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "putDownTime") == 0){
-				leg.SetPutDownTime(strtof(GetCDataString(*tag), nullptr));
+				leg.mpPutDownTime = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "putDownPosition") == 0){ // depracted
 				vector.SetZero();
-				pLoadVector(tag, vector);
-				leg.SetPutDownPositionStand(vector);
+				ReadVector(*tag, vector);
+				leg.mpPutDownPositionStand = vector;
 				
 			}else if(strcmp(tag->GetName(), "putDownPositionStand") == 0){
 				vector.SetZero();
-				pLoadVector(tag, vector);
-				leg.SetPutDownPositionStand(vector);
+				ReadVector(*tag, vector);
+				leg.mpPutDownPositionStand = vector;
 				
 			}else if(strcmp(tag->GetName(), "putDownPositionWalk") == 0){
 				vector.SetZero();
-				pLoadVector(tag, vector);
-				leg.SetPutDownPositionWalk(vector);
+				ReadVector(*tag, vector);
+				leg.mpPutDownPositionWalk = vector;
 				
 			}else if(strcmp(tag->GetName(), "putDownPositionRun") == 0){
 				vector.SetZero();
-				pLoadVector(tag, vector);
-				leg.SetPutDownPositionRun(vector);
+				ReadVector(*tag, vector);
+				leg.mpPutDownPositionRun = vector;
 				
 			}else{
 				logger.LogWarnFormat(LOGSOURCE, "animator(%i:%i): Unknown Tag %s, ignoring",
@@ -1771,93 +1786,91 @@ void aeLSAnimator::pLoadLocomotionLeg(decXmlElementTag *root, aeAnimator &animat
 
 void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const auto controller = aeController::Ref::New(*pLSSys->GetWindowMain());
 	decXmlElementTag *tag;
 	const char *cdata;
 	decVector vector;
 	int i, leg;
-	
-	const aeController::Ref controller(aeController::Ref::New());
-	animator.AddController(controller);
 	
 	// parse tag
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(tag){
 			if(strcmp(tag->GetName(), "name") == 0){
-				controller->SetName(GetCDataString(*tag));
+				controller->mpName = GetCDataString(*tag);
 				
 			}else if(strcmp(tag->GetName(), "clamp") == 0){
-				controller->SetClamp(GetCDataBool(*tag));
+				controller->mpClamp = GetCDataBool(*tag);
 				
 			}else if(strcmp(tag->GetName(), "frozen") == 0){
-				controller->SetFrozen(GetCDataBool(*tag));
+				controller->mpFrozen = GetCDataBool(*tag);
 				
 			}else if(strcmp(tag->GetName(), "limit") == 0){
 				pLoadControllerLimit(tag, controller);
 				
 			}else if(strcmp(tag->GetName(), "limits") == 0){
-				controller->SetMinimumValue(pGetAttributeFloat(tag, "min"));
-				controller->SetMaximumValue(pGetAttributeFloat(tag, "max"));
+				controller->mpMinimumValue = pGetAttributeFloat(tag, "min");
+				controller->mpMaximumValue = pGetAttributeFloat(tag, "max");
 				
 			}else if(strcmp(tag->GetName(), "locomotionAttribute") == 0){
 				cdata = GetCDataString(*tag);
 				
 				if(strcmp(cdata, "elapsedTime") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaElapsedTime);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaElapsedTime;
 					
 				}else if(strcmp(cdata, "lookUpDown") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaLookUpDown);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaLookUpDown;
 					
 				}else if(strcmp(cdata, "lookLeftRight") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaLookLeftRight);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaLookLeftRight;
 					
 				}else if(strcmp(cdata, "movingSpeed") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaMovingSpeed);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaMovingSpeed;
 					
 				}else if(strcmp(cdata, "movingDirection") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaMovingDirection);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaMovingDirection;
 					
 				}else if(strcmp(cdata, "relativeMovingSpeed") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaRelativeMovingSpeed);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaRelativeMovingSpeed;
 					
 				}else if(strcmp(cdata, "turningSpeed") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaTurningSpeed);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaTurningSpeed;
 					
 				}else if(strcmp(cdata, "stance") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaStance);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaStance;
 					
 				}else if(strcmp(cdata, "displacement") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaDisplacement);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaDisplacement;
 					
 				}else if(strcmp(cdata, "relativeDisplacement") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaRelativeDisplacement);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaRelativeDisplacement;
 					
 				}else if(strcmp(cdata, "bodyTiltOffset") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaBodyTiltOffset);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaBodyTiltOffset;
 					
 				}else if(strcmp(cdata, "bodyTiltUpDown") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaBodyTiltUpDown);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaBodyTiltUpDown;
 					
 				}else if(strcmp(cdata, "bodyTiltLeftRight") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaBodyTiltRightLeft);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaBodyTiltRightLeft;
 					
 				}else if(strcmp(cdata, "timeTurnIP") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaTimeTurnIP);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaTimeTurnIP;
 					
 				}else if(strcmp(cdata, "legGroundPosition") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaLegGroundPosition);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaLegGroundPosition;
 					
 				}else if(strcmp(cdata, "legGroundNormal") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaLegGroundNormal);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaLegGroundNormal;
 					
 				}else if(strcmp(cdata, "legInfluence") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaLegInfluence);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaLegInfluence;
 					
 				}else if(strcmp(cdata, "legPosition") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaLegPosition);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaLegPosition;
 					
 				}else if(strcmp(cdata, "legOrientation") == 0){
-					controller->SetLocomotionAttribute(aeAnimatorLocomotion::eaLegOrientation);
+					controller->mpLocomotionAttribute = aeAnimatorLocomotion::eaLegOrientation;
 					
 				}else{
 					logger.LogWarnFormat(LOGSOURCE, "controller(%i:%i): Unknown locomotion attribute %s, ignoring",
@@ -1867,18 +1880,18 @@ void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator)
 			}else if(strcmp(tag->GetName(), "locomotionLeg") == 0){
 				leg = (int)strtol(GetCDataString(*tag), nullptr, 10);
 				
-				if(leg >= 0 && leg < animator.GetLocomotion().GetLegs().GetCount()){
-					controller->SetLocomotionLeg(leg);
+				if(leg >= 0 && leg < animator.GetLocomotion().mpLegs->GetCount()){
+					controller->mpLocomotionLeg = leg;
 				}
 				
 			}else if(strcmp(tag->GetName(), "vectorSimulation") == 0){
 				cdata = GetCDataString(*tag);
 				
 				if(strcmp(cdata, "position") == 0){
-					controller->SetVectorSimulation(aeController::evsPosition);
+					controller->mpVectorSimulation = aeController::evsPosition;
 					
 				}else if(strcmp(cdata, "rotation") == 0){
-					controller->SetVectorSimulation(aeController::evsRotation);
+					controller->mpVectorSimulation = aeController::evsRotation;
 					
 				}else{
 					logger.LogWarnFormat(LOGSOURCE, "controller(%i:%i): Unknown vector simulation %s, ignoring",
@@ -1886,13 +1899,13 @@ void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator)
 				}
 				
 			}else if(strcmp(tag->GetName(), "value") == 0){
-				controller->SetDefaultValue(GetCDataFloat(*tag));
-				controller->SetCurrentValue(controller->GetDefaultValue());
+				controller->mpDefaultValue = GetCDataFloat(*tag);
+				controller->mpCurrentValue = controller->mpDefaultValue;
 				
 			}else if(strcmp(tag->GetName(), "vector") == 0){
 				ReadVector(*tag, vector);
-				controller->SetDefaultVector(vector);
-				controller->SetVector(controller->GetDefaultVector());
+				controller->mpDefaultVector = vector;
+				controller->mpVector = controller->mpDefaultVector;
 				
 			}else{
 				logger.LogWarnFormat(LOGSOURCE, "controller(%i:%i): Unknown Tag %s, ignoring",
@@ -1900,6 +1913,8 @@ void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator)
 			}
 		}
 	}
+	
+	animator.mpControllers = animator.mpControllers.GetValue() + controller;
 }
 
 void aeLSAnimator::pLoadControllerLimit(decXmlElementTag *root, aeController &controller){
@@ -1911,10 +1926,10 @@ void aeLSAnimator::pLoadControllerLimit(decXmlElementTag *root, aeController &co
 		tag = root->GetElementIfTag(i);
 		if(tag){
 			if(strcmp(tag->GetName(), "minimum") == 0){
-				controller.SetMinimumValue(strtof(GetCDataString(*tag), nullptr));
+				controller.mpMinimumValue = strtof(GetCDataString(*tag), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "maximum") == 0){
-				controller.SetMaximumValue(strtof(GetCDataString(*tag), nullptr));
+				controller.mpMaximumValue = strtof(GetCDataString(*tag), nullptr);
 				
 			}else{
 				logger.LogWarnFormat(LOGSOURCE, "limit(%i:%i): Unknown Tag %s, ignoring",
@@ -1926,13 +1941,10 @@ void aeLSAnimator::pLoadControllerLimit(decXmlElementTag *root, aeController &co
 
 void aeLSAnimator::pLoadLink(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const aeLink::Ref link(aeLink::Ref::New(*pLSSys->GetWindowMain()));
 	decXmlElementTag *tag;
 	int i, index;
 	
-	const aeLink::Ref link(aeLink::Ref::New());
-	animator.AddLink(link);
-	
-	// parse tag
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(!tag){
@@ -1940,76 +1952,76 @@ void aeLSAnimator::pLoadLink(decXmlElementTag *root, aeAnimator &animator){
 		}
 		
 		if(tag->GetName() == "name"){
-			link->SetName(GetCDataString(*tag));
+			link->mpName = GetCDataString(*tag);
 			
 		}else if(tag->GetName() == "controller"){
 			index = (int)strtol(GetCDataString(*tag), nullptr, 10);
 			
 			if(index == -1){
-				link->SetController(nullptr, false);
+				link->mpController = nullptr;
 				
 			}else{
-				link->SetController(animator.GetControllers().GetAt(index), false);
+				link->mpController = animator.mpControllers->GetAt(index);
 			}
 			
 		}else if(tag->GetName() == "repeat"){
-			link->SetRepeat((int)strtol(GetCDataString(*tag), nullptr, 10));
+			link->mpRepeat = (int)strtol(GetCDataString(*tag), nullptr, 10);
 			
 		}else if(tag->GetName() == "curve"){
 			decCurveBezier curve;
 			ReadCurveBezier(*tag, curve);
-			link->SetCurve(curve);
+			link->mpCurve = curve;
 			
 		}else if(tag->GetName() == "bone"){
-			link->SetBone(GetCDataString(*tag));
+			link->mpBone = GetCDataString(*tag);
 			
 		}else if(tag->GetName() == "boneParameter"){
 			const char * const name = GetCDataString(*tag);
 			
 			if(strcmp(name, "positionX") == 0){
-				link->SetBoneParameter(deAnimatorLink::ebpPositionX);
+				link->mpBoneParameter = deAnimatorLink::ebpPositionX;
 				
 			}else if(strcmp(name, "positionY") == 0){
-				link->SetBoneParameter(deAnimatorLink::ebpPositionY);
+				link->mpBoneParameter = deAnimatorLink::ebpPositionY;
 				
 			}else if(strcmp(name, "positionZ") == 0){
-				link->SetBoneParameter(deAnimatorLink::ebpPositionZ);
+				link->mpBoneParameter = deAnimatorLink::ebpPositionZ;
 				
 			}else if(strcmp(name, "rotationX") == 0){
-				link->SetBoneParameter(deAnimatorLink::ebpRotationX);
+				link->mpBoneParameter = deAnimatorLink::ebpRotationX;
 				
 			}else if(strcmp(name, "rotationY") == 0){
-				link->SetBoneParameter(deAnimatorLink::ebpRotationY);
+				link->mpBoneParameter = deAnimatorLink::ebpRotationY;
 				
 			}else if(strcmp(name, "rotationZ") == 0){
-				link->SetBoneParameter(deAnimatorLink::ebpRotationZ);
+				link->mpBoneParameter = deAnimatorLink::ebpRotationZ;
 				
 			}else if(strcmp(name, "scaleX") == 0){
-				link->SetBoneParameter(deAnimatorLink::ebpScaleX);
+				link->mpBoneParameter = deAnimatorLink::ebpScaleX;
 				
 			}else if(strcmp(name, "scaleY") == 0){
-				link->SetBoneParameter(deAnimatorLink::ebpScaleY);
+				link->mpBoneParameter = deAnimatorLink::ebpScaleY;
 				
 			}else if(strcmp(name, "scaleZ") == 0){
-				link->SetBoneParameter(deAnimatorLink::ebpScaleZ);
+				link->mpBoneParameter = deAnimatorLink::ebpScaleZ;
 				
 			}else{
 				LogErrorUnknownValue(*tag, name);
 			}
 			
 		}else if(tag->GetName() == "boneLimits"){
-			link->SetBoneMinimum(GetAttributeFloat(*tag, "min"));
-			link->SetBoneMaximum(GetAttributeFloat(*tag, "max"));
+			link->mpBoneMinimum = GetAttributeFloat(*tag, "min");
+			link->mpBoneMaximum = GetAttributeFloat(*tag, "max");
 			
 		}else if(tag->GetName() == "vertexPositionSet"){
-			link->SetVertexPositionSet(GetCDataString(*tag));
+			link->mpVertexPositionSet = GetCDataString(*tag);
 			
 		}else if(tag->GetName() == "vertexPositionSetLimits"){
-			link->SetVertexPositionSetMinimum(GetAttributeFloat(*tag, "min"));
-			link->SetVertexPositionSetMaximum(GetAttributeFloat(*tag, "max"));
+			link->mpVpsMinimum = GetAttributeFloat(*tag, "min");
+			link->mpVpsMaximum = GetAttributeFloat(*tag, "max");
 			
 		}else if(tag->GetName() == "wrapY"){
-			link->SetWrapY(GetCDataBool(*tag));
+			link->mpWrapY = GetCDataBool(*tag);
 			
 		}else{
 			logger.LogWarnFormat(LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
@@ -2017,6 +2029,8 @@ void aeLSAnimator::pLoadLink(decXmlElementTag *root, aeAnimator &animator){
 				tag->GetName().GetString());
 		}
 	}
+	
+	animator.mpLinks = animator.mpLinks.GetValue() + link;
 }
 
 aeRule::Ref aeLSAnimator::pLoadRule(decXmlElementTag *root, aeAnimator &animator){
@@ -2065,7 +2079,7 @@ aeRule::Ref aeLSAnimator::pLoadRule(decXmlElementTag *root, aeAnimator &animator
 
 aeRule::Ref aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleAnimation::Ref rule(aeRuleAnimation::Ref::New(""));
+	const auto rule = aeRuleAnimation::Ref::New(*pLSSys->GetWindowMain(), "");
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
@@ -2075,31 +2089,31 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator 
 		if(tag){
 			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "moveName") == 0){
-					rule->SetMoveName(GetCDataString(*tag));
+					rule->mpMoveName = GetCDataString(*tag);
 					
 				}else if(strcmp(tag->GetName(), "moveTime") == 0){
-					rule->SetMoveTime(strtof(GetCDataString(*tag), nullptr));
+					rule->mpMoveTime = strtof(GetCDataString(*tag), nullptr);
 					
 				}else if(strcmp(tag->GetName(), "enablePosition") == 0){
-					rule->SetEnablePosition(GetCDataBool(*tag));
+					rule->mpEnablePosition = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableOrientation") == 0){
-					rule->SetEnableOrientation(GetCDataBool(*tag));
+					rule->mpEnableOrientation = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableSize") == 0){
-					rule->SetEnableSize(GetCDataBool(*tag));
+					rule->mpEnableSize = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableVertexPositionSet") == 0){
-					rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
+					rule->mpEnableVertexPositionSet = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "target") == 0){
 					name = pGetAttributeString(tag, "name");
 					
 					if(strcmp(name, "blendFactor") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+						pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 						
 					}else if(strcmp(name, "moveTime") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetMoveTime());
+						pLoadControllerTarget(tag, animator, rule->mpTargetMoveTime);
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -2120,8 +2134,8 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator 
 }
 
 aeRule::Ref aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, aeAnimator &animator){
+	const auto rule = aeRuleAnimationDifference::Ref::New(*pLSSys->GetWindowMain(), "");
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleAnimationDifference::Ref rule(aeRuleAnimationDifference::Ref::New(""));
 	decXmlElementTag *tag;
 	int i;
 	
@@ -2130,43 +2144,43 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, a
 		if(tag){
 			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "leadingMoveName") == 0){
-					rule->SetLeadingMoveName(GetCDataString(*tag));
+					rule->mpLeadingMoveName = GetCDataString(*tag);
 					
 				}else if(strcmp(tag->GetName(), "leadingMoveTime") == 0){
-					rule->SetLeadingMoveTime(strtof(GetCDataString(*tag), nullptr));
+					rule->mpLeadingMoveTime = strtof(GetCDataString(*tag), nullptr);
 					
 				}else if(strcmp(tag->GetName(), "referenceMoveName") == 0){
-					rule->SetReferenceMoveName(GetCDataString(*tag));
+					rule->mpReferenceMoveName = GetCDataString(*tag);
 					
 				}else if(strcmp(tag->GetName(), "referenceMoveTime") == 0){
-					rule->SetReferenceMoveTime(strtof(GetCDataString(*tag), nullptr));
+					rule->mpReferenceMoveTime = strtof(GetCDataString(*tag), nullptr);
 					
 				}else if(strcmp(tag->GetName(), "enablePosition") == 0){
-					rule->SetEnablePosition(GetCDataBool(*tag));
+					rule->mpEnablePosition = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableOrientation") == 0){
-					rule->SetEnableOrientation(GetCDataBool(*tag));
+					rule->mpEnableOrientation = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableSize") == 0){
-					rule->SetEnableSize(GetCDataBool(*tag));
+					rule->mpEnableSize = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableVertexPositionSet") == 0){
-					rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
+					rule->mpEnableVertexPositionSet = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "useComponentSpace") == 0){
-					rule->SetUseComponentSpace(GetCDataBool(*tag));
+					rule->mpUseComponentSpace = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "target") == 0){
 					const decString &name = pGetAttributeString(tag, "name");
 					
 					if(name == "blendFactor"){
-						pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+						pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 						
 					}else if(name == "leadingMoveTime"){
-						pLoadControllerTarget(tag, animator, rule->GetTargetLeadingMoveTime());
+						pLoadControllerTarget(tag, animator, rule->mpTargetLeadingMoveTime);
 						
 					}else if(name == "referenceMoveTime"){
-						pLoadControllerTarget(tag, animator, rule->GetTargetReferenceMoveTime());
+						pLoadControllerTarget(tag, animator, rule->mpTargetReferenceMoveTime);
 						
 					}else{
 						logger.LogErrorFormat("%s(%i:%i): Unknown target '%s'",
@@ -2187,8 +2201,8 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, a
 }
 
 aeRule::Ref aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAnimator &animator){
+	const auto rule = aeRuleAnimationSelect::Ref::New(*pLSSys->GetWindowMain(), "");
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleAnimationSelect::Ref rule(aeRuleAnimationSelect::Ref::New(""));
 	decXmlElementTag *tag;
 	decStringList moves;
 	const char *name;
@@ -2208,28 +2222,28 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAni
 			moves.Add(GetCDataString(*tag));
 			
 		}else if(strcmp(tag->GetName(), "enablePosition") == 0){
-			rule->SetEnablePosition(GetCDataBool(*tag));
+			rule->mpEnablePosition = GetCDataBool(*tag);
 			
 		}else if(strcmp(tag->GetName(), "enableOrientation") == 0){
-			rule->SetEnableOrientation(GetCDataBool(*tag));
+			rule->mpEnableOrientation = GetCDataBool(*tag);
 			
 		}else if(strcmp(tag->GetName(), "enableSize") == 0){
-			rule->SetEnableSize(GetCDataBool(*tag));
+			rule->mpEnableSize = GetCDataBool(*tag);
 			
 		}else if(strcmp(tag->GetName(), "enableVertexPositionSet") == 0){
-			rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
+			rule->mpEnableVertexPositionSet = GetCDataBool(*tag);
 			
 		}else if(strcmp(tag->GetName(), "target") == 0){
 			name = pGetAttributeString(tag, "name");
 			
 			if(strcmp(name, "blendFactor") == 0){
-				pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+				pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 				
 			}else if(strcmp(name, "moveTime") == 0){
-				pLoadControllerTarget(tag, animator, rule->GetTargetMoveTime());
+				pLoadControllerTarget(tag, animator, rule->mpTargetMoveTime);
 				
 			}else if(strcmp(name, "selection") == 0){
-				pLoadControllerTarget(tag, animator, rule->GetTargetSelect());
+				pLoadControllerTarget(tag, animator, rule->mpTargetSelect);
 				
 			}else{
 				logger.LogErrorFormat("%s(%i:%i): Unknown target '%s'",
@@ -2245,13 +2259,13 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAni
 		}
 	}
 	
-	rule->SetMoves(moves);
+	rule->mpMoves = moves;
 	return rule;
 }
 
 aeRule::Ref aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeAnimator &animator){
+	const auto rule = aeRuleBoneTransformator::Ref::New(*pLSSys->GetWindowMain(), "");
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleBoneTransformator::Ref rule(aeRuleBoneTransformator::Ref::New(""));
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -2263,56 +2277,56 @@ aeRule::Ref aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeA
 			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "minimumTranslation") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMinimumTranslation(vector);
+					ReadVector(*tag, vector);
+					rule->mpMinTranslation = vector;
 					
 				}else if(strcmp(tag->GetName(), "maximumTranslation") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMaximumTranslation(vector);
+					ReadVector(*tag, vector);
+					rule->mpMaxTranslation = vector;
 					
 				}else if(strcmp(tag->GetName(), "minimumRotation") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMinimumRotation(vector);
+					ReadVector(*tag, vector);
+					rule->mpMinRotation.SetEulerAngles(vector, false);
 					
 				}else if(strcmp(tag->GetName(), "maximumRotation") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMaximumRotation(vector);
+					ReadVector(*tag, vector);
+					rule->mpMaxRotation.SetEulerAngles(vector, false);
 					
 				}else if(strcmp(tag->GetName(), "minimumScaling") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMinimumScaling(vector);
+					ReadVector(*tag, vector);
+					rule->mpMinScaling = vector;
 					
 				}else if(strcmp(tag->GetName(), "maximumScaling") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMaximumScaling(vector);
+					ReadVector(*tag, vector);
+					rule->mpMaxScaling = vector;
 					
 				}else if(strcmp(tag->GetName(), "axis") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetAxis(vector);
+					ReadVector(*tag, vector);
+					rule->mpAxis = vector;
 					
 				}else if(strcmp(tag->GetName(), "minimumAngle") == 0){
-					rule->SetMinimumAngle(GetCDataFloat(*tag));
+					rule->mpMinAngle = GetCDataFloat(*tag);
 					
 				}else if(strcmp(tag->GetName(), "maximumAngle") == 0){
-					rule->SetMaximumAngle(GetCDataFloat(*tag));
+					rule->mpMaxAngle = GetCDataFloat(*tag);
 					
 				}else if(strcmp(tag->GetName(), "cframe") == 0){
 					name = GetCDataString(*tag);
 					
 					if(strcmp(name, "local") == 0){
-						rule->SetCoordinateFrame(deAnimatorRuleBoneTransformator::ecfBoneLocal);
+						rule->mpCoordinateFrame = deAnimatorRuleBoneTransformator::ecfBoneLocal;
 						
 					}else if(strcmp(name, "component") == 0){
-						rule->SetCoordinateFrame(deAnimatorRuleBoneTransformator::ecfComponent);
+						rule->mpCoordinateFrame = deAnimatorRuleBoneTransformator::ecfComponent;
 						
 					}else if(strcmp(name, "target") == 0){
-						rule->SetCoordinateFrame(deAnimatorRuleBoneTransformator::ecfTargetBone);
+						rule->mpCoordinateFrame = deAnimatorRuleBoneTransformator::ecfTargetBone;
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
@@ -2322,37 +2336,37 @@ aeRule::Ref aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeA
 					}
 					
 				}else if(strcmp(tag->GetName(), "enablePosition") == 0){
-					rule->SetEnablePosition(GetCDataBool(*tag));
+					rule->mpEnablePosition = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableOrientation") == 0){
-					rule->SetEnableOrientation(GetCDataBool(*tag));
+					rule->mpEnableOrientation = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableSize") == 0){
-					rule->SetEnableSize(GetCDataBool(*tag));
+					rule->mpEnableSize = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "useAxis") == 0){
-					rule->SetUseAxis(GetCDataBool(*tag));
+					rule->mpUseAxis = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "targetBone") == 0){
-					rule->SetTargetBone(GetCDataString(*tag));
+					rule->mpTargetBone = GetCDataString(*tag);
 					
 				}else if(tag->GetName() == "inputBone"){
-					rule->SetInputBone(GetCDataString(*tag));
+					rule->mpInputBone = GetCDataString(*tag);
 					
 				}else if(tag->GetName() == "inputSource"){
 					name = GetCDataString(*tag);
 					
 					if(strcmp(name, "targetBlend") == 0){
-						rule->SetInputSource(deAnimatorRuleBoneTransformator::eisTargetBlend);
+						rule->mpInputSource = deAnimatorRuleBoneTransformator::eisTargetBlend;
 						
 					}else if(strcmp(name, "targetDirect") == 0){
-						rule->SetInputSource(deAnimatorRuleBoneTransformator::eisTargetDirect);
+						rule->mpInputSource = deAnimatorRuleBoneTransformator::eisTargetDirect;
 						
 					}else if(strcmp(name, "boneState") == 0){
-						rule->SetInputSource(deAnimatorRuleBoneTransformator::eisBoneState);
+						rule->mpInputSource = deAnimatorRuleBoneTransformator::eisBoneState;
 						
 					}else if(strcmp(name, "boneStateInverse") == 0){
-						rule->SetInputSource(deAnimatorRuleBoneTransformator::eisBoneStateInverse);
+						rule->mpInputSource = deAnimatorRuleBoneTransformator::eisBoneStateInverse;
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
@@ -2365,16 +2379,16 @@ aeRule::Ref aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeA
 					name = pGetAttributeString(tag, "name");
 					
 					if(strcmp(name, "blendFactor") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+						pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 						
 					}else if(strcmp(name, "translation") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetTranslation());
+						pLoadControllerTarget(tag, animator, rule->mpTargetTranslation);
 						
 					}else if(strcmp(name, "rotation") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetRotation());
+						pLoadControllerTarget(tag, animator, rule->mpTargetRotation);
 						
 					}else if(strcmp(name, "scaling") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetScaling());
+						pLoadControllerTarget(tag, animator, rule->mpTargetScaling);
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -2395,8 +2409,8 @@ aeRule::Ref aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeA
 }
 
 aeRule::Ref aeLSAnimator::pLoadRuleStateManipulator(decXmlElementTag *root, aeAnimator &animator){
+	const auto rule = aeRuleStateManipulator::Ref::New(*pLSSys->GetWindowMain(), "");
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleStateManipulator::Ref rule(aeRuleStateManipulator::Ref::New(""));
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -2408,69 +2422,69 @@ aeRule::Ref aeLSAnimator::pLoadRuleStateManipulator(decXmlElementTag *root, aeAn
 			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "positionMinimum") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMinimumPosition(vector);
+					ReadVector(*tag, vector);
+					rule->mpMinPosition = vector;
 					
 				}else if(strcmp(tag->GetName(), "positionMaximum") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMaximumPosition(vector);
+					ReadVector(*tag, vector);
+					rule->mpMaxPosition = vector;
 					
 				}else if(strcmp(tag->GetName(), "rotationMinimum") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMinimumRotation(vector);
+					ReadVector(*tag, vector);
+					rule->mpMinRotation.SetEulerAngles(vector, false);
 					
 				}else if(strcmp(tag->GetName(), "rotationMaximum") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMaximumRotation(vector);
+					ReadVector(*tag, vector);
+					rule->mpMaxRotation.SetEulerAngles(vector, false);
 					
 				}else if(strcmp(tag->GetName(), "sizeMinimum") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMinimumSize(vector);
+					ReadVector(*tag, vector);
+					rule->mpMinSize = vector;
 					
 				}else if(strcmp(tag->GetName(), "sizeMaximum") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMaximumSize(vector);
+					ReadVector(*tag, vector);
+					rule->mpMaxSize = vector;
 					
 				}else if(strcmp(tag->GetName(), "vertexPositionSetMinimum") == 0){
-					rule->SetMinimumVertexPositionSet(GetCDataFloat(*tag));
+					rule->mpMinVertexPositionSet = GetCDataFloat(*tag);
 					
 				}else if(strcmp(tag->GetName(), "vertexPositionSetMaximum") == 0){
-					rule->SetMaximumVertexPositionSet(GetCDataFloat(*tag));
+					rule->mpMaxVertexPositionSet = GetCDataFloat(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enablePosition") == 0){
-					rule->SetEnablePosition(GetCDataBool(*tag));
+					rule->mpEnablePosition = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableOrientation") == 0){
-					rule->SetEnableRotation(GetCDataBool(*tag));
+					rule->mpEnableRotation = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableSize") == 0){
-					rule->SetEnableSize(GetCDataBool(*tag));
+					rule->mpEnableSize = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableVertexPositionSet") == 0){
-					rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
+					rule->mpEnableVertexPositionSet = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "target") == 0){
 					name = pGetAttributeString(tag, "name");
 					
 					if(strcmp(name, "blendFactor") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+						pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 						
 					}else if(strcmp(name, "position") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetPosition());
+						pLoadControllerTarget(tag, animator, rule->mpTargetPosition);
 						
 					}else if(strcmp(name, "orientation") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetRotation());
+						pLoadControllerTarget(tag, animator, rule->mpTargetRotation);
 						
 					}else if(strcmp(name, "size") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetSize());
+						pLoadControllerTarget(tag, animator, rule->mpTargetSize);
 						
 					}else if(strcmp(name, "vertexPositionSet") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetVertexPositionSet());
+						pLoadControllerTarget(tag, animator, rule->mpTargetVertexPositionSet);
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -2491,8 +2505,8 @@ aeRule::Ref aeLSAnimator::pLoadRuleStateManipulator(decXmlElementTag *root, aeAn
 }
 
 aeRule::Ref aeLSAnimator::pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnimator &animator){
+	const auto rule = aeRuleStateSnapshot::Ref::New(*pLSSys->GetWindowMain(), "");
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleStateSnapshot::Ref rule(aeRuleStateSnapshot::Ref::New(""));
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -2503,25 +2517,25 @@ aeRule::Ref aeLSAnimator::pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnima
 		if(tag){
 			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "useLastState") == 0){
-					rule->SetUseLastState(GetCDataBool(*tag));
+					rule->mpUseLastState = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enablePosition") == 0){
-					rule->SetEnablePosition(GetCDataBool(*tag));
+					rule->mpEnablePosition = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableOrientation") == 0){
-					rule->SetEnableOrientation(GetCDataBool(*tag));
+					rule->mpEnableOrientation = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableSize") == 0){
-					rule->SetEnableSize(GetCDataBool(*tag));
+					rule->mpEnableSize = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableVertexPositionSet") == 0){
-					rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
+					rule->mpEnableVertexPositionSet = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "target") == 0){
 					name = pGetAttributeString(tag, "name");
 					
 					if(strcmp(name, "blendFactor") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+						pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -2542,8 +2556,8 @@ aeRule::Ref aeLSAnimator::pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnima
 }
 
 aeRule::Ref aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAnimator &animator){
+	const auto rule = aeRuleInverseKinematic::Ref::New(*pLSSys->GetWindowMain(), "");
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleInverseKinematic::Ref rule(aeRuleInverseKinematic::Ref::New(""));
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decVector vector;
@@ -2556,102 +2570,102 @@ aeRule::Ref aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAn
 			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "goalPosition") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetGoalPosition(vector);
+					ReadVector(*tag, vector);
+					rule->mpGoalPosition = vector;
 					
 				}else if(strcmp(tag->GetName(), "goalOrientation") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetGoalOrientation(vector);
+					ReadVector(*tag, vector);
+					rule->mpGoalOrientation = vector;
 					
 				}else if(strcmp(tag->GetName(), "localPosition") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetLocalPosition(vector);
+					ReadVector(*tag, vector);
+					rule->mpLocalPosition = vector;
 					
 				}else if(strcmp(tag->GetName(), "localOrientation") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetLocalOrientation(vector);
+					ReadVector(*tag, vector);
+					rule->mpLocalOrientation = vector;
 					
 				}else if(strcmp(tag->GetName(), "adjustOrientation") == 0){
-					rule->SetAdjustOrientation(GetCDataBool(*tag));
+					rule->mpAdjustOrientation = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "position") == 0){ // deprecated
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetGoalPosition(vector);
+					ReadVector(*tag, vector);
+					rule->mpGoalPosition = vector;
 					
 				}else if(strcmp(tag->GetName(), "orientation") == 0){ // deprecated
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetGoalOrientation(vector);
+					ReadVector(*tag, vector);
+					rule->mpGoalOrientation = vector;
 					
 				}else if(strcmp(tag->GetName(), "offset") == 0){ // deprecated
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetLocalPosition(vector);
+					ReadVector(*tag, vector);
+					rule->mpLocalPosition = vector;
 					
 				}else if(strcmp(tag->GetName(), "solverBone") == 0){
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						rule->SetSolverBone(cdata->GetData());
+						rule->mpSolverBone = cdata->GetData();
 						
 					}else{
-						rule->SetSolverBone("");
+						rule->mpSolverBone = "";
 					}
 					
 				}else if(strcmp(tag->GetName(), "useSolverBone") == 0){
-					rule->SetUseSolverBone(GetCDataBool(*tag));
+					rule->mpUseSolverBone = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "reachRange") == 0){
-					rule->SetReachRange(strtof(GetCDataString(*tag), nullptr));
+					rule->mpReachRange = strtof(GetCDataString(*tag), nullptr);
 					
 				}else if(strcmp(tag->GetName(), "reachBone") == 0){
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						rule->SetReachBone(cdata->GetData());
+						rule->mpReachBone = cdata->GetData();
 						
 					}else{
-						rule->SetReachBone("");
+						rule->mpReachBone = "";
 					}
 					
 				}else if(strcmp(tag->GetName(), "reachCenter") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetReachCenter(vector);
+					ReadVector(*tag, vector);
+					rule->mpReachCenter = vector;
 					
 				}else if(strcmp(tag->GetName(), "target") == 0){
 					name = pGetAttributeString(tag, "name");
 					
 					if(strcmp(name, "blendFactor") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+						pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 						
 					}else if(strcmp(name, "goalPosition") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetGoalPosition());
+						pLoadControllerTarget(tag, animator, rule->mpTargetGoalPosition);
 						
 					}else if(strcmp(name, "goalOrientation") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetGoalOrientation());
+						pLoadControllerTarget(tag, animator, rule->mpTargetGoalOrientation);
 						
 					}else if(strcmp(name, "localPosition") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetLocalPosition());
+						pLoadControllerTarget(tag, animator, rule->mpTargetLocalPosition);
 						
 					}else if(strcmp(name, "localOrientation") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetLocalOrientation());
+						pLoadControllerTarget(tag, animator, rule->mpTargetLocalOrientation);
 						
 					}else if(strcmp(name, "reachRange") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetReachRange());
+						pLoadControllerTarget(tag, animator, rule->mpTargetReachRange);
 						
 					}else if(strcmp(name, "reachCenter") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetReachCenter());
+						pLoadControllerTarget(tag, animator, rule->mpTargetReachCenter);
 						
 					}else if(strcmp(name, "position") == 0){ // deprecated
-						pLoadControllerTarget(tag, animator, rule->GetTargetGoalPosition());
+						pLoadControllerTarget(tag, animator, rule->mpTargetGoalPosition);
 						
 					}else if(strcmp(name, "orientation") == 0){ // deprecated
-						pLoadControllerTarget(tag, animator, rule->GetTargetGoalOrientation());
+						pLoadControllerTarget(tag, animator, rule->mpTargetGoalOrientation);
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -2672,8 +2686,8 @@ aeRule::Ref aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAn
 }
 
 aeRule::Ref aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimator &animator){
+	const auto rule = aeRuleForeignState::Ref::New(*pLSSys->GetWindowMain(), "");
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleForeignState::Ref rule(aeRuleForeignState::Ref::New(""));
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
@@ -2683,43 +2697,43 @@ aeRule::Ref aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimat
 		if(tag){
 			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "scalePosition") == 0){
-					rule->SetScalePosition(GetCDataFloat(*tag));
+					rule->mpScalePosition = GetCDataFloat(*tag);
 					
 				}else if(strcmp(tag->GetName(), "scaleOrientation") == 0){
-					rule->SetScaleOrientation(GetCDataFloat(*tag));
+					rule->mpScaleOrientation = GetCDataFloat(*tag);
 					
 				}else if(strcmp(tag->GetName(), "scaleSize") == 0){
-					rule->SetScaleSize(GetCDataFloat(*tag));
+					rule->mpScaleSize = GetCDataFloat(*tag);
 					
 				}else if(strcmp(tag->GetName(), "scaleVertexPositionSet") == 0){
-					rule->SetScaleVertexPositionSet(GetCDataFloat(*tag));
+					rule->mpScaleVertexPositionSet = GetCDataFloat(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enablePosition") == 0){
-					rule->SetEnablePosition(GetCDataBool(*tag));
+					rule->mpEnablePosition = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableOrientation") == 0){
-					rule->SetEnableOrientation(GetCDataBool(*tag));
+					rule->mpEnableOrientation = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableSize") == 0){
-					rule->SetEnableSize(GetCDataBool(*tag));
+					rule->mpEnableSize = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableVertexPositionSet") == 0){
-					rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
+					rule->mpEnableVertexPositionSet = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "foreignBone") == 0){
-					rule->SetForeignBone(GetCDataString(*tag));
+					rule->mpForeignBone = GetCDataString(*tag);
 					
 				}else if(strcmp(tag->GetName(), "foreignVertexPositionSet") == 0){
-					rule->SetForeignVertexPositionSet(GetCDataString(*tag));
+					rule->mpForeignVertexPositionSet = GetCDataString(*tag);
 					
 				}else if(strcmp(tag->GetName(), "srcCFrame") == 0){
 					name = GetCDataString(*tag);
 					
 					if(strcmp(name, "local") == 0){
-						rule->SetSourceCoordinateFrame(deAnimatorRuleForeignState::ecfBoneLocal);
+						rule->mpSourceCoordinateFrame = deAnimatorRuleForeignState::ecfBoneLocal;
 						
 					}else if(strcmp(name, "component") == 0){
-						rule->SetSourceCoordinateFrame(deAnimatorRuleForeignState::ecfComponent);
+						rule->mpSourceCoordinateFrame = deAnimatorRuleForeignState::ecfComponent;
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
@@ -2732,10 +2746,10 @@ aeRule::Ref aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimat
 					name = GetCDataString(*tag);
 					
 					if(strcmp(name, "local") == 0){
-						rule->SetDestCoordinateFrame(deAnimatorRuleForeignState::ecfBoneLocal);
+						rule->mpDestCoordinateFrame = deAnimatorRuleForeignState::ecfBoneLocal;
 						
 					}else if(strcmp(name, "component") == 0){
-						rule->SetDestCoordinateFrame(deAnimatorRuleForeignState::ecfComponent);
+						rule->mpDestCoordinateFrame = deAnimatorRuleForeignState::ecfComponent;
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
@@ -2748,19 +2762,19 @@ aeRule::Ref aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimat
 					name = pGetAttributeString(tag, "name");
 					
 					if(strcmp(name, "blendFactor") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+						pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 						
 					}else if(strcmp(name, "position") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetPosition());
+						pLoadControllerTarget(tag, animator, rule->mpTargetPosition);
 						
 					}else if(strcmp(name, "orientation") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetOrientation());
+						pLoadControllerTarget(tag, animator, rule->mpTargetOrientation);
 						
 					}else if(strcmp(name, "size") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetSize());
+						pLoadControllerTarget(tag, animator, rule->mpTargetSize);
 						
 					}else if(strcmp(name, "vertexPositionSet") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetVertexPositionSet());
+						pLoadControllerTarget(tag, animator, rule->mpTargetVertexPositionSet);
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -2782,7 +2796,8 @@ aeRule::Ref aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimat
 
 aeRule::Ref aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleMirror::Ref rule(aeRuleMirror::Ref::New(""));
+	const auto rule = aeRuleMirror::Ref::New(*pLSSys->GetWindowMain(), "");
+	aeMCPRuleMirrorMatchNames::ListType matchNames;
 	int i;
 	
 	for(i=0; i<root->GetElementCount(); i++){
@@ -2796,28 +2811,28 @@ aeRule::Ref aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &an
 		}
 		
 		if(tag->GetName() == "enablePosition"){
-			rule->SetEnablePosition(GetCDataBool(*tag));
+			rule->mpEnablePosition = GetCDataBool(*tag);
 			
 		}else if(tag->GetName() == "enableOrientation"){
-			rule->SetEnableOrientation(GetCDataBool(*tag));
+			rule->mpEnableOrientation = GetCDataBool(*tag);
 			
 		}else if(tag->GetName() == "enableSize"){
-			rule->SetEnableSize(GetCDataBool(*tag));
+			rule->mpEnableSize = GetCDataBool(*tag);
 			
 		}else if(tag->GetName() == "enableVertexPositionSet"){
-			rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
+			rule->mpEnableVertexPositionSet = GetCDataBool(*tag);
 			
 		}else if(tag->GetName() == "mirrorAxis"){
 			const decString &name = GetCDataString(*tag);
 			
 			if(name == "x"){
-				rule->SetMirrorAxis(deAnimatorRuleMirror::emaX);
+				rule->mpMirrorAxis = deAnimatorRuleMirror::emaX;
 				
 			}else if(name == "y"){
-				rule->SetMirrorAxis(deAnimatorRuleMirror::emaY);
+				rule->mpMirrorAxis = deAnimatorRuleMirror::emaY;
 				
 			}else if(name == "z"){
-				rule->SetMirrorAxis(deAnimatorRuleMirror::emaZ);
+				rule->mpMirrorAxis = deAnimatorRuleMirror::emaZ;
 				
 			}else{
 				logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown mirror axis '%s'",
@@ -2827,7 +2842,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &an
 			}
 			
 		}else if(tag->GetName() == "mirrorBone"){
-			rule->SetMirrorBone(GetCDataString(*tag));
+			rule->mpMirrorBone = GetCDataString(*tag);
 			
 		}else if(tag->GetName() == "matchName"){
 			const decString &first = GetAttributeString(*tag, "first");
@@ -2851,13 +2866,13 @@ aeRule::Ref aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &an
 				DETHROW(deeInvalidFileFormat);
 			}
 			
-			rule->AddMatchName(aeRuleMirror::MatchName::Ref::New(first, second, type));
+			matchNames.Add(aeRuleMirror::MatchName::Ref::New(animator.GetWindowMain(), first, second, type));
 			
 		}else if(strcmp(tag->GetName(), "target") == 0){
 			const decString &name = pGetAttributeString(tag, "name");
 			
 			if(name == "blendFactor"){
-				pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+				pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 				
 			}else{
 				logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -2872,13 +2887,14 @@ aeRule::Ref aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &an
 				tag->GetPositionNumber(), tag->GetName().GetString());
 		}
 	}
+	rule->mpMatchNames = matchNames;
 	return rule;
 }
 
 aeRule::Ref aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const auto rule = aeRuleGroup::Ref::New(*pLSSys->GetWindowMain(), "");
 	const int elementCount = root->GetElementCount();
-	const aeRuleGroup::Ref rule(aeRuleGroup::Ref::New(""));
 	int i;
 	
 	for(i=0; i<elementCount; i++){
@@ -2895,10 +2911,10 @@ aeRule::Ref aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &ani
 			const char * const name = GetCDataString(*tag);
 			
 			if(strcmp(name, "all") == 0){
-				rule->SetApplicationType(deAnimatorRuleGroup::eatAll);
+				rule->mpApplicationType = deAnimatorRuleGroup::eatAll;
 				
 			}else if(strcmp(name, "selection") == 0){
-				rule->SetApplicationType(deAnimatorRuleGroup::eatSelect);
+				rule->mpApplicationType = deAnimatorRuleGroup::eatSelect;
 				
 			}else{
 				logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown type '%s'",
@@ -2908,28 +2924,28 @@ aeRule::Ref aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &ani
 			}
 			
 		}else if(strcmp(tag->GetName(), "useCurrentState") == 0){
-			rule->SetUseCurrentState(GetCDataBool(*tag));
+			rule->mpUseCurrentState = GetCDataBool(*tag);
 			
 		}else if(strcmp(tag->GetName(), "enablePosition") == 0){
-			rule->SetEnablePosition(GetCDataBool(*tag));
+			rule->mpEnablePosition = GetCDataBool(*tag);
 			
 		}else if(strcmp(tag->GetName(), "enableOrientation") == 0){
-			rule->SetEnableOrientation(GetCDataBool(*tag));
+			rule->mpEnableOrientation = GetCDataBool(*tag);
 			
 		}else if(strcmp(tag->GetName(), "enableSize") == 0){
-			rule->SetEnableSize(GetCDataBool(*tag));
+			rule->mpEnableSize = GetCDataBool(*tag);
 			
 		}else if(strcmp(tag->GetName(), "enableVertexPositionSet") == 0){
-			rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
+			rule->mpEnableVertexPositionSet = GetCDataBool(*tag);
 			
 		}else if(strcmp(tag->GetName(), "target") == 0){
 			const char * const name = pGetAttributeString(tag, "name");
 			
 			if(strcmp(name, "blendFactor") == 0){
-				pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+				pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 				
 			}else if(strcmp(name, "selection") == 0){
-				pLoadControllerTarget(tag, animator, rule->GetTargetSelect());
+				pLoadControllerTarget(tag, animator, rule->mpTargetSelect);
 				
 			}else{
 				logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -2939,10 +2955,9 @@ aeRule::Ref aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &ani
 			}
 			
 		}else{
-			const aeRule::Ref srule(pLoadRule(tag, animator));
-			
+			auto srule = pLoadRule(tag, animator);
 			if(srule){
-				rule->AddRule(srule);
+				rule->mpRules = rule->mpRules.GetValue() + srule;
 				
 			}else{
 				logger.LogWarnFormat(LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
@@ -2955,8 +2970,8 @@ aeRule::Ref aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &ani
 }
 
 aeRule::Ref aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimator &animator){
+	const auto rule = aeRuleSubAnimator::Ref::New(*pLSSys->GetWindowMain(), "");
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleSubAnimator::Ref rule(aeRuleSubAnimator::Ref::New(""));
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	const char *name;
@@ -2969,43 +2984,40 @@ aeRule::Ref aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimato
 				cdata = tag->GetFirstData();
 				
 				if(cdata){
-					rule->SetPathSubAnimator(cdata->GetData());
+					rule->mpPathSubAnimator = cdata->GetData();
 					
 				}else{
-					rule->SetPathSubAnimator("");
+					rule->mpPathSubAnimator = "";
 				}
 				
 			}else if(strcmp(tag->GetName(), "connection") == 0){
+				auto connection = aeRuleSubAnimator::Connection::Ref::New(animator.GetWindowMain());
+				connection->mpTarget = GetCDataString(*tag);
+				
 				const int controller = pGetAttributeInt(tag, "controller");
-				const decString target(GetCDataString(*tag));
-				if(target.IsEmpty() || !rule->GetSubAnimator()){
-					continue;
+				if(controller != -1){
+					connection->mpController = animator.mpControllers->GetAt(controller);
 				}
 				
-				const int targetIndex = rule->GetSubAnimator()->GetControllers().IndexOfNamed(target);
-				if(targetIndex == -1){
-					continue;
-				}
-				
-				rule->SetControllerAt(targetIndex, animator.GetControllers().GetAt(controller));
+				rule->mpConnections = rule->mpConnections.GetValue() + connection;
 				
 			}else if(strcmp(tag->GetName(), "enablePosition") == 0){
-				rule->SetEnablePosition(GetCDataBool(*tag));
+				rule->mpEnablePosition = GetCDataBool(*tag);
 				
 			}else if(strcmp(tag->GetName(), "enableOrientation") == 0){
-				rule->SetEnableOrientation(GetCDataBool(*tag));
+				rule->mpEnableOrientation = GetCDataBool(*tag);
 				
 			}else if(strcmp(tag->GetName(), "enableSize") == 0){
-				rule->SetEnableSize(GetCDataBool(*tag));
+				rule->mpEnableSize = GetCDataBool(*tag);
 				
 			}else if(strcmp(tag->GetName(), "enableVertexPositionSet") == 0){
-				rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
+				rule->mpEnableVertexPositionSet = GetCDataBool(*tag);
 				
 			}else if(strcmp(tag->GetName(), "target") == 0){
 				name = pGetAttributeString(tag, "name");
 				
 				if(strcmp(name, "blendFactor") == 0){
-					pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+					pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 					
 				}else{
 					logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -3026,7 +3038,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimato
 
 aeRule::Ref aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleTrackTo::Ref rule(aeRuleTrackTo::Ref::New(""));
+	const auto rule = aeRuleTrackTo::Ref::New(*pLSSys->GetWindowMain(), "");
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
@@ -3037,29 +3049,29 @@ aeRule::Ref aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &a
 			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "trackBone") == 0){
 					if(tag->GetFirstData()){
-						rule->SetTrackBone(GetCDataString(*tag));
+						rule->mpTrackBone = GetCDataString(*tag);
 					}
 					
 				}else if(strcmp(tag->GetName(), "trackAxis") == 0){
 					name = GetCDataString(*tag);
 					
 					if(strcmp(name, "posX") == 0){
-						rule->SetTrackAxis(deAnimatorRuleTrackTo::etaPosX);
+						rule->mpTrackAxis = deAnimatorRuleTrackTo::etaPosX;
 						
 					}else if(strcmp(name, "posY") == 0){
-						rule->SetTrackAxis(deAnimatorRuleTrackTo::etaPosY);
+						rule->mpTrackAxis = deAnimatorRuleTrackTo::etaPosY;
 						
 					}else if(strcmp(name, "posZ") == 0){
-						rule->SetTrackAxis(deAnimatorRuleTrackTo::etaPosZ);
+						rule->mpTrackAxis = deAnimatorRuleTrackTo::etaPosZ;
 						
 					}else if(strcmp(name, "negX") == 0){
-						rule->SetTrackAxis(deAnimatorRuleTrackTo::etaNegX);
+						rule->mpTrackAxis = deAnimatorRuleTrackTo::etaNegX;
 						
 					}else if(strcmp(name, "negY") == 0){
-						rule->SetTrackAxis(deAnimatorRuleTrackTo::etaNegY);
+						rule->mpTrackAxis = deAnimatorRuleTrackTo::etaNegY;
 						
 					}else if(strcmp(name, "negZ") == 0){
-						rule->SetTrackAxis(deAnimatorRuleTrackTo::etaNegZ);
+						rule->mpTrackAxis = deAnimatorRuleTrackTo::etaNegZ;
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
@@ -3072,22 +3084,22 @@ aeRule::Ref aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &a
 					name = GetCDataString(*tag);
 					
 					if(strcmp(name, "posX") == 0){
-						rule->SetUpAxis(deAnimatorRuleTrackTo::etaPosX);
+						rule->mpUpAxis = deAnimatorRuleTrackTo::etaPosX;
 						
 					}else if(strcmp(name, "posY") == 0){
-						rule->SetUpAxis(deAnimatorRuleTrackTo::etaPosY);
+						rule->mpUpAxis = deAnimatorRuleTrackTo::etaPosY;
 						
 					}else if(strcmp(name, "posZ") == 0){
-						rule->SetUpAxis(deAnimatorRuleTrackTo::etaPosZ);
+						rule->mpUpAxis = deAnimatorRuleTrackTo::etaPosZ;
 						
 					}else if(strcmp(name, "negX") == 0){
-						rule->SetUpAxis(deAnimatorRuleTrackTo::etaNegX);
+						rule->mpUpAxis = deAnimatorRuleTrackTo::etaNegX;
 						
 					}else if(strcmp(name, "negY") == 0){
-						rule->SetUpAxis(deAnimatorRuleTrackTo::etaNegY);
+						rule->mpUpAxis = deAnimatorRuleTrackTo::etaNegY;
 						
 					}else if(strcmp(name, "negZ") == 0){
-						rule->SetUpAxis(deAnimatorRuleTrackTo::etaNegZ);
+						rule->mpUpAxis = deAnimatorRuleTrackTo::etaNegZ;
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
@@ -3100,16 +3112,16 @@ aeRule::Ref aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &a
 					name = GetCDataString(*tag);
 					
 					if(strcmp(name, "none") == 0){
-						rule->SetLockedAxis(deAnimatorRuleTrackTo::elaNone);
+						rule->mpLockedAxis = deAnimatorRuleTrackTo::elaNone;
 						
 					}else if(strcmp(name, "x") == 0){
-						rule->SetLockedAxis(deAnimatorRuleTrackTo::elaX);
+						rule->mpLockedAxis = deAnimatorRuleTrackTo::elaX;
 						
 					}else if(strcmp(name, "y") == 0){
-						rule->SetLockedAxis(deAnimatorRuleTrackTo::elaY);
+						rule->mpLockedAxis = deAnimatorRuleTrackTo::elaY;
 						
 					}else if(strcmp(name, "z") == 0){
-						rule->SetLockedAxis(deAnimatorRuleTrackTo::elaZ);
+						rule->mpLockedAxis = deAnimatorRuleTrackTo::elaZ;
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
@@ -3122,34 +3134,34 @@ aeRule::Ref aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &a
 					name = GetCDataString(*tag);
 					
 					if(strcmp(name, "worldX") == 0){
-						rule->SetUpTarget(deAnimatorRuleTrackTo::eutWorldX);
+						rule->mpUpTarget = deAnimatorRuleTrackTo::eutWorldX;
 						
 					}else if(strcmp(name, "worldY") == 0){
-						rule->SetUpTarget(deAnimatorRuleTrackTo::eutWorldY);
+						rule->mpUpTarget = deAnimatorRuleTrackTo::eutWorldY;
 						
 					}else if(strcmp(name, "worldZ") == 0){
-						rule->SetUpTarget(deAnimatorRuleTrackTo::eutWorldZ);
+						rule->mpUpTarget = deAnimatorRuleTrackTo::eutWorldZ;
 						
 					}else if(strcmp(name, "componentX") == 0){
-						rule->SetUpTarget(deAnimatorRuleTrackTo::eutComponentX);
+						rule->mpUpTarget = deAnimatorRuleTrackTo::eutComponentX;
 						
 					}else if(strcmp(name, "componentY") == 0){
-						rule->SetUpTarget(deAnimatorRuleTrackTo::eutComponentY);
+						rule->mpUpTarget = deAnimatorRuleTrackTo::eutComponentY;
 						
 					}else if(strcmp(name, "componentZ") == 0){
-						rule->SetUpTarget(deAnimatorRuleTrackTo::eutComponentZ);
+						rule->mpUpTarget = deAnimatorRuleTrackTo::eutComponentZ;
 						
 					}else if(strcmp(name, "trackBoneX") == 0){
-						rule->SetUpTarget(deAnimatorRuleTrackTo::eutTrackBoneX);
+						rule->mpUpTarget = deAnimatorRuleTrackTo::eutTrackBoneX;
 						
 					}else if(strcmp(name, "trackBoneY") == 0){
-						rule->SetUpTarget(deAnimatorRuleTrackTo::eutTrackBoneY);
+						rule->mpUpTarget = deAnimatorRuleTrackTo::eutTrackBoneY;
 						
 					}else if(strcmp(name, "trackBoneZ") == 0){
-						rule->SetUpTarget(deAnimatorRuleTrackTo::eutTrackBoneZ);
+						rule->mpUpTarget = deAnimatorRuleTrackTo::eutTrackBoneZ;
 						
 					}else if(strcmp(name, "controller") == 0){
-						rule->SetUpTarget(deAnimatorRuleTrackTo::eutController);
+						rule->mpUpTarget = deAnimatorRuleTrackTo::eutController;
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
@@ -3162,13 +3174,13 @@ aeRule::Ref aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &a
 					name = pGetAttributeString(tag, "name");
 					
 					if(strcmp(name, "blendFactor") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+						pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 						
 					}else if(strcmp(name, "position") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetPosition());
+						pLoadControllerTarget(tag, animator, rule->mpTargetPosition);
 						
 					}else if(strcmp(name, "up") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetUp());
+						pLoadControllerTarget(tag, animator, rule->mpTargetUp);
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -3190,7 +3202,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &a
 
 aeRule::Ref aeLSAnimator::pLoadRuleLimit(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleLimit::Ref rule(aeRuleLimit::Ref::New(""));
+	const auto rule = aeRuleLimit::Ref::New(*pLSSys->GetWindowMain(), "");
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -3202,51 +3214,51 @@ aeRule::Ref aeLSAnimator::pLoadRuleLimit(decXmlElementTag *root, aeAnimator &ani
 			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "minimumPosition") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMinimumPosition(vector);
+					ReadVector(*tag, vector);
+					rule->mpMinPosition = vector;
 					
 				}else if(strcmp(tag->GetName(), "maximumPosition") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMaximumPosition(vector);
+					ReadVector(*tag, vector);
+					rule->mpMaxPosition = vector;
 					
 				}else if(strcmp(tag->GetName(), "minimumRotation") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMinimumRotation(vector);
+					ReadVector(*tag, vector);
+					rule->mpMinRotation.SetEulerAngles(vector, false);
 					
 				}else if(strcmp(tag->GetName(), "maximumRotation") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMaximumRotation(vector);
+					ReadVector(*tag, vector);
+					rule->mpMaxRotation.SetEulerAngles(vector, false);
 					
 				}else if(strcmp(tag->GetName(), "minimumScaling") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMinimumScaling(vector);
+					ReadVector(*tag, vector);
+					rule->mpMinScaling = vector;
 					
 				}else if(strcmp(tag->GetName(), "maximumScaling") == 0){
 					vector.SetZero();
-					pLoadVector(tag, vector);
-					rule->SetMaximumScaling(vector);
+					ReadVector(*tag, vector);
+					rule->mpMaxScaling = vector;
 					
 				}else if(strcmp(tag->GetName(), "minimumVertexPositionSet") == 0){
-					rule->SetMinimumVertexPositionSet(GetCDataFloat(*tag));
+					rule->mpMinVertexPositionSet = GetCDataFloat(*tag);
 					
 				}else if(strcmp(tag->GetName(), "maximumVertexPositionSet") == 0){
-					rule->SetMaximumVertexPositionSet(GetCDataFloat(*tag));
+					rule->mpMaxVertexPositionSet = GetCDataFloat(*tag);
 					
 				}else if(strcmp(tag->GetName(), "cframe") == 0){
 					name = GetCDataString(*tag);
 					
 					if(strcmp(name, "local") == 0){
-						rule->SetCoordinateFrame(deAnimatorRuleLimit::ecfBoneLocal);
+						rule->mpCoordinateFrame = deAnimatorRuleLimit::ecfBoneLocal;
 						
 					}else if(strcmp(name, "component") == 0){
-						rule->SetCoordinateFrame(deAnimatorRuleLimit::ecfComponent);
+						rule->mpCoordinateFrame = deAnimatorRuleLimit::ecfComponent;
 						
 					}else if(strcmp(name, "target") == 0){
-						rule->SetCoordinateFrame(deAnimatorRuleLimit::ecfTargetBone);
+						rule->mpCoordinateFrame = deAnimatorRuleLimit::ecfTargetBone;
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
@@ -3256,49 +3268,49 @@ aeRule::Ref aeLSAnimator::pLoadRuleLimit(decXmlElementTag *root, aeAnimator &ani
 					}
 					
 				}else if(strcmp(tag->GetName(), "enablePosMin") == 0){
-					rule->SetEnablePositionXMin(pGetAttributeInt(tag, "x") != 0);
-					rule->SetEnablePositionYMin(pGetAttributeInt(tag, "y") != 0);
-					rule->SetEnablePositionZMin(pGetAttributeInt(tag, "z") != 0);
+					rule->mpEnablePositionXMin = pGetAttributeInt(tag, "x") != 0;
+					rule->mpEnablePositionYMin = pGetAttributeInt(tag, "y") != 0;
+					rule->mpEnablePositionZMin = pGetAttributeInt(tag, "z") != 0;
 					
 				}else if(strcmp(tag->GetName(), "enablePosMax") == 0){
-					rule->SetEnablePositionXMax(pGetAttributeInt(tag, "x") != 0);
-					rule->SetEnablePositionYMax(pGetAttributeInt(tag, "y") != 0);
-					rule->SetEnablePositionZMax(pGetAttributeInt(tag, "z") != 0);
+					rule->mpEnablePositionXMax = pGetAttributeInt(tag, "x") != 0;
+					rule->mpEnablePositionYMax = pGetAttributeInt(tag, "y") != 0;
+					rule->mpEnablePositionZMax = pGetAttributeInt(tag, "z") != 0;
 					
 				}else if(strcmp(tag->GetName(), "enableRotMin") == 0){
-					rule->SetEnableRotationXMin(pGetAttributeInt(tag, "x") != 0);
-					rule->SetEnableRotationYMin(pGetAttributeInt(tag, "y") != 0);
-					rule->SetEnableRotationZMin(pGetAttributeInt(tag, "z") != 0);
+					rule->mpEnableRotationXMin = pGetAttributeInt(tag, "x") != 0;
+					rule->mpEnableRotationYMin = pGetAttributeInt(tag, "y") != 0;
+					rule->mpEnableRotationZMin = pGetAttributeInt(tag, "z") != 0;
 					
 				}else if(strcmp(tag->GetName(), "enableRotMax") == 0){
-					rule->SetEnableRotationXMax(pGetAttributeInt(tag, "x") != 0);
-					rule->SetEnableRotationYMax(pGetAttributeInt(tag, "y") != 0);
-					rule->SetEnableRotationZMax(pGetAttributeInt(tag, "z") != 0);
+					rule->mpEnableRotationXMax = pGetAttributeInt(tag, "x") != 0;
+					rule->mpEnableRotationYMax = pGetAttributeInt(tag, "y") != 0;
+					rule->mpEnableRotationZMax = pGetAttributeInt(tag, "z") != 0;
 					
 				}else if(strcmp(tag->GetName(), "enableScaleMin") == 0){
-					rule->SetEnableScalingXMin(pGetAttributeInt(tag, "x") != 0);
-					rule->SetEnableScalingYMin(pGetAttributeInt(tag, "y") != 0);
-					rule->SetEnableScalingZMin(pGetAttributeInt(tag, "z") != 0);
+					rule->mpEnableScalingXMin = pGetAttributeInt(tag, "x") != 0;
+					rule->mpEnableScalingYMin = pGetAttributeInt(tag, "y") != 0;
+					rule->mpEnableScalingZMin = pGetAttributeInt(tag, "z") != 0;
 					
 				}else if(strcmp(tag->GetName(), "enableScaleMax") == 0){
-					rule->SetEnableScalingXMax(pGetAttributeInt(tag, "x") != 0);
-					rule->SetEnableScalingYMax(pGetAttributeInt(tag, "y") != 0);
-					rule->SetEnableScalingZMax(pGetAttributeInt(tag, "z") != 0);
+					rule->mpEnableScalingXMax = pGetAttributeInt(tag, "x") != 0;
+					rule->mpEnableScalingYMax = pGetAttributeInt(tag, "y") != 0;
+					rule->mpEnableScalingZMax = pGetAttributeInt(tag, "z") != 0;
 					
 				}else if(strcmp(tag->GetName(), "enableVertexPositionSetMin") == 0){
-					rule->SetEnableVertexPositionSetMin(GetCDataBool(*tag));
+					rule->mpEnableVertexPositionSetMin = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "enableVertexPositionSetMax") == 0){
-					rule->SetEnableVertexPositionSetMax(GetCDataBool(*tag));
+					rule->mpEnableVertexPositionSetMax = GetCDataBool(*tag);
 					
 				}else if(strcmp(tag->GetName(), "targetBone") == 0){
-					rule->SetTargetBone(GetCDataString(*tag));
+					rule->mpTargetBone = GetCDataString(*tag);
 					
 				}else if(strcmp(tag->GetName(), "target") == 0){
 					name = pGetAttributeString(tag, "name");
 					
 					if(strcmp(name, "blendFactor") == 0){
-						pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
+						pLoadControllerTarget(tag, animator, rule->mpTargetBlendFactor);
 						
 					}else{
 						logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
@@ -3322,11 +3334,11 @@ bool aeLSAnimator::pLoadRuleCommon(decXmlElementTag *tag, aeAnimator&, aeRule &r
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	
 	if(strcmp(tag->GetName(), "name") == 0){
-		rule.SetName(GetCDataString(*tag));
+		rule.mpName = GetCDataString(*tag);
 		return true;
 		
 	}else if(strcmp(tag->GetName(), "enabled") == 0){
-		rule.SetEnabled(GetCDataBool(*tag));
+		rule.mpEnabled = GetCDataBool(*tag);
 		return true;
 		
 	}else if(strcmp(tag->GetName(), "blendMode") == 0){
@@ -3336,10 +3348,10 @@ bool aeLSAnimator::pLoadRuleCommon(decXmlElementTag *tag, aeAnimator&, aeRule &r
 			const char * const blendMode = cdata->GetData();
 			
 			if(strcmp(blendMode, "blend") == 0){
-				rule.SetBlendMode(deAnimatorRule::ebmBlend);
+				rule.mpBlendMode = deAnimatorRule::ebmBlend;
 				
 			}else if(strcmp(blendMode, "overlay") == 0){
-				rule.SetBlendMode(deAnimatorRule::ebmOverlay);
+				rule.mpBlendMode = deAnimatorRule::ebmOverlay;
 				
 			}else{
 				logger.LogErrorFormat(LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
@@ -3357,27 +3369,28 @@ bool aeLSAnimator::pLoadRuleCommon(decXmlElementTag *tag, aeAnimator&, aeRule &r
 		return true;
 		
 	}else if(tag->GetName() == "blendFactor"){
-		rule.SetBlendFactor(GetCDataFloat(*tag));
+		rule.mpBlendFactor = GetCDataFloat(*tag);
 		return true;
 		
 	}else if(tag->GetName() == "invertBlendFactor"){
-		rule.SetInvertBlendFactor(GetCDataBool(*tag));
+		rule.mpInvertBlendFactor = GetCDataBool(*tag);
 		return true;
 		
 	}else if(strcmp(tag->GetName(), "bone") == 0){
-		rule.AddBone(GetCDataString(*tag));
+		rule.mpAffectedBones = rule.mpAffectedBones.GetValue() + GetCDataString(*tag);
 		return true;
 		
 	}else if(strcmp(tag->GetName(), "vertexPositionSet") == 0){
-		rule.AddVertexPositionSet(GetCDataString(*tag));
+		rule.mpAffectedVps = rule.mpAffectedVps.GetValue() + GetCDataString(*tag);
 		return true;
 	}
 	
 	return false;
 }
 
-void aeLSAnimator::pLoadControllerTarget(decXmlElementTag *root, aeAnimator &animator, aeControllerTarget &target){
+void aeLSAnimator::pLoadControllerTarget(decXmlElementTag *root, aeAnimator &animator, igdeMetaPropertyObjectSetStorage<aeLink>::Storage &target){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	decTObjectSet<aeLink> links;
 	decXmlElementTag *tag;
 	int i;
 	
@@ -3386,7 +3399,7 @@ void aeLSAnimator::pLoadControllerTarget(decXmlElementTag *root, aeAnimator &ani
 		tag = root->GetElementIfTag(i);
 		if(tag){
 			if(strcmp(tag->GetName(), "link") == 0){
-				target.AddLink(animator.GetLinks().GetAt(GetCDataInt(*tag)));
+				links.Add(animator.mpLinks->GetAt(GetCDataInt(*tag)));
 				
 			}else{
 				logger.LogWarnFormat(LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
@@ -3395,83 +3408,6 @@ void aeLSAnimator::pLoadControllerTarget(decXmlElementTag *root, aeAnimator &ani
 			}
 		}
 	}
-}
-
-void aeLSAnimator::pLoadVector(decXmlElementTag *root, decVector &vector){
-	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	decXmlElementTag *tag;
-	int i;
 	
-	// parse by attributes if one is found
-	if(pHasAttribute(root, "x")){
-		vector.x = pGetAttributeFloat(root, "x");
-		vector.y = pGetAttributeFloat(root, "y");
-		vector.z = pGetAttributeFloat(root, "z");
-		
-	// otherwise parse by tag ( depracted )
-	}else{
-		for(i=0; i<root->GetElementCount(); i++){
-			tag = root->GetElementIfTag(i);
-			if(tag){
-				if(strcmp(tag->GetName(), "x") == 0){
-					vector.x = strtof(GetCDataString(*tag), nullptr);
-					
-				}else if(strcmp(tag->GetName(), "y") == 0){
-					vector.y = strtof(GetCDataString(*tag), nullptr);
-					
-				}else if(strcmp(tag->GetName(), "z") == 0){
-					vector.z = strtof(GetCDataString(*tag), nullptr);
-					
-				}else{
-					logger.LogWarnFormat(LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
-						root->GetName().GetString(), tag->GetLineNumber(),
-						tag->GetPositionNumber(), tag->GetName().GetString());
-				}
-			}
-		}
-	}
-}
-
-void aeLSAnimator::pLoadSubAnimators(aeAnimator &animator){
-	const int count = animator.GetRules().GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		aeRule &rule = *animator.GetRules().GetAt(i);
-		
-		switch(rule.GetType()){
-		case deAnimatorRuleVisitorIdentify::ertSubAnimator:
-			((aeRuleSubAnimator&)rule).LoadSubAnimator();
-			break;
-			
-		case deAnimatorRuleVisitorIdentify::ertGroup:
-			pLoadSubAnimators(animator, (aeRuleGroup&)rule);
-			break;
-			
-		default:
-			break;
-		}
-	}
-}
-
-void aeLSAnimator::pLoadSubAnimators(aeAnimator &animator, const aeRuleGroup &group){
-	const int count = group.GetRules().GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		aeRule &rule = *group.GetRules().GetAt(i);
-		
-		switch(rule.GetType()){
-		case deAnimatorRuleVisitorIdentify::ertSubAnimator:
-			((aeRuleSubAnimator&)rule).LoadSubAnimator();
-			break;
-			
-		case deAnimatorRuleVisitorIdentify::ertGroup:
-			pLoadSubAnimators(animator, (aeRuleGroup&)rule);
-			break;
-			
-		default:
-			break;
-		}
-	}
+	target = links;
 }

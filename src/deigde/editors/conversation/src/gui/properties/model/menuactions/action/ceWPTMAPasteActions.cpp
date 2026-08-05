@@ -71,8 +71,8 @@ pConversation(&conversation)
 ///////////////
 
 void ceWPTMAPasteActions::OnAction(){
-	ceClipboardDataAction * const cdata = (ceClipboardDataAction*)GetWindowMain().
-		GetClipboard().GetWithTypeName(ceClipboardDataAction::TYPE_NAME);
+	auto cdata = GetWindowMain().GetClipboard().
+		GetWithTypeName(ceClipboardDataAction::TYPE_NAME).DynamicCast<ceClipboardDataAction>();
 	if(!cdata){
 		return;
 	}

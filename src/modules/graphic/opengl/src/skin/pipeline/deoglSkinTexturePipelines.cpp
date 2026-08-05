@@ -743,8 +743,8 @@ void deoglSkinTexturePipelines::pSetSkinClipping(deoglSkinShaderConfig &config){
 }
 
 void deoglSkinTexturePipelines::pSetDitherTransparency(deoglSkinShaderConfig &config, const ChannelInfo &cinfo){
-	config.SetDitherTransparency(!pTexture.GetSolid() &&
-		deoglShadowMapper::UseShadowDither(pTexture.GetRenderThread().GetConfiguration()));
+	config.SetDitherTransparency(!pTexture.GetSolid()
+		&& pTexture.GetRenderThread().GetConfigurationSets().ShadowQuality().ditherShadows);
 	if(!config.GetDitherTransparency()){
 		return;
 	}

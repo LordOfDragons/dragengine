@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-
 #include "debpCreateBulletShape.h"
 #include "../debpBulletShape.h"
 #include "../debpBulletCompoundShape.h"
@@ -49,10 +45,24 @@
 #include <BulletCollision/CollisionShapes/btMultiSphereShape.h>
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
 #include <BulletCollision/CollisionShapes/btTriangleShape.h>
-
-
+#include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
+#include <BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h>
 
 // #define DEBUGGING 1
+
+
+// Class debpCreateBulletShape::CustomInertiaCompoundShape
+////////////////////////////////////////////////////////////
+
+debpCreateBulletShape::CompoundShapeCustomInertia::CompoundShapeCustomInertia(const btVector3 &inertia) :
+pInertia(inertia){
+}
+
+void debpCreateBulletShape::CompoundShapeCustomInertia::calculateLocalInertia(
+btScalar mass, btVector3 &inertia) const{
+	inertia = pInertia * mass;
+}
+
 
 // Class debpCreateBulletShape
 ////////////////////////////////
@@ -143,78 +153,56 @@ void debpCreateBulletShape::VisitShape(decShape&){
 
 void debpCreateBulletShape::VisitShapeSphere(decShapeSphere &sphere){
 	const decVector position = sphere.GetPosition() + pOffset;
+	const decQuaternion &orientation = sphere.GetOrientation();
 	const decVector2 &axisScaling = sphere.GetAxisScaling();
 	const float radius = sphere.GetRadius();
 	const bool hasNoShape = pBulletShape.IsNull();
 	debpBulletShape::Ref bulletShapeSphere;
 	debpBulletCompoundShape::Ref bulletShapeCompound;
-	btCompoundShape *compoundShape = NULL;
 	debpBulletShape *shapeToAdd = NULL;
-	btSphereShape *sphereShape = NULL;
-	bool needsTransform = false;
-	bool isEllipsoid = false;
 	float ccdRadius = 0.0f;
-	btTransform transform;
-	float axisCcdRadius;
 	
 #ifdef DEBUGGING
 printf("debpCreateBulletShape.VisitShapeSphere: r=%g as=(%g,%g) pos=(%g,%g,%g)\n",
 	radius, axisScaling.x, axisScaling.y, position.x, position.y, position.z);
 #endif
 	
-	// determine if the sphere is an ellipsoid
-	isEllipsoid = !axisScaling.IsEqualTo(decVector2(1.0f, 1.0f));
-	
-	// required since btTransform does not init and position/orientation is not guaranteed to be set
+	// create the shape
+	bool needsTransform = false;
+	btTransform transform;
 	transform.setIdentity();
 	
-	// create the shape
-	if(!position.IsZero()){
+	if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
+		transform.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
 		transform.setOrigin(btVector3(position.x, position.y, position.z));
 		needsTransform = true;
 	}
 	
+	void * const userPointer = (void*)(intptr_t)(pShapeIndex + 1);
 	ccdRadius = radius * 0.5f;
 	
-	sphereShape = new btSphereShape(radius);
-	if(pNoMargin){
-		sphereShape->setMargin(BT_ZERO);
-	}
-	sphereShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-	
-	bulletShapeSphere = debpBulletShape::Ref::New(sphereShape);
-	shapeToAdd = bulletShapeSphere;
-	
-	if(isEllipsoid){
-		// to create an ellipsoid it is required to create a compound shape around the sphere shape.
-		// this is required since in bullet a sphere shape is not allowed to have local scaling set
-		// and reacts badly to it. using a compound shape though setting local scaling is allowed
-		axisCcdRadius = radius * axisScaling.x * 0.5f;
-		if(axisCcdRadius < ccdRadius){
-			ccdRadius = axisCcdRadius;
-		}
-		
-		axisCcdRadius = radius * axisScaling.y * 0.5f;
-		if(axisCcdRadius < ccdRadius){
-			ccdRadius = axisCcdRadius;
-		}
-		
-		compoundShape = new btCompoundShape(true);
-		compoundShape->addChildShape(transform, sphereShape); // setLocalScaling has to come before addChildShape
+	if(axisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
+		auto sphereShape = new btSphereShape(radius);
 		if(pNoMargin){
-			compoundShape->setMargin(BT_ZERO);
+			sphereShape->setMargin(BT_ZERO);
 		}
-		compoundShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
+		sphereShape->setUserPointer(userPointer);
+		bulletShapeSphere = debpBulletShape::Ref::New(sphereShape);
 		
-		compoundShape->setLocalScaling(btVector3((btScalar)axisScaling.x, BT_ONE, (btScalar)axisScaling.y));
-			// setLocalScaling has to come last or scaling does not propagate
+	}else{
+		ccdRadius = decMath::min(ccdRadius, radius * axisScaling.x * 0.5f, radius * axisScaling.y * 0.5f);
 		
-		bulletShapeCompound = debpBulletCompoundShape::Ref::New(compoundShape);
-		bulletShapeCompound->AddChildShape(bulletShapeSphere);
-		shapeToAdd = bulletShapeCompound;
-		
-		needsTransform = false;
+		const btVector3 positions[1]{{0.0f, 0.0f, 0.0f}};
+		auto multiSphereShape = new btMultiSphereShape(positions, &radius, 1);
+		if(pNoMargin){
+			multiSphereShape->setMargin(BT_ZERO);
+		}
+		multiSphereShape->setUserPointer(userPointer);
+		multiSphereShape->setLocalScaling({(btScalar)axisScaling.x, BT_ONE, (btScalar)axisScaling.y});
+		bulletShapeSphere = debpBulletShape::Ref::New(multiSphereShape);
 	}
+	
+	shapeToAdd = bulletShapeSphere;
 	
 	if(needsTransform){
 		pAddTransformedCollisionShape(shapeToAdd, transform);
@@ -236,56 +224,45 @@ void debpCreateBulletShape::VisitShapeBox(decShapeBox &box){
 	const decQuaternion &orientation = box.GetOrientation();
 	const decVector &halfExtends = box.GetHalfExtends();
 	const decVector2 &tapering = box.GetTapering();
-	float smallestHalfExtends, ccdRadius = 0.0f;
+	float ccdRadius = 0.0f;
 	bool hasNoShape = pBulletShape.IsNull();
 	bool needsTransform = false;
 	btConvexHullShape *hullShape = NULL;
 	debpBulletShape::Ref bulletShapeHull;
 	debpBulletShape::Ref bulletShapeBox;
 	debpBulletShape *shapeToAdd = NULL;
-	btBoxShape *boxShape = NULL;
-	btTransform transform;
-	btScalar margin = CONVEX_DISTANCE_MARGIN;
-	btScalar minSafeSize = (btScalar)0.01;
-	float taperedHalfExtendX = 0.0f;
-	float taperedHalfExtendZ = 0.0f;
 	
 	// determine if the box is tapered
 	const bool isTapered = !tapering.IsEqualTo(decVector2(1.0f, 1.0f));
 	
 	// determine the smallest half extends
-	smallestHalfExtends = halfExtends.x;
-	if(halfExtends.y < smallestHalfExtends){
-		smallestHalfExtends = halfExtends.y;
-	}
-	if(halfExtends.z < smallestHalfExtends){
-		smallestHalfExtends = halfExtends.z;
-	}
+	float smallestHalfExtends = decMath::min(halfExtends.x, decMath::min(halfExtends.y, halfExtends.z));
 	
+	float taperedHalfExtendX = 0.0f;
+	float taperedHalfExtendZ = 0.0f;
 	if(isTapered){
 		taperedHalfExtendX = halfExtends.x * tapering.x;
-		if(taperedHalfExtendX < smallestHalfExtends){
-			smallestHalfExtends = taperedHalfExtendX;
-		}
-		
 		taperedHalfExtendZ = halfExtends.z * tapering.y;
-		if(taperedHalfExtendZ < smallestHalfExtends){
-			smallestHalfExtends = taperedHalfExtendZ;
-		}
+		smallestHalfExtends = decMath::min(smallestHalfExtends, taperedHalfExtendX, taperedHalfExtendZ);
 	}
 	
 	// the margin is subtracted from the object producing a small gap. there is nothing wrong
 	// with this unless the margin is larger than the half extends of the box. in this case
 	// the margin has to be reduced to avoid nasty problems
+	btScalar margin = CONVEX_DISTANCE_MARGIN;
+	btScalar minSafeSize = (btScalar)0.01;
+	
 	if((btScalar)smallestHalfExtends - margin < minSafeSize){
 		margin = (btScalar)smallestHalfExtends - minSafeSize;
-		
 		if(margin < BT_ZERO){
 			margin = BT_ZERO;
 		}
 	}
 	
 	// create the shape
+	btTransform transform;
+	transform.setIdentity();
+	
 	if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
 		transform.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
 		transform.setOrigin(btVector3(position.x, position.y, position.z));
@@ -315,7 +292,7 @@ printf("debpCreateBulletShape.VisitShapeBox: hull\n");
 		margin = BT_ZERO;
 		
 	}else{
-		boxShape = new btBoxShape(btVector3((btScalar)halfExtends.x, (btScalar)halfExtends.y, (btScalar)halfExtends.z));
+		auto boxShape = new btBoxShape(btVector3((btScalar)halfExtends.x, (btScalar)halfExtends.y, (btScalar)halfExtends.z));
 		boxShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
 		
 		bulletShapeBox = debpBulletShape::Ref::New(boxShape);
@@ -354,30 +331,78 @@ void debpCreateBulletShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	const decQuaternion &orientation = cylinder.GetOrientation();
 	const float halfHeight = cylinder.GetHalfHeight();
 	const float topRadius = cylinder.GetTopRadius();
-	//float bottomRadius = cylinder->GetBottomRadius();
+	const float bottomRadius = cylinder.GetBottomRadius();
+	const decVector2 &topAxisScaling = cylinder.GetTopAxisScaling();
+	const decVector2 &bottomAxisScaling = cylinder.GetBottomAxisScaling();
+	const bool hasNoShape = pBulletShape.IsNull();
 	debpBulletShape::Ref bulletShapeCylinder;
-	bool hasNoShape = pBulletShape.IsNull();
-	btCylinderShape *cylinderShape = nullptr;
 	bool needsTransform = false;
+	float ccdRadius = halfHeight + topRadius + bottomRadius;
 	
-	float smallestHalfExtends, ccdRadius = halfHeight + topRadius;
+	const bool hasTopScaling = !topAxisScaling.IsEqualTo({1.0f, 1.0f});
+	const bool hasBottomScaling = !bottomAxisScaling.IsEqualTo({1.0f, 1.0f});
+	void * const userPointer = (void*)(intptr_t)(pShapeIndex + 1);
 	
-	btVector3 bthe(topRadius, halfHeight, topRadius);
-	
-	cylinderShape = new btCylinderShape(bthe);
-	if(pNoMargin){
-		cylinderShape->setMargin(BT_ZERO);
+	if(hasTopScaling || hasBottomScaling || fabsf(topRadius - bottomRadius) > 0.001f){
+		// create convex hull approximation for scaled cylinders
+		// with 16 points per circle and 2 circles this results in 32 hull points
+		auto hullShape = new btConvexHullShape();
+		
+		const int pointsPerCircle = 16;
+		
+		const decVector2 rt(topAxisScaling * topRadius);
+		const decVector2 rb(bottomAxisScaling * bottomRadius);
+		
+		// add points for top circle
+		for(int i=0; i<pointsPerCircle; i++){
+			const float angle = (TWO_PI * (float)i) / (float)pointsPerCircle;
+			const float c = cosf(angle);
+			const float s = sinf(angle);
+			
+			hullShape->addPoint({rt.x * c, halfHeight, rt.y * s});
+		}
+		
+		// add points for bottom circle
+		for(int i=0; i<pointsPerCircle; i++){
+			const float angle = (TWO_PI * (float)i) / (float)pointsPerCircle;
+			const float c = cosf(angle);
+			const float s = sinf(angle);
+			
+			hullShape->addPoint({rb.x * c, -halfHeight, rb.y * s});
+		}
+		
+		// finish the shape
+		hullShape->recalcLocalAabb();
+		
+		if(pNoMargin){
+			hullShape->setMargin(BT_ZERO);
+		}
+		hullShape->setUserPointer(userPointer);
+		
+		bulletShapeCylinder = debpBulletShape::Ref::New(hullShape);
+		//bulletShapeCylinder = debpBulletShape::Ref::New(pCreateBalancedConvexHull(hullShape));
+		
+		// update CCD radius
+		ccdRadius = decMath::min(ccdRadius, topRadius * topAxisScaling.x * 0.5f,
+			topRadius * topAxisScaling.y * 0.5f);
+		ccdRadius = decMath::min(ccdRadius, bottomRadius * bottomAxisScaling.x * 0.5f,
+			bottomRadius * bottomAxisScaling.y * 0.5f);
+		
+	}else{
+		auto cylinderShape = new btCylinderShape(btVector3(topRadius, halfHeight, topRadius));
+		if(pNoMargin){
+			cylinderShape->setMargin(BT_ZERO);
+		}
+		cylinderShape->setUserPointer(userPointer);
+		
+		bulletShapeCylinder = debpBulletShape::Ref::New(cylinderShape);
 	}
-	cylinderShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-	
-	bulletShapeCylinder = debpBulletShape::Ref::New(cylinderShape);
 	
 	if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
 	if(!position.IsZero()) needsTransform = true;
 	
 #ifdef DEBUGGING
-printf("debpCreateBulletShape.VisitShapeCylinder: he=(%g,%g,%g)\n", cylinderShape->getHalfExtentsWithMargin().getX(),
-cylinderShape->getHalfExtentsWithMargin().getY(), cylinderShape->getHalfExtentsWithMargin().getZ());
+printf("debpCreateBulletShape.VisitShapeCylinder: tr=%g br=%g he=%g\n", topRadius, bottomRadius, halfHeight);
 #endif
 	if(needsTransform){
 		const btTransform transform(
@@ -389,11 +414,12 @@ cylinderShape->getHalfExtentsWithMargin().getY(), cylinderShape->getHalfExtentsW
 		pAddCollisionShape(bulletShapeCylinder);
 	}
 	
-	smallestHalfExtends = halfHeight;
-	if(topRadius < smallestHalfExtends) smallestHalfExtends = topRadius;
+	float smallestHalfExtends = decMath::min(halfHeight, topRadius, bottomRadius);
 	smallestHalfExtends *= 0.25f; // 0.25 is a little ratio to improve detection (does it really improve anymore?)
 	
-	if(hasNoShape || ccdRadius < pCcdRadius) pCcdRadius = ccdRadius;
+	if(hasNoShape || ccdRadius < pCcdRadius){
+		pCcdRadius = ccdRadius;
+	}
 	if(hasNoShape || smallestHalfExtends < pCcdThreshold){
 		pCcdThreshold = smallestHalfExtends;
 	}
@@ -405,31 +431,91 @@ void debpCreateBulletShape::VisitShapeCapsule(decShapeCapsule &capsule){
 	const float halfHeight = capsule.GetHalfHeight();
 	const float topRadius = capsule.GetTopRadius();
 	const float bottomRadius = capsule.GetBottomRadius();
-	//const decVector2 &topAxisScaling = capsule->GetTopAxisScaling();
-	//const decVector2 &bottomAxisScaling = capsule->GetBottomAxisScaling();
+	const decVector2 &topAxisScaling = capsule.GetTopAxisScaling();
+	const decVector2 &bottomAxisScaling = capsule.GetBottomAxisScaling();
 	const bool hasNoShape = pBulletShape.IsNull();
 	debpBulletShape::Ref bulletShapeCapsule;
-	btMultiSphereShape *capsuleShape = nullptr;
 	bool needsTransform = false;
-	btVector3 positions[2];
-	btScalar radi[2];
+	float ccdRadius = halfHeight + topRadius + bottomRadius;
 	
-	float smallestHalfExtends, ccdRadius = halfHeight + topRadius + bottomRadius;
+	const bool hasTopScaling = !topAxisScaling.IsEqualTo({1.0f, 1.0f});
+	const bool hasBottomScaling = !bottomAxisScaling.IsEqualTo({1.0f, 1.0f});
+	void * const userPointer = (void*)(intptr_t)(pShapeIndex + 1);
 	
-	positions[0].setValue(0.0f, halfHeight, 0.0f);
-	positions[1].setValue(0.0f, -halfHeight, 0.0f);
-	radi[0] = topRadius;
-	radi[1] = bottomRadius;
-	
-	// NOTE if both radi are the same btCapsuleShape can be used instead
-	
-	capsuleShape = new btMultiSphereShape((const btVector3 *)&positions[0], (const btScalar *)&radi[0], 2);
-	if(pNoMargin){
-		capsuleShape->setMargin(BT_ZERO);
+	if(hasTopScaling || hasBottomScaling){
+		// create convex hull approximation.
+		// with 12 segments and 8 points per segment this results in 98 hull points:
+		// - 2 pole points
+		// - 12 segments * 8 points per segment = 96 points
+		// with 12 segments and 16 points per segment this results in 194 hull points:
+		// - 2 pole points
+		// - 12 segments * 16 points per segment = 192 points
+		auto hullShape = new btConvexHullShape();
+		
+		const int segments = 12;
+		const int pointsPerSegment = 16; //8
+		
+		for(int i=0; i<segments/2; i++){
+			const float angle = (HALF_PI * (float)i) / (float)segments;
+			const float c = cosf(angle);
+			const float s = sinf(angle);
+			
+			const float yt = halfHeight + topRadius * s;
+			const float yb = -halfHeight - bottomRadius * s;
+			
+			const decVector2 rt(topAxisScaling * (c * topRadius));
+			const decVector2 rb(bottomAxisScaling * (c * bottomRadius));
+			
+			for(int j=0; j<pointsPerSegment; j++){
+				const float angle2 = (TWO_PI * (float)j) / (float)pointsPerSegment;
+				const float c2 = cosf(angle2);
+				const float s2 = sinf(angle2);
+				
+				hullShape->addPoint({rt.x * c2, yt, rt.y * s2});
+				hullShape->addPoint({rb.x * c2, yb, rb.y * s2});
+			}
+		}
+		
+		hullShape->addPoint({BT_ZERO, halfHeight + topRadius, BT_ZERO});
+		hullShape->addPoint({BT_ZERO, -halfHeight - bottomRadius, BT_ZERO});
+		
+		// finish the shape
+		hullShape->recalcLocalAabb();
+		
+		if(pNoMargin){
+			hullShape->setMargin(BT_ZERO);
+		}
+		hullShape->setUserPointer(userPointer);
+		
+		bulletShapeCapsule = debpBulletShape::Ref::New(hullShape);
+		
+		// update CCD radius
+		ccdRadius = decMath::min(ccdRadius, topRadius * topAxisScaling.x * 0.5f,
+			topRadius * topAxisScaling.y * 0.5f);
+		ccdRadius = decMath::min(ccdRadius, bottomRadius * bottomAxisScaling.x * 0.5f,
+			bottomRadius * bottomAxisScaling.y * 0.5f);
+		
+	}else if(fabsf(topRadius - bottomRadius) > 0.001f){
+		const btVector3 positions[2]{{0.0f, halfHeight, 0.0f}, {0.0f, -halfHeight, 0.0f}};
+		const btScalar radi[2]{topRadius, bottomRadius};
+		
+		auto capsuleShape = new btMultiSphereShape(positions, &radi[0], 2);
+		if(pNoMargin){
+			capsuleShape->setMargin(BT_ZERO);
+		}
+		capsuleShape->setUserPointer(userPointer);
+		
+		bulletShapeCapsule = debpBulletShape::Ref::New(capsuleShape);
+		
+	}else{
+		auto capsuleShape = new btCapsuleShape(topRadius, halfHeight * 2.0f);
+		if(pNoMargin){
+			capsuleShape->setMargin(BT_ZERO);
+		}
+		capsuleShape->setUserPointer(userPointer);
+		
+		bulletShapeCapsule = debpBulletShape::Ref::New(capsuleShape);
 	}
-	capsuleShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-	
-	bulletShapeCapsule = debpBulletShape::Ref::New(capsuleShape);
 	
 	if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
 	if(!position.IsZero()) needsTransform = true;
@@ -450,12 +536,12 @@ capsuleShape->getSphereRadius(0), capsuleShape->getSphereRadius(0));
 		pAddCollisionShape(bulletShapeCapsule);
 	}
 	
-	smallestHalfExtends = halfHeight;
-	if(topRadius < smallestHalfExtends) smallestHalfExtends = topRadius;
-	if(bottomRadius < smallestHalfExtends) smallestHalfExtends = bottomRadius;
+	float smallestHalfExtends = decMath::min(halfHeight, topRadius, bottomRadius);
 	smallestHalfExtends *= 0.25f; // 0.25 is a little ratio to improve detection (does it really improve anymore?)
 	
-	if(hasNoShape || ccdRadius < pCcdRadius) pCcdRadius = ccdRadius;
+	if(hasNoShape || ccdRadius < pCcdRadius){
+		pCcdRadius = ccdRadius;
+	}
 	if(hasNoShape || smallestHalfExtends < pCcdThreshold){
 		pCcdThreshold = smallestHalfExtends;
 	}
@@ -489,6 +575,7 @@ void debpCreateBulletShape::VisitShapeHull(decShapeHull &hull){
 	hullShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
 	
 	bulletShapeHull = debpBulletShape::Ref::New(hullShape);
+	//bulletShapeHull = debpBulletShape::Ref::New(pCreateBalancedConvexHull(hullShape));
 	
 	if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
 		needsTransform = true;
@@ -539,10 +626,7 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 	printf("debpCreateBulletShape.pCreateCompoundShape\n");
 	#endif
 	
-	debpBulletCompoundShape::Ref bulletShape;
-	btCompoundShape *compoundShape = nullptr;
-	
-	compoundShape = new btCompoundShape(true);
+	btCompoundShape *compoundShape = new btCompoundShape(true);
 	if(pNoMargin){
 		compoundShape->setMargin(BT_ZERO);
 	}
@@ -550,7 +634,7 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 		// setLocalScaling has to come last or scaling does not propagate.
 		// for this reason it is applied during Finish() not here
 	
-	bulletShape = debpBulletCompoundShape::Ref::New(compoundShape);
+	auto bulletShape = debpBulletCompoundShape::Ref::New(compoundShape);
 	
 	if(pBulletShape){
 		// place bullet shape in compound clearing the reference
@@ -564,6 +648,64 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 		pBulletShape = nullptr;
 	}
 	pBulletCompoundShape = bulletShape;
+}
+
+debpCreateBulletShape::CompoundShapeCustomInertia *debpCreateBulletShape::pCreateBalancedConvexHull(
+btConvexHullShape *convexHull){
+	DEASSERT_NOTNULL(convexHull)
+	DEASSERT_TRUE(convexHull->getNumVertices() > 0)
+	
+	const int vertexCount = convexHull->getNumVertices();
+	const btVector3 * const vertices = convexHull->getPoints();
+	
+	// copy vertices into temporary array for builder
+	decTList<btVector3> points(vertexCount);
+	for(int i=0; i<vertexCount; i++){
+		points.Add(vertices[i]);
+	}
+	
+	// create temporary triangle index layout
+	auto vertexArray = deTUniqueReference<btTriangleIndexVertexArray>::New();
+	btIndexedMesh tempMesh{};
+	tempMesh.m_numVertices = vertexCount;
+	tempMesh.m_vertexBase = reinterpret_cast<const unsigned char*>(points.GetArrayPointer());
+	tempMesh.m_vertexStride = sizeof(btVector3);
+	tempMesh.m_vertexType = PHY_FLOAT;
+	
+	// create temporary index strips
+	decTList<int> indices((vertexCount - 2) * 3);
+	for(int i=2; i<vertexCount; i++){
+		indices.Add(0);
+		indices.Add(i - 1);
+		indices.Add(i);
+	}
+	tempMesh.m_numTriangles = indices.GetCount() / 3;
+	tempMesh.m_triangleIndexBase = reinterpret_cast<const unsigned char*>(indices.GetArrayPointer());
+	tempMesh.m_triangleIndexStride = 3 * sizeof(int);
+	tempMesh.m_indexType = PHY_INTEGER;
+	
+	vertexArray->addIndexedMesh(tempMesh);
+	
+	// let Bullet calculate the true principal axes transform and exact inertia distribution
+	auto tempShape = deTUniqueReference<btConvexTriangleMeshShape>::New(vertexArray);
+	
+	btTransform transform{};
+	btVector3 inertia(BT_ZERO, BT_ZERO, BT_ZERO);
+	btScalar volume = BT_ZERO;
+	
+	tempShape->calculatePrincipalAxisTransform(transform, inertia, volume);
+	
+	// wrap convex hull with btCompoundShape with convex hull vertices shifted to match the center of mass
+	auto compoundShape = new btCompoundShape();
+	
+	btTransform childTransform;
+	childTransform.setIdentity();
+	childTransform.setOrigin(-transform.getOrigin());
+	
+	compoundShape->addChildShape(childTransform, convexHull);
+	
+	// create custom compound shape storing the analytical inertia vector for later use
+	return new CompoundShapeCustomInertia(inertia);
 }
 
 void debpCreateBulletShape::pAddCollisionShape(debpBulletShape *collisionShape){

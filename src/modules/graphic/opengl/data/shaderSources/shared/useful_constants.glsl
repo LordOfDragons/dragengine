@@ -1,0 +1,9 @@
+const float PI = 3.14159265;
+const float HALF_PI = (PI / 2.0);
+const float TWO_PI = (PI * 2.0);
+const float DEG2RAD = (PI / 180.0);
+const float INV_PI = 1.0 / PI;
+const float INV_HALF_PI = 1.0 / HALF_PI;
+const float INV_TWO_PI = 1.0 / TWO_PI;
+const vec3 VEC_PI = vec3(PI, HALF_PI, TWO_PI);
+const vec3 VEC_INV_PI = vec3(INV_PI, INV_HALF_PI, INV_TWO_PI);

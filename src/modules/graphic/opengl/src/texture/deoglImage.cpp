@@ -162,27 +162,22 @@ bool deoglImage::RetainImageData(){
 deoglPixelBuffer::Ref deoglImage::pCreatePixelBuffer(){
 	deoglPixelBuffer::Ref pixelBuffer;
 	
-	if(pImage.GetData()){
-		// somebody else keeps the image data retained so jump the bandwagon
+	// always retain the image data even if somebody has it retained already. if bandwagoning
+	// it is possible the other user releases the retained data while we are still using it.
+	// retaining it multiple times is safe and has no performance implications
+	pImage.RetainImageData();
+	
+	try{
 		pCreatePixelBufferSafe(pixelBuffer);
 		
-	}else{
-		// the image data is not retained. retain the imate data to create the pixel buffer
-		// then release the image data.
-		pImage.RetainImageData();
-		
-		try{
-			pCreatePixelBufferSafe(pixelBuffer);
-			
-		}catch(const deException &){
-			pImage.ReleaseImageData();
-			throw;
-		}
-		
-		try{
-			pImage.ReleaseImageData();
-		}catch(const deException &){
-		}
+	}catch(const deException &){
+		pImage.ReleaseImageData();
+		throw;
+	}
+	
+	try{
+		pImage.ReleaseImageData();
+	}catch(const deException &){
 	}
 	
 	return pixelBuffer;

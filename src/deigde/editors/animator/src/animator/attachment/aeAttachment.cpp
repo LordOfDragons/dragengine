@@ -22,12 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "aeAttachment.h"
 #include "../aeAnimator.h"
+#include "../../gui/aeWindowMain.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
@@ -64,30 +61,56 @@ void aeAttachment::cAsyncLoadListener::LoadFinished(igdeWObject &wrapper, bool s
 // Class aeAttachment
 ///////////////////////
 
+aeAttachment::MetaContext::Ref aeAttachment::CreateMetaContext(aeWindowMain &windowMain, aeAttachment *attachment){
+	return MetaContext::Ref::New("animator.attachment", "Attachment", "Attachment properties",
+		windowMain.GetMCAnimatorProperties().attachment.metaProperties, attachment);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
-aeAttachment::aeAttachment(igdeEnvironment *environment, const char *name) :
+aeAttachment::aeAttachment(aeWindowMain &windowMain, const char *aname) :
+pWindowMain(windowMain),
+pMetaContext(CreateMetaContext(windowMain, this)),
 pAnimator(nullptr),
 pAsyncLoadListener(*this),
-pName(name),
-pAttachType(eatNone)
+mpName(windowMain.GetMCAnimatorProperties().attachment.name, pMetaContext, aname),
+mpAttachType(windowMain.GetMCAnimatorProperties().attachment.attachType, pMetaContext),
+mpBoneName(windowMain.GetMCAnimatorProperties().attachment.boneName, pMetaContext),
+mpWObject(windowMain.GetMCAnimatorProperties().attachment.wobject, pMetaContext)
 {
 	try{
 		decLayerMask layerMask;
 		layerMask.SetBit(aeAnimator::eclElements);
 		
-		pObjectWrapper = igdeWObject::Ref::New(*environment);
+		pObjectWrapper = igdeWObject::Ref::New(windowMain.GetEnvironment());
 		pObjectWrapper->SetVisible(true);
 		pObjectWrapper->SetDynamicCollider(false);
 		pObjectWrapper->SetCollisionFilter(decCollisionFilter(layerMask));
 		pObjectWrapper->SetCollisionFilterFallback(decCollisionFilter(layerMask));
 		pObjectWrapper->SetAsyncLoadFinished(&pAsyncLoadListener);
+		mpWObject.SetValue(pObjectWrapper->GetMetaContext(), false);
+		
+		pObjectWrapper->onChanged = [this](){
+			ReattachCollider();
+		};
 		
 	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
+	
+	mpAttachType.onValueChanged = [this](){
+		ReattachCollider();
+	};
+	mpBoneName.onValueChanged = mpAttachType.onValueChanged;
+}
+
+aeAttachment::aeAttachment(const aeAttachment &copy) :
+aeAttachment(copy.pWindowMain, copy.mpName)
+{
+	mpAttachType.SetValue(copy.mpAttachType, false);
+	mpBoneName.SetValue(copy.mpBoneName, false);
 }
 
 aeAttachment::~aeAttachment(){
@@ -98,6 +121,11 @@ aeAttachment::~aeAttachment(){
 
 // Management
 ///////////////
+
+aeAnimator &aeAttachment::GetAnimatorRef() const{
+	DEASSERT_NOTNULL(pAnimator)
+	return *pAnimator;
+}
 
 void aeAttachment::SetAnimator(aeAnimator *animator){
 	if(animator == pAnimator){
@@ -116,51 +144,14 @@ void aeAttachment::SetAnimator(aeAnimator *animator){
 	}
 }
 
-
-
-void aeAttachment::SetName(const char *name){
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pName = name;
-	
-	if(pAnimator){
-		pAnimator->NotifyAttachmentChanged(this);
-	}
+igdeEnvironment &aeAttachment::GetEnvironment() const{
+	return GetAnimatorRef().GetEnvironment();
 }
 
-void aeAttachment::SetAttachType(eAttachTypes type){
-	if(type == pAttachType){
-		return;
-	}
-	
-	pAttachType = type;
-	
-	ReattachCollider();
-	
-	if(pAnimator){
-		pAnimator->NotifyAttachmentChanged(this);
-	}
+igdeUndoSystem *aeAttachment::GetUndoSystem() const{
+	return GetAnimatorRef().GetUndoSystem();
 }
 
-void aeAttachment::SetBoneName(const char *name){
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(pBoneName.Equals(name)){
-		return;
-	}
-	
-	pBoneName = name;
-	
-	ReattachCollider();
-	
-	if(pAnimator){
-		pAnimator->NotifyAttachmentChanged(this);
-	}
-}
 
 void aeAttachment::ReattachCollider(){
 	DetachCollider();
@@ -187,10 +178,10 @@ void aeAttachment::AttachCollider(){
 	}
 	
 	try{
-		switch(pAttachType){
+		switch(mpAttachType){
 		case eatBone:
-			if(!pBoneName.IsEmpty()){
-				pObjectWrapper->AttachColliderBone(pAnimator->GetEngineCollider(), pBoneName.GetString(),
+			if(!mpBoneName->IsEmpty()){
+				pObjectWrapper->AttachColliderBone(pAnimator->GetEngineCollider(), mpBoneName,
 					pObjectWrapper->GetPosition(), pObjectWrapper->GetOrientation());
 			}
 			break;

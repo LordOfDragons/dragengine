@@ -49,15 +49,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpConfiguration::debpConfiguration(dePhysicsBullet *bullet){
-	pBullet = bullet;
-	
-	pEnableConstraintPoint2Point = true;
-	pEnableConstraintHinge = true;
-	pEnableConstraintConeTwist = true;
-	pEnableConstraintSlider = true;
-	
-	pSimulatePropFields = true;
+debpConfiguration::debpConfiguration(dePhysicsBullet *bullet) :
+pBullet(bullet),
+pEnableConstraintPoint2Point(true),
+pEnableConstraintHinge(true),
+pEnableConstraintConeTwist(true),
+pEnableConstraintSlider(true),
+pSimulatePropFields(true){
 }
 
 debpConfiguration::~debpConfiguration(){

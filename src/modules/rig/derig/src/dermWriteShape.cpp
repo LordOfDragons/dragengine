@@ -74,13 +74,32 @@ void dermWriteShape::VisitShapeSphere(decShapeSphere &sphere){
 	pWriter.WriteOpeningTag("sphere");
 	
 	const decVector &position = sphere.GetPosition();
-	pWriter.WriteOpeningTagStart("position");
-	pWriter.WriteAttributeFloat("x", position.x);
-	pWriter.WriteAttributeFloat("y", position.y);
-	pWriter.WriteAttributeFloat("z", position.z);
-	pWriter.WriteOpeningTagEnd(true);
+	if(!position.IsZero()){
+		pWriter.WriteOpeningTagStart("position");
+		pWriter.WriteAttributeFloat("x", position.x);
+		pWriter.WriteAttributeFloat("y", position.y);
+		pWriter.WriteAttributeFloat("z", position.z);
+		pWriter.WriteOpeningTagEnd(true);
+	}
+	
+	const decVector rotation(sphere.GetOrientation().GetEulerAngles() * RAD2DEG);
+	if(!rotation.IsZero()){
+		pWriter.WriteOpeningTagStart("rotation");
+		pWriter.WriteAttributeFloat("x", rotation.x);
+		pWriter.WriteAttributeFloat("y", rotation.y);
+		pWriter.WriteAttributeFloat("z", rotation.z);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
 	pWriter.WriteDataTagFloat("radius", sphere.GetRadius());
+	
+	const decVector2 &axisScaling = sphere.GetAxisScaling();
+	if(!axisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
+		pWriter.WriteOpeningTagStart("axisScaling");
+		pWriter.WriteAttributeFloat("x", axisScaling.x);
+		pWriter.WriteAttributeFloat("y", axisScaling.y);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
 	if(!pProperty.IsEmpty()){
 		pWriter.WriteDataTagString("property", pProperty);
@@ -93,18 +112,22 @@ void dermWriteShape::VisitShapeBox(decShapeBox &box){
 	pWriter.WriteOpeningTag("box");
 	
 	const decVector &position = box.GetPosition();
-	pWriter.WriteOpeningTagStart("position");
-	pWriter.WriteAttributeFloat("x", position.x);
-	pWriter.WriteAttributeFloat("y", position.y);
-	pWriter.WriteAttributeFloat("z", position.z);
-	pWriter.WriteOpeningTagEnd(true);
+	if(!position.IsZero()){
+		pWriter.WriteOpeningTagStart("position");
+		pWriter.WriteAttributeFloat("x", position.x);
+		pWriter.WriteAttributeFloat("y", position.y);
+		pWriter.WriteAttributeFloat("z", position.z);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
-	decVector rotation = decMatrix::CreateFromQuaternion(box.GetOrientation()).GetEulerAngles() * RAD2DEG;
-	pWriter.WriteOpeningTagStart("rotation");
-	pWriter.WriteAttributeFloat("x", rotation.x);
-	pWriter.WriteAttributeFloat("y", rotation.y);
-	pWriter.WriteAttributeFloat("z", rotation.z);
-	pWriter.WriteOpeningTagEnd(true);
+	const decVector rotation(box.GetOrientation().GetEulerAngles() * RAD2DEG);
+	if(!rotation.IsZero()){
+		pWriter.WriteOpeningTagStart("rotation");
+		pWriter.WriteAttributeFloat("x", rotation.x);
+		pWriter.WriteAttributeFloat("y", rotation.y);
+		pWriter.WriteAttributeFloat("z", rotation.z);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
 	const decVector &halfExtends = box.GetHalfExtends();
 	pWriter.WriteOpeningTagStart("halfExtends");
@@ -112,6 +135,14 @@ void dermWriteShape::VisitShapeBox(decShapeBox &box){
 	pWriter.WriteAttributeFloat("y", halfExtends.y);
 	pWriter.WriteAttributeFloat("z", halfExtends.z);
 	pWriter.WriteOpeningTagEnd(true);
+	
+	const decVector2 &tapering = box.GetTapering();
+	if(!tapering.IsEqualTo(decVector2(1.0f, 1.0f))){
+		pWriter.WriteOpeningTagStart("tapering");
+		pWriter.WriteAttributeFloat("x", tapering.x);
+		pWriter.WriteAttributeFloat("y", tapering.y);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
 	if(!pProperty.IsEmpty()){
 		pWriter.WriteDataTagString("property", pProperty);
@@ -121,35 +152,54 @@ void dermWriteShape::VisitShapeBox(decShapeBox &box){
 }
 
 void dermWriteShape::VisitShapeCylinder(decShapeCylinder &cylinder){
-	float bottomRadius = cylinder.GetBottomRadius();
-	float topRadius = cylinder.GetTopRadius();
-	
 	pWriter.WriteOpeningTag("cylinder");
 	
 	const decVector &position = cylinder.GetPosition();
-	pWriter.WriteOpeningTagStart("position");
-	pWriter.WriteAttributeFloat("x", position.x);
-	pWriter.WriteAttributeFloat("y", position.y);
-	pWriter.WriteAttributeFloat("z", position.z);
-	pWriter.WriteOpeningTagEnd(true);
+	if(!position.IsZero()){
+		pWriter.WriteOpeningTagStart("position");
+		pWriter.WriteAttributeFloat("x", position.x);
+		pWriter.WriteAttributeFloat("y", position.y);
+		pWriter.WriteAttributeFloat("z", position.z);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
-	decVector rotation = decMatrix::CreateFromQuaternion(cylinder.GetOrientation()).GetEulerAngles() * RAD2DEG;
-	pWriter.WriteOpeningTagStart("rotation");
-	pWriter.WriteAttributeFloat("x", rotation.x);
-	pWriter.WriteAttributeFloat("y", rotation.y);
-	pWriter.WriteAttributeFloat("z", rotation.z);
-	pWriter.WriteOpeningTagEnd(true);
+	const decVector rotation(cylinder.GetOrientation().GetEulerAngles() * RAD2DEG);
+	if(!rotation.IsZero()){
+		pWriter.WriteOpeningTagStart("rotation");
+		pWriter.WriteAttributeFloat("x", rotation.x);
+		pWriter.WriteAttributeFloat("y", rotation.y);
+		pWriter.WriteAttributeFloat("z", rotation.z);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
 	pWriter.WriteDataTagFloat("halfHeight", cylinder.GetHalfHeight());
 	
 	// if the radi are near equal we can use a shorter version to specify them
+	const float bottomRadius = cylinder.GetBottomRadius();
+	const float topRadius = cylinder.GetTopRadius();
+	
 	if(fabsf(topRadius - bottomRadius) < 1e-5f){
 		pWriter.WriteDataTagFloat("radius", topRadius);
 		
-	// otherwise we use the longer version to specify them
 	}else{
 		pWriter.WriteDataTagFloat("topRadius", topRadius);
 		pWriter.WriteDataTagFloat("bottomRadius", bottomRadius);
+	}
+	
+	const decVector2 &topAxisScaling = cylinder.GetTopAxisScaling();
+	if(!topAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
+		pWriter.WriteOpeningTagStart("topAxisScaling");
+		pWriter.WriteAttributeFloat("x", topAxisScaling.x);
+		pWriter.WriteAttributeFloat("y", topAxisScaling.y);
+		pWriter.WriteOpeningTagEnd(true);
+	}
+	
+	const decVector2 &bottomAxisScaling = cylinder.GetBottomAxisScaling();
+	if(!bottomAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
+		pWriter.WriteOpeningTagStart("bottomAxisScaling");
+		pWriter.WriteAttributeFloat("x", bottomAxisScaling.x);
+		pWriter.WriteAttributeFloat("y", bottomAxisScaling.y);
+		pWriter.WriteOpeningTagEnd(true);
 	}
 	
 	if(!pProperty.IsEmpty()){
@@ -160,35 +210,54 @@ void dermWriteShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 }
 
 void dermWriteShape::VisitShapeCapsule(decShapeCapsule &capsule){
-	float bottomRadius = capsule.GetBottomRadius();
-	float topRadius = capsule.GetTopRadius();
-	
 	pWriter.WriteOpeningTag("capsule");
 	
 	const decVector &position = capsule.GetPosition();
-	pWriter.WriteOpeningTagStart("position");
-	pWriter.WriteAttributeFloat("x", position.x);
-	pWriter.WriteAttributeFloat("y", position.y);
-	pWriter.WriteAttributeFloat("z", position.z);
-	pWriter.WriteOpeningTagEnd(true);
+	if(!position.IsZero()){
+		pWriter.WriteOpeningTagStart("position");
+		pWriter.WriteAttributeFloat("x", position.x);
+		pWriter.WriteAttributeFloat("y", position.y);
+		pWriter.WriteAttributeFloat("z", position.z);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
-	decVector rotation = decMatrix::CreateFromQuaternion(capsule.GetOrientation()).GetEulerAngles() * RAD2DEG;
-	pWriter.WriteOpeningTagStart("rotation");
-	pWriter.WriteAttributeFloat("x", rotation.x);
-	pWriter.WriteAttributeFloat("y", rotation.y);
-	pWriter.WriteAttributeFloat("z", rotation.z);
-	pWriter.WriteOpeningTagEnd(true);
+	const decVector rotation(capsule.GetOrientation().GetEulerAngles() * RAD2DEG);
+	if(!rotation.IsZero()){
+		pWriter.WriteOpeningTagStart("rotation");
+		pWriter.WriteAttributeFloat("x", rotation.x);
+		pWriter.WriteAttributeFloat("y", rotation.y);
+		pWriter.WriteAttributeFloat("z", rotation.z);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
 	pWriter.WriteDataTagFloat("halfHeight", capsule.GetHalfHeight());
 	
 	// if the radi are near equal we can use a shorter version to specify them
+	const float bottomRadius = capsule.GetBottomRadius();
+	const float topRadius = capsule.GetTopRadius();
+	
 	if(fabsf(topRadius - bottomRadius) < 1e-5f){
 		pWriter.WriteDataTagFloat("radius", topRadius);
 		
-	// otherwise we use the longer version to specify them
 	}else{
 		pWriter.WriteDataTagFloat("topRadius", topRadius);
 		pWriter.WriteDataTagFloat("bottomRadius", bottomRadius);
+	}
+	
+	const decVector2 &topAxisScaling = capsule.GetTopAxisScaling();
+	if(!topAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
+		pWriter.WriteOpeningTagStart("topAxisScaling");
+		pWriter.WriteAttributeFloat("x", topAxisScaling.x);
+		pWriter.WriteAttributeFloat("y", topAxisScaling.y);
+		pWriter.WriteOpeningTagEnd(true);
+	}
+	
+	const decVector2 &bottomAxisScaling = capsule.GetBottomAxisScaling();
+	if(!bottomAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
+		pWriter.WriteOpeningTagStart("bottomAxisScaling");
+		pWriter.WriteAttributeFloat("x", bottomAxisScaling.x);
+		pWriter.WriteAttributeFloat("y", bottomAxisScaling.y);
+		pWriter.WriteOpeningTagEnd(true);
 	}
 	
 	if(!pProperty.IsEmpty()){
@@ -202,18 +271,22 @@ void dermWriteShape::VisitShapeHull(decShapeHull &hull){
 	pWriter.WriteOpeningTag("hull");
 	
 	const decVector &position = hull.GetPosition();
-	pWriter.WriteOpeningTagStart("position");
-	pWriter.WriteAttributeFloat("x", position.x);
-	pWriter.WriteAttributeFloat("y", position.y);
-	pWriter.WriteAttributeFloat("z", position.z);
-	pWriter.WriteOpeningTagEnd(true);
+	if(!position.IsZero()){
+		pWriter.WriteOpeningTagStart("position");
+		pWriter.WriteAttributeFloat("x", position.x);
+		pWriter.WriteAttributeFloat("y", position.y);
+		pWriter.WriteAttributeFloat("z", position.z);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
-	const decVector rotation(decMatrix::CreateFromQuaternion(hull.GetOrientation()).GetEulerAngles() * RAD2DEG);
-	pWriter.WriteOpeningTagStart("rotation");
-	pWriter.WriteAttributeFloat("x", rotation.x);
-	pWriter.WriteAttributeFloat("y", rotation.y);
-	pWriter.WriteAttributeFloat("z", rotation.z);
-	pWriter.WriteOpeningTagEnd(true);
+	const decVector rotation(hull.GetOrientation().GetEulerAngles() * RAD2DEG);
+	if(!rotation.IsZero()){
+		pWriter.WriteOpeningTagStart("rotation");
+		pWriter.WriteAttributeFloat("x", rotation.x);
+		pWriter.WriteAttributeFloat("y", rotation.y);
+		pWriter.WriteAttributeFloat("z", rotation.z);
+		pWriter.WriteOpeningTagEnd(true);
+	}
 	
 	hull.GetPoints().Visit([&](const decVector &point){
 		pWriter.WriteOpeningTagStart("point");

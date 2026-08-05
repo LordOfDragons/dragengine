@@ -102,6 +102,10 @@ syslibs = libs[:]
 
 appendLibrary(envModule, parent_targets['shared_vulkan'], libs)
 
+versionString = '1.33'
+if envModule['force_version']:
+	versionString = envModule['force_version']
+
 envModule.Append(CPPFLAGS = ['-DBACKEND_OPENGL'])
 
 if envModule['platform_android'] != 'no' or envModule['platform_webwasm']:

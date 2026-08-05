@@ -268,14 +268,31 @@ void deoglLSConfiguration::pLoadConfigOpenGL(deoglConfiguration &configuration, 
 					
 					
 					
+				}else if(strcmp(name, "reflectionQuality") == 0){
+					const decString value(tag->GetFirstData()->GetData());
+					if(value == "veryHigh"){
+						configuration.SetReflectionQuality(deoglConfiguration::erqVeryHigh);
+						
+					}else if(value == "high"){
+						configuration.SetReflectionQuality(deoglConfiguration::erqHigh);
+						
+					}else if(value == "medium"){
+						configuration.SetReflectionQuality(deoglConfiguration::erqMedium);
+						
+					}else if(value == "low"){
+						configuration.SetReflectionQuality(deoglConfiguration::erqLow);
+						
+					}else if(value == "veryLow"){
+						configuration.SetReflectionQuality(deoglConfiguration::erqVeryLow);
+						
+					}else{
+						pOgl.LogWarnFormat("opengl.xml %s(%i:%i): Invalid property value %s.",
+							tag->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), value.GetString());
+					}
+					
 				}else if(strcmp(name, "ssrEnable") == 0){
 					configuration.SetSSREnable(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
-					
-				}else if(strcmp(name, "ssrStepCount") == 0){
-					configuration.SetSSRStepCount((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));
-					
-				}else if(strcmp(name, "ssrMaxRayLength") == 0){
-					configuration.SetSSRMaxRayLength(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "ssrReduction") == 0){
 					configuration.SetSSRReduction((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));

@@ -28,6 +28,8 @@
 #include "../debpBulletCompoundShape.h"
 #include "../debpBulletShape.h"
 
+#include "BulletCollision/CollisionShapes/btCompoundShape.h"
+
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/shape/decShapeVisitor.h>
 #include <dragengine/common/math/decMath.h>
@@ -36,6 +38,7 @@ class dePhysicsBullet;
 class btTransform;
 class btVector3;
 class btCollisionShape;
+class btConvexHullShape;
 
 
 /**
@@ -47,6 +50,17 @@ class btCollisionShape;
  * the object also in case of exceptions.
  */
 class debpCreateBulletShape : public decShapeVisitor{
+protected:
+	class CompoundShapeCustomInertia : public btCompoundShape{
+	private:
+		const btVector3 pInertia;
+		
+	public:
+		explicit CompoundShapeCustomInertia(const btVector3 &inertia);
+		void calculateLocalInertia(btScalar mass, btVector3 &inertia) const override;
+	};
+	
+	
 private:
 	debpBulletShape::Ref pBulletShape;
 	debpBulletCompoundShape::Ref pBulletCompoundShape;
@@ -59,7 +73,6 @@ private:
 	int pShapeIndex;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -67,9 +80,8 @@ public:
 	debpCreateBulletShape();
 	
 	/** Clean up visitor. */
-	virtual ~debpCreateBulletShape();
+	~debpCreateBulletShape() override;
 	/*@}*/
-	
 	
 	
 	/** \name Management */
@@ -113,28 +125,29 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit shape. */
-	virtual void VisitShape(decShape &shape);
+	void VisitShape(decShape &shape) override;
 	
 	/** Visit sphere shape. */
-	virtual void VisitShapeSphere(decShapeSphere &sphere);
+	void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** Visit box shape. */
-	virtual void VisitShapeBox(decShapeBox &box);
+	void VisitShapeBox(decShapeBox &box) override;
 	
 	/** Visit cylinder shape. */
-	virtual void VisitShapeCylinder(decShapeCylinder &cylinder);
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** Visit capsule shape. */
-	virtual void VisitShapeCapsule(decShapeCapsule &capsule);
+	void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** Visit hull shape. */
-	virtual void VisitShapeHull(decShapeHull &hull);
+	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 	
 	
 	
 private:
 	void pCreateCompoundShape();
+	CompoundShapeCustomInertia *pCreateBalancedConvexHull(btConvexHullShape *convexHull);
 	void pAddCollisionShape(debpBulletShape *collisionShape);
 	void pAddTransformedCollisionShape(debpBulletShape *collisionShape, const btTransform &transform);
 	void pDebugPrintShape(dePhysicsBullet &bullet, const btCollisionShape &shape, const char *prefix = "") const;

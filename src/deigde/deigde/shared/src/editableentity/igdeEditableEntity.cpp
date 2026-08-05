@@ -45,50 +45,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeEditableEntity::igdeEditableEntity(igdeEnvironment *environment){
-	if(!environment){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pEnvironment = environment;
-	
-	pChanged = false;
-	pSaved = false;
-	
-	pUndoSystem = nullptr;
-	
-	try{
-		pUndoSystem = new igdeUndoSystem(this);
-		
-	}catch(const deException &){
-		if(pUndoSystem){
-			delete pUndoSystem;
-		}
-		throw;
-	}
+igdeEditableEntity::igdeEditableEntity(igdeEnvironment &environment) :
+pEnvironment(environment),
+pChanged(false),
+pSaved(false),
+pUndoSystem(deTUniqueReference<igdeUndoSystem>::New(this)){
 }
 
-igdeEditableEntity::~igdeEditableEntity(){
-	if(pUndoSystem){
-		delete pUndoSystem;
-	}
-}
-
+igdeEditableEntity::~igdeEditableEntity() = default;
 
 
 // Management
 ///////////////
 
 deEngine *igdeEditableEntity::GetEngine() const{
-	return pEnvironment->GetEngineController()->GetEngine();
+	return pEnvironment.GetEngineController()->GetEngine();
 }
 
 igdeGameDefinition *igdeEditableEntity::GetGameDefinition() const{
-	return pEnvironment->GetGameProject()->GetGameDefinition();
+	return pEnvironment.GetGameProject()->GetGameDefinition();
 }
 
 deLogger *igdeEditableEntity::GetLogger() const{
-	return pEnvironment->GetLogger();
+	return pEnvironment.GetLogger();
 }
 
 void igdeEditableEntity::SetFilePath(const char *path){
@@ -127,8 +106,5 @@ void igdeEditableEntity::SetSaved(bool saved){
 	}
 }
 
-void igdeEditableEntity::NotifyStateChanged(){
-}
-
-void igdeEditableEntity::NotifyUndoChanged(){
-}
+void igdeEditableEntity::NotifyStateChanged(){}
+void igdeEditableEntity::NotifyUndoChanged(){}

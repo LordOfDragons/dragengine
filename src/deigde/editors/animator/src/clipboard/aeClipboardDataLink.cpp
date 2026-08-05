@@ -28,6 +28,7 @@
 #include <stdio.h>
 
 #include "aeClipboardDataLink.h"
+#include "../animator/aeAnimator.h"
 #include "../animator/link/aeLink.h"
 
 #include <dragengine/common/exceptions.h>

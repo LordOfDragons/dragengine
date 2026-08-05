@@ -178,7 +178,7 @@ RCS2C(layout(binding=17) uniform HIGHP samplerCubeShadow texShadow2TransparentDe
 RCS2R(layout(binding=18) uniform lowp sampler2D texShadow2TransparentColor)
 RCS2C(layout(binding=18) uniform lowp samplerCube texShadow2TransparentColorCube)
 
-// NoiseTap
+// TextureNoise
 layout(binding=19) uniform lowp sampler2D texShadowNoise;
 
 
@@ -744,6 +744,13 @@ void main(void){
 					
 				}else{
 					shadow = min(shadow, evalShadow2SolidDepth(pShadow2Solid, shapos2));
+				}
+			}
+			
+			if(!GIRay){
+				
+				if(shadow > epsilon && dotval > 0.0){
+					shadow *= screenSpaceShadow(texDepth, texNormal, position, lightDir);
 				}
 			}
 			

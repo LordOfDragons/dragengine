@@ -282,17 +282,6 @@ public:
 	
 	
 	
-	/** Shadow map size from configuration shadow quality. */
-	static int ShadowMapSize(const deoglConfiguration &config);
-	
-	/** Shadow cube size from configuration shadow quality. */
-	static int ShadowCubeSize(const deoglConfiguration &config);
-	
-	/** Use shadow dither from configuration shadow quality. */
-	static bool UseShadowDither(const deoglConfiguration &config);
-	
-	
-	
 private:
 	void pCleanUp();
 };

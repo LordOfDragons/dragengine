@@ -39,6 +39,7 @@
 #include "igdeNativeFoxIconListBox.h"
 #include "igdeNativeFoxLabel.h"
 #include "igdeNativeFoxListBox.h"
+#include "igdeNativeFoxListBoxFilter.h"
 #include "igdeNativeFoxMainWindow.h"
 #include "igdeNativeFoxProgressBar.h"
 #include "igdeNativeFoxRenderView.h"

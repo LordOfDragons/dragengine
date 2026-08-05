@@ -34,6 +34,7 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meObject;
@@ -74,23 +75,30 @@ private:
 	igdeSwitcher::Ref pSwitcherShapeType;
 	
 	igdeEditVector::Ref pEditSpherePosition;
+	igdeEditVector::Ref pEditSphereRotation;
 	igdeTextField::Ref pEditSphereRadius;
+	igdeEditVector2::Ref pEditSphereAxisScaling;
 	
 	igdeEditVector::Ref pEditBoxPosition;
 	igdeEditVector::Ref pEditBoxRotation;
 	igdeEditVector::Ref pEditBoxExtends;
+	igdeEditVector2::Ref pEditBoxTapering;
 	
 	igdeEditVector::Ref pEditCylinderPosition;
 	igdeEditVector::Ref pEditCylinderRotation;
 	igdeTextField::Ref pEditCylinderHeight;
 	igdeTextField::Ref pEditCylinderRadiusTop;
 	igdeTextField::Ref pEditCylinderRadiusBottom;
+	igdeEditVector2::Ref pEditCylinderTopAxisScaling;
+	igdeEditVector2::Ref pEditCylinderBottomAxisScaling;
 	
 	igdeEditVector::Ref pEditCapsulePosition;
 	igdeEditVector::Ref pEditCapsuleRotation;
 	igdeTextField::Ref pEditCapsuleHeight;
 	igdeTextField::Ref pEditCapsuleRadiusTop;
 	igdeTextField::Ref pEditCapsuleRadiusBottom;
+	igdeEditVector2::Ref pEditCapsuleTopAxisScaling;
+	igdeEditVector2::Ref pEditCapsuleBottomAxisScaling;
 	
 	
 	

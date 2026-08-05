@@ -51,7 +51,6 @@ private:
 	float pMove1Time;
 	decString pMove2Name;
 	float pMove2Time;
-	bool pUseSameMove;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;
@@ -106,12 +105,6 @@ public:
 	
 	/** \brief Set reference animation move time. */
 	void SetReferenceMoveTime(float moveTime);
-	
-	/** \brief Reference move is the same as the leading move. */
-	inline bool GetUseSameMove() const{ return pUseSameMove; }
-	
-	/** \brief Set if reference move is the same as the leading move. */
-	void SetUseSameMove(bool useSameMove);
 	
 	/** \brief Determines if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }

@@ -22,19 +22,18 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "debpShapeTransform.h"
 #include "debpShapeSphere.h"
 #include "debpShapeBox.h"
 #include "debpShapeCylinder.h"
 #include "debpShapeCapsule.h"
+#include "debpShapeHull.h"
 
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/shape/decShapeSphere.h>
 #include <dragengine/common/shape/decShapeCylinder.h>
 #include <dragengine/common/shape/decShapeCapsule.h>
+#include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -69,6 +68,9 @@ const debpDCollisionVolume &debpShapeTransform::TransformBase(const debpShape *s
 		
 	case debpShape::estCapsule:
 		return TransformShapeCapsule(*(((debpShapeCapsule*)shape)->GetShapeCapsule()), transformation);
+		
+	case debpShape::estHull:
+		return TransformShapeHull(*(((debpShapeHull*)shape)->GetShapeHull()), transformation);
 	}
 	
 	DETHROW(deeInvalidParam);
@@ -87,6 +89,9 @@ const debpDCollisionVolume& debpShapeTransform::TransformCurrent(const debpShape
 		
 	case debpShape::estCapsule:
 		return TransformCollisionCapsule(((debpShapeCapsule*)shape)->GetCollisionCapsule(), transformation);
+		
+	case debpShape::estHull:
+		return TransformCollisionHull(((debpShapeHull*)shape)->GetCollisionHull(), transformation);
 	}
 	
 	DETHROW(deeInvalidParam);
@@ -125,6 +130,17 @@ const debpDCollisionCapsule &debpShapeTransform::TransformShapeCapsule(const dec
 	return pCapsule;
 }
 
+const debpDCollisionHull &debpShapeTransform::TransformShapeHull(const decShapeHull &hull, const decDMatrix &transformation){
+	pHull.SetPosition(transformation * hull.GetPosition());
+	pHull.SetOrientation(hull.GetOrientation() * transformation.ToQuaternion());
+	
+	debpDCollisionHull::PointList points(hull.GetPoints().GetCount());
+	hull.GetPoints().Visit([&](const decVector &point){
+		points.Add(transformation * point);
+	});
+	pHull.SetPoints(points);
+	return pHull;
+}
 
 
 const debpDCollisionSphere &debpShapeTransform::TransformCollisionSphere(const debpDCollisionSphere &sphere, const decDMatrix &transformation){
@@ -156,4 +172,16 @@ const debpDCollisionCapsule &debpShapeTransform::TransformCollisionCapsule(const
 	pCapsule.SetTopRadius(capsule.GetTopRadius());
 	pCapsule.SetBottomRadius(capsule.GetBottomRadius());
 	return pCapsule;
+}
+
+const debpDCollisionHull &debpShapeTransform::TransformCollisionHull(const debpDCollisionHull &hull, const decDMatrix &transformation){
+	pHull.SetPosition(transformation * hull.GetPosition());
+	pHull.SetOrientation(hull.GetOrientation() * transformation.ToQuaternion());
+	
+	debpDCollisionHull::PointList points(hull.GetPoints().GetCount());
+	hull.GetPoints().Visit([&](const decDVector &point){
+		points.Add(transformation * point);
+	});
+	pHull.SetPoints(points);
+	return pHull;
 }

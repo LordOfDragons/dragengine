@@ -41,6 +41,7 @@ public:
 	
 private:
 	float pRadius;
+	decVector2 pAxisScaling;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -59,6 +60,12 @@ public:
 	inline float GetRadius() const{ return pRadius; }
 	/** Sets the radius. */
 	void SetRadius(float radius);
+	
+	/** Axis scaling. */
+	inline const decVector2 &GetAxisScaling() const{ return pAxisScaling; }
+	
+	/** Set axis scaling. */
+	void SetAxisScaling(const decVector2 &axisScaling);
 	
 	/** Creates a copy of this shape. */
 	reRigShape::Ref Duplicate() const override;

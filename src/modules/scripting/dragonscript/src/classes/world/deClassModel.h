@@ -66,6 +66,8 @@ public:
 private:
 	struct sInitData{
 		dsClass *clsMdl, *clsVoid, *clsBool, *clsStr, *clsObj, *clsInt, *clsVec, *clsRN;
+		dsClass *clsFloat;
+		dsClass *clsRig;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{\
@@ -90,6 +92,9 @@ private:
 	DEF_NATFUNC(nfGetVertexPositionSetCount);
 	DEF_NATFUNC(nfIndexOfVertexPositionSetNamed);
 	DEF_NATFUNC(nfVertexPositionSetGetNameAt);
+	
+	DEF_NATFUNC(nfGenerateCollisionShapes);
+	DEF_NATFUNC(nfGenerateCollisionShapes2);
 	
 	DEF_NATFUNC(nfEquals);
 	DEF_NATFUNC(nfHashCode);

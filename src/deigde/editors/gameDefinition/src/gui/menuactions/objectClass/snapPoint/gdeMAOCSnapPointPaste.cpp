@@ -62,14 +62,14 @@ gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSnapPointPaste",
 ///////////////
 
 igdeUndo::Ref gdeMAOCSnapPointPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
-		.GetWithTypeName(gdeClipboardDataOCSnapPoint::TYPE_NAME));
+	auto clip = pWindowMain.GetClipboard().
+		GetWithTypeName(gdeClipboardDataOCSnapPoint::TYPE_NAME).DynamicCast<gdeClipboardDataOCSnapPoint>();
 	if(!clip){
 		return {};
 	}
 	
 	const igdeUndo::Ref undo = gdeUOCAddSnapPoint::Ref::New(&objectClass, 
-		gdeOCSnapPoint::Ref::New(*clip.DynamicCast<gdeClipboardDataOCSnapPoint>()->GetSnapPoint()));
+		gdeOCSnapPoint::Ref::New(*clip->GetSnapPoint()));
 	
 	undo->SetShortInfo("@GameDefinition.Undo.PasteOCSnapPoint");
 	return undo;

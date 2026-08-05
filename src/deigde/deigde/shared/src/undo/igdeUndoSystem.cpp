@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "igdeUndo.h"
 #include "igdeUndoSystem.h"
 #include "../editableentity/igdeEditableEntity.h"
@@ -46,13 +43,17 @@ pMaxUndos(100),
 pMaxMemory(0){
 }
 
-igdeUndoSystem::~igdeUndoSystem(){
-}
-
+igdeUndoSystem::~igdeUndoSystem() = default;
 
 
 // Management
 ///////////////
+
+void igdeUndoSystem::SetMetaProperty(const igdeMetaContext::Ref &metaContext,
+const igdeMetaPropertyUndoHistory::Ref &metaProperty){
+	pMetaContext = metaContext;
+	pMetaProperty = metaProperty;
+}
 
 int igdeUndoSystem::GetCount() const{
 	return pUndos.GetCount();
@@ -84,8 +85,7 @@ void igdeUndoSystem::Add(igdeUndo *undo, bool runRedo){
 		pUndos.RemoveFrom(0);
 	}
 	pUndos.Add(undo);
-	
-	pEditableEntity->NotifyUndoChanged();
+	pNotifyChanged();
 }
 
 void igdeUndoSystem::RemoveAll(){
@@ -95,7 +95,7 @@ void igdeUndoSystem::RemoveAll(){
 	
 	pUndos.RemoveAll();
 	pRedoCount = 0;
-	pEditableEntity->NotifyUndoChanged();
+	pNotifyChanged();
 }
 
 
@@ -118,7 +118,7 @@ void igdeUndoSystem::SetMaxMemory(int maxMemory){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pMaxUndos = maxMemory;
+	pMaxMemory = maxMemory;
 }
 
 
@@ -148,7 +148,7 @@ void igdeUndoSystem::Undo(){
 	}
 	
 	pRedoCount++;
-	pEditableEntity->NotifyUndoChanged();
+	pNotifyChanged();
 }
 
 void igdeUndoSystem::Redo(){
@@ -171,7 +171,7 @@ void igdeUndoSystem::Redo(){
 	}
 	
 	pRedoCount--;
-	pEditableEntity->NotifyUndoChanged();
+	pNotifyChanged();
 }
 
 void igdeUndoSystem::RemoveAllRedoable(){
@@ -183,5 +183,16 @@ void igdeUndoSystem::RemoveAllRedoable(){
 		pUndos.RemoveFrom(pUndos.GetCount() - 1);
 	}
 	
+	pNotifyChanged();
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeUndoSystem::pNotifyChanged(){
+	if(pMetaProperty && pMetaContext){
+		pMetaProperty->NotifyValueChanged(pMetaContext);
+	}
 	pEditableEntity->NotifyUndoChanged();
 }

@@ -39,8 +39,7 @@ class deoglOcclusionQuery;
  */
 class deoglRenderDepthPass : public deoglRenderBase{
 private:
-	const deoglPipeline *pPipelineDepthDownsample;
-	const deoglPipeline *pPipelineDepthDownsampleStereo;
+	const deoglPipeline *pPipelineDepthDownsample, *pPipelineDepthDownsampleStereo;
 	
 	
 	

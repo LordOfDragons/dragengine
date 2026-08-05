@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeWSky.h"
 #include "../../engine/igdeEngineController.h"
 #include "../../environment/igdeEnvironment.h"
@@ -51,16 +47,126 @@
 #include <dragengine/resources/world/deWorld.h>
 
 
+// igdeWSky::Controller
+/////////////////////////
+
+igdeWSky::Controller::MetaContext::Ref igdeWSky::Controller::CreateMetaContext(Controller *controller){
+	return igdeWSky::Controller::MetaContext::Ref::New("igde.wsky.controller", controller);
+}
+
+
+igdeWSky::Controller::MetaProperties::Name::Name() : igdeMetaPropertyMCT("igde.wsky.controller.name", "", ""){}
+igdeWSky::Controller::MetaProperties::Name::~Name() = default;
+
+igdeMetaPropertyStringStorage::Storage &igdeWSky::Controller::MetaProperties::Name::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPName();
+}
+
+
+igdeWSky::Controller::MetaProperties::Value::Value() : igdeMetaPropertyMCT("igde.wsky.controller.value", "", ""){}
+igdeWSky::Controller::MetaProperties::Value::~Value() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeWSky::Controller::MetaProperties::Value::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPValue();
+}
+
+
+igdeWSky::Controller::MetaProperties igdeWSky::Controller::MetaProperties::global;
+
+igdeWSky::Controller::MetaProperties::MetaProperties() :
+name(deTObjectReference<Name>::New()),
+value(deTObjectReference<Value>::New()){
+}
+
+
+igdeWSky::Controller::Controller(igdeWSky &wrapper, int index) :
+pWrapper(wrapper),
+pIndex(index),
+pMetaContext(CreateMetaContext(this)),
+pMPName(igdeWSky::Controller::MetaProperties::global.name, pMetaContext),
+pMPValue(igdeWSky::Controller::MetaProperties::global.value, pMetaContext)
+{
+	pMPValue.onValueChanged = [this](){
+		pWrapper.SetControllerValue(pIndex, pMPValue);
+	};
+}
+
+igdeWSky::Controller::~Controller(){
+	if(pMetaContext){
+		pMetaContext->Dispose();
+	}
+}
+
+igdeEnvironment &igdeWSky::Controller::GetEnvironment() const{
+	return pWrapper.GetEnvironment();
+}
+	
+igdeUndoSystem *igdeWSky::Controller::GetUndoSystem() const{
+	return pWrapper.GetUndoSystem();
+}
+
+
+// Meta Context
+/////////////////
+
+// Class igdeWSky::MetaContext
+////////////////////////////////
+
+igdeWSky::MetaContext::Ref igdeWSky::CreateMetaContext(igdeWSky *wrapper){
+	return igdeWSky::MetaContext::Ref::New("igde.wsky", MetaProperties::global.properties, wrapper);
+}
+
+
+// Meta Properties
+////////////////////
+
+// igdeWSky::MetaProperties::Path
+
+igdeWSky::MetaProperties::Path::Path() :
+igdeMetaPropertyMCT("igde.wsky.path", "Igde.WPSky.SkyPath", igdeEnvironment::eFilePatternListTypes::efpltSky){
+}
+
+igdeWSky::MetaProperties::Path::~Path() = default;
+
+igdeMetaPropertyPathStorage::Storage &igdeWSky::MetaProperties::Path::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPPath();
+}
+
+
+// igdeWSky::MetaProperties::Sliders
+
+igdeWSky::MetaProperties::Sliders::Sliders() : igdeMetaPropertyMCTNoCapture("igde.wsky.sliders",
+	igdeWSky::Controller::MetaProperties::global.name,
+	igdeWSky::Controller::MetaProperties::global.value){}
+
+igdeWSky::MetaProperties::Sliders::~Sliders() = default;
+
+igdeMetaPropertySliderBoardStorage<igdeWSky::Controller::MetaContext>::Storage&
+igdeWSky::MetaProperties::Sliders::GetStorage(const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPSliders();
+}
+
+
+// Properties
+
+igdeWSky::MetaProperties igdeWSky::MetaProperties::global;
+
+igdeWSky::MetaProperties::MetaProperties() :
+path(deTObjectReference<Path>::New()),
+sliders(deTObjectReference<Sliders>::New()),
+properties(igdeMetaContext::PropertyList::Ref::New(
+	decTObjectOrderedSet<igdeMetaProperty>(devctag, path, sliders))){
+}
+
 
 // Asynchronous load finished listener
 ////////////////////////////////////////
 
-igdeWSky::cAsyncLoadFinished::cAsyncLoadFinished(){
-}
-
-igdeWSky::cAsyncLoadFinished::~cAsyncLoadFinished(){
-}
-
+igdeWSky::cAsyncLoadFinished::cAsyncLoadFinished() = default;
+igdeWSky::cAsyncLoadFinished::~cAsyncLoadFinished() = default;
 
 
 // Class igdeWSky
@@ -71,21 +177,55 @@ igdeWSky::cAsyncLoadFinished::~cAsyncLoadFinished(){
 
 igdeWSky::igdeWSky(igdeEnvironment &environment) :
 pEnvironment(environment),
+pUndoSystem(nullptr),
+pMetaContext(CreateMetaContext(this)),
 pAsyncLoadFinished(nullptr),
-pAsyncLoadCounter(0)
+pAsyncLoadCounter(0),
+pMPPath(MetaProperties::global.path, pMetaContext),
+pMPSliders(MetaProperties::global.sliders, pMetaContext)
 {
-	pEngSkyInstance = environment.GetEngineController()->GetEngine()
-		->GetSkyInstanceManager()->CreateSkyInstance();
+	pEngSkyInstance = environment.GetEngineController()->GetEngine()->
+		GetSkyInstanceManager()->CreateSkyInstance();
+	
+	pMPPath.onValueChanged = [this](){
+		if(pMPPath->IsEmpty()){
+			pSetGDSky(nullptr);
+			pSetSky(nullptr);
+			return;
+		}
+		
+		auto &skies = pEnvironment.GetGameProject()->GetGameDefinition()->GetSkyManager()->GetSkies();
+		auto gdsky = skies.FindWithPath(pMPPath);
+		if(!gdsky){
+			gdsky = skies.FindNamed(pMPPath);
+		}
+		
+		if(gdsky){
+			pSetGDSky(gdsky);
+			
+		}else{
+			pLoadSky(pMPPath);
+		}
+		
+		onChanged();
+	};
 }
 
 igdeWSky::~igdeWSky(){
 	SetWorld(nullptr);
+	
+	if(pMetaContext){
+		pMetaContext->Dispose();
+	}
 }
-
 
 
 // Management
 ///////////////
+
+void igdeWSky::SetUndoSystem(igdeUndoSystem *undoSystem){
+	pUndoSystem = undoSystem;
+}
 
 void igdeWSky::SetWorld(deWorld *world){
 	if(world == pEngWorld){
@@ -112,7 +252,12 @@ const deSkyController &igdeWSky::GetControllerAt(int index) const{
 }
 
 void igdeWSky::SetControllerValue(int index, float value){
-	pEngSkyInstance->GetControllers().GetAt(index)->SetCurrentValue(value);
+	auto &engController = pEngSkyInstance->GetControllers()[index];
+	if(fabsf(engController->GetCurrentValue() - value) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	engController->SetCurrentValue(value);
 	pEngSkyInstance->NotifyControllerChangedAt(index);
 }
 
@@ -121,24 +266,9 @@ const deSky *igdeWSky::GetSky() const{
 }
 
 void igdeWSky::SetSky(deSky *sky){
-	if(pEngSkyInstance->GetSky() == sky){
-		return;
-	}
-	
-	pEngSkyInstance->SetSky(sky);
-	pGDSky = nullptr;
-	pPath.Empty();
-	
-	pMaxLightIntensity = 0.0f;
-	if(sky){
-		const int countLayers = sky->GetLayers().GetCount();
-		int i;
-		
-		for(i=0; i<countLayers; i++){
-			const deSkyLayer &layer = sky->GetLayers().GetAt(i);
-			pMaxLightIntensity += layer.GetLightIntensity() + layer.GetAmbientIntensity();
-		}
-	}
+	pMPPath = "";
+	pSetGDSky(nullptr);
+	pSetSky(sky);
 }
 
 void igdeWSky::SetGDDefaultSky(){
@@ -151,40 +281,21 @@ void igdeWSky::SetGDSky(igdeGDSky *gdsky){
 	}
 	
 	if(gdsky){
-		pLoadSky(gdsky->GetPath());
+		pMPPath = gdsky->GetPath();
+		pSetGDSky(gdsky);
 		
 	}else{
 		SetSky(nullptr);
 	}
-	
-	// SetSky sets pGDSky to nullptr if sky is different from the sky in the sky instance.
-	// pLoadSky calls SetSky so the same problem applies to both code path. By setting
-	// the sky after these calls are done it is ensured pGDSky is not suddenly nullptr
-	// although it should not be nullptr
-	pGDSky = gdsky;
 }
 
-void igdeWSky::SetPath(const char *path){
-	igdeGDSky *gdsky = pEnvironment.GetGameProject()->GetGameDefinition()->
-		GetSkyManager()->GetSkies().FindWithPath(path);
-	
-	if(!gdsky){
-		gdsky = pEnvironment.GetGameProject()->GetGameDefinition()->
-			GetSkyManager()->GetSkies().FindNamed(path);
-	}
-	
-	if(gdsky){
-		SetGDSky(gdsky);
-		
-	}else{
-		pLoadSky(path);
-	}
+void igdeWSky::SetPath(const char *value){
+	pMPPath = value;
 }
 
 void igdeWSky::SetAsyncLoadFinished(cAsyncLoadFinished *listener){
 	pAsyncLoadFinished = listener;
 }
-
 
 
 void igdeWSky::OnGameDefinitionChanged(){
@@ -221,34 +332,62 @@ void igdeWSky::OnGameDefinitionChanged(){
 }
 
 
-
 // Private Functions
 /////////////////////
 
-void igdeWSky::pLoadSky(const char *path){
+void igdeWSky::pSetSky(deSky *sky){
+	if(pEngSkyInstance->GetSky() == sky){
+		return;
+	}
+	
+	pEngSkyInstance->SetSky(sky);
+	
+	pMaxLightIntensity = 0.0f;
+	if(sky){
+		sky->GetLayers().Visit([&](const deSkyLayer &layer){
+			pMaxLightIntensity += layer.GetLightIntensity() + layer.GetAmbientIntensity();
+		});
+	}
+	
+	pUpdateMPControllers();
+}
+
+void igdeWSky::pSetGDSky(igdeGDSky *gdsky){
+	if(pGDSky == gdsky){
+		return;
+	}
+	pGDSky = gdsky;
+	
+	if(gdsky){
+		pLoadSky(gdsky->GetPath());
+		
+	}else{
+		pSetSky(nullptr);
+	}
+}
+
+void igdeWSky::pLoadSky(const char *value){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	
 	pAsyncLoadCounter = 0;
 	
-	const decPath vfsPath(decPath::CreatePathUnix(path));
+	const auto vfsPath = decPath::CreatePathUnix(value);
 	if(!engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
 		pCheckAsyncLoadFinished();
 		return;
 	}
 	
-	igdeLoadSky loadsky(pEnvironment, pEnvironment.GetLogger(), "igdeWSky");
-	
 	try{
-		const deSky::Ref sky(engine.GetSkyManager()->CreateSky());
-		loadsky.Load(path, sky, engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
-		SetSky(sky);
+		auto sky = engine.GetSkyManager()->CreateSky();
+		igdeLoadSky(pEnvironment, pEnvironment.GetLogger(), "igdeWSky").Load(
+			value, sky, engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
+		pSetSky(sky);
 		
 	}catch(const deException &){
 		pCheckAsyncLoadFinished();
 		throw;
 	}
 	
-	pPath = path;
 	pCheckAsyncLoadFinished();
 }
 
@@ -260,4 +399,29 @@ void igdeWSky::pCheckAsyncLoadFinished(){
 	if(pAsyncLoadFinished){
 		pAsyncLoadFinished->LoadFinished(*this, true);
 	}
+}
+
+void igdeWSky::pUpdateMPControllers(){
+	MetaProperties::Sliders::ListType sliders;
+	decTObjectOrderedSet<Controller> controllers;
+	
+	if(pEngSkyInstance){
+		pEngSkyInstance->GetControllers().VisitIndexed([&](int i, const deSkyController::Ref &engController){
+			auto controller = Controller::Ref::New(*this, i);
+			const float minimum = engController->GetMinimumValue();
+			const float maximum = engController->GetMaximumValue();
+			
+			controller->GetMPName() = engController->GetName();
+			controller->GetMPValue().SetLowerLimit(minimum);
+			controller->GetMPValue().SetUpperLimit(maximum);
+			controller->GetMPValue().SetTickSpacing((maximum - minimum) / 10.0f);
+			controller->GetMPValue() = engController->GetCurrentValue();
+			
+			controllers.Add(controller);
+			sliders.Add(controller->GetMetaContext());
+		});
+	}
+	
+	pMPSliders = sliders;
+	pControllers = std::move(controllers);
 }

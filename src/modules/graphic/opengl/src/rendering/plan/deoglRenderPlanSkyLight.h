@@ -52,13 +52,10 @@ class deoglOcclusionTest;
 class deoglRenderPlanSkyLight{
 public:
 	struct sShadowLayer{
-		float frustumNear;
-		float frustumFar;
+		float frustumNear, frustumFar;
 		float layerBorder;
-		float zscale;
-		float zoffset;
-		decVector minExtend;
-		decVector maxExtend;
+		float zscale, zoffset;
+		decVector minExtend, maxExtend;
 		decVector position;
 		decVector scale;
 		decMatrix matrix;

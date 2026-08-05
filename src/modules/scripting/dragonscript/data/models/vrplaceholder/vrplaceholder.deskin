@@ -9,7 +9,7 @@
 		<value property='sound.none'>1</value>
 	</texture>
 	<texture name='sign1'>
-		<image property='color'>../../images/logoDragengine.jpg</image>
+		<image property='color'>../../images/logoDragengine.webp</image>
 		<value property='reflectivity'>0</value>
 		<value property='roughness'>1</value>
 		<value property='reflected'>0</value>
@@ -17,7 +17,7 @@
 		<value property='sound.none'>1</value>
 	</texture>
 	<texture name='sign2'>
-		<image property='color'>../../images/logoDragengine.jpg</image>
+		<image property='color'>../../images/logoDragengine.webp</image>
 		<value property='reflectivity'>0</value>
 		<value property='roughness'>1</value>
 		<value property='reflected'>0</value>

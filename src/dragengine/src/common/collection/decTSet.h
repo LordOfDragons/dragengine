@@ -41,7 +41,8 @@
 /**
  * \brief Set template class.
  * 
- * All elements including default constructed values are allowed and they can occure only once in the set.
+ * All elements including default constructed values are allowed and they can occure only once
+ * in the set. Sets are equal if they contain the same elements independent of their order.
  */
 template<typename T, typename TP = T>
 class decTSet{
@@ -685,7 +686,7 @@ public:
 		return !Equals(set);
 	}
 	
-	/** \brief New set containing all elements of this set followed by all elements of another set. */
+	/** \brief New set containing all elements of this set and another set. */
 	decTSet<T,TP> operator+(const decTSet<T,TP> &set) const{
 		decTSet<T,TP> nset(pCount + set.pCount);
 		std::copy_n(pElements, pCount, nset.pElements);
@@ -694,6 +695,43 @@ public:
 		int i;
 		for(i=0; i<set.pCount; i++){
 			nset.Add(set.pElements[i]);
+		}
+		
+		return nset;
+	}
+	
+	/** \brief New set containing all elements of this set and another element. */
+	decTSet<T,TP> operator+(const T &element) const{
+		decTSet<T,TP> nset(pCount + 1);
+		std::copy_n(pElements, pCount, nset.pElements);
+		nset.pCount = pCount;
+		
+		nset.Add(element);
+		
+		return nset;
+	}
+	
+	/** \brief New set containing all elements of this set not present in another set. */
+	decTSet<T,TP> operator-(const decTSet<T,TP> &set) const{
+		decTSet<T,TP> nset(pCount);
+		int i;
+		for(i=0; i<pCount; i++){
+			if(!set.Has(pElements[i])){
+				nset.Add(pElements[i]);
+			}
+		}
+		
+		return nset;
+	}
+	
+	/** \brief New set containing all elements of this set not including element. */
+	decTSet<T,TP> operator-(const T &element) const{
+		decTSet<T,TP> nset(pCount);
+		int i;
+		for(i=0; i<pCount; i++){
+			if(pElements[i] != element){
+				nset.Add(pElements[i]);
+			}
 		}
 		
 		return nset;
@@ -771,6 +809,18 @@ public:
 			int i;
 			for(i=0; i<set.pCount; i++){
 				Add(set.pElements[i]);
+			}
+		}
+		
+		return *this;
+	}
+	
+	/** \brief Remove elements of set from this set. */
+	decTSet<T,TP> &operator-=(const decTSet<T,TP> &set){
+		if(set.pCount > 0){
+			int i;
+			for(i=0; i<set.pCount; i++){
+				Remove(set.pElements[i]);
 			}
 		}
 		

@@ -29,6 +29,7 @@
 #include "meObjectLink.h"
 #include "meObjectSnapPoint.h"
 #include "texture/meObjectTexture.h"
+#include "../meCamera.h"
 #include "../meColliderOwner.h"
 #include "../decal/meDecal.h"
 #include "../idgroup/meMapIDGroup.h"
@@ -50,7 +51,6 @@
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class meCamera;
 class meWorld;
 
 class igdeEnvironment;
@@ -115,7 +115,7 @@ private:
 	decTObjectOrderedSet<cWOTexture> pWOTextures;
 	deComponent::Ref pEngComponentBroken;
 	deColliderVolume::Ref pColDetCollider;
-	meCamera *pCamera;
+	meCamera::Ref pCamera;
 	
 	float pRange;
 	
@@ -185,7 +185,7 @@ public:
 	void Dispose();
 	
 	/** Retrieves the camera or nullptr if not existing. */
-	inline meCamera *GetCamera() const{ return pCamera; }
+	inline const meCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	inline meWorld *GetWorld() const{ return pWorld; }
 	void SetWorld(meWorld *world);

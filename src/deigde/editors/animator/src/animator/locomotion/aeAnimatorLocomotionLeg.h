@@ -29,15 +29,16 @@
 // includes
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWCoordSysArrows.h>
+#include <deigde/meta/igdeMetaContext.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-
 #include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class aeAnimatorLocomotion;
-
-
+class aeWindowMain;
 
 /**
  * Animator Locomotion Leg.
@@ -49,22 +50,29 @@ class aeAnimatorLocomotionLeg : public deObject{
 public:
 	using Ref = deTObjectReference<aeAnimatorLocomotionLeg>;
 	
+	using MetaContext = igdeMetaContextType<aeAnimatorLocomotionLeg>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeAnimatorLocomotionLeg *leg);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
 private:
 	aeAnimatorLocomotion *pLocomotion;
+	MetaContext::Ref pMetaContext;
 	
+public:
+	igdeMetaPropertyFloatStorage::Storage mpLiftOffTime;
+	igdeMetaPropertyFloatStorage::Storage mpPutDownTime;
+	igdeMetaPropertyVectorStorage::Storage mpPutDownPositionStand;
+	igdeMetaPropertyVectorStorage::Storage mpPutDownPositionWalk;
+	igdeMetaPropertyVectorStorage::Storage mpPutDownPositionRun;
+	
+private:
 	igdeWDebugDrawerShape::Ref pDDSLocked;
 	igdeWCoordSysArrows pDDSLockedCF;
 	igdeWDebugDrawerShape::Ref pDDSPredict;
 	
 	decString pName;
-	
-	decVector pPutDownPosStand;
-	decVector pPutDownPosWalk;
-	decVector pPutDownPosRun;
-	
-	float pLiftOffTime;
-	float pPutDownTime;
 	
 	bool pPositionLocked;
 	decDVector pLockedPosition;
@@ -99,32 +107,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
+	
+	/** Locomotion */
+	inline aeAnimatorLocomotion *GetLocomotion() const{ return pLocomotion; }
+	aeAnimatorLocomotion &GetLocomotionRef() const;
+	
+	igdeEnvironment &GetEnvironment() const;
+	igdeUndoSystem *GetUndoSystem() const;
+	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
-	
-	/** Retrieves the stand put down position. */
-	inline const decVector &GetPutDownPositionStand() const{ return pPutDownPosStand; }
-	/** Sets the stand put down position. */
-	void SetPutDownPositionStand(const decVector &position);
-	/** Retrieves the walk put down position. */
-	inline const decVector &GetPutDownPositionWalk() const{ return pPutDownPosWalk; }
-	/** Sets the walk put down position. */
-	void SetPutDownPositionWalk(const decVector &position);
-	/** Retrieves the run put down position. */
-	inline const decVector &GetPutDownPositionRun() const{ return pPutDownPosRun; }
-	/** Sets the run put down position. */
-	void SetPutDownPositionRun(const decVector &position);
-	
-	/** Retrieves the lift off time. */
-	inline float GetLiftOffTime() const{ return pLiftOffTime; }
-	/** Sets the lift off time. */
-	void SetLiftOffTime(float time);
-	/** Retrieves the put down time. */
-	inline float GetPutDownTime() const{ return pPutDownTime; }
-	/** Sets the put down time. */
-	void SetPutDownTime(float time);
 	
 	/** Retrieves the ground position. */
 	inline const decVector &GetGroundPosition() const{ return pGroundPosition; }

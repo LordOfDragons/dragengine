@@ -62,6 +62,9 @@ pHighlightResponseType(-1),
 pHighlightDeactivation(false)
 {
 	(void)pBullet; // for future use
+	
+	// pEnabled = true;
+	// pShowCategory.SetBit(2);
 }
 
 debpDeveloperMode::~debpDeveloperMode(){

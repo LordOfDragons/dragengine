@@ -52,8 +52,8 @@ debpBulletShapeModel *modelShape, const btVector3 &scale){
 	// a unique array is required since btBvhTriangleMeshShape modifies btTriangleIndexVertexArray
 	// and thus it can not be shared
 	auto indexVertexArray = deTUniqueReference<btTriangleIndexVertexArray>::New(
-		modelShape->GetFaceCount() / 3, modelShape->GetFaces(), sizeof(int) * 3,
-		modelShape->GetVertexCount() / 3, modelShape->GetVertices(), sizeof(btScalar) * 3);
+		modelShape->GetFaceCount() / 3, modelShape->GetFaces(), (int)sizeof(int) * 3,
+		modelShape->GetVertexCount() / 3, modelShape->GetVertices(), (int)sizeof(btScalar) * 3);
 	
 	// create btBvhTriangleMeshShape using the unique btTriangleIndexVertexArray. its BVH is
 	// rebuilt with the scale baked in below. this does not touch the shared model shape but

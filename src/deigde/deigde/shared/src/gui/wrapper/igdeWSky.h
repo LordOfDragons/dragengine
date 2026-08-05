@@ -26,6 +26,13 @@
 #define _IGDEWSKY_H_
 
 #include "../../gamedefinition/sky/igdeGDSky.h"
+#include "../../meta/igdeMetaContext.h"
+#include "../../meta/property/igdeMetaPropertyPath.h"
+#include "../../meta/property/igdeMetaPropertyString.h"
+#include "../../meta/property/igdeMetaPropertyFloat.h"
+#include "../../meta/property/igdeMetaPropertyList.h"
+#include "../../meta/property/igdeMetaPropertySliderBoard.h"
+#include "../../undo/igdeUndoSystem.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -44,8 +51,12 @@ class deSkyController;
  * Provides a simple way to display a sky from game definition or a custom sky.
  * The sky can be modified by changing controller values.
  */
-class DE_DLL_EXPORT igdeWSky{
+class DE_DLL_EXPORT igdeWSky : public deObject{
 public:
+	/** \brief Reference */
+	using Ref = deTObjectReference<igdeWSky>;
+	
+	
 	/** \brief Asynchronous loading finished. */
 	class DE_DLL_EXPORT cAsyncLoadFinished{
 	public:
@@ -60,37 +71,169 @@ public:
 	};
 	
 	
+	/** \brief Sky controller. */
+	class DE_DLL_EXPORT Controller : public deObject{
+	public:
+		using Ref = deTObjectReference<Controller>;
+		
+		igdeEnvironment &GetEnvironment() const;
+		igdeUndoSystem *GetUndoSystem() const;
+		
+		using MetaContext = igdeMetaContextType<Controller>;
+		static MetaContext::Ref CreateMetaContext(Controller *controller);
+		
+		class DE_DLL_EXPORT MetaProperties{
+		public:
+			class DE_DLL_EXPORT Name : public igdeMetaPropertyMCT<igdeMetaPropertyStringStorage, MetaContext>{
+			public:
+				Name();
+				Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+				
+			protected:
+				~Name() override;
+			};
+			
+			class DE_DLL_EXPORT Value : public igdeMetaPropertyMCT<igdeMetaPropertyFloatStorage, MetaContext>{
+			public:
+				Value();
+				Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+				
+			protected:
+				~Value() override;
+			};
+			
+		private:
+			MetaProperties();
+			
+		public:
+			deTObjectReference<Name> name;
+			deTObjectReference<Value> value;
+			
+			static MetaProperties global;
+		};
+		
+	private:
+		igdeWSky &pWrapper;
+		int pIndex;
+		MetaContext::Ref pMetaContext;
+		igdeMetaPropertyStringStorage::Storage pMPName;
+		igdeMetaPropertyFloatStorage::Storage pMPValue;
+		
+	public:
+		Controller(igdeWSky &wrapper, int index);
+		
+	protected:
+		~Controller() override;
+		
+	public:
+		inline igdeWSky &GetWrapper() const{ return pWrapper; }
+		inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
+		inline igdeMetaPropertyStringStorage::Storage &GetMPName(){ return pMPName; }
+		inline igdeMetaPropertyFloatStorage::Storage &GetMPValue(){ return pMPValue; }
+	};
+	
+	
+	/** \brief Meta context. */
+	using MetaContext = igdeMetaContextType<igdeWSky>;
+	static MetaContext::Ref CreateMetaContext(igdeWSky *wrapper);
+	
+	/** \brief Meta properties. */
+	class DE_DLL_EXPORT MetaProperties{
+	public:
+		class DE_DLL_EXPORT Path : public igdeMetaPropertyMCT<igdeMetaPropertyPathStorage, MetaContext>{
+		public:
+			Path();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Path() override;
+		};
+		
+		class DE_DLL_EXPORT Sliders : public igdeMetaPropertyMCTNoCapture<
+		igdeMetaPropertySliderBoardStorage<Controller::MetaContext>, MetaContext>{
+		public:
+			Sliders();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Sliders() override;
+		};
+		
+		
+	private:
+		MetaProperties();
+		
+	public:
+		deTObjectReference<Path> path;
+		deTObjectReference<Sliders> sliders;
+		const igdeMetaContext::PropertyList::Ref properties;
+		
+		static MetaProperties global;
+	};
+	
 	
 private:
 	igdeEnvironment &pEnvironment;
+	igdeUndoSystem *pUndoSystem;
+	
+	MetaContext::Ref pMetaContext;
 	
 	deWorld::Ref pEngWorld;
 	deSkyInstance::Ref pEngSkyInstance;
 	float pMaxLightIntensity;
 	igdeGDSky::Ref pGDSky;
-	decString pPath;
 	
 	cAsyncLoadFinished *pAsyncLoadFinished;
 	int pAsyncLoadCounter;
 	
+	igdeMetaPropertyPathStorage::Storage pMPPath;
+	decTObjectOrderedSet<Controller> pControllers;
+	igdeMetaPropertySliderBoardStorage<Controller::MetaContext>::Storage pMPSliders;
+	
+	
+public:
+	/** \brief Sky changed event. */
+	igdeTEvent<> onChanged;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky wrapper. */
-	igdeWSky(igdeEnvironment &environment);
+	explicit igdeWSky(igdeEnvironment &environment);
 	
+	igdeWSky(const igdeWSky &copy) = delete;
+	igdeWSky(igdeWSky &&move) = delete;
+	igdeWSky& operator=(const igdeWSky &other) = delete;
+	igdeWSky& operator=(igdeWSky &&other) = delete;
+	
+protected:
 	/** \brief Clean up wrapper. */
-	~igdeWSky();
+	~igdeWSky() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Meta property sky path. */
+	inline igdeMetaPropertyPathStorage::Storage &GetMPPath(){ return pMPPath; }
+	
+	/** \brief Meta property sky sliders. */
+	inline igdeMetaPropertySliderBoardStorage<Controller::MetaContext>::Storage &GetMPSliders(){ return pMPSliders; }
+	
+	/** \brief Undo system or nullptr. */
+	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
+	
+	/** \brief Set undo system or nullptr. */
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
+	
+	
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	
+	/** \brief Meta context. */
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	/** \brief World or nullptr. */
 	inline const deWorld::Ref &GetWorld() const{ return pEngWorld; }
@@ -113,11 +256,14 @@ public:
 	/** \brief Get sky or nullptr. */
 	const deSky *GetSky() const;
 	
+	/** \brief Get sky instance or nullptr. */
+	inline const deSkyInstance::Ref &GetSkyInstance() const{ return pEngSkyInstance; }
+	
 	/** \brief Game definition sky or nullptr if sky is set manually. */
 	inline const igdeGDSky::Ref &GetGDSky() const{ return pGDSky; }
 	
 	/** \brief Sky path or nullptr if sky is set manually. */
-	inline const decString &GetPath() const{ return pPath; }
+	inline const decString &GetPath() const{ return pMPPath; }
 	
 	/** \brief Set sky to use. */
 	void SetSky(deSky *sky);
@@ -160,8 +306,11 @@ public:
 	
 	
 private:
+	void pSetSky(deSky *sky);
+	void pSetGDSky(igdeGDSky *gdsky);
 	void pLoadSky(const char *path);
 	void pCheckAsyncLoadFinished();
+	void pUpdateMPControllers();
 };
 
 #endif

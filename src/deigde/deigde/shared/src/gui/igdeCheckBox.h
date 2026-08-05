@@ -44,7 +44,7 @@ public:
 	
 	
 private:
-	bool pChecked;
+	bool pChecked, pCentered;
 	
 	
 protected:
@@ -82,12 +82,17 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Menu entry is checked. */
+	/** \brief Check box is checked. */
 	inline bool GetChecked() const{ return pChecked; }
 	
-	/** \brief Set if menu entry is checked. */
+	/** \brief Set if check box is checked. */
 	void SetChecked(bool checked);
 	
+	/** \brief Check box is centered. */
+	inline bool GetCentered() const{ return pCentered; }
+	
+	/** \brief Set if check box is centered. */
+	void SetCentered(bool centered);
 	
 	
 	/** \brief Action parameters changed. */

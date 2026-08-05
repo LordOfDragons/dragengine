@@ -30,6 +30,8 @@
 #include "dictionary/saeWord.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/igdeCamera.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
 
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
@@ -38,10 +40,6 @@
 #include <dragengine/resources/animator/deAnimatorInstance.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/world/deWorld.h>
-
-class igdeWSky;
-class igdeCamera;
-
 
 
 /**
@@ -64,12 +62,12 @@ public:
 	
 private:
 	deWorld::Ref pEngWorld;
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	deComponent::Ref pEngComponent;
 	deAnimator::Ref pEngAnimator;
 	deAnimatorInstance::Ref pEngAnimatorInstance;
 	
-	igdeCamera *pCamera;
+	igdeCamera::Ref pCamera;
 	
 	decString pDisplayModelPath;
 	decString pDisplaySkinPath;
@@ -117,9 +115,9 @@ public:
 	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
 	
 	/** Retrieves the sky. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline const igdeWSky::Ref &GetSky() const{ return pSky; }
 	/** Retrieves the camera. */
-	inline igdeCamera *GetCamera() const{ return pCamera; }
+	inline const igdeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Retrieves the display model path. */
 	inline const decString &GetDisplayModelPath() const{ return pDisplayModelPath; }

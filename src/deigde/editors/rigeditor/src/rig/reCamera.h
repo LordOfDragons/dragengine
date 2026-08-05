@@ -42,6 +42,9 @@ class reRig;
  * This subclass contains attachment specific information.
  */
 class reCamera : public igdeCamera{
+public:
+	using Ref = deTObjectReference<reCamera>;
+	
 private:
 	reRig *pRig;
 	
@@ -60,11 +63,14 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new camera. */
-	reCamera(reRig *rig, deEngine *engine);
+	reCamera(reRig &rig, deEngine *engine);
+	
+protected:
 	/** Cleans up the camera object. */
 	~reCamera() override;
 	/*@}*/
 	
+public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the bone or nullptr. */

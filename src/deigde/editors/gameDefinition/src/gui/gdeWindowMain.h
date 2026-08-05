@@ -31,6 +31,7 @@
 #include "properties/gdeWindowProperties.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
+#include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -196,7 +197,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	gdeConfiguration *pConfiguration;
-	igdeClipboard pClipboard;
 	gdeLoadSaveSystem *pLoadSaveSystem;
 	
 	gdeViewActiveObject::Ref pViewActiveObject;
@@ -354,7 +354,8 @@ public:
 	inline gdeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** \brief Load save system. */
 	inline gdeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }

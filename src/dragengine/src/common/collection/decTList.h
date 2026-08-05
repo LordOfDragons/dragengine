@@ -1319,7 +1319,7 @@ public:
 			DEASSERT_TRUE(from <= pCount)
 			
 			for(i=from; i<to; i+=step){
-				if(!evaluator(pElements[i])){
+				if(!evaluator(i, pElements[i])){
 					return;
 				}
 			}
@@ -1329,7 +1329,7 @@ public:
 			DEASSERT_TRUE(from < pCount)
 			
 			for(i=from; i>=to; i+=step){
-				if(!evaluator(pElements[i])){
+				if(!evaluator(i, pElements[i])){
 					return;
 				}
 			}
@@ -1365,7 +1365,7 @@ public:
 	void VisitWhileIndexed(Evaluator &evaluator) const{
 		int i;
 		for(i=0; i<pCount; i++){
-			if(!evaluator(pElements[i])){
+			if(!evaluator(i, pElements[i])){
 				return;
 			}
 		}
@@ -1379,7 +1379,7 @@ public:
 	
 	/**
 	 * \brief Visit elements with index in reverse order while evaluator returns true.
-	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(int, T).
 	 */
 	template<typename Evaluator>
 	void VisitWhileReverseIndexed(Evaluator &evaluator) const{
@@ -2203,6 +2203,15 @@ public:
 		std::copy_n(pElements, pCount, nlist.pElements);
 		std::copy_n(list.pElements, list.pCount, nlist.pElements + pCount);
 		nlist.pCount = pCount + list.pCount;
+		return nlist;
+	}
+	
+	/** \brief New list containing all values of this list followed by another value. */
+	decTList operator+(const T &value) const{
+		decTList nlist(pCount + 1);
+		std::copy_n(pElements, pCount, nlist.pElements);
+		nlist.pCount = pCount;
+		nlist.Add(value);
 		return nlist;
 	}
 	

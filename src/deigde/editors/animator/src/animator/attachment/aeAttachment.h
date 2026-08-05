@@ -30,8 +30,12 @@
 #include <dragengine/common/string/decString.h>
 
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/meta/igdeMetaContext.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
 
 class aeAnimator;
+class aeWindowMain;
 
 class igdeEnvironment;
 
@@ -46,6 +50,9 @@ class aeAttachment : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<aeAttachment>;
+	
+	/** \brief List type. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<aeAttachment>, aeAttachment>;
 	
 	
 	/** Attach types. */
@@ -69,58 +76,64 @@ public:
 		void LoadFinished(igdeWObject &wrapper, bool succeeded) override;
 	};
 	
+	using MetaContext = igdeMetaContextType<aeAttachment>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeAttachment *attachment);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
+	aeWindowMain &pWindowMain;
+	MetaContext::Ref pMetaContext;
+	
 	aeAnimator *pAnimator;
 	
 	cAsyncLoadListener pAsyncLoadListener;
 	igdeWObject::Ref pObjectWrapper;
 	
-	decString pName;
-	eAttachTypes pAttachType;
-	decString pBoneName;
+public:
+	igdeMetaPropertyStringStorage::Storage mpName;
+	igdeMetaPropertySelectionEnumStorage<eAttachTypes>::Storage mpAttachType;
+	igdeMetaPropertyStringStorage::Storage mpBoneName;
+	igdeMetaPropertyContextStorage::Storage mpWObject;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create attachment. */
-	aeAttachment(igdeEnvironment *environment, const char *name = "Attachment");
+	explicit aeAttachment(aeWindowMain &windowMain, const char *name = "Attachment");
 	
-	/** Clean up attachment. */
+	/** Create copy of attachment. */
+	aeAttachment(const aeAttachment &copy);
+	
+	aeAttachment(aeAttachment &&copy) = delete;
+	aeAttachment &operator=(const aeAttachment &copy) = delete;
+	aeAttachment &operator=(aeAttachment &&copy) = delete;
+	
 protected:
+	/** Clean up attachment. */
 	~aeAttachment() override;
-public:
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	
+	/** Get meta context. */
+	inline MetaContext::Ref GetMetaContext() const{ return pMetaContext; }
+	
 	/** Parent animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	aeAnimator &GetAnimatorRef() const;
 	
 	/** Set parent animator. */
 	void SetAnimator(aeAnimator *animator);
 	
-	
-	
-	/** Name. */
-	inline const decString &GetName() const{ return pName; }
-	
-	/** Set name. */
-	void SetName(const char *name);
-	
-	/** Attach type. */
-	inline eAttachTypes GetAttachType() const{ return pAttachType; }
-	
-	/** Set attached type. */
-	void SetAttachType(eAttachTypes type);
-	
-	/** Name of the bone to attach to. */
-	inline const decString &GetBoneName() const{ return pBoneName; }
-	
-	/** Set name of the bone to attach to. */
-	void SetBoneName(const char *name);
-	
+	igdeEnvironment &GetEnvironment() const;
+	igdeUndoSystem *GetUndoSystem() const;
 	
 	
 	/** Update attachment. */

@@ -534,7 +534,7 @@ class WindowLogo extends Window
 	 */
 	static func WindowLogo showDragengineLogo(Desktop desktop, ActionListener actionFinished)
 		return showImageLogo(desktop, \
-			Image.new("/shareddata/images/logoDragengine.jpg"), \
+			Image.new("/shareddata/images/logoDragengine.webp"), \
 			1, 2, 2, 1, 5, actionFinished)
 	end
 	

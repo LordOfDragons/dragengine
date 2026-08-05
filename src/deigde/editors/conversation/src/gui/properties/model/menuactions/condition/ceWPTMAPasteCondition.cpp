@@ -71,8 +71,8 @@ pConversation(&conversation)
 ///////////////
 
 void ceWPTMAPasteCondition::OnAction(){
-	ceClipboardDataCondition * const cdata = (ceClipboardDataCondition*)GetWindowMain().
-		GetClipboard().GetWithTypeName(ceClipboardDataCondition::TYPE_NAME);
+	auto cdata = GetWindowMain().GetClipboard().
+		GetWithTypeName(ceClipboardDataCondition::TYPE_NAME).DynamicCast<ceClipboardDataCondition>();
 	if(!cdata){
 		return;
 	}

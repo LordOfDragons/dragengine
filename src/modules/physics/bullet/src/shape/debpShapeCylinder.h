@@ -45,6 +45,10 @@ class decShapeCylinder;
  * a visitor.
  */
 class debpShapeCylinder : public debpShape{
+public:
+	using Ref = deTObjectReference<debpShapeCylinder>;
+	
+	
 private:
 	decShapeCylinder *pSCylinder;
 	debpDCollisionCylinder pCCylinder;

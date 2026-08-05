@@ -140,6 +140,10 @@ void igdeTreeItem::SetData(void *data){
 	pData = data;
 }
 
+void igdeTreeItem::SetRefData(const deObject::Ref &refData){
+	pRefData = refData;
+}
+
 void igdeTreeItem::SetSelected(bool selected){
 	pSelected = selected;
 }
@@ -191,6 +195,7 @@ igdeTreeItem &igdeTreeItem::operator=(const igdeTreeItem &treeItem){
 	pDescription = treeItem.pDescription;
 	pIcon = treeItem.pIcon;
 	pData = treeItem.pData;
+	pRefData = treeItem.pRefData;
 	pExpanded = treeItem.pExpanded;
 	return *this;
 }

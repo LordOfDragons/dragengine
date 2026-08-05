@@ -31,7 +31,9 @@
 #include "peeEmitterListener.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/igdeCamera.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWCoordSysArrows.h>
 
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -43,11 +45,8 @@
 
 class peeLoadSaveSystem;
 
-class igdeWSky;
-
 class deSkin;
 class deComponent;
-class igdeCamera;
 class deLogger;
 
 
@@ -85,7 +84,7 @@ private:
 	
 	deDebugDrawer::Ref pDDEmitter;
 	
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	igdeWObject::Ref pEnvObject;
 	
 	igdeWCoordSysArrows pDDSEmitter;
@@ -104,7 +103,7 @@ private:
 	float pBurstInterval;
 	float pBurstTimer;
 	
-	igdeCamera *pCamera;
+	igdeCamera::Ref pCamera;
 	
 	peeController::List pControllers;
 	peeController::Ref pActiveController;
@@ -133,10 +132,10 @@ public:
 	/** Retrieves the engine world. */
 	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the camera. */
-	inline igdeCamera *GetCamera() const{ return pCamera; }
+	inline const igdeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline const igdeWSky::Ref &GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	

@@ -48,6 +48,7 @@ class igdeUIHelper;
 class igdeResourceLoaderListener;
 class igdeEditorModule;
 class igdeTranslationManager;
+class igdeClipboard;
 
 class deBaseScriptingCollider;
 class deBaseScriptingPropField;
@@ -349,6 +350,8 @@ public:
 	/** \brief Translation manager. */
 	virtual igdeTranslationManager &GetTranslationManager() = 0;
 	
+	/** \brief Clipboard. */
+	virtual igdeClipboard &GetClipboard() = 0;
 	
 	
 	/** \brief Set visibility of the progress bar in the status bar. */
@@ -371,6 +374,8 @@ public:
 	/** \brief Activate editor and bring it to the front. */
 	virtual void ActivateEditor(igdeEditorModule *editor) = 0;
 	
+	/** \brief Meta contexts changed. */
+	virtual void MetaContextsChanged() = 0;
 	
 	
 	/**
@@ -489,6 +494,9 @@ public:
 	
 	/** \brief Close application. */
 	virtual void CloseApplication() = 0;
+	
+	/** \brief Open URL. */
+	virtual void OpenUrl(const char *url) = 0;
 	/*@}*/
 };
 

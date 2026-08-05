@@ -48,16 +48,16 @@ public:
 	/** Shared VBO Lists. */
 	enum eSharedVBOLists{
 		/** List for static models. */
-		esvbolStaticModel,
+		// esvbolStaticModel,
 		
 		/** List for static models with weight index. */
 		esvbolStaticModelWeight,
 		
 		/** List for static models with one additional texture coordinate set. */
-		esvbolStaticModelTCS1,
+		esvbolStaticModelWeightTcs1,
 		
 		/** List for static models with two additional texture coordinate sets. */
-		esvbolStaticModelTCS2,
+		esvbolStaticModelWeightTcs2,
 		
 		/** List for simple models with one bone per vertex or a max of 2 weights per vertex. */
 		esvbolSimpleModel,

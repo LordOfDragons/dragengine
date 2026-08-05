@@ -1660,12 +1660,10 @@ void meWPSObject::SetWorld(meWorld *world){
 	meWPPropertyList &editTextureProperties = pEditTexProperties.DynamicCast<meWPPropertyList>();
 	
 	if(pWorld){
-		editProperties.SetClipboard(nullptr);
 		editProperties.SetUndoSystem(nullptr);
 		editProperties.SetTriggerTargetList(nullptr);
 		editProperties.SetIdentifiers(decStringSet());
 		
-		editTextureProperties.SetClipboard(nullptr);
 		editTextureProperties.SetUndoSystem(nullptr);
 		editTextureProperties.SetTriggerTargetList(nullptr);
 		editTextureProperties.SetIdentifiers(decStringSet());
@@ -1677,11 +1675,9 @@ void meWPSObject::SetWorld(meWorld *world){
 	
 	if(world){
 		world->AddNotifier(pListener);
-		editProperties.SetClipboard(&pWPSelection.GetWindowProperties().GetWindowMain().GetClipboard());
 		editProperties.SetUndoSystem(world->GetUndoSystem());
 		editProperties.SetTriggerTargetList(&world->GetTriggerTable());
 		
-		editTextureProperties.SetClipboard(&pWPSelection.GetWindowProperties().GetWindowMain().GetClipboard());
 		editTextureProperties.SetUndoSystem(world->GetUndoSystem());
 		editTextureProperties.SetTriggerTargetList(&world->GetTriggerTable());
 	}

@@ -284,12 +284,31 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShape::List
 						tokenValueList.GetAt(2).ToFloatValid(),
 						tokenValueList.GetAt(3).ToFloatValid()));
 					
+				}else if(tokenParamName == "rotation"){
+					if(tokenValueCount != 4){
+						DETHROW(deeInvalidParam);
+					}
+					
+					sphere->SetOrientation(decQuaternion::CreateFromEuler(
+						tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
+						tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
+						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD));
+					
 				}else if(tokenParamName == "radius"){
 					if(tokenValueCount != 2){
 						DETHROW(deeInvalidParam);
 					}
 					
 					sphere->SetRadius(tokenValueList.GetAt(1).ToFloatValid());
+					
+				}else if(tokenParamName == "axisScaling"){
+					if(tokenValueCount != 3){
+						DETHROW(deeInvalidParam);
+					}
+					
+					sphere->SetAxisScaling(decVector2(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid()));
 					
 				}else{
 					DETHROW(deeInvalidParam);
@@ -321,10 +340,10 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShape::List
 						DETHROW(deeInvalidParam);
 					}
 					
-					box->SetOrientation(decMatrix::CreateRotation(
+					box->SetOrientation(decQuaternion::CreateFromEuler(
 						tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
 						tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
-						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
+						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD));
 					
 				}else if(tokenParamName == "extends"){
 					if(tokenValueCount != 4){
@@ -335,6 +354,15 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShape::List
 						tokenValueList.GetAt(1).ToFloatValid(),
 						tokenValueList.GetAt(2).ToFloatValid(),
 						tokenValueList.GetAt(3).ToFloatValid()));
+					
+				}else if(tokenParamName == "tapering"){
+					if(tokenValueCount != 3){
+						DETHROW(deeInvalidParam);
+					}
+					
+					box->SetTapering(decVector2(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid()));
 					
 				}else{
 					DETHROW(deeInvalidParam);
@@ -366,10 +394,10 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShape::List
 						DETHROW(deeInvalidParam);
 					}
 					
-					cylinder->SetOrientation(decMatrix::CreateRotation(
+					cylinder->SetOrientation(decQuaternion::CreateFromEuler(
 						tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
 						tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
-						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
+						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD));
 					
 				}else if(tokenParamName == "height"){
 					if(tokenValueCount != 2){
@@ -434,10 +462,10 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShape::List
 						DETHROW(deeInvalidParam);
 					}
 					
-					capsule->SetOrientation(decMatrix::CreateRotation(
+					capsule->SetOrientation(decQuaternion::CreateFromEuler(
 						tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
 						tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
-						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
+						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD));
 					
 				}else if(tokenParamName == "height"){
 					if(tokenValueCount != 2){
@@ -502,10 +530,10 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShape::List
 						DETHROW(deeInvalidParam);
 					}
 					
-					hull->SetOrientation(decMatrix::CreateRotation(
+					hull->SetOrientation(decQuaternion::CreateFromEuler(
 						tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
 						tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
-						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
+						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD));
 					
 				}else if(tokenParamName == "points"){
 					if(((tokenValueCount - 1) % 3) != 0){

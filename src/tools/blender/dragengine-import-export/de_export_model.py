@@ -291,8 +291,11 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
                 alertUser('Using more than 1 UV-Layer the default UV-Layer has to be named "default".', 'Error')"""
             return False
         
-        if not self.mesh.hasUVSeams and not self.mesh.object.dragengine_hasnoseams:
-            self.report({ 'INFO', 'ERROR' }, "No UV-Seams found. Add at least one UV-Seam for Tanget-Calculation to work.")
+        # verify all texture coordinate sets in base mesh have the same count of texture coordinates
+        if not self.checkMeshTexCoordSetsConsistent(self.mesh):
+            self.report({ 'INFO', 'ERROR' },
+                        f"Base mesh '{self.mesh.object.name}': All texture coordinate "
+                        f"sets must have the same count of texture coordinates.")
             return False
         
         self.mesh.realTriCount = len(self.mesh.triangles)
@@ -327,7 +330,22 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
             
             if not self.checkLODMeshSameTexCoordSets(lodMesh):
                 self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Texture coordinate sets do not"
-                    + " match base mesh '{}' texture coordinate sets.").format(lodMesh.object.name, self.mesh.object.name))
+                    + " match base mesh '{}' texture coordinate sets (different count or names).").format(lodMesh.object.name, self.mesh.object.name))
+                return False
+            
+            # verify all texture coordinate sets in LOD mesh have the same count of texture coordinates
+            if not self.checkMeshTexCoordSetsConsistent(lodMesh):
+                self.report({ 'INFO', 'ERROR' },
+                            f"LOD Mesh '{lodMesh.object.name}': All texture coordinate sets "
+                            "must have the same count of texture coordinates.")
+                return False
+            
+            # verify LOD mesh texture coordinate sets have the same count as base mesh
+            if not self.checkLODMeshTexCoordCountMatchesBase(lodMesh):
+                self.report({ 'INFO', 'ERROR' },
+                            f"LOD Mesh '{lodMesh.object.name}': Texture coordinate sets "
+                            "must have the same count of texture coordinates as "
+                            f"base mesh '{self.mesh.object.name}'.")
                 return False
             
             lodMesh.realTriCount = len(lodMesh.triangles)
@@ -343,11 +361,6 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
                 or len(lodMesh.vertices) > 65000
                 or lodMesh.realTriCount + lodMesh.realQuadCount > 65000
                 or any(len(tcs.texCoords) > 65000 for tcs in lodMesh.texCoordSets))
-            
-            if not lodMesh.hasUVSeams and not lodMesh.object.dragengine_hasnoseams:
-                self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': No UV-Seams. Add at least"
-                    + " one UV-Seam for Tanget-Calculation to work.").format(lodMesh.object.name))
-                return False
             
             lodMesh = lodMesh.lodMesh
         
@@ -366,6 +379,26 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
             return False
         for i in range(len(self.mesh.texCoordSets)):
             if lodMesh.texCoordSets[i].name != self.mesh.texCoordSets[i].name:
+                return False
+        return True
+    
+    def checkMeshTexCoordSetsConsistent(self, mesh):
+        """Verify that within a mesh, all texture coordinate sets have the same
+        number of texture coordinates."""
+        if len(mesh.texCoordSets) < 1:
+            return False
+        expected_count = len(mesh.texCoordSets[0].texCoords)
+        for tcs in mesh.texCoordSets:
+            if len(tcs.texCoords) != expected_count:
+                return False
+        return True
+    
+    def checkLODMeshTexCoordCountMatchesBase(self, lodMesh):
+        """Verify that LOD mesh texture coordinate sets have the same count as base mesh."""
+        if len(lodMesh.texCoordSets) != len(self.mesh.texCoordSets):
+            return False
+        for i, tcs in enumerate(self.mesh.texCoordSets):
+            if len(lodMesh.texCoordSets[i].texCoords) != len(tcs.texCoords):
                 return False
         return True
     

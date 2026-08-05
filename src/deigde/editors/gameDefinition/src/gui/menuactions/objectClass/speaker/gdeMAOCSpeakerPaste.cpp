@@ -62,14 +62,14 @@ gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSpeakerPaste",
 ///////////////
 
 igdeUndo::Ref gdeMAOCSpeakerPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
-		.GetWithTypeName(gdeClipboardDataOCSpeaker::TYPE_NAME));
+	auto clip = pWindowMain.GetClipboard().
+		GetWithTypeName(gdeClipboardDataOCSpeaker::TYPE_NAME).DynamicCast<gdeClipboardDataOCSpeaker>();
 	if(!clip){
 		return {};
 	}
 	
 	const igdeUndo::Ref undo = gdeUOCAddSpeaker::Ref::New(&objectClass, 
-		gdeOCSpeaker::Ref::New(*clip.DynamicCast<gdeClipboardDataOCSpeaker>()->GetSpeaker()));
+		gdeOCSpeaker::Ref::New(*clip->GetSpeaker()));
 	
 	undo->SetShortInfo("@GameDefinition.Undo.PasteOCSpeaker");
 	return undo;

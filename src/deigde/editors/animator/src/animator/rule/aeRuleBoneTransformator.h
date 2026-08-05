@@ -25,10 +25,16 @@
 #ifndef _AERULEBONETRANSFORMATOR_H_
 #define _AERULEBONETRANSFORMATOR_H_
 
-#include <dragengine/resources/animator/rule/deAnimatorRuleBoneTransformator.h>
-
 #include "aeRule.h"
 
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+
+#include <dragengine/resources/animator/rule/deAnimatorRuleBoneTransformator.h>
 
 /**
  * Animator rule bone transformator.
@@ -37,150 +43,67 @@ class aeRuleBoneTransformator : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleBoneTransformator>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleBoneTransformator, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleBoneTransformator *rule);
 	
-private:
-	decVector pMinTranslation, pMaxTranslation, pMinRotation, pMaxRotation;
-	decVector pMinScaling, pMaxScaling, pAxis;
-	float pMinAngle, pMaxAngle;
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-	deAnimatorRuleBoneTransformator::eCoordinateFrames pCoordinateFrame;
-	bool pEnablePosition, pEnableOrientation, pEnableSize, pUseAxis;
-	
-	decString pTargetBone, pInputBone;
-	deAnimatorRuleBoneTransformator::eInputSources pInputSource;
-	
-	aeControllerTarget::Ref pTargetTranslation, pTargetRotation, pTargetScaling;
+public:
+	igdeMetaPropertyVectorStorage::Storage mpMinTranslation;
+	igdeMetaPropertyVectorStorage::Storage mpMaxTranslation;
+	igdeMetaPropertyVectorStorageQuaternion::Storage mpMinRotation;
+	igdeMetaPropertyVectorStorageQuaternion::Storage mpMaxRotation;
+	igdeMetaPropertyVectorStorage::Storage mpMinScaling;
+	igdeMetaPropertyVectorStorage::Storage mpMaxScaling;
+	igdeMetaPropertyVectorStorage::Storage mpAxis;
+	igdeMetaPropertyFloatStorage::Storage mpMinAngle;
+	igdeMetaPropertyFloatStorage::Storage mpMaxAngle;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpUseAxis;
+	igdeMetaPropertyStringStorage::Storage mpTargetBone;
+	igdeMetaPropertyStringStorage::Storage mpInputBone;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleBoneTransformator::eCoordinateFrames>::Storage mpCoordinateFrame;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleBoneTransformator::eInputSources>::Storage mpInputSource;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetTranslation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetRotation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetScaling;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleBoneTransformator() = delete;
+	
 	/** Create a new bone transformator rule. */
-	explicit aeRuleBoneTransformator(const char *name);
+	explicit aeRuleBoneTransformator(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a bone transformator rule. */
 	aeRuleBoneTransformator(const aeRuleBoneTransformator &copy);
 	/** Clean up the bone transformator rule. */
 protected:
 	~aeRuleBoneTransformator() override;
+private:
+	aeRuleBoneTransformator(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieve the minimum translation. */
-	inline const decVector &GetMinimumTranslation() const{ return pMinTranslation; }
-	/** Set the minimum translation. */
-	void SetMinimumTranslation(const decVector &translation);
-	/** Retrieve the maximum translation. */
-	inline const decVector &GetMaximumTranslation() const{ return pMaxTranslation; }
-	/** Set the maximum translation. */
-	void SetMaximumTranslation(const decVector &translation);
-	/** Retrieve the minimum rotation. */
-	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
-	/** Set the minimum rotation. */
-	void SetMinimumRotation(const decVector &rotation);
-	/** Retrieve the maximum rotation. */
-	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
-	/** Set the maximum rotation. */
-	void SetMaximumRotation(const decVector &rotation);
-	/** Retrieve the minimum scaling. */
-	inline const decVector &GetMinimumScaling() const{ return pMinScaling; }
-	/** Set the minimum scaling. */
-	void SetMinimumScaling(const decVector &scaling);
-	/** Retrieve the maximum scaling. */
-	inline const decVector &GetMaximumScaling() const{ return pMaxScaling; }
-	/** Set the maximum scaling. */
-	void SetMaximumScaling(const decVector &scaling);
-	
-	/** Rotation axis. */
-	inline const decVector &GetAxis() const{ return pAxis; }
-	
-	/** Set rotation axis. */
-	void SetAxis(const decVector &axis);
-	
-	/** Minimum axis rotation angle. */
-	inline float GetMinimumAngle() const{ return pMinAngle; }
-	
-	/** Set minimum axis rotation angle. */
-	void SetMinimumAngle(float angle);
-	
-	/** Maximum axis rotation angle. */
-	inline float GetMaximumAngle() const{ return pMaxAngle; }
-	
-	/** Set maximum axis rotation angle. */
-	void SetMaximumAngle(float angle);
-	
-	/** Retrieve the coordinate frame to rotate around. */
-	inline deAnimatorRuleBoneTransformator::eCoordinateFrames GetCoordinateFrame() const{ return pCoordinateFrame; }
-	/** Set the coordinate frame to rotate around. */
-	void SetCoordinateFrame(deAnimatorRuleBoneTransformator::eCoordinateFrames coordinateFrame);
-	
-	/** Determine if position is altered. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	/** Set if position is altered. */
-	void SetEnablePosition(bool enabled);
-	/** Determine if orientation is altered. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
-	/** Set if orientation is altered. */
-	void SetEnableOrientation(bool enabled);
-	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
-	
-	/** Use rotation axis instead of rotation directly. */
-	inline bool GetUseAxis() const{ return pUseAxis; }
-	
-	/** Set to use rotation axis instead of rotation directly. */
-	void SetUseAxis(bool useAxis);
-	
-	/** Retrieve the name of the target bone. */
-	inline const decString &GetTargetBone() const{ return pTargetBone; }
-	/** Set the name of the target bone. */
-	void SetTargetBone(const char *boneName);
-	
-	/** Name of the input bone. */
-	inline const decString &GetInputBone() const{ return pInputBone; }
-	
-	/** Set name of input bone. */
-	void SetInputBone(const char *boneName);
-	
-	/** Input source. */
-	inline deAnimatorRuleBoneTransformator::eInputSources GetInputSource() const{ return pInputSource; }
-	
-	/** Set input source. */
-	void SetInputSource(deAnimatorRuleBoneTransformator::eInputSources source);
-	
-	/** Retrieve the translation target. */
-	inline const aeControllerTarget::Ref &GetTargetTranslation() const{ return pTargetTranslation; }
-	
-	/** Retrieve the rotation target. */
-	inline const aeControllerTarget::Ref &GetTargetRotation() const{ return pTargetRotation; }
-	
-	/** Retrieve the scaling target. */
-	inline const aeControllerTarget::Ref &GetTargetScaling() const{ return pTargetScaling; }
-	
 	/** Creates an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
-	/** Removes a link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	/** Removes all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
 	aeRule::Ref CreateCopy() const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another animation rule to this rule. */
-	virtual aeRuleBoneTransformator &operator=(const aeRuleBoneTransformator &copy);
+	aeRuleBoneTransformator &operator=(const aeRuleBoneTransformator &copy) = delete;
 	/*@}*/
 };
 

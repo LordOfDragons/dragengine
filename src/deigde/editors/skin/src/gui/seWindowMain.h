@@ -91,7 +91,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	seConfiguration *pConfiguration;
-	igdeClipboard pClipboard;
 	seLoadSaveSystem *pLoadSaveSystem;
 	
 	seWindowProperties::Ref pWindowProperties;
@@ -135,8 +134,8 @@ public:
 	inline seConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
-	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** \brief Load save system. */
 	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }

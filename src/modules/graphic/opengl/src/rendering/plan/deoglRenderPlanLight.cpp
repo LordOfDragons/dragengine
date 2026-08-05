@@ -326,7 +326,7 @@ void deoglRenderPlanLight::pCalcReductionFactorDynamic(){
 }
 
 void deoglRenderPlanLight::pDetermineUseShadow(){
-	pUseShadow = pPlan.GetRenderThread().GetConfiguration().GetShadowQuality() != deoglConfiguration::esqOff;
+	pUseShadow = pPlan.GetRenderThread().GetConfigurationSets().ShadowQuality().enable;
 	pUseShadowTemporary = false;
 	
 	// no shadows if the light wishes so

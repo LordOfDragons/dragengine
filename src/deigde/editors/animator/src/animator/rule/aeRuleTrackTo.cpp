@@ -23,144 +23,108 @@
  */
 
 #include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "aeRuleTrackTo.h"
 #include "../aeAnimator.h"
+#include "../../gui/aeWindowMain.h"
 
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class aeRuleTrackTo
 ////////////////////////
+
+aeRuleTrackTo::MetaContext::Ref aeRuleTrackTo::CreateMetaContext(aeWindowMain &windowMain, aeRuleTrackTo *rule){
+	return MetaContext::Ref::New("animator.rule_track_to", "Rule Track To", "Rule track to properties",
+		windowMain.GetMCAnimatorProperties().ruleTrackTo.metaProperties, rule);
+}
 
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleTrackTo::aeRuleTrackTo(const char *name) :
-aeRule(deAnimatorRuleVisitorIdentify::ertTrackTo, name),
-pTrackAxis(deAnimatorRuleTrackTo::etaPosZ),
-pUpAxis(deAnimatorRuleTrackTo::etaPosY),
-pUpTarget(deAnimatorRuleTrackTo::eutComponentY),
-pLockedAxis(deAnimatorRuleTrackTo::elaNone),
-pTargetPosition(aeControllerTarget::Ref::New()),
-pTargetUp(aeControllerTarget::Ref::New()){
+aeRuleTrackTo::aeRuleTrackTo(aeWindowMain &windowMain, const char *aname) :
+aeRuleTrackTo(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleTrackTo::aeRuleTrackTo(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertTrackTo, aname),
+mpTrackBone(windowMain.GetMCAnimatorProperties().ruleTrackTo.trackBone, metaContext),
+mpTrackAxis(windowMain.GetMCAnimatorProperties().ruleTrackTo.trackAxis, metaContext),
+mpUpAxis(windowMain.GetMCAnimatorProperties().ruleTrackTo.upAxis, metaContext),
+mpUpTarget(windowMain.GetMCAnimatorProperties().ruleTrackTo.upTarget, metaContext),
+mpLockedAxis(windowMain.GetMCAnimatorProperties().ruleTrackTo.lockedAxis, metaContext),
+mpTargetPosition(windowMain.GetMCAnimatorProperties().ruleTrackTo.targetPosition, metaContext),
+mpTargetUp(windowMain.GetMCAnimatorProperties().ruleTrackTo.targetUp, metaContext)
+{
+	mpTrackBone.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleTrackTo*)GetEngineRule())->SetTrackBone(mpTrackBone);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpTrackAxis.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleTrackTo*)GetEngineRule())->SetTrackAxis(mpTrackAxis);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpUpAxis.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleTrackTo*)GetEngineRule())->SetUpAxis(mpUpAxis);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpUpTarget.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleTrackTo*)GetEngineRule())->SetUpTarget(mpUpTarget);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpLockedAxis.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleTrackTo*)GetEngineRule())->SetLockedAxis(mpLockedAxis);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpTargetPosition.onValueChanged = [this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleTrackTo*)GetEngineRule())->GetTargetPosition(), mpTargetPosition);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpTargetUp.onValueChanged = [this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleTrackTo*)GetEngineRule())->GetTargetUp(), mpTargetUp);
+		}
+		NotifyRuleChanged();
+	};
 }
 
 aeRuleTrackTo::aeRuleTrackTo(const aeRuleTrackTo &copy) :
-aeRule(copy),
-pTrackBone(copy.pTrackBone),
-pTrackAxis(copy.pTrackAxis),
-pUpAxis(copy.pUpAxis),
-pUpTarget(copy.pUpTarget),
-pLockedAxis(copy.pLockedAxis),
-pTargetPosition(aeControllerTarget::Ref::New(copy.pTargetPosition)),
-pTargetUp(aeControllerTarget::Ref::New(copy.pTargetUp)){
+aeRuleTrackTo(copy.GetWindowMain(), copy.mpName)
+{
+	pInitCopy(copy);
+	mpTrackBone.SetValue(copy.mpTrackBone, false);
+	mpTrackAxis.SetValue(copy.mpTrackAxis, false);
+	mpUpAxis.SetValue(copy.mpUpAxis, false);
+	mpUpTarget.SetValue(copy.mpUpTarget, false);
+	mpLockedAxis.SetValue(copy.mpLockedAxis, false);
+	mpTargetPosition.SetValue(copy.mpTargetPosition, false);
+	mpTargetUp.SetValue(copy.mpTargetUp, false);
 }
 
 aeRuleTrackTo::~aeRuleTrackTo(){
 }
 
 
-
 // Management
 ///////////////
-
-void aeRuleTrackTo::SetTrackBone(const char *boneName){
-	if(!boneName){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(pTrackBone != boneName){
-		deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
-		
-		pTrackBone = boneName;
-		
-		if(engRule){
-			engRule->SetTrackBone(boneName);
-		}
-		
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleTrackTo::SetTrackAxis(deAnimatorRuleTrackTo::eTrackAxis axis){
-	if(axis < deAnimatorRuleTrackTo::etaPosX || axis > deAnimatorRuleTrackTo::etaNegZ){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(axis != pTrackAxis){
-		deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
-		
-		pTrackAxis = axis;
-		
-		if(engRule){
-			engRule->SetTrackAxis(axis);
-		}
-		
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleTrackTo::SetUpAxis(deAnimatorRuleTrackTo::eTrackAxis axis){
-	if(axis < deAnimatorRuleTrackTo::etaPosX || axis > deAnimatorRuleTrackTo::etaNegZ){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(axis != pUpAxis){
-		deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
-		
-		pUpAxis = axis;
-		
-		if(engRule){
-			engRule->SetUpAxis(axis);
-		}
-		
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleTrackTo::SetUpTarget(deAnimatorRuleTrackTo::eUpTarget target){
-	if(target < deAnimatorRuleTrackTo::eutWorldX || target > deAnimatorRuleTrackTo::eutController){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(target != pUpTarget){
-		deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
-		
-		pUpTarget = target;
-		
-		if(engRule){
-			engRule->SetUpTarget(target);
-		}
-		
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleTrackTo::SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis axis){
-	if(axis < deAnimatorRuleTrackTo::elaNone || axis > deAnimatorRuleTrackTo::elaZ){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(axis != pLockedAxis){
-		deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
-		
-		pLockedAxis = axis;
-		
-		if(engRule){
-			engRule->SetLockedAxis(axis);
-		}
-		
-		NotifyRuleChanged();
-	}
-}
-
-
 
 void aeRuleTrackTo::UpdateTargets(){
 	deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
@@ -168,94 +132,42 @@ void aeRuleTrackTo::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	if(engRule){
-		aeAnimator *animator = GetAnimator();
-		
-		pTargetPosition->UpdateEngineTarget(animator, engRule->GetTargetPosition());
-		pTargetUp->UpdateEngineTarget(animator, engRule->GetTargetUp());
+		pUpdateEngineTarget(engRule->GetTargetPosition(), mpTargetPosition);
+		pUpdateEngineTarget(engRule->GetTargetUp(), mpTargetUp);
 	}
 }
 
 int aeRuleTrackTo::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetPosition->GetLinks().Has(link)){
+	if(mpTargetPosition->Has(link)){
 		usageCount++;
 	}
-	if(pTargetUp->GetLinks().Has(link)){
+	if(mpTargetUp->Has(link)){
 		usageCount++;
 	}
 	
 	return usageCount;
 }
 
-void aeRuleTrackTo::RemoveLinkFromTargets(aeLink *link){
-	aeRule::RemoveLinkFromTargets(link);
-	
-	if(pTargetPosition->GetLinks().Has(link)){
-		pTargetPosition->RemoveLink(link);
-	}
-	
-	if(pTargetUp->GetLinks().Has(link)){
-		pTargetUp->RemoveLink(link);
-	}
-	
-	UpdateTargets();
-}
-
-void aeRuleTrackTo::RemoveLinksFromAllTargets(){
-	aeRule::RemoveLinksFromAllTargets();
-	
-	pTargetPosition->RemoveAllLinks();
-	pTargetUp->RemoveAllLinks();
-	
-	UpdateTargets();
-}
-
-
-
 deAnimatorRule::Ref aeRuleTrackTo::CreateEngineRule(){
 	const deAnimatorRuleTrackTo::Ref engRule(deAnimatorRuleTrackTo::Ref::New());
 	
 	InitEngineRule(engRule);
 	
-	engRule->SetTrackBone(pTrackBone);
-	engRule->SetTrackAxis(pTrackAxis);
-	engRule->SetUpAxis(pUpAxis);
-	engRule->SetUpTarget(pUpTarget);
-	engRule->SetLockedAxis(pLockedAxis);
+	engRule->SetTrackBone(mpTrackBone);
+	engRule->SetTrackAxis(mpTrackAxis);
+	engRule->SetUpAxis(mpUpAxis);
+	engRule->SetUpTarget(mpUpTarget);
+	engRule->SetLockedAxis(mpLockedAxis);
 	
-	aeAnimator * const animator = GetAnimator();
-	pTargetPosition->UpdateEngineTarget(animator, engRule->GetTargetPosition());
-	pTargetUp->UpdateEngineTarget(animator, engRule->GetTargetUp());
+	pUpdateEngineTarget(engRule->GetTargetPosition(), mpTargetPosition);
+	pUpdateEngineTarget(engRule->GetTargetUp(), mpTargetUp);
 	
 	return engRule;
 }
 
 
-
 aeRule::Ref aeRuleTrackTo::CreateCopy() const{
 	return Ref::New(*this);
-}
-
-void aeRuleTrackTo::ListLinks(aeLink::List &list){
-	aeRule::ListLinks(list);
-	pTargetPosition->AddLinksToList(list);
-	pTargetUp->AddLinksToList(list);
-}
-
-
-
-// Operators
-///////////////
-
-aeRuleTrackTo &aeRuleTrackTo::operator=(const aeRuleTrackTo &copy){
-	SetTrackBone(copy.pTrackBone);
-	SetTrackAxis(copy.pTrackAxis);
-	SetUpAxis(copy.pUpAxis);
-	SetUpTarget(copy.pUpTarget);
-	SetLockedAxis(copy.pLockedAxis);
-	pTargetPosition = copy.pTargetPosition;
-	pTargetUp = copy.pTargetUp;
-	aeRule::operator=(copy);
-	return *this;
 }

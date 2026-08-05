@@ -26,11 +26,11 @@
 #define _IGDEMOUSECAMERALISTENER_H_
 
 #include "igdeMouseDragListener.h"
+#include "../igdeCamera.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class igdeViewRenderWindow;
-class igdeCamera;
 
 
 /**
@@ -67,7 +67,7 @@ public:
 	
 	
 private:
-	igdeCamera *pCamera;
+	igdeCamera::Ref pCamera;
 	
 	bool pEnableRotate;
 	bool pEnablePan;
@@ -115,7 +115,7 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Camera or nullptr. */
-	inline igdeCamera *GetCamera() const{ return pCamera; }
+	inline const igdeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera or nullptr. */
 	void SetCamera(igdeCamera *camera);

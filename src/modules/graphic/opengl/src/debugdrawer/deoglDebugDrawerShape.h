@@ -26,7 +26,9 @@
 #define _DEOGLDEBUGDRAWERSHAPE_H_
 
 #include "../deoglBasics.h"
+#include "../shapes/deoglShapeHull.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShape.h>
@@ -39,7 +41,12 @@ class deDebugDrawerShape;
  * Debug drawer peer shape.
  */
 class deoglDebugDrawerShape{
+public:
+	using Ref = deTUniqueReference<deoglDebugDrawerShape>;
+	
 private:
+	deoglRenderThread &pRenderThread;
+	
 	decMatrix pMatrix;
 	
 	decColor pEdgeColor;
@@ -56,13 +63,15 @@ private:
 	decTList<int> pHullIndices;
 	bool pDirtyHulls;
 	
+	deTUniqueReference<deoglShapeHull> pHullShape;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create debug drawer shape. */
-	deoglDebugDrawerShape();
+	explicit deoglDebugDrawerShape(deoglRenderThread &renderThread);
 	
 	/** Clean up debug drawer shape. */
 	~deoglDebugDrawerShape();
@@ -72,6 +81,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
 	/** Matrix. */
 	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
@@ -125,6 +137,11 @@ public:
 	
 	/** Set point count for rendering lines. */
 	void SetLinePointCount(int pointCount);
+	
+	
+	
+	/** Hull shape for rendering. */
+	inline const deTUniqueReference<deoglShapeHull> &GetHullShape() const{ return pHullShape; }
 	
 	
 	

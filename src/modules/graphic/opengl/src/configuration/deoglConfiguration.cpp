@@ -97,9 +97,8 @@ pLODMaxPixelError(2),
 
 pNormalRoughnessCorrectionStrength(0.75f), // 0.5f;
 
+pReflectionQuality(erqHigh),
 pSSREnable(true),
-pSSRStepCount(20),
-pSSRMaxRayLength(1.0f),
 pSSRReduction(1), //2
 pSSRCoverageEdgeSize(0.1f),
 pSSRCoveragePowerEdge(1.0f),
@@ -167,6 +166,7 @@ pRenderDocMode(false)
 	// would affect also 2D graphics. the default should only cut down on the heavy
 	// processing of 3D graphics while keeping 2D graphics crisp if possible
 	pShadowQuality = esqMedium;
+	pReflectionQuality = erqMedium;
 	// pOcclusionReduction = 2;
 	// pRenderDownScale = 2;
 	
@@ -594,29 +594,20 @@ void deoglConfiguration::SetNormalRoughnessCorrectionStrength(float strength){
 
 
 
+void deoglConfiguration::SetReflectionQuality(eReflectionQuality quality){
+	if(quality == pReflectionQuality){
+		return;
+	}
+	
+	pReflectionQuality = quality;
+	pDirty = true;
+}
+
 void deoglConfiguration::SetSSREnable(bool enable){
 	if(enable == pSSREnable){
 		return;
 	}
 	pSSREnable = enable;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetSSRStepCount(int stepCount){
-	stepCount = decMath::max(stepCount, 1);
-	if(stepCount == pSSRStepCount){
-		return;
-	}
-	pSSRStepCount = stepCount;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetSSRMaxRayLength(float maxRayLength){
-	maxRayLength = decMath::clamp(maxRayLength, 0.01f, 1.0f);
-	if(fabsf(maxRayLength - pSSRMaxRayLength) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	pSSRMaxRayLength = maxRayLength;
 	pDirty = true;
 }
 

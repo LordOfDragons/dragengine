@@ -92,7 +92,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	projConfiguration *pConfiguration;
-	igdeClipboard pClipboard;
 	projLoadSaveSystem pLoadSaveSystem;
 	
 	projProject::Ref pProject;
@@ -159,8 +158,8 @@ public:
 	inline projConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
-	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** \brief Load save system. */
 	inline projLoadSaveSystem &GetLoadSaveSystem(){ return pLoadSaveSystem; }

@@ -15,13 +15,9 @@ UNIFORM_BIND(4) uniform vec4 pSkyBgColor;
 layout(binding=0) uniform mediump sampler2D texSky;
 
 #include "shared/interface/2d/fragment.glsl"
+#include "shared/useful_constants.glsl"
 
 layout(location=0) out vec4 outColor;
-
-const float PI = 3.14159265;
-const float INV_TWO_PI = 1.0 / ( PI * 2.0 );
-const float INV_HALF_PI = 1.0 / ( PI * 0.5 );
-const float INV_PI = 1.0 / PI;
 
 void main( void ){
 	// x=1/projMat.a11, y=1/projMat.a22, -projMat.a13, -projMat.a23

@@ -332,10 +332,8 @@ public:
 
 	/** \name Constraints */
 	/*@{*/
-	/** Retrieves the number of constraints. */
-	inline int GetConstraintCount() const{ return pConstraints.GetCount(); }
-	/** Retrieves the constraint at the given index. */
-	debpColliderConstraint *GetConstraintAt(int index) const;
+	/** Constraints. */
+	inline const decTUniqueList<debpColliderConstraint> &GetConstraints() const{ return pConstraints; }
 	/*@}*/
 	
 	

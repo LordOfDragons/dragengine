@@ -108,6 +108,6 @@ void meCLIdentify::ColliderChanged(deCollider*){
 
 meObject *meCLIdentify::pGetObjectForCollider(deCollider *collider) const{
 	const meColliderOwner * const colliderOwner =
-		meColliderOwner::GetColliderOwner(*pWorld.GetEnvironment(), collider);
+		meColliderOwner::GetColliderOwner(pWorld.GetEnvironment(), collider);
 	return colliderOwner ? colliderOwner->GetObject() : nullptr;
 }

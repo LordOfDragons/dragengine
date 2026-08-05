@@ -22,12 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "aeRuleMirror.h"
 #include "../aeAnimator.h"
+#include "../../gui/aeWindowMain.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
@@ -35,202 +32,183 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 
 
-
 // Class aeRuleMirror::MatchName
 //////////////////////////////////
 
-aeRuleMirror::MatchName::MatchName(const char *afirst, const char *asecond,
-deAnimatorRuleMirror::eMatchNameType atype) :
-first(afirst),
-second(asecond),
-type(atype)
+aeRuleMirror::MatchName::MetaContext::Ref aeRuleMirror::MatchName::CreateMetaContext(
+aeWindowMain &windowMain, MatchName *matchName){
+	return MetaContext::Ref::New("animator.rule_mirror_matchname",
+		"Match Name", "Match name properties",
+		windowMain.GetMCAnimatorProperties().ruleMirror.matchName.metaProperties, matchName);
+}
+
+aeRuleMirror::MatchName::MatchName(aeWindowMain &awindowMain) :
+windowMain(awindowMain),
+metaContext(CreateMetaContext(windowMain, this)),
+mpFirst(windowMain.GetMCAnimatorProperties().ruleMirror.matchName.first, metaContext),
+mpSecond(windowMain.GetMCAnimatorProperties().ruleMirror.matchName.second, metaContext),
+mpType(windowMain.GetMCAnimatorProperties().ruleMirror.matchName.type, metaContext){
+}
+
+aeRuleMirror::MatchName::MatchName(aeWindowMain &awindowMain, const char *first,
+	const char *second, deAnimatorRuleMirror::eMatchNameType type) :
+MatchName(awindowMain)
 {
-	DEASSERT_FALSE(first.IsEmpty())
-	DEASSERT_FALSE(second.IsEmpty())
+	mpFirst.SetValue(first, false);
+	mpSecond.SetValue(second, false);
+	mpType.SetValue(type, false);
+}
+
+aeRuleMirror::MatchName::MatchName(const MatchName &copy) :
+MatchName(copy.windowMain, copy.mpFirst, copy.mpSecond, copy.mpType){}
+
+aeRuleMirror::MatchName::~MatchName(){
+	if(metaContext){
+		metaContext->Dispose();
+	}
 }
 
 bool aeRuleMirror::MatchName::operator==(const MatchName &matchName) const{
-	return matchName.first == first && matchName.second == second && matchName.type == type;
+	return matchName.mpFirst == mpFirst.GetValue()
+		&& matchName.mpSecond == mpSecond.GetValue()
+		&& matchName.mpType == mpType.GetValue();
 }
 
-bool aeRuleMirror::MatchName::operator!=(const MatchName &matchName) const{
-	return !operator==(matchName);
+igdeEnvironment &aeRuleMirror::MatchName::GetEnvironment() const{
+	return windowMain.GetEnvironment();
 }
 
-aeRuleMirror::Ref aeRuleMirror::CreateDefault(const char *name){
-	const Ref rule(aeRuleMirror::Ref::New(name));
-	rule->pMatchNames.Add(aeRuleMirror::MatchName::Ref::New(".l", ".r", deAnimatorRuleMirror::emntLast));
-	return rule;
+igdeUndoSystem *aeRuleMirror::MatchName::GetUndoSystem() const{
+	return windowMain.GetAnimator()->GetUndoSystem();
 }
-
 
 
 // Class aeRuleMirror
 ///////////////////////
 
+aeRuleMirror::MetaContext::Ref aeRuleMirror::CreateMetaContext(aeWindowMain &windowMain, aeRuleMirror *rule){
+	return MetaContext::Ref::New("animator.rule_mirror", "Rule Mirror", "Rule mirror properties",
+		windowMain.GetMCAnimatorProperties().ruleMirror.metaProperties, rule);
+}
+
+aeRuleMirror::Ref aeRuleMirror::CreateDefault(aeWindowMain &windowMain, const char *name){
+	auto rule = Ref::New(windowMain, name);
+	rule->mpMatchNames = decTObjectOrderedSet<MatchName>(devctag,
+		MatchName::Ref::New(windowMain, ".l", ".r", deAnimatorRuleMirror::emntLast));
+	return rule;
+}
+
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleMirror::aeRuleMirror(const char *name) :
-aeRule(deAnimatorRuleVisitorIdentify::ertMirror, name),
-pMirrorAxis(deAnimatorRuleMirror::emaX),
-pEnablePosition(true),
-pEnableOrientation(true),
-pEnableSize(false),
-pEnableVertexPositionSet(true){
+aeRuleMirror::aeRuleMirror(aeWindowMain &windowMain, const char *aname) :
+aeRuleMirror(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleMirror::aeRuleMirror(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertMirror, aname),
+pWindowMain(windowMain),
+mpMirrorAxis(windowMain.GetMCAnimatorProperties().ruleMirror.mirrorAxis, metaContext),
+mpMirrorBone(windowMain.GetMCAnimatorProperties().ruleMirror.mirrorBone, metaContext),
+mpEnablePosition(windowMain.GetMCAnimatorProperties().ruleMirror.enablePosition, metaContext),
+mpEnableOrientation(windowMain.GetMCAnimatorProperties().ruleMirror.enableOrientation, metaContext),
+mpEnableSize(windowMain.GetMCAnimatorProperties().ruleMirror.enableSize, metaContext),
+mpEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleMirror.enableVertexPositionSet, metaContext),
+mpMatchNames(windowMain.GetMCAnimatorProperties().ruleMirror.matchName.matchNames, metaContext),
+mpMatchName(windowMain.GetMCAnimatorProperties().ruleMirror.matchName.matchName, metaContext)
+{
+	mpMirrorAxis.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleMirror*)GetEngineRule())->SetMirrorAxis(mpMirrorAxis);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpMirrorBone.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleMirror*)GetEngineRule())->SetMirrorBone(mpMirrorBone);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpEnablePosition.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleMirror*)GetEngineRule())->SetEnablePosition(mpEnablePosition);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpEnableOrientation.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableOrientation(mpEnableOrientation);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpEnableSize.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableSize(mpEnableSize);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpEnableVertexPositionSet.onValueChanged = [this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableVertexPositionSet(mpEnableVertexPositionSet);
+		}
+		NotifyRuleChanged();
+	};
+	
+	mpMatchNames.onValueChanged = [this](){
+		pUpdateMatchNames();
+		NotifyRuleChanged();
+	};
+	mpMatchNames.onActiveChanged = [this](){
+		mpMatchName = mpMatchNames.GetActive()
+			? mpMatchNames.GetActive()->metaContext
+			: mpMatchName.Property().GetDefaultValue();
+	};
 }
 
 aeRuleMirror::aeRuleMirror(const aeRuleMirror &copy) :
-aeRule(copy),
-pMirrorAxis(copy.pMirrorAxis),
-pMirrorBone(copy.pMirrorBone),
-pMatchNames(copy.pMatchNames),
-pEnablePosition(copy.pEnablePosition),
-pEnableOrientation(copy.pEnableOrientation),
-pEnableSize(copy.pEnableSize),
-pEnableVertexPositionSet(copy.pEnableVertexPositionSet){
+aeRuleMirror(copy.pWindowMain, copy.mpName)
+{
+	pInitCopy(copy);
+	mpMirrorBone.SetValue(copy.mpMirrorBone, false);
+	mpEnablePosition.SetValue(copy.mpEnablePosition, false);
+	mpEnableOrientation.SetValue(copy.mpEnableOrientation, false);
+	mpEnableSize.SetValue(copy.mpEnableSize, false);
+	mpEnableVertexPositionSet.SetValue(copy.mpEnableVertexPositionSet, false);
+	mpMatchNames.SetValue(copy.mpMatchNames, false);
 }
 
-aeRuleMirror::~aeRuleMirror(){
-}
-
+aeRuleMirror::~aeRuleMirror() = default;
 
 
 // Management
 ///////////////
-
-void aeRuleMirror::SetMirrorAxis(deAnimatorRuleMirror::eMirrorAxis axis){
-	pMirrorAxis = axis;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleMirror*)GetEngineRule())->SetMirrorAxis(axis);
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleMirror::SetMirrorBone(const char *boneName){
-	pMirrorBone = boneName;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleMirror*)GetEngineRule())->SetMirrorBone(boneName);
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleMirror::SetEnablePosition(bool enable){
-	pEnablePosition = enable;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleMirror*)GetEngineRule())->SetEnablePosition(enable);
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleMirror::SetEnableOrientation(bool enable){
-	pEnableOrientation = enable;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleMirror*)GetEngineRule())->SetEnableOrientation(enable);
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleMirror::SetEnableSize(bool enable){
-	pEnableSize = enable;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleMirror*)GetEngineRule())->SetEnableSize(enable);
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleMirror::SetEnableVertexPositionSet(bool enable){
-	pEnableVertexPositionSet = enable;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleMirror*)GetEngineRule())->SetEnableVertexPositionSet(enable);
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleMirror::AddMatchName(aeRuleMirror::MatchName *matchName){
-	DEASSERT_NOTNULL(matchName)
-	
-	pMatchNames.AddOrThrow(matchName);
-	pUpdateMatchNames();
-}
-
-void aeRuleMirror::InsertMatchName(MatchName *matchName, int index){
-	DEASSERT_NOTNULL(matchName)
-	
-	pMatchNames.InsertOrThrow(matchName, index);
-	pUpdateMatchNames();
-}
-
-void aeRuleMirror::SetMatchNameAt(int index, MatchName *matchName){
-	DEASSERT_NOTNULL(matchName)
-	
-	pMatchNames.SetAtOrThrow(index, matchName);
-	pUpdateMatchNames();
-}
-
-void aeRuleMirror::RemoveMatchName(MatchName *matchName){
-	pMatchNames.RemoveOrThrow(matchName);
-	pUpdateMatchNames();
-}
-
-void aeRuleMirror::RemoveAllMatchNames(){
-	if(pMatchNames.IsEmpty()){
-		return;
-	}
-	
-	pMatchNames.RemoveAll();
-	pUpdateMatchNames();
-}
-
-
 
 deAnimatorRule::Ref aeRuleMirror::CreateEngineRule(){
 	const deAnimatorRuleMirror::Ref engRule(deAnimatorRuleMirror::Ref::New());
 	
 	InitEngineRule(engRule);
 	
-	engRule->SetMirrorAxis(pMirrorAxis);
-	engRule->SetMirrorBone(pMirrorBone);
-	engRule->SetEnablePosition(pEnablePosition);
-	engRule->SetEnableOrientation(pEnableOrientation);
-	engRule->SetEnableSize(pEnableSize);
-	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	engRule->SetMirrorAxis(mpMirrorAxis);
+	engRule->SetMirrorBone(mpMirrorBone);
+	engRule->SetEnablePosition(mpEnablePosition);
+	engRule->SetEnableOrientation(mpEnableOrientation);
+	engRule->SetEnableSize(mpEnableSize);
+	engRule->SetEnableVertexPositionSet(mpEnableVertexPositionSet);
 	
-	pMatchNames.Visit([&](const MatchName &matchName){
-		engRule->AddMatchName(matchName.first, matchName.second, matchName.type);
+	mpMatchNames->Visit([&](const MatchName &matchName){
+		engRule->AddMatchName(matchName.mpFirst, matchName.mpSecond, matchName.mpType);
 	});
 	return engRule;
 }
 
 
-
 aeRule::Ref aeRuleMirror::CreateCopy() const{
 	return Ref::New(*this);
 }
-
-
-
-// Operators
-//////////////
-
-aeRuleMirror &aeRuleMirror::operator=(const aeRuleMirror &copy){
-	SetMirrorAxis(copy.pMirrorAxis);
-	SetMirrorBone(copy.pMirrorBone);
-	pMatchNames = copy.pMatchNames;
-	SetEnablePosition(copy.pEnablePosition);
-	SetEnableOrientation(copy.pEnableOrientation);
-	SetEnableSize(copy.pEnableSize);
-	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
-	aeRule::operator=(copy);
-	return *this;
-}
-
 
 
 // Private Functions
@@ -244,8 +222,8 @@ void aeRuleMirror::pUpdateMatchNames(){
 	deAnimatorRuleMirror &rule = *((deAnimatorRuleMirror*)GetEngineRule());
 	rule.RemoveAllMatchNames();
 	
-	pMatchNames.Visit([&](const MatchName &matchName){
-		rule.AddMatchName(matchName.first, matchName.second, matchName.type);
+	mpMatchNames->Visit([&](const MatchName &matchName){
+		rule.AddMatchName(matchName.mpFirst, matchName.mpSecond, matchName.mpType);
 	});
 	
 	NotifyRuleChanged();

@@ -263,20 +263,16 @@ void debpColliderBone::pUpdateStaticCollisionTest(){
 }
 
 debpBulletShape::Ref debpColliderBone::pCreateBPShape(){
-	const int count = pShapes.GetCount();
-	if(count == 0){
+	if(pShapes.IsEmpty()){
 		return {};
 	}
 	
 	debpCreateBulletShape createBulletShape;
-	int i;
-	
 	createBulletShape.SetScale(pStaticCollisionTestObject.GetOwnerCollider()->GetCollider().GetScale());
-	
-	for(i=0; i<count; i++){
+	pShapes.VisitIndexed([&](int i, debpShape &shape){
 		createBulletShape.SetShapeIndex(i);
-		pShapes.GetAt(i)->GetShape()->Visit(createBulletShape);
-	}
+		shape.GetShape()->Visit(createBulletShape);
+	});
 	createBulletShape.Finish();
 	
 	return createBulletShape.GetBulletShape();

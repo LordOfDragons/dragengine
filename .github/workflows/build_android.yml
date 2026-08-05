@@ -81,9 +81,21 @@ jobs:
       
       - name: Install GLSL Tools
         run: |
-          wget https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-main-linux-Release.zip -O "${{ github.workspace }}/glslang.zip"
+          wget https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-main-linux-x86_64-release.zip -O "${{ github.workspace }}/glslang.zip"
           unzip -d "${{ github.workspace }}/glslang" "${{ github.workspace }}/glslang.zip"
           echo "PATH=${{ github.workspace }}/glslang/bin:$PATH" >> $GITHUB_ENV
+      
+      # force download and linking of NDK r29 (29.x)
+      # github uses 27.3.13750724 which is broken and fails building
+      - name: Install Android NDK r29
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r29-beta3 # 29.0.13846066
+          link-to-sdk: true
+      
+      - name: Set NDK root to r29
+        run: echo "ANDROID_NDK_ROOT=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
       
       - name: Init custom.py
         run: |

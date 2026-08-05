@@ -31,6 +31,7 @@
 
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/string/decStringDictionary.h>
 
 
 class igdeEditorModule;
@@ -384,6 +385,11 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool SelectSystemFont(igdeWidget &owner, const char *title, igdeFont::sConfiguration &config);
+	
+	/**
+	 * \brief Show information in form layout.
+	 */
+	static void ShowInformation(igdeWidget &owner, const char *title, const decStringDictionary &info);
 	/*@}*/
 };
 

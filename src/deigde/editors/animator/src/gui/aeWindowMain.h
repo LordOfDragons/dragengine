@@ -26,9 +26,8 @@
 #define _AEWINDOWMAIN_H_
 
 #include "aeView3D.h"
-#include "aeWindowMainListener.h"
-#include "properties/aeWindowProperties.h"
 #include "../animator/aeAnimator.h"
+#include "../meta/animator/aeMCAnimatorProperties.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
@@ -38,6 +37,7 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include <deigde/gui/properties/igdeWPMetaContextList.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
@@ -69,8 +69,6 @@ public:
 	
 	
 private:
-	aeWindowMainListener::Ref pListener;
-	
 	igdeIcon::Ref pIconRuleAnimation;
 	igdeIcon::Ref pIconRuleAnimationDifference;
 	igdeIcon::Ref pIconRuleAnimationSelect;
@@ -100,17 +98,6 @@ private:
 	igdeAction::Ref pActionEditWBTracking;
 	igdeAction::Ref pActionEditShowBones;
 	igdeAction::Ref pActionEditDDBoneSize;
-	
-	igdeAction::Ref pActionControllerAdd;
-	igdeAction::Ref pActionControllerDuplicate;
-	igdeAction::Ref pActionControllerRemove;
-	igdeAction::Ref pActionControllerUp;
-	igdeAction::Ref pActionControllerDown;
-	
-	igdeAction::Ref pActionLinkAdd;
-	igdeAction::Ref pActionLinkDuplicate;
-	igdeAction::Ref pActionLinkRemove;
-	igdeAction::Ref pActionLinkRemoveUnused;
 	
 	igdeAction::Ref pActionRuleAddAnim;
 	igdeAction::Ref pActionRuleAddAnimDiff;
@@ -154,19 +141,16 @@ private:
 	igdeAction::Ref pActionRuleInsertLimit;
 	igdeAction::Ref pActionRuleInsertMirror;
 	
-	igdeAction::Ref pActionRuleRemove;
-	igdeAction::Ref pActionRuleUp;
-	igdeAction::Ref pActionRuleDown;
-	
 	igdeToolBar::Ref pTBFile;
 	igdeToolBar::Ref pTBEdit;
 	
 	aeConfiguration *pConfiguration;
-	igdeClipboard pClipboard;
 	aeLoadSaveSystem *pLoadSaveSystem;
 	
+	aeMCAnimatorProperties pMCAnimatorProperties;
+	
 	aeView3D::Ref pView3D;
-	aeWindowProperties::Ref pWindowProperties;
+	igdeWPMetaContextList::Ref pWindowProperties;
 	
 	aeAnimator::Ref pAnimator;
 	
@@ -198,8 +182,11 @@ public:
 	inline aeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
-	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
+	
+	/** Animator meta context properties. */
+	inline const aeMCAnimatorProperties &GetMCAnimatorProperties() const{ return pMCAnimatorProperties; }
 	
 	/** 3D View. */
 	inline aeView3D &GetView3D() const{ return pView3D; }
@@ -220,7 +207,7 @@ public:
 	void SaveAnimator(const char *filename);
 	
 	/** Create a new rule of a given type using the matching undo action. */
-	void CreateRule(deAnimatorRuleVisitorIdentify::eRuleTypes type, bool insert, bool intoGroup);
+	void CreateRule(deAnimatorRuleVisitorIdentify::eRuleTypes type, bool insert, bool intoGroup, const igdeAction &action);
 	
 	/** Sets the visibility of the progress bar in the status bar. */
 	void SetProgressVisible(bool visible);
@@ -247,22 +234,11 @@ public:
 	inline const igdeIcon::Ref &GetIconRuleSubAnimator() const{ return pIconRuleSubAnimator; }
 	inline const igdeIcon::Ref &GetIconRuleTrackTo() const{ return pIconRuleTrackTo; }
 	inline const igdeIcon::Ref &GetIconRuleMirror() const{ return pIconRuleMirror; }
-	igdeIcon *GetRuleIcon(deAnimatorRuleVisitorIdentify::eRuleTypes type) const;
+	const igdeIcon::Ref &GetRuleIcon(deAnimatorRuleVisitorIdentify::eRuleTypes type) const;
 	
 	
 	
 	/** Actions. */
-	inline const igdeAction::Ref &GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline const igdeAction::Ref &GetActionControllerDuplicate() const{ return pActionControllerDuplicate; }
-	inline const igdeAction::Ref &GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline const igdeAction::Ref &GetActionControllerUp() const{ return pActionControllerUp; }
-	inline const igdeAction::Ref &GetActionControllerDown() const{ return pActionControllerDown; }
-	
-	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline const igdeAction::Ref &GetActionLinkDuplicate() const{ return pActionLinkDuplicate; }
-	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
-	inline const igdeAction::Ref &GetActionLinkRemoveUnused() const{ return pActionLinkRemoveUnused; }
-	
 	inline const igdeAction::Ref &GetActionRuleAddAnim() const{ return pActionRuleAddAnim; }
 	inline const igdeAction::Ref &GetActionRuleAddAnimDiff() const{ return pActionRuleAddAnimDiff; }
 	inline const igdeAction::Ref &GetActionRuleAddAnimSelect() const{ return pActionRuleAddAnimSelect; }
@@ -304,10 +280,6 @@ public:
 	inline const igdeAction::Ref &GetActionRuleInsertTrackTo() const{ return pActionRuleInsertTrackTo; }
 	inline const igdeAction::Ref &GetActionRuleInsertLimit() const{ return pActionRuleInsertLimit; }
 	inline const igdeAction::Ref &GetActionRuleInsertMirror() const{ return pActionRuleInsertMirror; }
-	
-	inline const igdeAction::Ref &GetActionRuleRemove() const{ return pActionRuleRemove; }
-	inline const igdeAction::Ref &GetActionRuleUp() const{ return pActionRuleUp; }
-	inline const igdeAction::Ref &GetActionRuleDown() const{ return pActionRuleDown; }
 	
 	
 	
@@ -398,9 +370,7 @@ private:
 	void pCreateMenu();
 	void pCreateMenuFile(igdeMenuCascade &menu);
 	void pCreateMenuEdit(igdeMenuCascade &menu);
-	void pCreateMenuController(igdeMenuCascade &menu);
-	void pCreateMenuLink(igdeMenuCascade &menu);
-	void pCreateMenuRule(igdeMenuCascade &menu);
+	void pUpdateMetaContexts();
 };
 
 #endif

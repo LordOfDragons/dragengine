@@ -36,9 +36,7 @@
 #include "../event/igdeActionListener.h"
 #include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
-
-
-class igdeWSky;
+#include "../wrapper/igdeWSky.h"
 
 
 /**
@@ -80,7 +78,7 @@ private:
 	
 	
 private:
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	
 	igdeTextField::Ref pEditSkyPath;
 	igdeButton::Ref pBtnSkyPath;
@@ -115,7 +113,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky wrapper or nullptr if not set. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline const igdeWSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky wrapper or nullptr if not set. */
 	void SetSky(igdeWSky *sky);

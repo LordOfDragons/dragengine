@@ -35,6 +35,8 @@
 #include "../../../undosys/properties/shape/reUSetShapeCapsuleHalfHeight.h"
 #include "../../../undosys/properties/shape/reUSetShapeCapsuleTopRadius.h"
 #include "../../../undosys/properties/shape/reUSetShapeCapsuleBottomRadius.h"
+#include "../../../undosys/properties/shape/reUSetShapeCapsuleBottomAxisScaling.h"
+#include "../../../undosys/properties/shape/reUSetShapeCapsuleTopAxisScaling.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -43,6 +45,8 @@
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>
 
@@ -132,6 +136,46 @@ public:
 	}
 };
 
+class cEditBottomAxisScaling : public igdeEditVector2Listener{
+	reWPPanelShapeCapsule &pPanel;
+public:
+	using Ref = deTObjectReference<cEditBottomAxisScaling>;
+	cEditBottomAxisScaling(reWPPanelShapeCapsule &panel) : pPanel(panel){}
+	
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
+		auto rig = pPanel.GetRig();
+		auto capsule = (reRigShapeCapsule*)pPanel.GetShape();
+		if(!rig || !capsule || editVector2->GetVector2().IsEqualTo(capsule->GetBottomAxisScaling())){
+			return;
+		}
+		
+		auto undo = reUSetShapeCapsuleBottomAxisScaling::Ref::New(capsule, editVector2->GetVector2());
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
+		}
+	}
+};
+
+class cEditTopAxisScaling : public igdeEditVector2Listener{
+	reWPPanelShapeCapsule &pPanel;
+public:
+	using Ref = deTObjectReference<cEditTopAxisScaling>;
+	cEditTopAxisScaling(reWPPanelShapeCapsule &panel) : pPanel(panel){}
+	
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
+		auto rig = pPanel.GetRig();
+		auto capsule = (reRigShapeCapsule*)pPanel.GetShape();
+		if(!rig || !capsule || editVector2->GetVector2().IsEqualTo(capsule->GetTopAxisScaling())){
+			return;
+		}
+		
+		auto undo = reUSetShapeCapsuleTopAxisScaling::Ref::New(capsule, editVector2->GetVector2());
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
+		}
+	}
+};
+
 }
 
 
@@ -155,18 +199,18 @@ reWPPanelShape(wpShapes, reRigShape::estCapsule)
 	
 	helper.EditVector(groupBox, "@Rig.PanelShapeCapsule.Position", "@Rig.PanelShapeCapsule.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	
 	helper.EditVector(groupBox, "@Rig.PanelShapeCapsule.Rotation", "@Rig.PanelShapeCapsule.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
-	
 	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.HalfHeight", "@Rig.PanelShapeCapsule.HalfHeight.ToolTip",
 		pEditHalfHeight, cTextHalfHeight::Ref::New(*this));
-	
 	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.TopRadius", "@Rig.PanelShapeCapsule.TopRadius.ToolTip",
 		pEditTopRadius, cTextTopRadius::Ref::New(*this));
-	
 	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.BottomRadius", "@Rig.PanelShapeCapsule.BottomRadius.ToolTip",
 		pEditBottomRadius, cTextBottomRadius::Ref::New(*this));
+	helper.EditVector2(groupBox, "@Rig.PanelShapeCapsule.TopAxisScaling", "@Rig.PanelShapeCapsule.TopAxisScaling.ToolTip",
+		pEditTopAxisScaling, cEditTopAxisScaling::Ref::New(*this));
+	helper.EditVector2(groupBox, "@Rig.PanelShapeCapsule.BottomAxisScaling", "@Rig.PanelShapeCapsule.BottomAxisScaling.ToolTip",
+		pEditBottomAxisScaling, cEditBottomAxisScaling::Ref::New(*this));
 }
 
 reWPPanelShapeCapsule::~reWPPanelShapeCapsule(){
@@ -188,6 +232,8 @@ void reWPPanelShapeCapsule::UpdateShape(){
 		pEditHalfHeight->SetFloat(capsule->GetHalfHeight());
 		pEditTopRadius->SetFloat(capsule->GetTopRadius());
 		pEditBottomRadius->SetFloat(capsule->GetBottomRadius());
+		pEditBottomAxisScaling->SetVector2(capsule->GetBottomAxisScaling());
+		pEditTopAxisScaling->SetVector2(capsule->GetTopAxisScaling());
 		
 	}else{
 		pEditPosition->SetVector(decVector());
@@ -195,5 +241,7 @@ void reWPPanelShapeCapsule::UpdateShape(){
 		pEditHalfHeight->ClearText();
 		pEditTopRadius->ClearText();
 		pEditBottomRadius->ClearText();
+		pEditBottomAxisScaling->SetVector2(decVector2());
+		pEditTopAxisScaling->SetVector2(decVector2());
 	}
 }

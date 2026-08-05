@@ -52,7 +52,7 @@ meUDeleteNavSpace::meUDeleteNavSpace(meWorld *world){
 	
 	decString text;
 	
-	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	igdeTranslationManager &tm = world->GetEnvironment().GetTranslationManager();
 	
 	SetShortInfo("@World.UDeleteObject.DeleteObjects");
 	if(pNavSpaces.GetCount() > 1){

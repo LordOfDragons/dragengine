@@ -27,8 +27,13 @@
 
 #include "aeRule.h"
 
-#include <dragengine/common/string/decStringList.h>
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyStringList.h>
 
+#include <dragengine/common/string/decStringList.h>
 
 
 /**
@@ -38,25 +43,28 @@ class aeRuleAnimationSelect : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleAnimationSelect>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleAnimationSelect, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleAnimationSelect *rule);
 	
-private:
-	decStringList pMoves;
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
-	
-	aeControllerTarget::Ref pTargetMoveTime;
-	aeControllerTarget::Ref pTargetSelect;
-	
-	
+public:
+	igdeMetaPropertyStringListStorage::Storage mpMoves;
+	igdeMetaPropertyBooleanStorage::Storage mpEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetMoveTime;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetSelect;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleAnimationSelect() = delete;
+	
 	/** Create animator select rule. */
-	explicit aeRuleAnimationSelect(const char *name);
+	explicit aeRuleAnimationSelect(aeWindowMain &windowMain, const char *name);
 	
 	/** Create copy of animator select rule. */
 	aeRuleAnimationSelect(const aeRuleAnimationSelect &copy);
@@ -64,6 +72,8 @@ public:
 	/** Clean up animator select rule. */
 protected:
 	~aeRuleAnimationSelect() override;
+private:
+	aeRuleAnimationSelect(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	
@@ -71,48 +81,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Moves. */
-	inline const decStringList &GetMoves() const{ return pMoves; }
-	
-	/** Set moves. */
-	void SetMoves(const decStringList &moves);
-	
-	
-	
-	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	
-	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
-	
-	/** Orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
-	
-	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool enabled);
-	
-	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
-	
-	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
-	
-	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
-	
-	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
-	
-	
-	
-	/** Move time target. */
-	inline const aeControllerTarget::Ref &GetTargetMoveTime() const{ return pTargetMoveTime; }
-	
-	/** Select target. */
-	inline const aeControllerTarget::Ref &GetTargetSelect() const{ return pTargetSelect; }
-	
-	
-	
 	/** Create engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;
 	
@@ -124,27 +92,16 @@ public:
 	/** Number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const override;
 	
-	/** Remove link from all targets using it. */
-	void RemoveLinkFromTargets(aeLink *link) override;
-	
-	/** Remove all links from all targets. */
-	void RemoveLinksFromAllTargets() override;
-	
-	
 	
 	/** Create copy of rule. */
 	aeRule::Ref CreateCopy() const override;
-	
-	/** List all links of all rule targets. */
-	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another animator difference rule to this animator difference rule. */
-	virtual aeRuleAnimationSelect &operator=(const aeRuleAnimationSelect &copy);
+	aeRuleAnimationSelect &operator=(const aeRuleAnimationSelect &copy) = delete;
 	/*@}*/
 };
 

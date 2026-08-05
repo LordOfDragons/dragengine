@@ -706,6 +706,51 @@ public:
 		return ndict;
 	}
 	
+	/** \brief New dictionary containing keys of this dictionary and entry ontop of it. */
+	decTDictionary<K,V,VP,KP> operator+(const Entry &entry) const{
+		decTDictionary<K,V,VP,KP> ndict(*this);
+		ndict.SetAt(entry.key, entry.value);
+		return ndict;
+	}
+	
+	/** \brief New dictionary containing keys of this dictionary and keys not present in another. */
+	decTDictionary<K,V,VP,KP> operator-(const decTDictionary<K,V,VP,KP> &dict) const{
+		decTDictionary<K,V,VP,KP> ndict;
+		int i;
+		
+		for(i=0; i<pBucketCount; i++){
+			sDictEntry *iterEntry = pBuckets[i];
+			
+			while(iterEntry){
+				if(!dict.Has(iterEntry->key)){
+					ndict.SetAt(iterEntry->key, iterEntry->value);
+				}
+				iterEntry = iterEntry->next;
+			}
+		}
+		
+		return ndict;
+	}
+	
+	/** \brief New dictionary containing keys of this dictionary and not entry. */
+	decTDictionary<K,V,VP,KP> operator-(const K &key) const{
+		decTDictionary<K,V,VP,KP> ndict;
+		int i;
+		
+		for(i=0; i<pBucketCount; i++){
+			sDictEntry *iterEntry = pBuckets[i];
+			
+			while(iterEntry){
+				if(!(iterEntry->key == key)){
+					ndict.SetAt(iterEntry->key, iterEntry->value);
+				}
+				iterEntry = iterEntry->next;
+			}
+		}
+		
+		return ndict;
+	}
+	
 	/**
 	 * \brief Value for key.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
@@ -775,6 +820,22 @@ public:
 			
 			while(iterEntry){
 				SetAt(iterEntry->key, iterEntry->value);
+				iterEntry = iterEntry->next;
+			}
+		}
+		
+		return *this;
+	}
+	
+	/** \brief Remove all keys from dictionary from this dictionary. */
+	decTDictionary<K,V,VP,KP> &operator-=(const decTDictionary<K,V,VP,KP> &dict){
+		int i;
+		
+		for(i=0; i<dict.pBucketCount; i++){
+			sDictEntry *iterEntry = dict.pBuckets[i];
+			
+			while(iterEntry){
+				RemoveIfPresent(iterEntry->key);
 				iterEntry = iterEntry->next;
 			}
 		}

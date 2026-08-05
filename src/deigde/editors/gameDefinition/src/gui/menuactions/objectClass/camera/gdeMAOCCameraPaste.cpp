@@ -62,14 +62,13 @@ gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCCameraPaste",
 ///////////////
 
 igdeUndo::Ref gdeMAOCCameraPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
-		.GetWithTypeName(gdeClipboardDataOCCamera::TYPE_NAME));
+	auto clip = pWindowMain.GetClipboard().
+		GetWithTypeName(gdeClipboardDataOCCamera::TYPE_NAME).DynamicCast<gdeClipboardDataOCCamera>();
 	if(!clip){
 		return {};
 	}
 	
-	const igdeUndo::Ref undo = gdeUOCAddCamera::Ref::New(&objectClass,
-		gdeOCCamera::Ref::New(*clip.DynamicCast<gdeClipboardDataOCCamera>()->GetCamera()));
+	const igdeUndo::Ref undo = gdeUOCAddCamera::Ref::New(&objectClass, gdeOCCamera::Ref::New(*clip->GetCamera()));
 	undo->SetShortInfo("@GameDefinition.Undo.PasteOCCamera");
 	return undo;
 }

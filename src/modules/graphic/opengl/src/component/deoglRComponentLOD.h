@@ -74,7 +74,7 @@ public:
 	decTList<oglVector3> pPositions;
 	decTList<oglVector3> pRealNormals;
 	decTList<oglVector3> pNormals;
-	decTList<oglVector3> pTangents;
+	decTList<oglVector3> pTangents, pTangents2, pTangents3;
 	decTList<oglVector3> pFaceNormals;
 	
 	bool pDirtyModelWeights;

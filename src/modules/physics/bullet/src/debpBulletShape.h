@@ -40,7 +40,7 @@ class btCollisionShape;
  * into debpBulletShape which is reference counted to properly release the
  * bullet shapes once nobody uses them anymore.
  */
-class debpBulletShape : public deObject {
+class debpBulletShape : public deObject{
 private:
 	btCollisionShape *pShape;
 	

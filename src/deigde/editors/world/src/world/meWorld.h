@@ -27,6 +27,7 @@
 
 #include "meMusic.h"
 #include "meLumimeter.h"
+#include "meCamera.h"
 #include "object/meObject.h"
 #include "object/meObjectSelection.h"
 #include "idgroup/meIDGroupID.h"
@@ -43,6 +44,7 @@
 #include <deigde/triggersystem/igdeTriggerExpressionParser.h>
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -56,7 +58,6 @@
 
 class meHeightTerrainNavSpaceType;
 class meHeightTerrainNavSpace;
-class meCamera;
 class meUndoSystem;
 class meHeightTerrainSector;
 class meHeightTerrainTexture;
@@ -77,7 +78,6 @@ class meWorldGuiParameters;
 class meWindowMain;
 
 class igdeEnvironment;
-class igdeWSky;
 
 class decCollisionFilter;
 class decLayerMask;
@@ -156,7 +156,7 @@ private:
 	
 	deWorld::Ref pDEWorld;
 	deColliderVolume::Ref pEngColCollider;
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	igdeWObject::Ref pBgObject;
 	deMicrophone::Ref pEngMicrophone;
 	decVector pLimitBoxMinExtend, pLimitBoxMaxExtend;
@@ -184,9 +184,9 @@ private:
 	meDecalSelection pSelectionDecal;
 	meNavigationSpaceSelection pSelectionNavigationSpace;
 	
-	meCamera *pFreeRoamCamera;
-	meCamera *pPlayerCamera;
-	meCamera *pActiveCamera;
+	meCamera::Ref pFreeRoamCamera;
+	meCamera::Ref pPlayerCamera;
+	meCamera::Ref pActiveCamera;
 	
 	meLumimeter::Ref pLumimeter;
 	mePathFindTest::Ref pPathFindTest;
@@ -232,7 +232,7 @@ public:
 	/** Retrieves the engine side world resource. */
 	inline const deWorld::Ref &GetEngineWorld() const{ return pDEWorld; }
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline const igdeWSky::Ref &GetSky() const{ return pSky; }
 	/** Background object wrapper. */
 	inline const igdeWObject::Ref &GetBgObject() const{ return pBgObject; }
 	/** Retrieves the microphone. */
@@ -464,11 +464,11 @@ public:
 	/** \name Camera */
 	/*@{*/
 	/** Retrieves the free roaming camera. */
-	inline meCamera *GetFreeRoamingCamera() const{ return pFreeRoamCamera; }
+	inline const meCamera::Ref &GetFreeRoamingCamera() const{ return pFreeRoamCamera; }
 	/** Retrieves the player camera. */
-	inline meCamera *GetPlayerCamera() const{ return pPlayerCamera; }
+	inline const meCamera::Ref &GetPlayerCamera() const{ return pPlayerCamera; }
 	/** Retrieves the active camera. */
-	inline meCamera *GetActiveCamera() const{ return pActiveCamera; }
+	inline const meCamera::Ref &GetActiveCamera() const{ return pActiveCamera; }
 	/** Sets the active camera. */
 	void SetActiveCamera(meCamera *camera);
 	/*@}*/

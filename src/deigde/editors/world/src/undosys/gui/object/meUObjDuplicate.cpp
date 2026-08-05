@@ -54,7 +54,7 @@ pWorld(nullptr)
 	SetShortInfo("@World.UObjDuplicate.DuplicateObjects");
 	
 	list.Visit([&](const meObject &object){
-		const meObject::Ref duplicate(meObject::Ref::New(world->GetEnvironment()));
+		const meObject::Ref duplicate(meObject::Ref::New(&world->GetEnvironment()));
 		
 		duplicate->SetClassName(object.GetClassName());
 		duplicate->SetPosition(object.GetPosition() + decDVector(offset));

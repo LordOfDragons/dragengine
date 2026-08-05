@@ -46,8 +46,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Calculate matrix for box parameters. */
-	void CalcMatrix(decMatrix &matrix, const decVector &position, float radius);
+	/** Calculate matrix for sphere parameters. */
+	void CalcMatrix(decMatrix &matrix, const decVector &position, float radius,
+		const decVector2 &axisScaling, const decQuaternion &orientation);
 	
 	/** Add lines data. */
 	void AddVBOLines(sVBOData *data) override;

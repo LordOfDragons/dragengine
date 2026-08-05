@@ -488,7 +488,7 @@ void skyeLoadSaveSky::pReadLink(const decXmlElementTag &root, skyeSky &sky){
 }
 
 void skyeLoadSaveSky::pReadLayer(const decXmlElementTag &root, skyeSky &sky){
-	const skyeLayer::Ref layer(skyeLayer::Ref::New(*sky.GetEnvironment()));
+	const skyeLayer::Ref layer(skyeLayer::Ref::New(sky.GetEnvironment()));
 	const int elementCount = root.GetElementCount();
 	int i;
 	

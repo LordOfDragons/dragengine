@@ -350,9 +350,10 @@ void *igdeListBox::GetSelectedItemData() const{
 	return item ? item->GetData() : nullptr;
 }
 
-deObject::Ref igdeListBox::GetSelectedItemRefData() const{
+const deObject::Ref &igdeListBox::GetSelectedItemRefData() const{
+	static const deObject::Ref nullref;
 	igdeListItem * const item = GetSelectedItem();
-	return item ? item->GetRefData() : deObject::Ref();
+	return item ? item->GetRefData() : nullref;
 }
 
 void igdeListBox::SetSelection(int selection){
@@ -555,6 +556,7 @@ void igdeListBox::AddListener(igdeListBoxListener *listener){
 void igdeListBox::RemoveListener(igdeListBoxListener *listener){
 	pListeners.Remove(listener);
 }
+
 void igdeListBox::NotifySelectionChanged(){
 	const auto listeners(pListeners);
 	listeners.Visit([&](igdeListBoxListener &l){

@@ -92,7 +92,7 @@ void igdeNativeFoxContainerBorder::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxContainerBorder::layout(){
-	// unfortunately wee need to re-implement the layout code from FXPacker::layout().
+	// unfortunately we need to re-implement the layout code from FXPacker::layout().
 	// this is required since for border layout to work properly the widgets have to be
 	// processed in the correct order or the result is incorrect.
 	// 

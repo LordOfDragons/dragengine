@@ -32,6 +32,7 @@
 
 class aeAttachment;
 class aeAnimator;
+class aeWindowMain;
 
 class decBaseFileReader;
 class decBaseFileWriter;
@@ -46,6 +47,7 @@ class decXmlElementTag;
  */
 class aeLoadSaveAttachmentConfig : public igdeBaseXML{
 private:
+	aeWindowMain &pWindowMain;
 	decString pName;
 	decString pPattern;
 	
@@ -53,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create load/save. */
-	aeLoadSaveAttachmentConfig(deLogger *logger, const char *loggerSource);
+	aeLoadSaveAttachmentConfig(aeWindowMain &windowMain, deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	

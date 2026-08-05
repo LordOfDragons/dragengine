@@ -123,7 +123,6 @@ private:
 	igdeToolBar::Ref pTBFile;
 	igdeToolBar::Ref pTBEdit;
 	
-	igdeClipboard pClipboard;
 	syneConfiguration pConfiguration;
 	syneLoadSaveSystem pLoadSaveSystem;
 	
@@ -162,8 +161,8 @@ public:
 	inline const syneConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
-	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** \brief Load save system. */
 	inline syneLoadSaveSystem &GetLoadSaveSystem(){ return pLoadSaveSystem; }

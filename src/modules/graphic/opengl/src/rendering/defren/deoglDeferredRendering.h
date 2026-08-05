@@ -151,6 +151,11 @@ public:
 	/** Resizes the buffers. */
 	void Resize(int width, int height, int layerCount = 1);
 	
+	/** Texture coordinate clamping in u direction. */
+	inline float GetClampU() const{ return pClampU; }
+	
+	/** Texture coordinate clamping in v direction. */
+	inline float GetClampV() const{ return pClampV; }
 	
 	
 	/** Fade out near render range. */

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "reRigShapeBox.h"
 #include "../reRig.h"
 #include "../bone/reRigBone.h"
@@ -48,13 +44,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigShapeBox::reRigShapeBox(deEngine *engine) : reRigShape(engine, estBox){
-	pHalfExtends.Set(0.5f, 0.5f, 0.5f);
+reRigShapeBox::reRigShapeBox(deEngine *engine) :
+reRigShape(engine, estBox),
+pHalfExtends(0.5f, 0.5f, 0.5f),
+pTapering(1.0f, 1.0f){
 }
 
-reRigShapeBox::~reRigShapeBox(){
-}
-
+reRigShapeBox::~reRigShapeBox() = default;
 
 
 // Management
@@ -67,11 +63,21 @@ void reRigShapeBox::SetHalfExtends(const decVector &halfExtends){
 	}
 }
 
+void reRigShapeBox::SetTapering(const decVector2 &tapering){
+	if(tapering.IsEqualTo(pTapering)){
+		return;
+	}
+	
+	pTapering = tapering;
+	NotifyShapeChanged();
+}
+
 reRigShape::Ref reRigShapeBox::Duplicate() const{
 	const reRigShapeBox::Ref shape(reRigShapeBox::Ref::New(GetEngine()));
 	shape->SetPosition(GetPosition());
 	shape->SetOrientation(GetOrientation());
-	shape->SetHalfExtends(GetHalfExtends());
+	shape->SetHalfExtends(pHalfExtends);
+	shape->SetTapering(pTapering);
 	return shape;
 }
 
@@ -81,6 +87,6 @@ void reRigShapeBox::Scale(float scale){
 }
 
 decShape::Ref reRigShapeBox::CreateShape(){
-	return decShapeBox::Ref::New(pHalfExtends, GetPosition(),
+	return decShapeBox::Ref::New(pHalfExtends, pTapering, GetPosition(),
 		decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
 }

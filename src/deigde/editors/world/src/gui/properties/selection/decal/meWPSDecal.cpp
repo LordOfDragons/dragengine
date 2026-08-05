@@ -556,7 +556,6 @@ void meWPSDecal::SetWorld(meWorld *world){
 	}
 	
 	if(pWorld){
-		pEditProperties->SetClipboard(nullptr);
 		pEditProperties->SetUndoSystem(nullptr);
 		pEditProperties->SetTriggerTargetList(nullptr);
 		pEditProperties->SetIdentifiers(decStringSet());
@@ -568,7 +567,6 @@ void meWPSDecal::SetWorld(meWorld *world){
 	
 	if(world){
 		world->AddNotifier(pListener);
-		pEditProperties->SetClipboard(&pWPSelection.GetWindowProperties().GetWindowMain().GetClipboard());
 		pEditProperties->SetUndoSystem(world->GetUndoSystem());
 		pEditProperties->SetTriggerTargetList(&world->GetTriggerTable());
 	}

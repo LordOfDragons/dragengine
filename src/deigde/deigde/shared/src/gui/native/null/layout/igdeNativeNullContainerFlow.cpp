@@ -47,6 +47,9 @@ void igdeNativeNullContainerFlow::DestroyNativeWidget(igdeContainerFlow&, void *
 	delete (igdeNativeNullContainerFlow*)native;
 }
 
+void igdeNativeNullContainerFlow::ChildAdded(igdeContainerFlow&, void*){
+}
+
 void igdeNativeNullContainerFlow::ChildRemoved(igdeContainerFlow&, void*){
 }
 

@@ -35,8 +35,8 @@
 #include "../font/feFont.h"
 #include "../font/feGenerateFont.h"
 #include "../loadsave/feLoadSaveSystem.h"
-#include "../clipboard/feClipboard.h"
 
+#include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -81,7 +81,6 @@ igdeEditorWindow(module)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
-	pClipboard = nullptr;
 	pLoadSaveSystem = nullptr;
 
 	// init the default font
@@ -95,7 +94,6 @@ igdeEditorWindow(module)
 	pListener = feWindowMainListener::Ref::New(*this);
 	pLoadSaveSystem = new feLoadSaveSystem(this);
 	pConfiguration = new feConfiguration(*this);
-	pClipboard = new feClipboard;
 	
 	pConfiguration->LoadConfiguration();
 	
@@ -120,9 +118,6 @@ igdeEditorWindow(module)
 feWindowMain::~feWindowMain(){
 	if(pConfiguration){
 		pConfiguration->SaveConfiguration();
-	}
-	if(pClipboard){
-		delete pClipboard;
 	}
 	
 	SetFont(nullptr);
@@ -475,7 +470,7 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(pWindow.GetClipboard().HasClip());
+		SetEnabled(pWindow.GetClipboard().GetData().IsNotEmpty());
 	}
 };
 

@@ -25,13 +25,35 @@
 #ifndef _AEANIMATOR_H_
 #define _AEANIMATOR_H_
 
-#include "aeAnimatorNotifier.h"
+#include "aeCamera.h"
 #include "attachment/aeAttachment.h"
 #include "controller/aeController.h"
 #include "link/aeLink.h"
 #include "rule/aeRule.h"
 
+#include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
+#include <deigde/meta/igdeMetaContext.h>
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyContext.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyInteger.h>
+#include <deigde/meta/property/igdeMetaPropertyList.h>
+#include <deigde/meta/property/igdeMetaPropertyObject.h>
+#include <deigde/meta/property/igdeMetaPropertyPath.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
+#include <deigde/meta/property/igdeMetaPropertySliderBoard.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyStringSet.h>
+#include <deigde/meta/property/igdeMetaPropertyTreeList.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
+#include <deigde/utils/igdeUniqueNameGenerator.h>
+
 #include <dragengine/deObject.h>
+#include <dragengine/deTWeakObjectReference.h>
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -45,22 +67,17 @@
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/deAnimatorInstance.h>
 
-#include <deigde/editableentity/igdeEditableEntity.h>
-#include <deigde/gui/wrapper/igdeWObject.h>
 
 // predefinitions
 class igdeEnvironment;
 
 class aeAnimatorLocomotion;
 class aeWakeboard;
-class aeRule;
 class aeUndoSystem;
-class aeCamera;
 class aeSubAnimator;
 class aeWindowMain;
 
 class igdeGameDefinition;
-class igdeWSky;
 class igdeWCoordSysArrows;
 
 class deEngine;
@@ -78,8 +95,8 @@ class deLogger;
 class aeAnimator : public igdeEditableEntity{
 public:
 	using Ref = deTObjectReference<aeAnimator>;
-	using AttachmentSet = decTObjectOrderedSet<aeAttachment>;
-	using NotifierSet = decTObjectOrderedSet<aeAnimatorNotifier>;
+	using WeakRef = deTWeakObjectReference<aeAnimator>;
+	using AttachmentSet = decTObjectSet<aeAttachment>;
 	
 public:
 	/** Collision Layers. */
@@ -103,11 +120,34 @@ public:
 		eclGizmo
 	};
 	
+	using MetaContext = igdeMetaContextType<aeAnimator>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextController(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextLink(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextRule(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextPlayground(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextAttachment(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextView(aeWindowMain &windowMain, aeAnimator *animator);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
+	template<typename T>
+	using MetaPropertyNoCapture = igdeMetaPropertyMCTNoCapture<T, MetaContext>;
+	
 private:
 	aeWindowMain &pWindowMain;
+	MetaContext::Ref pMetaContext;
+	MetaContext::Ref pMetaContextController;
+	MetaContext::Ref pMetaContextLink;
+	MetaContext::Ref pMetaContextRule;
+	MetaContext::Ref pMetaContextPlayground;
+	MetaContext::Ref pMetaContextAttachment;
+	MetaContext::Ref pMetaContextView;
+	
 	deWorld::Ref pEngWorld;
 	
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	igdeWObject::Ref pEnvObject;
 	
 	deLight::Ref pEngLight;
@@ -121,43 +161,51 @@ private:
 	decTUniqueList<igdeWCoordSysArrows> pDDSBones;
 	float pDDSBoneSize;
 	
-	decString pDisplayModelPath;
-	decString pDisplaySkinPath;
-	decString pDisplayRigPath;
-	
-	decString pRigPath;
-	decString pAnimationPath;
-	
-	aeCamera *pCamera;
-	
-	aeController::List pControllers;
-	aeController *pActiveController;
-	
-	aeLink::List pLinks;
-	aeLink *pActiveLink;
-	
-	aeRule::List pRules;
-	aeRule *pActiveRule;
-	
-	decStringSet pListBones;
-	decStringSet pListVertexPositionSets;
-	
-	AttachmentSet pAttachments;
-	aeAttachment::Ref pActiveAttachment;
-	
-	bool pPaused;
-	float pPlaySpeed;
-	float pTimeStep;
+	aeCamera::Ref pCamera;
 	
 	aeAnimatorLocomotion *pLocomotion;
 	aeWakeboard *pWakeboard;
-	aeSubAnimator *pSubAnimator;
-	aeSubAnimator *pTestingSubAnimator;
-	bool pResetState;
+	deTUniqueReference<aeSubAnimator> pSubAnimator;
+	deTUniqueReference<aeSubAnimator> pTestingSubAnimator;
 	
-	decString pPathAttConfig;
 	
-	NotifierSet pNotifiers;
+public:
+	igdeMetaPropertyStringSetStorage::Storage mpHiddenBoneNames, mpHiddenVpsNames, mpHiddenMoveNames;
+	
+	igdeMetaPropertyPathStorage::Storage mpRigPath, mpAnimationPath;
+	igdeMetaPropertyStringSetStorage::Storage mpAffectedBones, mpAffectedVps;
+	
+	igdeMetaPropertyListStorage<aeController>::Storage mpControllers;
+	igdeMetaPropertyContextStorage::Storage mpController;
+	
+	igdeMetaPropertyListStorage<aeLink>::Storage mpLinks;
+	igdeMetaPropertyContextStorage::Storage mpLink;
+	
+	igdeMetaPropertyTreeListStorage<aeRule>::Storage mpRuleTree;
+	igdeMetaPropertyListStorage<aeRule>::Storage mpRules;
+	igdeMetaPropertyContextStorage::Storage mpRule;
+	
+	igdeMetaPropertyObjectType<aeController>::ObjectTypeList mpAllowedListControllers;
+	
+	igdeMetaPropertySliderBoardStorage<aeController::MetaContext>::Storage mpPlaygroundControllers;
+	
+	igdeMetaPropertyPathStorage::Storage mpDisplayModelPath, mpDisplaySkinPath, mpDisplayRigPath;
+	
+	igdeMetaPropertyPathStorage::Storage mpBaseAnimatorPath;
+	igdeMetaPropertyBooleanStorage::Storage mpResetState;
+	
+	igdeMetaPropertyFloatStorage::Storage mpPlaySpeed, mpTimeStep;
+	igdeMetaPropertyBooleanStorage::Storage mpPaused;
+	
+	igdeMetaPropertyContextStorage::Storage mpSky, mpEnvironmentObject, mpCamera;
+	
+	igdeMetaPropertySetStorage<aeAttachment>::Storage mpAttachments;
+	igdeMetaPropertyContextStorage::Storage mpAttachment;
+	
+	igdeUniqueNameGenerator uniqueNameController, uniqueNameLink, uniqueNameRule, uniqueNameAttachment;
+	
+	decString pathAttachmentConfig;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -174,144 +222,89 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	aeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	
+	/** Meta context. */
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
+	inline const MetaContext::Ref &GetMetaContextController() const{ return pMetaContextController; }
+	inline const MetaContext::Ref &GetMetaContextLink() const{ return pMetaContextLink; }
+	inline const MetaContext::Ref &GetMetaContextRule() const{ return pMetaContextRule; }
+	inline const MetaContext::Ref &GetMetaContextPlayground() const{ return pMetaContextPlayground; }
+	inline const MetaContext::Ref &GetMetaContextAttachment() const{ return pMetaContextAttachment; }
+	inline const MetaContext::Ref &GetMetaContextView() const{ return pMetaContextView; }
 	
 	/** Dispose of all resources. */
 	void Dispose();
 	
-	/** Resets the actor animator. */
-	void Reset();
-	
-	/** Retrieves the display model path. */
-	inline const decString &GetDisplayModelPath() const{ return pDisplayModelPath; }
-	/** Sets the display model path. */
-	void SetDisplayModelPath(const char *path);
-	/** Retrieves the display skin path. */
-	inline const decString &GetDisplaySkinPath() const{ return pDisplaySkinPath; }
-	/** Sets the display skin path. */
-	void SetDisplaySkinPath(const char *path);
-	/** Retrieves the display rig path. */
-	inline const decString &GetDisplayRigPath() const{ return pDisplayRigPath; }
-	/** Sets the display rig path. */
-	void SetDisplayRigPath(const char *path);
-	
-	/** Retrieves the rig path. */
-	inline const decString &GetRigPath() const{ return pRigPath; }
-	/** Sets the rig path. */
-	void SetRigPath(const char *path);
-	/** Retrieves the rig path. */
-	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
-	/** Sets the rig path. */
-	void SetAnimationPath(const char *path);
-	
 	/** Determines if bones are shown. */
 	bool GetShowBones() const;
+	
 	/** Sets if bones are shown. */
 	void SetShowBones(bool showBones);
+	
 	/** Retrieves the base debug drawer bone size. */
 	inline float GetDDBoneSize() const{ return pDDSBoneSize; }
+	
 	/** Set the base debug drawer bone scale. */
 	void SetDDBoneSize(float size);
-	
-	/** Determines if the animation is paused. */
-	inline bool GetPaused() const{ return pPaused; }
-	/** Sets if the animation is paused. */
-	void SetPaused(bool paused);
-	/** Retrieves the play speed. */
-	inline float GetPlaySpeed() const{ return pPlaySpeed; }
-	/** Sets the play speed. */
-	void SetPlaySpeed(float playSpeed);
-	/** Retrieves the time step. */
-	inline float GetTimeStep() const{ return pTimeStep; }
-	/** Sets the time step. */
-	void SetTimeStep(float timeStep);
 	
 	/** Retrieves the engine debug drawer for bones. */
 	inline const deDebugDrawer::Ref &GetDDBones() const{ return pDDBones; }
 	
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline const igdeWSky::Ref &GetSky() const{ return pSky; }
+	
 	/** Retrieves the environment wrapper object. */
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the locomotion. */
 	inline aeAnimatorLocomotion &GetLocomotion() const{ return *pLocomotion; }
+	
 	/** Retrieves the wakeboard. */
 	inline aeWakeboard &GetWakeboard() const{ return *pWakeboard; }
-	/** Retrieves the sub animator. */
-	inline aeSubAnimator *GetSubAnimator() const{ return pSubAnimator; }
-	/** Retrieves the testing sub animator. */
-	inline aeSubAnimator *GetTestingSubAnimator() const{ return pTestingSubAnimator; }
 	
-	/** Determines if the state is reset before applying the animator. */
-	inline bool GetResetState() const{ return pResetState; }
-	/** Sets if the state is reset before applying the animator. */
-	void SetResetState(bool resetState);
+	/** Retrieves the sub animator. */
+	inline const deTUniqueReference<aeSubAnimator> &GetSubAnimator() const{ return pSubAnimator; }
+	
+	/** Retrieves the testing sub animator. */
+	inline const deTUniqueReference<aeSubAnimator> &GetTestingSubAnimator() const{ return pTestingSubAnimator; }
 	
 	/** Force physics module to update attachments. */
 	void AttachmentsForceUpdate();
+	
 	/** Reset simulation. */
 	void ResetSimulation();
-	
-	
-	
-	/** Last file dialog attachment configuration path. */
-	inline const decString &GetPathAttachmentConfig() const{ return pPathAttConfig; }
-	
-	/** Set last file dialog attachment configuration path. */
-	void SetPathAttachmentConfig(const char *path);
 	/*@}*/
 	
 	/** \name Engine Specific */
 	/*@{*/
 	/** Retrieves the engine world. */
 	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
+	
 	/** Retrieves the engine animator. */
 	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
+	
 	/** Retrieves the engine animator instance. */
 	inline const deAnimatorInstance::Ref &GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
+	
 	/** Retrieves the engine component. */
 	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
+	
 	/** Retrieves the engine light. */
 	inline const deLight::Ref &GetEngineLight() const{ return pEngLight; }
+	
 	/** Retrieves the engine collider. */
 	inline const deColliderComponent::Ref &GetEngineCollider() const{ return pEngCollider; }
+	
 	/** Updates the world. */
 	void UpdateWorld(float elapsed);
+	
 	/** Retrieves the camera. */
-	inline aeCamera *GetCamera() const{ return pCamera; }
+	inline const aeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Engine rig if present. */
 	inline const deRig::Ref &GetEngineRig() const{ return pEngRig; }
-	/*@}*/
 	
-	
-	
-	/** \name Controllers */
-	/*@{*/
-	/** Controllers. */
-	inline const aeController::List &GetControllers() const{ return pControllers; }
-	
-	/** Add controller. */
-	void AddController(aeController *controller);
-	
-	/** Insert new controller. */
-	void InsertControllerAt(aeController *controller, int index);
-	
-	/** Move controller to a new position. */
-	void MoveControllerTo(aeController *controller, int index);
-	
-	/** Remove given controller. */
-	void RemoveController(aeController *controller);
-	
-	/** Remove all controllers. */
-	void RemoveAllControllers();
-	
-	/** Active controller or nullptr. */
-	inline aeController *GetActiveController() const{ return pActiveController; }
-	
-	/** Set active controller or nullptr. */
-	void SetActiveController(aeController *controller);
 	
 	/** Reset all controllers for use with the locomotion system. */
 	void ResetControllers();
@@ -324,219 +317,14 @@ public:
 	
 	/** Increment all controller with the given locomotion attribute. */
 	void IncrementControllersWith(int locomotionAttribute, float incrementBy);
-	/*@}*/
 	
-	
-	
-	/** \name Links */
-	/*@{*/
-	/** Links. */
-	inline const aeLink::List &GetLinks() const{ return pLinks; }
-	
-	/** Add link. */
-	void AddLink(aeLink *link);
-	
-	/** Remove link. */
-	void RemoveLink(aeLink *link);
-	
-	/** Remove all links. */
-	void RemoveAllLinks();
-	
-	/** Active link or nullptr. */
-	inline aeLink *GetActiveLink() const{ return pActiveLink; }
-	
-	/** Set active link or nullptr. */
-	void SetActiveLink(aeLink *link);
 	
 	/** Number of targets using a given link. */
 	int CountLinkUsage(aeLink *link) const;
-	/*@}*/
 	
-	
-	
-	/** \name Rules */
-	/*@{*/
-	/** Rules. */
-	inline const aeRule::List &GetRules() const{ return pRules; }
-	
-	/** Add rule. */
-	void AddRule(aeRule *rule);
-	
-	/** Insert rule. */
-	void InsertRuleAt(aeRule *rule, int index);
-	
-	/** Move rule to new position. */
-	void MoveRuleTo(aeRule *rule, int index);
-	
-	/** Remove rule. */
-	void RemoveRule(aeRule *rule);
-	
-	/** Remove all rules. */
-	void RemoveAllRules();
-	
-	/** Active rule or nullptr. */
-	inline aeRule *GetActiveRule() const{ return pActiveRule; }
-	
-	/** Set active rule or nullptr. */
-	void SetActiveRule(aeRule *rule);
 	
 	/** Rebuild rules. */
 	void RebuildRules();
-	/*@}*/
-	
-	
-	
-	/** \name Bone Management */
-	/*@{*/
-	/** List of bones. */
-	inline const decStringSet &GetListBones() const{ return pListBones; }
-	
-	/** Set list of bones. */
-	void SetListBones(const decStringSet &bones);
-	
-	/** Adds a bone. */
-	void AddBone(const char *bone);
-	
-	/** Removes the given bone. */
-	void RemoveBone(const char *bone);
-	
-	/** Removes all bones. */
-	void RemoveAllBones();
-	/*@}*/
-	
-	
-	
-	/** \name Vertex position set Management */
-	/*@{*/
-	/** List of vertex position sets. */
-	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
-	
-	/** Set list of vertex position sets. */
-	void SetListVertexPositionSets(const decStringSet &sets);
-	
-	/** Adds a vertex position set. */
-	void AddVertexPositionSet(const char *vertexPositionSet);
-	
-	/** Removes the given vertex position set. */
-	void RemoveVertexPositionSet(const char *vertexPositionSet);
-	
-	/** Removes all vertex position sets. */
-	void RemoveAllVertexPositionSets();
-	/*@}*/
-	
-	
-	
-	/** \name Attachments */
-	/*@{*/
-	/** Attachments. */
-	inline const AttachmentSet &GetAttachments() const{ return pAttachments; }
-	
-	/** Visitor to find attachment by name. */
-	aeAttachment *GetAttachmentNamed(const char *name) const;
-	
-	/** Add attachment. */
-	void AddAttachment(aeAttachment *attachment);
-	
-	/** Remove attachment. */
-	void RemoveAttachment(aeAttachment *attachment);
-	
-	/** Removes all attachments. */
-	void RemoveAllAttachments();
-	
-	/** Active attachment or nullptr. */
-	inline const aeAttachment::Ref &GetActiveAttachment() const{ return pActiveAttachment; }
-	
-	/** Set active attachment or nullptr. */
-	void SetActiveAttachment(aeAttachment *attachment);
-	
-	/** Attach all attachments. */
-	void AttachAttachments();
-	
-	/** Detach all attachments. */
-	void DetachAttachments();
-	
-	/** Reset physics states of all attachments. */
-	void AttachmentsResetPhysics();
-	/*@}*/
-	
-	
-	/** \name Notifiers */
-	/*@{*/
-	/** Notifiers. */
-	inline const NotifierSet &GetNotifiers() const{ return pNotifiers; }
-	
-	/** Add notifier. */
-	void AddNotifier(aeAnimatorNotifier *notifier);
-	
-	/** Remove notifier. */
-	void RemoveNotifier(aeAnimatorNotifier *notifier);
-	
-	/** Removes all notifiers. */
-	void RemoveAllNotifiers();
-	
-	/** Notifies all listeners that the changed or saved state changed. */
-	void NotifyStateChanged() override;
-	/** Notifies all listeners that the undo system changed. */
-	void NotifyUndoChanged() override;
-	/** Notifies all that the animator changed. */
-	void NotifyAnimatorChanged();
-	/** Notifies all that the view changed. */
-	void NotifyViewChanged();
-	/** Notifies all that the model changed. */
-	void NotifyModelChanged();
-	/** Notifies all that the sky changed. */
-	void NotifySkyChanged();
-	/** Notifies all that the environment object changed. */
-	void NotifyEnvObjectChanged();
-	/** Notifies all that the rig changed. */
-	void NotifyRigChanged();
-	/** Notifies all that the animation changed. */
-	void NotifyAnimationChanged();
-	/** Notifies all that the playback changed. */
-	void NotifyPlaybackChanged();
-	/** Notifies all that the locomotion changed. */
-	void NotifyLocomotionChanged();
-	
-	/** Notifies all that the active controller has changed. */
-	void NotifyActiveControllerChanged();
-	/** Notifies all that a controller has changed. */
-	void NotifyControllerChanged(aeController *controller);
-	/** Notify all controller name changed. */
-	void NotifyControllerNameChanged(aeController *controller);
-	/** Notifies all that a controller value has changed. */
-	void NotifyControllerValueChanged(aeController *controller);
-	/** Notifies all that the order or count of controllers changed. */
-	void NotifyControllerStructureChanged();
-	
-	/** Notifies all that the active link has changed. */
-	void NotifyActiveLinkChanged();
-	/** Notifies all that a link has changed. */
-	void NotifyLinkChanged(aeLink *link);
-	/** Notifies all that a link has changed. */
-	void NotifyLinkNameChanged(aeLink *link);
-	/** Notifies all that the order or count of links changed. */
-	void NotifyLinkStructureChanged();
-	
-	/** Notifies all that the active rule has changed. */
-	void NotifyActiveRuleChanged();
-	/** Notifies all that a rule has changed. */
-	void NotifyRuleChanged(aeRule *rule);
-	/** Notifies all that a rule has changed name. */
-	void NotifyRuleNameChanged(aeRule *rule);
-	/** Notifies all that the order or count of rules changed. */
-	void NotifyRuleStructureChanged();
-	
-	/** Notifies all that the active attachment has changed. */
-	void NotifyActiveAttachmentChanged();
-	/** Notifies all that a attachment has changed. */
-	void NotifyAttachmentChanged(aeAttachment *attachment);
-	/** Notifies all that the count of attachments changed. */
-	void NotifyAttachmentStructureChanged();
-	
-	/** Notifies all that the camera changed. */
-	void NotifyCameraChanged();
-	/** Notifies all that the camera view changed. */
-	void NotifyCameraViewChanged();
 	/*@}*/
 	
 private:
@@ -551,6 +339,12 @@ private:
 	void pAnimCompChanged();
 	void pUpdateEngineControllers();
 	void pUpdateDDSBones();
+	void pUpdateRuleIndices();
+	void pUpdatePlaygroundControllers();
+	
+	void pUpdateHiddenBoneNames();
+	void pUpdateHiddenVertexPositionSetNames();
+	void pUpdateHiddenMoveNames();
 };
 
 #endif

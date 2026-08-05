@@ -672,6 +672,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const int width = defren.GetWidth();
 	float envMapLodLevel = 1.0f;
 	
+	const auto &configSetShadowQuality = renderThread.GetConfigurationSets().ShadowQuality();
+	const auto &configSetReflectionQuality = renderThread.GetConfigurationSets().ReflectionQuality();
+	
 	// sharpness indicates the cone angle from 0 to 90 degrees. at 45 degrees a single cube map face is required
 	// to be sampled. hence 0.5 sharpness has to pick the max lod level from the environment map. to determine
 	// the lod level the log2 from the size times the double-sharpness can be used. to avoid a bad look at very
@@ -760,12 +763,15 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const int ssrRoughnessTapMax = 5; //20;
 	const float ssrRoughnessTapRange = 0.1f;
 	const float ssrRoughnessTapCountScale = (float)ssrRoughnessTapMax / ssrRoughnessTapRange;
-	const int ssrStepCount = config.GetSSRStepCount();
-	const int ssrMaxRayLength = decMath::max(ssrStepCount, (int)(
-		config.GetSSRMaxRayLength() * decMath::max(width, height)));
-	const int ssrSubStepCount = int(floorf(log2f((float)ssrMaxRayLength / (float)ssrStepCount))) + 1;
-	decVector2 ssrMinMaxTCFactor;
+	const int ssrStepCount = configSetReflectionQuality.ssrStepCount;
 	
+	const float ssrRoughnessToPixelRadius = decMath::max(
+		(1.5833f * matrixProjection.a11) / (2.0f * defren.GetPixelSizeU()),
+		(1.5833f * matrixProjection.a22) / (2.0f * defren.GetPixelSizeV()));
+		// see: data/shaderSources/fragment/defren/reflection/applyreflections.frag.glsl
+		
+	#if 0
+	decVector2 ssrMinMaxTCFactor;
 	if(deoglDRDepthMinMax::USAGE_VERSION != -1){
 		// the mip-max texture is the largest factor-of-2 texture size equal to or smaller
 		// than the deferred rendering size. the pixels are sampled by factor two which is:
@@ -780,6 +786,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		ssrMinMaxTCFactor.x = 0.5f * (float)defren.GetRealWidth() / (float)defren.GetDepthMinMax().GetWidth();
 		ssrMinMaxTCFactor.y = 0.5f * (float)defren.GetRealHeight() / (float)defren.GetDepthMinMax().GetHeight();
 	}
+	#endif
 	
 	// lighting
 	const deoglGIState * const giState = plan.GetRenderGIState();
@@ -829,6 +836,18 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		//toneMapBloomStrength *= 0.5f;
 		toneMapBloomBlend *= 0.5f;
 	}
+	
+	// screen space shadow casting
+	// const float ssscMaxLengthBase = 0.02f, ssscMaxLengthScalePerMeter = 0.02f;
+	// const float ssscThicknessBase = 0.01f, ssscThicknessScalePerMeter = 0.01f;
+	// const float ssscMaxLengthBase = 0.005f, ssscMaxLengthScalePerMeter = 0.03f;
+	// const float ssscThicknessBase = 0.0025f, ssscThicknessScalePerMeter = 0.015f;
+	// const float ssscMaxLengthBase = 0.05f, ssscMaxLengthScalePerMeter = 0.02f;
+	// const float ssscThicknessBase = 0.02f, ssscThicknessScalePerMeter = 0.01f;
+	const float ssscMaxLengthBase = 0.05f, ssscMaxLengthScalePerMeter = 0.04f;
+	const float ssscThicknessBase = 0.02f, ssscThicknessScalePerMeter = 0.005f;
+	const int ssscStepCount = configSetShadowQuality.screenSpaceStepCount;
+	const float ssscBorderBlendRange = 0.1f; // relative to range -1..1
 	
 	// render all debug shapes with a z-offset to avoid z-fighting for shapes overlapping rendered
 	// geometry. doing this by default is okay since debug drawers are supposed to be rendered
@@ -940,9 +959,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataVec4(deoglSkinShader::erutSSRParams1,
 			ssrCoverageFactor.x, ssrCoverageFactor.y, ssrPowerEdge, ssrPowerRayLength);
 		spb.SetParameterDataVec4(deoglSkinShader::erutSSRParams2, ssrClipReflDirNearDist,
-			ssrRoughnessTapCountScale, ssrMinMaxTCFactor.x, ssrMinMaxTCFactor.y);
+			ssrRoughnessTapCountScale, ssrRoughnessToPixelRadius, 0.0f);
 		spb.SetParameterDataIVec4(deoglSkinShader::erutSSRParams3,
-			ssrStepCount, ssrSubStepCount, ssrMaxRayLength, ssrRoughnessTapMax);
+			ssrStepCount, 0.0f, 0.0f, ssrRoughnessTapMax);
 		
 		// lighting
 		spb.SetParameterDataVec2(deoglSkinShader::erutAOSelfShadow, config.GetAOSelfShadowEnable() ? 0.1f : 1.0f,
@@ -951,6 +970,14 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataVec2(deoglSkinShader::erutLumFragCoordScale,
 			(float)width / (float)defren.GetTextureLuminance()->GetWidth(),
 			(float)height / (float)defren.GetTextureLuminance()->GetHeight());
+		
+		// screen space shadow casting
+		spb.SetParameterDataVec4(deoglSkinShader::erutSSShadowParams1,
+			ssscMaxLengthBase, ssscMaxLengthScalePerMeter,
+			ssscThicknessBase, ssscThicknessScalePerMeter);
+		
+		spb.SetParameterDataVec4(deoglSkinShader::erutSSShadowParams2,
+			(float)ssscStepCount, ssscBorderBlendRange, 0.0f, 0.0f);
 		
 		// global illumination
 		spb.SetParameterDataMat4x3(deoglSkinShader::erutGIRayMatrix, giMatrix);

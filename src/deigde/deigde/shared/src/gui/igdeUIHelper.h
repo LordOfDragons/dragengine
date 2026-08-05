@@ -36,6 +36,7 @@
 #include "igdeIconListBox.h"
 #include "igdeLabel.h"
 #include "igdeListBox.h"
+#include "igdeListBoxFilter.h"
 #include "igdeProgressBar.h"
 #include "igdeScrollBar.h"
 #include "igdeSlider.h"
@@ -237,6 +238,8 @@ public:
 	void FormLineStretchFirst(igdeContainer &form, const char *label,
 		const char *description, igdeContainer::Ref &line, int labelAlignment);
 	
+	void FormLineStretchFirst(igdeContainer &form, igdeContainer::Ref &line);
+	
 	/**
 	 * \brief Form line with label and container flowing downwards.
 	 * 
@@ -259,7 +262,7 @@ public:
 		igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener);
 	
 	void EditString(igdeContainer &form, const char *label, const char *description,
-		int rows, igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener);
+		int columns, igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener);
 	
 	/**
 	 * \brief Add text field.
@@ -269,13 +272,13 @@ public:
 	void EditString(igdeContainer &parent, const char *description,
 		igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener);
 	
-	void EditString(igdeContainer &parent, const char *description, int rows,
+	void EditString(igdeContainer &parent, const char *description, int columns,
 		igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener);
 	
 	void EditString(const char *description, igdeTextField::Ref &textField,
 		const igdeTextFieldListener::Ref &listener);
 	
-	void EditString(const char *description, int rows, igdeTextField::Ref &textField,
+	void EditString(const char *description, int columns, igdeTextField::Ref &textField,
 		const igdeTextFieldListener::Ref &listener);
 	
 	
@@ -820,6 +823,23 @@ public:
 	
 	
 	
+	/**
+	 * \brief Form line with label and filter list box without headers.
+	 * 
+	 * \warning Listener reference is taken over. Only use with new created listeners.
+	 */
+	void ListBoxFilter(igdeContainer &form, const char *label, int rows, const char *description,
+		igdeListBoxFilter::Ref &listBox, const igdeListBoxListener::Ref &listener);
+	
+	/** \brief Add List Box with no header. */
+	void ListBoxFilter(igdeContainer &parent, int rows, const char *description,
+		igdeListBoxFilter::Ref &listBox, const igdeListBoxListener::Ref &listener);
+	
+	void ListBoxFilter(int rows, const char *description, igdeListBoxFilter::Ref &listBox,
+		const igdeListBoxListener::Ref &listener);
+	
+	
+	
 	/** \brief Add Icon List Box with. */
 	void IconListBox(igdeContainer &parent, igdeIconListBox::Ref &listBox,
 		const sColumnHeader *headers, int headerCount, const char *description,
@@ -999,13 +1019,26 @@ public:
 	
 	
 	/** \brief Add toolbar button. */
-	void ToolBarButton(igdeToolBar &toolBar, const igdeAction::Ref &action);
+	void ToolBarButton(igdeContainer &container, const igdeAction::Ref &action);
+	
+	/** \brief Add toolbar button. */
+	void ToolBarButton(igdeContainer &container, igdeButton::Ref &button, const igdeAction::Ref &action);
+	
+	/** \brief Add toolbar button. */
+	void ToolBarButton(igdeButton::Ref &button, const igdeAction::Ref &action);
 	
 	/** \brief Add toolbar toggle button. */
-	void ToolBarToggleButton(igdeToolBar &toolBar, const igdeAction::Ref &action);
+	void ToolBarToggleButton(igdeContainer &container, const igdeAction::Ref &action);
+	
+	/** \brief Add toolbar toggle button. */
+	void ToolBarToggleButton(igdeContainer &container, igdeToggleButton::Ref &button,
+		const igdeAction::Ref &action);
+	
+	/** \brief Add toolbar toggle button. */
+	void ToolBarToggleButton(igdeToggleButton::Ref &button, const igdeAction::Ref &action);
 	
 	/** \brief Add toolbar separator. */
-	void ToolBarSeparator(igdeToolBar &toolBar);
+	void ToolBarSeparator(igdeContainer &container);
 	
 	
 	

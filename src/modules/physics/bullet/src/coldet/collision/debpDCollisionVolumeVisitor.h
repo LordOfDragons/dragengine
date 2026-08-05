@@ -33,6 +33,7 @@ class debpDCollisionCapsule;
 class debpDCollisionBox;
 class debpDCollisionTriangle;
 class debpDCollisionFrustum;
+class debpDCollisionHull;
 
 
 
@@ -69,6 +70,8 @@ public:
 	virtual void VisitTriangle(debpDCollisionTriangle *triangle);
 	/** Visits a collision frustum. */
 	virtual void VisitFrustum(debpDCollisionFrustum *frustum);
+	/** Visits a collision hull. */
+	virtual void VisitHull(debpDCollisionHull *hull);
 	/*@}*/
 	
 };

@@ -28,6 +28,9 @@
 
 // includes
 #include <deigde/gui/igdeCamera.h>
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
 
 #include <dragengine/common/string/decString.h>
 
@@ -46,36 +49,38 @@ class aeAnimator;
  * This subclass contains attachment specific information.
  */
 class aeCamera : public igdeCamera{
-private:
-	aeAnimator *pAnimator;
+public:
+	using Ref = deTObjectReference<aeCamera>;
 	
-	decString pBone;
+private:
+	aeAnimator &pAnimator;
+	
 	decDVector pFreePosition;
 	decVector pFreeOrientation;
 	float pFreeDistance;
-	decVector pRelPosition;
-	decVector pRelOrientation;
 	bool pDirty;
-	bool pAttachToBone;
 	bool pNoNotify;
+	
+public:
+	igdeMetaPropertyBooleanStorage::Storage mpAttachToBone;
+	igdeMetaPropertyStringStorage::Storage mpBone;
+	igdeMetaPropertyVectorStorage::Storage mpRelativePosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage mpRelativeRotation;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new camera. */
-	aeCamera(aeAnimator *animator, deEngine *engine);
+	aeCamera(aeAnimator &animator, deEngine *engine);
+	
+protected:
 	/** Cleans up the camera object. */
 	~aeCamera() override;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** Bone name. */
-	inline const decString &GetBone() const{ return pBone; }
-	
-	/** Set bone name. */
-	void SetBone(const char *bone);
-	
 	/** Retrieves the free position. */
 	inline const decDVector &GetFreePosition() const{ return pFreePosition; }
 	/** Sets the free position. */
@@ -88,29 +93,12 @@ public:
 	inline float GetFreeDistance() const{ return pFreeDistance; }
 	/** Sets the distance of camera to the center point along the view direction. */
 	void SetFreeDistance(float freeDistance);
-	/** Retrieves the relative position. */
-	inline const decVector &GetRelativePosition() const{ return pRelPosition; }
-	/** Sets the relative position. */
-	void SetRelativePosition(const decVector &relativePosition);
-	/** Retrieves the relative orientation. */
-	inline const decVector &GetRelativeOrientation() const{ return pRelOrientation; }
-	/** Sets the relative orientation. */
-	void SetRelativeOrientation(const decVector &relativeOrientation);
-	/** Determines if this camera is attached to a bone. */
-	inline bool GetAttachToBone() const{ return pAttachToBone; }
-	/** Sets if this camera is attached to a bone. */
-	void SetAttachToBone(bool attachToBone);
 	
 	/** Updates the camera. */
 	void Update();
 	
 	/** Resets the camera. */
 	void Reset() override;
-	
-	/** Parameter changed. */
-	void ParameterChanged() override;
-	/** Adaption changed. */
-	void AdaptionChanged() override;
 	/*@}*/
 };
 

@@ -51,6 +51,7 @@ igdeCheckBox::igdeCheckBox(igdeEnvironment &environment, const char *text,
 	igdeIcon *icon, eButtonStyle style) :
 igdeButton(environment, text, icon, style),
 pChecked(false),
+pCentered(false),
 pNativeCheckBox(nullptr){
 }
 
@@ -58,12 +59,14 @@ igdeCheckBox::igdeCheckBox(igdeEnvironment &environment, const char *text,
 	const char *description, igdeIcon *icon, eButtonStyle style) :
 igdeButton(environment, text, description, icon, style),
 pChecked(false),
+pCentered(false),
 pNativeCheckBox(nullptr){
 }
 
 igdeCheckBox::igdeCheckBox(igdeEnvironment &environment, igdeAction *action, eButtonStyle style) :
 igdeButton(environment, action, style),
 pChecked(false),
+pCentered(false),
 pNativeCheckBox(nullptr)
 {
 	SetAction(action);
@@ -86,6 +89,16 @@ void igdeCheckBox::SetChecked(bool checked){
 	OnCheckedChanged();
 }
 
+void igdeCheckBox::SetCentered(bool centered){
+	if(pCentered == centered){
+		return;
+	}
+	
+	pCentered = centered;
+	if(pNativeCheckBox){
+		pNativeCheckBox->UpdateStyle();
+	}
+}
 
 
 void igdeCheckBox::OnParameterChanged(igdeAction *action){

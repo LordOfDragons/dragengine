@@ -1440,7 +1440,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams){
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	const bool useDitherShadow = deoglShadowMapper::UseShadowDither(config);
+	const bool useDitherShadow = renderThread.GetConfigurationSets().ShadowQuality().ditherShadows;
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglRenderPlan &plan = planLight.GetPlan();
 	decMatrix matrixCamera;
