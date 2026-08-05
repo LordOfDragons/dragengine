@@ -694,7 +694,7 @@ void deoglShaderManager::pLoadIncludableSourcesIn(const char *directory){
 			pIncludableSources.SetAt(filename, source);
 			
 			pCacheValidationString.Add(decString::Formatted("{0}: {1}",
-				filename, reader->GetModificationTime()));
+				filename.GetString(), reader->GetModificationTime()));
 		});
 		
 	}catch(const deException &){
@@ -738,7 +738,7 @@ void deoglShaderManager::pLoadSourcesIn(const char *directory){
 			pSources.SetAt(sources->GetName(), sources);
 			
 			pCacheValidationString.Add(decString::Formatted("{0}: {1}",
-				filename, reader->GetModificationTime()));
+				filename.GetString(), reader->GetModificationTime()));
 		});
 		
 	}catch(const deException &){
