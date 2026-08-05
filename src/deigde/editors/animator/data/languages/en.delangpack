@@ -826,4 +826,6 @@ Apply all rules (all) or blend between two selected rules using the select targe
 	<translation name="Animator.Context.Playground.ToolTip">Playground properties</translation>
 	<translation name="Animator.Context.View">View</translation>
 	<translation name="Animator.Context.View.ToolTip">View properties</translation>
+	<translation name="Animator.Action.Rule.Add">Add</translation>
+	<translation name="Animator.Action.Rule.Add.ToolTip">Add a rule</translation>
 </languagePack>

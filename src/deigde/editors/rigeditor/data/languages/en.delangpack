@@ -520,4 +520,5 @@
 	<!-- Error Messages -->
 	<translation name="Rig.PanelBone.Error.DuplicateName">There exists already a bone named {0}.</translation>
 	<translation name="Rig.PanelBone.Error.InvalidParent">Internal error. Bone '{0}' is not valid as parent and should not have been selectable!</translation>
+	<translation name="Rig.Dialog.GenerateCollisionShapes2.Title">Generate Collision Shapes</translation>
 </languagePack>

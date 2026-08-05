@@ -334,8 +334,8 @@ public:
 	 * 
 	 * \warning This is a dangerous function. Use it only if you know what you are doing.
 	 */
-	inline void *GetData(){ return pData.GetArrayPointer(); }
-	inline const void *GetData() const{ return pData.GetArrayPointer(); }
+	void *GetData();
+	const void *GetData() const;
 	
 	/** \brief Notify peers image data changed. */
 	void NotifyImageDataChanged();
