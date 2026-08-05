@@ -26,12 +26,12 @@ jobs:
       artifactArchive: archives-android-armv8
       buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
   
-  build_android_armv7:
-    needs: [generate_buildnumbers]
-    uses: ./.github/workflows/build_android.yml
-    with:
-      releaseVersion: development
-      buildVersion: '9999'
-      androidArch: 'armv7'
-      artifactArchive: archives-android-armv7
-      buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
+  # build_android_armv7:
+  #   needs: [generate_buildnumbers]
+  #   uses: ./.github/workflows/build_android.yml
+  #   with:
+  #     releaseVersion: development
+  #     buildVersion: '9999'
+  #     androidArch: 'armv7'
+  #     artifactArchive: archives-android-armv7
+  #     buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
