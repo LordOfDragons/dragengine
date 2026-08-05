@@ -146,11 +146,11 @@ public:
 	
 	/** \brief Runtime safe format string using std::vformat. */
 	template<typename... Args>
-	void FormatSafe(const char *format, Args&&... args);
+	void FormatSafe(const char *format, const Args&... args);
 	
 	/** \brief Runtime safe format string using std::vformat. */
 	template<typename... Args>
-	static decString Formatted(const char *format, Args&&... args);
+	static decString Formatted(const char *format, const Args&... args);
 	
 	/** \brief Appends a string. */
 	void Append(const decString &string);
@@ -205,7 +205,7 @@ public:
 	
 	/** \brief Runtime safe append formatted string using std::vformat. */
 	template<typename... Args>
-	inline void AppendFormatSafe(const char *format, Args&&... args){
+	inline void AppendFormatSafe(const char *format, const Args&... args){
 		try{
 			Append(fmt_ns::vformat(std::string_view(format), fmt_ns::make_format_args(args...)).c_str());
 		}catch(const std::exception &){
@@ -582,6 +582,15 @@ struct fmt_ns::formatter<decString> : fmt_ns::formatter<std::string_view>{
 	}
 };
 
+template <>
+struct fmt_ns::formatter<const decString&> : fmt_ns::formatter<std::string_view>{
+	// parse() is inherited from string_view
+	
+	auto format(const decString& s, fmt_ns::format_context& ctx) const{
+		return fmt_ns::formatter<std::string_view>::format(std::string_view(s.GetString()), ctx);
+	}
+};
+
 #ifdef OS_ANDROID
 
 // workaround for broken/missing "long long" handling in std::formatter on Android NDK
@@ -601,7 +610,7 @@ struct fmt_ns::formatter<unsigned long long>{
 
 /** \brief Runtime safe format string using std::vformat. */
 template<typename... Args>
-inline void decString::FormatSafe(const char *format, Args&&... args){
+inline void decString::FormatSafe(const char *format, const Args&... args){
 	try{
 		Set(fmt_ns::vformat(std::string_view(format), fmt_ns::make_format_args(args...)).c_str());
 	}catch(const std::exception &){
@@ -611,9 +620,9 @@ inline void decString::FormatSafe(const char *format, Args&&... args){
 
 /** \brief Runtime safe format string using std::vformat. */
 template<typename... Args>
-inline decString decString::Formatted(const char *format, Args&&... args){
+inline decString decString::Formatted(const char *format, const Args&... args){
 	decString result;
-	result.FormatSafe(format, std::forward<Args>(args)...);
+	result.FormatSafe(format, args...);
 	return result;
 }
 
