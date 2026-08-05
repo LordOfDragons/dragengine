@@ -85,6 +85,16 @@ jobs:
           unzip -d "${{ github.workspace }}/glslang" "${{ github.workspace }}/glslang.zip"
           echo "PATH=${{ github.workspace }}/glslang/bin:$PATH" >> $GITHUB_ENV
       
+      # force download and linking of NDK r29 (29.x)
+      # github uses 27.3.13750724 which is broken and fails building
+      - name: Install Android NDK r29
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r29-beta3 # 29.0.13846066
+          link-to-sdk: true
+          local-cache: true
+      
       - name: Init custom.py
         run: |
           cp ${{ github.workspace }}/.github/workflows/custom_android.py custom.py
