@@ -133,11 +133,11 @@ public:
 	 */
 	template <typename... Args>
 	static void InformationFormat(igdeWidget &owner, const char *title,
-	const char *textFormat, const Args&... args){
+	const char *textFormat, Args&&... args){
 		const decString ttf(owner.TranslateIf(textFormat).ToUTF8());
 		try{
 			decString text;
-			text.FormatSafe(ttf, args...);
+			text.FormatSafe(ttf, std::forward<Args>(args)...);
 			return Information(owner, title, text);
 			
 		}catch(const std::exception &){
@@ -156,11 +156,11 @@ public:
 	 */
 	template <typename... Args>
 	static eButton QuestionFormat(igdeWidget &owner, eButtonSet buttons,
-	const char *title, const char *textFormat, const Args&... args){
+	const char *title, const char *textFormat, Args&&... args){
 		const decString ttf(owner.TranslateIf(textFormat).ToUTF8());
 		try{
 			decString text;
-			text.FormatSafe(ttf, args...);
+			text.FormatSafe(ttf, std::forward<Args>(args)...);
 			return Question(owner, buttons, title, text);
 			
 		}catch(const std::exception &){
@@ -178,11 +178,11 @@ public:
 	 */
 	template <typename... Args>
 	static void WarningFormat(igdeWidget &owner, const char *title,
-	const char *textFormat, const Args&... args){
+	const char *textFormat, Args&&... args){
 		const decString ttf(owner.TranslateIf(textFormat).ToUTF8());
 		try{
 			decString text;
-			text.FormatSafe(ttf, args...);
+			text.FormatSafe(ttf, std::forward<Args>(args)...);
 			return Warning(owner, title, text);
 			
 		}catch(const std::exception &){
@@ -200,11 +200,11 @@ public:
 	 */
 	template <typename... Args>
 	static void ErrorFormat(igdeWidget &owner, const char *title,
-	const char *textFormat, const Args&... args){
+	const char *textFormat, Args&&... args){
 		const decString ttf(owner.TranslateIf(textFormat).ToUTF8());
 		try{
 			decString text;
-			text.FormatSafe(ttf, args...);
+			text.FormatSafe(ttf, std::forward<Args>(args)...);
 			return Error(owner, title, text);
 			
 		}catch(const std::exception &){
@@ -234,11 +234,11 @@ public:
 	 */
 	template <typename... Args>
 	static eButton MessageFormat(igdeWidget &owner, eButtonSet buttons, eIcon icon,
-	const char *title, const char *textFormat, const Args&... args){
+	const char *title, const char *textFormat, Args&&... args){
 		const decString ttf(owner.TranslateIf(textFormat).ToUTF8());
 		try{
 			decString text;
-			text.FormatSafe(ttf, args...);
+			text.FormatSafe(ttf, std::forward<Args>(args)...);
 			return Message(owner, buttons, icon, title, text);
 			
 		}catch(const std::exception &){
