@@ -93,17 +93,17 @@ jobs:
       buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
       sconscache: false
   
-  build_android_armv7:
-    needs: [generate_buildnumbers]
-    uses: ./.github/workflows/build_android.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      releaseVersion: ${{ github.event.inputs.version }}
-      buildVersion: ${{ github.event.inputs.version }}
-      androidArch: 'armv7'
-      artifactArchive: archives-android-armv7
-      buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
-      sconscache: false
+  # build_android_armv7:
+  #   needs: [generate_buildnumbers]
+  #   uses: ./.github/workflows/build_android.yml
+  #   with:
+  #     branch: ${{ github.event.inputs.branch }}
+  #     releaseVersion: ${{ github.event.inputs.version }}
+  #     buildVersion: ${{ github.event.inputs.version }}
+  #     androidArch: 'armv7'
+  #     artifactArchive: archives-android-armv7
+  #     buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
+  #     sconscache: false
   
   build_live:
     needs: [build_linux, build_windows]
