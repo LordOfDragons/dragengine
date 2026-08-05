@@ -93,7 +93,6 @@ jobs:
         with:
           ndk-version: r29-beta3 # 29.0.13846066
           link-to-sdk: true
-          local-cache: true
       
       - name: Init custom.py
         run: |
