@@ -146,21 +146,11 @@ public:
 	
 	/** \brief Runtime safe format string using std::vformat. */
 	template<typename... Args>
-	inline void FormatSafe(const char *format, Args&&... args){
-		try{
-			Set(fmt_ns::vformat(std::string_view(format), fmt_ns::make_format_args(args...)).c_str());
-		}catch(const std::exception &){
-			DEThrowInvalidParam(__FILE__, __LINE__, "Invalid format string or arguments not matching");
-		}
-	}
+	void FormatSafe(const char *format, Args&&... args);
 	
 	/** \brief Runtime safe format string using std::vformat. */
 	template<typename... Args>
-	inline static decString Formatted(const char *format, Args&&... args){
-		decString result;
-		result.FormatSafe(format, std::forward<Args>(args)...);
-		return result;
-	}
+	static decString Formatted(const char *format, Args&&... args);
 	
 	/** \brief Appends a string. */
 	void Append(const decString &string);
@@ -608,5 +598,23 @@ struct fmt_ns::formatter<unsigned long long>{
 	}
 };
 #endif
+
+/** \brief Runtime safe format string using std::vformat. */
+template<typename... Args>
+inline void decString::FormatSafe(const char *format, Args&&... args){
+	try{
+		Set(fmt_ns::vformat(std::string_view(format), fmt_ns::make_format_args(args...)).c_str());
+	}catch(const std::exception &){
+		DEThrowInvalidParam(__FILE__, __LINE__, "Invalid format string or arguments not matching");
+	}
+}
+
+/** \brief Runtime safe format string using std::vformat. */
+template<typename... Args>
+inline decString decString::Formatted(const char *format, Args&&... args){
+	decString result;
+	result.FormatSafe(format, std::forward<Args>(args)...);
+	return result;
+}
 
 #endif
