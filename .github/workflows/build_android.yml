@@ -93,7 +93,9 @@ jobs:
         with:
           ndk-version: r29-beta3 # 29.0.13846066
           link-to-sdk: true
-          local-cache: true
+      
+      - name: Set NDK root to r29
+        run: echo "ANDROID_NDK_ROOT=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
       
       - name: Init custom.py
         run: |
