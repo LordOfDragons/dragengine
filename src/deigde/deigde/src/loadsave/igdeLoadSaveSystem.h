@@ -50,6 +50,7 @@ public:
 		efplModel,
 		efplSkin,
 		efplRig,
+		efplScene,
 		efplAnimation,
 		efplImage,
 		efplSound,

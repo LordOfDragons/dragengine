@@ -206,6 +206,9 @@ void deModuleSystem::DetectModules(){
 		logger.LogInfoFormat(LOGSOURCE, "Loading Service modules");
 		pDetectModulesIn(searchPath.GetPathNative(), "service", emtService);
 		
+		logger.LogInfoFormat(LOGSOURCE, "Loading Scene modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "scene", emtScene);
+		
 		logger.LogInfoFormat(LOGSOURCE, "Finished loading modules");
 		
 	}catch(const deException &e){
@@ -620,6 +623,9 @@ deModuleSystem::eModuleTypes deModuleSystem::GetTypeFromString(const char *typeS
 	}else if(strcmp(typeString, "Service") == 0){
 		return emtService;
 		
+	}else if(strcmp(typeString, "Scene") == 0){
+		return emtScene;
+		
 	}else{
 		return emtUnknown;
 	}
@@ -695,6 +701,9 @@ const char *deModuleSystem::GetTypeDirectory(eModuleTypes type){
 		
 	case emtService:
 		return "service";
+		
+	case emtScene:
+		return "scene";
 		
 	default:
 		DETHROW(deeInvalidParam);

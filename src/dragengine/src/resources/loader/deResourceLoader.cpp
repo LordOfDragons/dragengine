@@ -35,6 +35,7 @@
 #include "tasks/deRLTaskReadModel.h"
 #include "tasks/deRLTaskReadOcclusionMesh.h"
 #include "tasks/deRLTaskReadRig.h"
+#include "tasks/deRLTaskReadScene.h"
 #include "tasks/deRLTaskReadSkin.h"
 #include "tasks/deRLTaskReadSound.h"
 #include "tasks/deRLTaskReadVideo.h"
@@ -58,6 +59,8 @@
 #include "../occlusionmesh/deOcclusionMeshManager.h"
 #include "../rig/deRig.h"
 #include "../rig/deRigManager.h"
+#include "../scene/deScene.h"
+#include "../scene/deSceneManager.h"
 #include "../skin/deSkin.h"
 #include "../skin/deSkinManager.h"
 #include "../sound/deSound.h"
@@ -198,6 +201,14 @@ const char *path, eResourceType resourceType){
 				video = pEngine.GetVideoManager()->LoadVideo(path, "/", false);
 			}
 			task = deRLTaskReadVideo::Ref::New(pEngine, *this, vfs, path, video);
+			}break;
+			
+		case ertScene:{
+			deScene::Ref scene(pEngine.GetSceneManager()->GetSceneWith(vfs, path));
+			if(!scene && !pLoadAsynchron){
+				scene = pEngine.GetSceneManager()->LoadScene(vfs, path, "/");
+			}
+			task = deRLTaskReadScene::Ref::New(pEngine, *this, vfs, path, scene);
 			}break;
 			
 		default:

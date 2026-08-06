@@ -423,6 +423,10 @@ void deClassFileSystem::nfGetFileExtensions::RunFunction(dsRunTime *rt, dsValue 
 		moduleType = deModuleSystem::emtRig;
 		break;
 		
+	case deResourceLoader::ertScene:
+		moduleType = deModuleSystem::emtScene;
+		break;
+		
 	case deResourceLoader::ertSkin:
 		moduleType = deModuleSystem::emtSkin;
 		break;

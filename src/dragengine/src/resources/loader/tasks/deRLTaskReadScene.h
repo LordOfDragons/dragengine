@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,58 @@
  * SOFTWARE.
  */
 
+#ifndef _DERLTASKREADSCENE_H_
+#define _DERLTASKREADSCENE_H_
 
-namespace Dragengine
+#include "deResourceLoaderTask.h"
+#include "../../scene/deScene.h"
 
 
 /**
- * \brief ResourceLoader type.
+ * \brief Read scene resource loader task.
  */
-enum ResourceLoaderType
-	/** \brief Animation. */
-	animation
+class DE_DLL_EXPORT deRLTaskReadScene : public deResourceLoaderTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadScene>;
 	
-	/** \brief Font. */
-	font
 	
-	/** \brief Image. */
-	image
 	
-	/** \brief LanguagePack. */
-	languagePack
+private:
+	deScene::Ref pScene;
+	bool pSucceeded;
 	
-	/** \brief Model. */
-	model
 	
-	/** \brief Occlusion Mesh. */
-	occlusionMesh
 	
-	/** \brief Rig. */
-	rig
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create task. */
+	deRLTaskReadScene(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deScene *scene);
 	
-	/** \brief Scene. */
-	scene
+	/** \brief Clean up task. */
+	~deRLTaskReadScene() override;
+	/*@}*/
 	
-	/** \brief Skin. */
-	skin
 	
-	/** \brief Sound. */
-	sound
 	
-	/** \brief Video. */
-	video
-end
+	/** \name Management */
+	/*@{*/
+	/** \brief Parallel task implementation. */
+	void Run() override;
+	
+	/** \brief Synchronous processing of task Run() finished. */
+	void Finished() override;
+	/*@}*/
+	
+	
+	
+	/** \name Debugging */
+	/*@{*/
+	/** \brief Short task name for debugging. */
+	decString GetDebugName() const override;
+	/*@}*/
+};
+
+#endif

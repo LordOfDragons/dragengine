@@ -41,6 +41,7 @@
 #include "../classes/video/deClassVideo.h"
 #include "../classes/world/deClassModel.h"
 #include "../classes/world/deClassRig.h"
+#include "../classes/world/deClassScene.h"
 #include "../classes/world/deClassSkin.h"
 
 #include <dragengine/deEngine.h>
@@ -57,6 +58,7 @@
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/scene/deScene.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/video/deVideo.h>
@@ -150,6 +152,10 @@ void dedsResourceLoaderTask::NotifyLoadingFinished(deFileResource *resource){
 			
 		case deResourceLoader::ertRig:
 			pDS->GetClassRig()->PushRig(rt, (deRig*)resource);
+			break;
+			
+		case deResourceLoader::ertScene:
+			pDS->GetClassScene()->PushScene(rt, (deScene*)resource);
 			break;
 			
 		case deResourceLoader::ertSkin:
