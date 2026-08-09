@@ -241,6 +241,24 @@
 					</xs:documentation>
 				</xs:annotation>
 			</xs:enumeration>
+			<xs:enumeration value='noCameraNoDelayWait'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Do not change camera and use 0 second delay for speak and no waiting
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='noWait'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						No waiting
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
 		</xs:restriction>
 	</xs:simpleType>
 	
