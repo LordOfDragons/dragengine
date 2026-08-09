@@ -375,7 +375,7 @@ deoxrDeviceComponent *component, bool withPress, bool withTouch){
 }
 
 deoxrDeviceComponent *deoxrDeviceProfile::pAddComponentThumbrest(deoxrDevice &device){
-	return pAddComponent(device, deInputDeviceComponent::ectGeneric, "Thumbrest", "thumbrest", "Thumbrest");
+	return pAddComponent(device, deInputDeviceComponent::ectThumbrest, "Thumbrest", "thumbrest", "Thumbrest");
 }
 
 void deoxrDeviceProfile::pAddButtonThumbrest(deoxrDevice &device, deoxrDeviceComponent *component,
@@ -383,7 +383,7 @@ bool withPress, bool withApproach){
 	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::New(device));
 	button->SetID("trest");
 	button->SetName("Thumbrest");
-	button->SetType(deInputDeviceButton::ebtGeneric);
+	button->SetType(deInputDeviceButton::ebtThumbrest);
 	button->SetDisplayText("ThR");
 	button->SetInputDeviceComponent(component);
 	button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaThumbrestTouch));

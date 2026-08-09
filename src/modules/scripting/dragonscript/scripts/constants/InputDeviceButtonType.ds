@@ -121,4 +121,10 @@ enum InputDeviceButtonType
 	 * \version 1.28
 	 */
 	twoFingerTrigger
+	
+	/**
+	 * \brief Thumbrest.
+	 * \version 1.34
+	 */
+	thumbrest
 end

@@ -131,7 +131,13 @@ public:
 		 * \brief Trigger click simulated by touching two fingers.
 		 * \version 1.28
 		 */
-		ebtTwoFingerTrigger
+		ebtTwoFingerTrigger,
+		
+		/**
+		 * \brief Thumbrest.
+		 * \version 1.34
+		 */
+		ebtThumbrest
 	};
 	
 	

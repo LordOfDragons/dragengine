@@ -59,7 +59,10 @@ public:
 		ectTouchPad,
 		
 		/** \brief Gesture. */
-		ectGesture
+		ectGesture,
+		
+		/** \brief Thumbrest. */
+		ectThumbrest
 	};
 	
 	
