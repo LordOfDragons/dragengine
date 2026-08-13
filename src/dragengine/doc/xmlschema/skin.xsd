@@ -1639,7 +1639,7 @@
 					<xs:documentation><![CDATA[
 						Defines if texture coordinates are clamped instead of repeated. A value of 0 indicates
 						that texture coordinates are repeated. A value of 1 indicates that texture coordinates
-						are clamped to the range of 0 to 1. This is a single value with default 0.
+						are clamped to the range of 0 to 1. This is a single 2-component vector with default (0,0).
 					]]></xs:documentation>
 				</xs:annotation>
 			</xs:enumeration>

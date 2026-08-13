@@ -148,6 +148,81 @@ void deoglRenderBase::AddSharedSPBDefines(deoglShaderDefines &defines){
 	}
 }
 
+deoglTexSamplerConfig &deoglRenderBase::GetSamplerNearest(bool clampU, bool clampV) const{
+	if(clampU && clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampNearest);
+		
+	}else if(clampU){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampUNearest);
+		
+	}else if(clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVNearest);
+		
+	}else{
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatNearest);
+	}
+}
+
+deoglTexSamplerConfig &deoglRenderBase::GetSamplerNearestMipMap(bool clampU, bool clampV) const{
+	if(clampU && clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampNearestMipMap);
+		
+	}else if(clampU){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampUNearestMipMap);
+		
+	}else if(clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVNearestMipMap);
+		
+	}else{
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatNearestMipMap);
+	}
+}
+
+deoglTexSamplerConfig &deoglRenderBase::GetSamplerLinear(bool clampU, bool clampV) const{
+	if(clampU && clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinear);
+		
+	}else if(clampU){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampULinear);
+		
+	}else if(clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVLinear);
+		
+	}else{
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinear);
+	}
+}
+
+deoglTexSamplerConfig &deoglRenderBase::GetSamplerLinearMipMap(bool clampU, bool clampV) const{
+	if(clampU && clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinearMipMap);
+		
+	}else if(clampU){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampULinearMipMap);
+		
+	}else if(clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVLinearMipMap);
+		
+	}else{
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinearMipMap);
+	}
+}
+
+deoglTexSamplerConfig &deoglRenderBase::GetSamplerLinearMipMapNearest(bool clampU, bool clampV) const{
+	if(clampU && clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinearMipMapNearest);
+		
+	}else if(clampU){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampULinearMipMapNearest);
+		
+	}else if(clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVLinearMipMapNearest);
+		
+	}else{
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinearMipMapNearest);
+	}
+}
+
 deoglTexSamplerConfig &deoglRenderBase::GetSamplerClampNearest() const{
 	return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampNearest);
 }
