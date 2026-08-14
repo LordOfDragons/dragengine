@@ -13,32 +13,27 @@ if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
 }
 
 $LibVersion = "1.4.2"
-$BuildDir = Join-Path -Path $ProjectDir -ChildPath "build"
-$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "libavif-$LibVersion-vc64"
 
-# Clean up old builds
-if (Test-Path $BuildDir) {
-    Remove-Item $BuildDir -Force -Recurse
-}
-
+$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-# Extract source archive
-Push-Location $ProjectDir
-Expand-TarXz -Path "$SourceDir\libavif-$LibVersion.tar.xz" -Destination $BuildDir
-Pop-Location
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libavif-$LibVersion.tar.xz" -UrlPath "libavif"
 
-$CmakeSourceDir = Join-Path -Path $BuildDir -ChildPath "libavif-$LibVersion"
-$CmakeBuildDir = Join-Path -Path $BuildDir -ChildPath "cmake_build"
-$CmakeInstallDir = Join-Path -Path $BuildDir -ChildPath "cmake_install"
+Expand-TarXz -Path "$ProjectDir\libavif-$LibVersion.tar.xz" -Destination $ExpandedDir
+
+$CmakeSourceDir = Join-Path -Path $ExpandedDir -ChildPath "libavif-$LibVersion"
+$CmakeBuildDir = Join-Path -Path $ExpandedDir -ChildPath "build"
+$CmakeInstallDir = Join-Path -Path $ExpandedDir -ChildPath "install"
+
+$CmakeLibYuvLibDir = Join-Path -Path $ProjectDir -ChildPath "..\libyuv\build\install\lib"
+$CmakeLibDav1dLibDir = Join-Path -Path $ProjectDir -ChildPath "..\libdav1d\build\install\lib"
 
 if (!(Test-Path $CmakeBuildDir)) {
     New-Item -Path $CmakeBuildDir -ItemType "directory" -Force | Out-Null
 }
 
-# Configure and build with CMake
 cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
     -DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
     -DCMAKE_BUILD_TYPE=Release `
@@ -47,44 +42,18 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
     -DAVIF_ENABLE_TESTS=Off `
     -DAVIF_ENABLE_EXAMPLES=Off `
     -DAVIF_ENABLE_FUZZERS=Off `
-    -DAVIF_CODEC_AOM=Off `
-    -DAVIF_CODEC_DAV1D=Off `
-    -DAVIF_CODEC_LIBDAV1D=Off `
+    -DAVIF_ENABLE_LIBYUV=On `
+    -DAVIF_CODEC_DAV1D=SYSTEM `
     -DCMAKE_SYSTEM_NAME=Windows `
-    -DCMAKE_SYSTEM_PROCESSOR=AMD64
+    -DCMAKE_SYSTEM_PROCESSOR=AMD64 `
+    -DCMAKE_PREFIX_PATH="$CmakeLibYuvLibDir;$CmakeLibDav1dLibDir" `
+    -DLIBYUV_INCLUDE_DIR="$ProjectDir\..\libyuv\build\install\include" `
+    -DDAV1D_INCLUDE_DIR="$ProjectDir\..\libdav1d\build\install\include"
 
 cmake --build "$CmakeBuildDir" --config Release -j 8
 
-# Install to CMake install directory
 if (!(Test-Path $CmakeInstallDir)) {
     New-Item -Path $CmakeInstallDir -ItemType "directory" -Force | Out-Null
 }
 
 cmake --install "$CmakeBuildDir" --config Release --prefix "$CmakeInstallDir"
-
-# Create the expected output structure: libavif-1.4.2-vc64/include and /lib
-New-Item -Path $ExpandedDir -ItemType "directory" -Force | Out-Null
-New-Item -Path "$ExpandedDir\include" -ItemType "directory" -Force | Out-Null
-New-Item -Path "$ExpandedDir\lib" -ItemType "directory" -Force | Out-Null
-
-# Copy headers
-Copy-Item -Path "$CmakeInstallDir\include\*" -Destination "$ExpandedDir\include" -Recurse -Force
-
-# Copy libraries - look for .lib files in various possible locations
-$PossibleLibPaths = @(
-    "$CmakeBuildDir\Release",
-    "$CmakeBuildDir\lib\Release",
-    "$CmakeBuildDir\lib",
-    "$CmakeInstallDir\lib"
-)
-
-foreach ($LibPath in $PossibleLibPaths) {
-    if (Test-Path $LibPath) {
-        Get-ChildItem -Path $LibPath -Filter "*.lib" -Recurse | ForEach-Object {
-            Copy-Item -Path $_.FullName -Destination "$ExpandedDir\lib" -Force
-        }
-    }
-}
-
-# Clean up build directories
-Remove-Item -Path $BuildDir -Force -Recurse
