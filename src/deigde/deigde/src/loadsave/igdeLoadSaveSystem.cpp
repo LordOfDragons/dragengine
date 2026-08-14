@@ -55,12 +55,13 @@ struct sFPLMapping{
 	deModuleSystem::eModuleTypes moduleType;
 };
 
-#define FPL_MAPPING_COUNT 10
+#define FPL_MAPPING_COUNT 11
 
 static sFPLMapping vFPLMappings[FPL_MAPPING_COUNT] = {
 	{igdeLoadSaveSystem::efplModel, deModuleSystem::emtModel},
 	{igdeLoadSaveSystem::efplSkin, deModuleSystem::emtSkin},
 	{igdeLoadSaveSystem::efplRig, deModuleSystem::emtRig},
+	{igdeLoadSaveSystem::efplScene, deModuleSystem::emtScene},
 	{igdeLoadSaveSystem::efplAnimation, deModuleSystem::emtAnimation},
 	{igdeLoadSaveSystem::efplImage, deModuleSystem::emtImage},
 	{igdeLoadSaveSystem::efplSound, deModuleSystem::emtSound},
