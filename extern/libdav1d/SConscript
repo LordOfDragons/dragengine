@@ -1,0 +1,120 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'dav1d-1.4.1'
+
+libLinkName = 'dav1d'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}.dll'.format(libLinkName)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}{}'.format(libLinkName, envLibrary['SHLIBSUFFIX']))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}{}'.format(libLinkName, envLibrary['LIBSUFFIX']))
+
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libdav1d', 'lib_libdav1d_fetch')
+
+# check if system libdav1d is present
+hasSystemDav1d = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_libdav1d'] != TernaryVariableNo:
+	hasSystemDav1d = conf.CheckLibWithHeader(libLinkName, 'dav1d/dav1d.h', 'c++', call='dav1d_version();')
+conf.Finish()
+
+if not hasSystemDav1d and envLibrary['with_system_libdav1d'] == TernaryVariableYes:
+	Exit('Requested to use system libdav1d but no usable libdav1d found.')
+
+libs = [libLinkName]
+
+parent_report['use system libdav1d'] = 'yes' if hasSystemDav1d else 'no'
+
+if hasSystemDav1d:
+	parent_targets['lib_libdav1d'] = {
+		'name' : 'Internal libdav1d library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build libdav1d
+def libdav1dBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	# Create build directory
+	script.append('mkdir -p build_dir || exit 1')
+	script.append('cd build_dir || exit 1')
+	
+	cmdline = ['meson --prefix="{}" ..'.format(buildDir.abspath)]
+	cmdline.append('--buildtype=release')
+	cmdline.append('-Denable_tests=false')
+	cmdline.append('-Denable_docs=false')
+	cmdline.append('-Denable_tools=false')
+	if buildStaticLinking:
+		cmdline.append('-Ddefault_library=static')
+	else:
+		cmdline.append('-Ddefault_library=shared')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-Dcross_file=native')
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('ninja -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building libdav1d')
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+targets.append('include/dav1d/dav1d.h')
+
+# Depend on nothing (libdav1d has no external dependencies)
+library = envLibrary.Command(targets,
+	nodeArtifacts,
+	envLibrary.Action(libdav1dBuild, 'Build libdav1d'))
+
+depends = envLibrary.Alias('lib_libdav1d', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'share', srcdir, 'build_dir'])
+
+cpppath = [envLibrary.Dir('include')]
+
+libpath = [envLibrary.Dir('lib')]
+
+if buildStaticLinking:
+	libs = library[0:1]
+	runtimelibs = []
+else:
+	runtimelibs = library[0:1]
+	libs = [libLinkName]
+
+parent_targets['lib_libdav1d'] = {
+	'name' : 'Internal libdav1d library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

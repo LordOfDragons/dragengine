@@ -39,6 +39,7 @@ if not hasSystemAvif and envLibrary['with_system_libavif'] == TernaryVariableYes
 
 libs = [libLinkName]
 libs.extend(parent_targets['lib_libyuv']['libs'])
+libs.extend(parent_targets['lib_libdav1d']['libs'])
 
 parent_report['use system libavif'] = 'yes' if hasSystemAvif else 'no'
 
@@ -57,8 +58,12 @@ def libavifBuild(target, source, env):
 	buildDir = target[0].get_dir().up()
 	
 	untarArchive(buildDir.abspath, source[0].abspath)
+
+	deps = []
+	deps.append(parent_targets['lib_libyuv']['depends'])
+	deps.append(parent_targets['lib_libdav1d']['depends'])
 	
-	script = createScriptHeader(env, deps=[parent_targets['lib_libyuv']])
+	script = createScriptHeader(env, deps=deps)
 	
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
 	
@@ -74,11 +79,16 @@ def libavifBuild(target, source, env):
 	cmdline.append('-DAVIF_ENABLE_EXAMPLES=OFF')
 	cmdline.append('-DAVIF_ENABLE_FUZZERS=OFF')
 	cmdline.append('-DAVIF_ENABLE_LIBYUV=ON')
+	cmdline.append('-DAVIF_CODEC_DAV1D=ON')
 	
-	# cmake build system fails to detect libyuv in standard include path set in createScriptHeader
+	# cmake build system fails to detect libyuv and dav1d in standard include path set in createScriptHeader
+	prefixPaths = []
 	if 'libpath' in parent_targets['lib_libyuv']:
-		cmdline.append('-DCMAKE_PREFIX_PATH="{}"'.format(
-			parent_targets['lib_libyuv']['libpath'][0].up().abspath))
+		prefixPaths.append(parent_targets['lib_libyuv']['libpath'][0].up().abspath)
+	if 'libpath' in parent_targets['lib_libdav1d']:
+		prefixPaths.append(parent_targets['lib_libdav1d']['libpath'][0].up().abspath)
+	if prefixPaths:
+		cmdline.append('-DCMAKE_PREFIX_PATH="{}"'.format(';'.join(prefixPaths)))
 	
 	if 'CROSSCOMPILE_HOST' in env:
 		cmdline.append('-DCMAKE_SYSTEM_NAME=Linux')
@@ -96,9 +106,9 @@ else:
 	targets = [libFileName]
 targets.append('include/avif/avif.h')
 
-# Depend on libyuv
+# Depend on libyuv and dav1d
 library = envLibrary.Command(targets,
-	[nodeArtifacts, parent_targets['lib_libyuv']['depends']],
+	[nodeArtifacts, parent_targets['lib_libyuv']['depends'], parent_targets['lib_libdav1d']['depends']],
 	envLibrary.Action(libavifBuild, 'Build libavif'))
 
 depends = parent_env.Alias('lib_libavif', library)
@@ -107,17 +117,21 @@ envLibrary.Clean(library, ['bin', 'include', 'lib', 'share', srcdir, 'build_dir'
 
 cpppath = [envLibrary.Dir('include')]
 cpppath.extend(parent_targets['lib_libyuv']['cpppath'])
+cpppath.extend(parent_targets['lib_libdav1d']['cpppath'])
 
 libpath = [envLibrary.Dir('lib')]
 libpath.extend(parent_targets['lib_libyuv']['libpath'])
+libpath.extend(parent_targets['lib_libdav1d']['libpath'])
 
 if buildStaticLinking:
 	libs = library[0:1]
 	libs.extend(parent_targets['lib_libyuv']['libs'])
+	libs.extend(parent_targets['lib_libdav1d']['libs'])
 	runtimelibs = []
 else:
 	runtimelibs = library[0:1]
 runtimelibs.extend(parent_targets['lib_libyuv']['runtimelibs'])
+runtimelibs.extend(parent_targets['lib_libdav1d']['runtimelibs'])
 
 parent_targets['lib_libavif'] = {
 	'name' : 'Internal libavif library',
