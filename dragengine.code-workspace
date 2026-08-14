@@ -57,6 +57,10 @@
 			"path": "src/modules/graphic/opengl"
 		},
 		{
+			"name": "Module Image: AVIF",
+			"path": "src/modules/image/avif"
+		},
+		{
 			"name": "Module Image: IES",
 			"path": "src/modules/image/ies"
 		},
