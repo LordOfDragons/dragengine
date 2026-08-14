@@ -82,6 +82,14 @@ def libdav1dBuild(target, source, env):
 	
 	script.append('ninja -j {} install || exit 1'.format(env['with_threads']))
 	
+	# fix annoying wrong-library problems in 64-bit systems
+	script.append('if [ -f "{}" ]'.format(buildDir.File('lib64/libdav1d.a').abspath))
+	script.append('then')
+	script.append('  cp -fL "{}" "{}"'.format(
+		buildDir.File('lib64/libdav1d.a').abspath,
+		buildDir.File('lib/libdav1d.a').abspath))
+	script.append('fi')
+	
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libdav1d')
 
@@ -89,7 +97,13 @@ if buildStaticLinking:
 	targets = [staticFileName]
 else:
 	targets = [libFileName]
-targets.append('include/dav1d/dav1d.h')
+targets.extend([
+	'include/dav1d/common.h',
+	'include/dav1d/data.h',
+	'include/dav1d/dav1d.h',
+	'include/dav1d/headers.h',
+	'include/dav1d/picture.h',
+	'include/dav1d/version.h'])
 
 # Depend on nothing (libdav1d has no external dependencies)
 library = envLibrary.Command(targets,

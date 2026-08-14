@@ -101,7 +101,8 @@ jobs:
         run: |
           sudo apt -y update
           sudo apt -y install build-essential scons cmake autoconf libtool nasm \
-            patchelf libasound2-dev extra-cmake-modules flex bison gettext doxygen
+            patchelf libasound2-dev extra-cmake-modules flex bison gettext doxygen \
+            meson ninja
       
       - name: Install GLSL Tools
         run: |

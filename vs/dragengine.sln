@@ -271,6 +271,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "module font freetype", "mod
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extern libdav1d", "extern\libdav1d\extern_libdav1d.vcxproj", "{A7F2D4C1-9B5E-4F2A-8C3D-E5F7B2A9C1D8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extern svt-av1", "extern\svtav1\extern_svt_av1.vcxproj", "{E8C4F5D2-A1B6-4E9C-9D3F-B7C2E5A8D1F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release|x64 = Release|x64
@@ -1067,6 +1069,14 @@ Global
 		{A7F2D4C1-9B5E-4F2A-8C3D-E5F7B2A9C1D8}.ReleaseDebug|x64.Build.0 = ReleaseDebug|x64
 		{A7F2D4C1-9B5E-4F2A-8C3D-E5F7B2A9C1D8}.ReleaseDebug|x86.ActiveCfg = ReleaseDebug|Win32
 		{A7F2D4C1-9B5E-4F2A-8C3D-E5F7B2A9C1D8}.ReleaseDebug|x86.Build.0 = ReleaseDebug|Win32
+		{E8C4F5D2-A1B6-4E9C-9D3F-B7C2E5A8D1F4}.Release|x64.ActiveCfg = Release|x64
+		{E8C4F5D2-A1B6-4E9C-9D3F-B7C2E5A8D1F4}.Release|x64.Build.0 = Release|x64
+		{E8C4F5D2-A1B6-4E9C-9D3F-B7C2E5A8D1F4}.Release|x86.ActiveCfg = Release|Win32
+		{E8C4F5D2-A1B6-4E9C-9D3F-B7C2E5A8D1F4}.Release|x86.Build.0 = Release|Win32
+		{E8C4F5D2-A1B6-4E9C-9D3F-B7C2E5A8D1F4}.ReleaseDebug|x64.ActiveCfg = ReleaseDebug|x64
+		{E8C4F5D2-A1B6-4E9C-9D3F-B7C2E5A8D1F4}.ReleaseDebug|x64.Build.0 = ReleaseDebug|x64
+		{E8C4F5D2-A1B6-4E9C-9D3F-B7C2E5A8D1F4}.ReleaseDebug|x86.ActiveCfg = ReleaseDebug|Win32
+		{E8C4F5D2-A1B6-4E9C-9D3F-B7C2E5A8D1F4}.ReleaseDebug|x86.Build.0 = ReleaseDebug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1192,6 +1202,7 @@ Global
 		{45273658-2F93-41BA-9ADD-F9589D47A1CB} = {24FEF707-72E9-4A55-B165-280B906B3882}
 		{74365938-4CD2-4CE4-B53D-284B17C05701} = {09F5FDC2-EF83-4014-B654-81E7D2531D1E}
 		{A7F2D4C1-9B5E-4F2A-8C3D-E5F7B2A9C1D8} = {24FEF707-72E9-4A55-B165-280B906B3882}
+		{E8C4F5D2-A1B6-4E9C-9D3F-B7C2E5A8D1F4} = {24FEF707-72E9-4A55-B165-280B906B3882}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D5EE9E67-AA42-44F8-91C4-8D97F49D0A4F}
