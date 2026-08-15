@@ -76,7 +76,7 @@ def libdav1dBuild(target, source, env):
 		cmdline.append('-Ddefault_library=shared')
 	
 	if 'CROSSCOMPILE_HOST' in env:
-		cmdline.append('-Dcross_file=native')
+		cmdline.append('--cross-file native')
 	
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	

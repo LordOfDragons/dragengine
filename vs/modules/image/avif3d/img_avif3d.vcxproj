@@ -323,6 +323,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\..\extern\libavif\build\install\include;$(SolutionDir)..\extern\libdav1d\build\install\include;$(SolutionDir)..\extern\libyuv\build\install\include;$(SolutionDir)..\extern\svtav1\build\install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -346,6 +347,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\..\extern\libavif\build\install\include;$(SolutionDir)..\extern\libdav1d\build\install\include;$(SolutionDir)..\extern\libyuv\build\install\include;$(SolutionDir)..\extern\svtav1\build\install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
@@ -361,6 +363,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\..\extern\libavif\build\install\include;$(SolutionDir)..\extern\libdav1d\build\install\include;$(SolutionDir)..\extern\libyuv\build\install\include;$(SolutionDir)..\extern\svtav1\build\install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -384,6 +387,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\..\extern\libavif\build\install\include;$(SolutionDir)..\extern\libdav1d\build\install\include;$(SolutionDir)..\extern\libyuv\build\install\include;$(SolutionDir)..\extern\svtav1\build\install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
