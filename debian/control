@@ -36,7 +36,8 @@ Build-Depends: debhelper-compat (= 12),
                libopus-dev,
                libfftw3-dev,
                libegl-dev,
-               libxkbcommon-dev
+               libxkbcommon-dev,
+               libavif-dev
 Standards-Version: 4.1.3
 Homepage: https://dragondreams.ch
 Rules-Requires-Root: no
