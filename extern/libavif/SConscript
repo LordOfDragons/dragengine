@@ -113,11 +113,11 @@ def libavifBuild(target, source, env):
 	# cmake build system fails to detect libyuv, dav1d and svt-av1 in standard include
 	# path set in createScriptHeader
 	prefixPaths = []
-	if 'libpath' in parent_targets['lib_libyuv']:
+	if parent_targets['lib_libyuv']['libpath']:
 		prefixPaths.append(parent_targets['lib_libyuv']['libpath'][0].up().abspath)
-	if 'libpath' in parent_targets['lib_libdav1d']:
+	if parent_targets['lib_libdav1d']['libpath']:
 		prefixPaths.append(parent_targets['lib_libdav1d']['libpath'][0].up().abspath)
-	if 'libpath' in parent_targets['lib_svtav1']:
+	if parent_targets['lib_svtav1']['libpath']:
 		prefixPaths.append(parent_targets['lib_svtav1']['libpath'][0].up().abspath)
 	if prefixPaths:
 		cmdline.append('-DCMAKE_PREFIX_PATH="{}"'.format(';'.join(prefixPaths)))
