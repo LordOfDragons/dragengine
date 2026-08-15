@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -431,13 +431,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\image\avif\src\deAvifImageInfo.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\image\avif\src\deAvifIO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\image\avif\src\deAvifImageInfo.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\image\avif\src\deAvifModule.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\image\avif\src\deAvifImageInfo.h" />
     <ClInclude Include="..\..\..\..\src\modules\image\avif\src\deAvifIO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\image\avif\src\deAvifImageInfo.h" />
     <ClInclude Include="..\..\..\..\src\modules\image\avif\src\deAvifModule.h" />
   </ItemGroup>
 </Project>
