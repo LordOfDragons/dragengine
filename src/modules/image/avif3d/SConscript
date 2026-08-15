@@ -4,8 +4,8 @@ Import('parent_env parent_targets parent_report')
 
 envModule = parent_env.Clone()
 
-buildModule = envModule.get('build_image_avif3d', 'auto') != TernaryVariableNo
-internalModule = envModule.get('build_image_avif3d_internal', True)
+buildModule = envModule['build_image_avif3d'] != TernaryVariableNo
+internalModule = envModule['build_image_avif3d_internal']
 parent_report['build AVIF-3D Image Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 
 if not buildModule:
