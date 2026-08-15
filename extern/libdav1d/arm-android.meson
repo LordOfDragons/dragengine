@@ -1,0 +1,8 @@
+[properties]
+needs_exe_wrapper = true
+
+[host_machine]
+system = 'android'
+cpu_family = 'arm'
+cpu = 'arm'
+endian = 'little'

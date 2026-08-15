@@ -1,0 +1,35 @@
+diff '--color=auto' -rupN org-libyuv-main/CMakeLists.txt cur-libyuv-main/CMakeLists.txt
+--- org-libyuv-main/CMakeLists.txt	2026-08-14 18:06:42.000000000 +0200
++++ cur-libyuv-main/CMakeLists.txt	2026-08-15 23:57:10.688021696 +0200
+@@ -181,16 +181,16 @@ if(WIN32)
+ endif()
+ 
+ # this creates the cpuid tool
+-add_executable      ( cpuid ${ly_base_dir}/util/cpuid.c )
+-target_link_libraries  ( cpuid ${ly_lib_static} )
++#add_executable      ( cpuid ${ly_base_dir}/util/cpuid.c )
++#target_link_libraries  ( cpuid ${ly_lib_static} )
+ 
+ # this creates the conversion tool
+-add_executable			( yuvconvert ${ly_base_dir}/util/yuvconvert.cc )
+-target_link_libraries	( yuvconvert ${ly_lib_static} )
++#add_executable			( yuvconvert ${ly_base_dir}/util/yuvconvert.cc )
++#target_link_libraries	( yuvconvert ${ly_lib_static} )
+ 
+ # this creates the yuvconstants tool
+-add_executable      ( yuvconstants ${ly_base_dir}/util/yuvconstants.c )
+-target_link_libraries  ( yuvconstants ${ly_lib_static} )
++#add_executable      ( yuvconstants ${ly_base_dir}/util/yuvconstants.c )
++#target_link_libraries  ( yuvconstants ${ly_lib_static} )
+ 
+ find_package ( JPEG )
+ if (JPEG_FOUND)
+@@ -242,7 +242,7 @@ endif()
+ 
+ 
+ # install the conversion tool, .so, .a, and all the header files
+-install ( TARGETS yuvconvert DESTINATION bin )
++#install ( TARGETS yuvconvert DESTINATION bin )
+ install ( TARGETS ${ly_lib_static}						DESTINATION lib )
+ install ( TARGETS ${ly_lib_shared} LIBRARY DESTINATION lib RUNTIME DESTINATION bin ARCHIVE DESTINATION lib )
+ install ( DIRECTORY ${PROJECT_SOURCE_DIR}/include/		DESTINATION include )

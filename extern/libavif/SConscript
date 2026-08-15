@@ -103,7 +103,7 @@ def libavifBuild(target, source, env):
 	
 	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
-	# fix annoying wrong-library problems in 64-bit systems
+	# fix strange library path choice in 64-bit systems
 	script.append('if [ -f "{}" ]'.format(buildDir.File('lib64/libavif.a').abspath))
 	script.append('then')
 	script.append('  cp -fL "{}" "{}"'.format(

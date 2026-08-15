@@ -39,6 +39,7 @@ if not hasSystemYuv and envLibrary['with_system_libyuv'] == TernaryVariableYes:
 	Exit('Requested to use system libyuv but no usable libyuv found.')
 
 libs = [libLinkName]
+libs.extend(parent_targets['lib_libjpeg']['libs'])
 
 parent_report['use system libyuv'] = 'yes' if hasSystemYuv else 'no'
 
@@ -58,9 +59,15 @@ def libyuvBuild(target, source, env):
 	
 	untarArchive(buildDir.abspath, source[0].abspath)
 	
-	script = createScriptHeader(env)
+	deps = []
+	deps.append(parent_targets['lib_libjpeg']['depends'])
+	
+	script = createScriptHeader(env, deps=deps)
 	
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
 	# Create build directory
 	script.append('mkdir -p build_dir || exit 1')
@@ -69,6 +76,8 @@ def libyuvBuild(target, source, env):
 	cmdline = ['cmake -DCMAKE_INSTALL_PREFIX="{}" ..'.format(buildDir.abspath)]
 	cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	cmdline.append('-DBUILD_SHARED_LIBS=' + ('OFF' if buildStaticLinking else 'ON'))
+	cmdline.append('-DJPEG_INCLUDE_DIR="{}"'.format(';'.join([x.abspath for x in parent_targets['lib_libjpeg']['cpppath']])))
+	cmdline.append('-DJPEG_LIBRARY_RELEASE="{}"'.format(';'.join([x.abspath for x in parent_targets['lib_libjpeg']['libs']])))
 	
 	if 'CROSSCOMPILE_HOST' in env:
 		cmdline.append('-DCMAKE_SYSTEM_NAME=Linux')
@@ -110,21 +119,33 @@ targets.extend([
 	'include/libyuv/version.h',
 	'include/libyuv/video_common.h',
 	'include/libyuv.h'])
-library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(libyuvBuild, 'Build libyuv'))
+
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+library = envLibrary.Command(targets,
+	[nodeArtifacts, patches,
+		parent_targets['lib_libjpeg']['depends']],
+	envLibrary.Action(libyuvBuild, 'Build libyuv'))
 
 depends = parent_env.Alias('lib_libyuv', library)
 
 envLibrary.Clean(library, ['bin', 'include', 'lib', 'share', srcdir, 'build_dir'])
 
 cpppath = [envLibrary.Dir('include')]
+cpppath.extend(parent_targets['lib_libjpeg']['cpppath'])
 
 libpath = [envLibrary.Dir('lib')]
+libpath.extend(parent_targets['lib_libjpeg']['libpath'])
 
 if buildStaticLinking:
 	libs = library[0:1]
+	libs.extend(parent_targets['lib_libjpeg']['libs'])
 	runtimelibs = []
 else:
 	runtimelibs = library[0:1]
+runtimelibs.extend(parent_targets['lib_libjpeg']['runtimelibs'])
 
 parent_targets['lib_libyuv'] = {
 	'name' : 'Internal libyuv library',
