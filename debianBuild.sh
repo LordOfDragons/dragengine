@@ -34,7 +34,7 @@ apt-get -y -q install \
   libevdev-dev libsoundtouch-dev libwebp-dev libwebm-dev \
   libvpx-dev libopenvr-dev glslang-tools libfreetype-dev \
   libopus-dev libfftw3-dev libegl-dev libxkbcommon-dev \
-  libavif-dev || exit 1
+  || exit 1
 
 export SCONSFLAGS="-j 8"
 
@@ -47,7 +47,8 @@ fetchExternals() {
   scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
     lib_modio_fetch lib_openxr_fetch lib_steamsdk_fetch \
     lib_libapng_fetch lib_jsoncpp_fetch lib_freetype_fetch \
-    lib_denetwork_fetch lib_deremotelauncher_fetch || exit 1
+    lib_denetwork_fetch lib_deremotelauncher_fetch \
+    lib_libavif_fetch || exit 1
 }
 
 addIncludeBinaryEntry() {
@@ -80,6 +81,7 @@ writeIncludeBinaries() {
   addIncludeBinaryEntry "extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2"
   addIncludeBinaryEntry "extern/jsoncpp/jsoncpp-*.tar.xz"
   addIncludeBinaryEntry "extern/freetype/freetype-*.tar.xz"
+  addIncludeBinaryEntry "extern/libavif/libavif-*.tar.xz"
   addIncludeBinaryEntry "extern/*/*.sha256sum"
 }
 
@@ -146,6 +148,7 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../$FILETAR \
   `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` \
   `dir -1 extern/jsoncpp/jsoncpp-*.tar.xz` \
   `dir -1 extern/freetype/freetype-*.tar.xz` \
+  `dir -1 extern/libavif/libavif-*.tar.xz` \
   `dir -1 extern/*/*.sha256sum` || exit 1
 gzip ../$FILETAR || exit 1
 
