@@ -64,7 +64,7 @@ def libdav1dBuild(target, source, env):
 	script.append('mkdir -p build_dir || exit 1')
 	script.append('cd build_dir || exit 1')
 	
-	cmdline = ['meson --prefix="{}" ..'.format(buildDir.abspath)]
+	cmdline = ['meson', 'setup', '--reconfigure', '--prefix="{}"'.format(buildDir.abspath), '..']
 	cmdline.append('--buildtype=release')
 	cmdline.append('-Denable_tests=false')
 	cmdline.append('-Denable_docs=false')
