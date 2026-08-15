@@ -73,7 +73,12 @@ def libavifBuild(target, source, env):
 	script.append('mkdir -p build_dir || exit 1')
 	script.append('cd build_dir || exit 1')
 	
-	cmdline = ['cmake -DCMAKE_INSTALL_PREFIX="{}" ..'.format(buildDir.abspath)]
+	cmdline = []
+	if env['platform_webwasm']:
+		cmdline.extend(['emcmake', 'cmake'])
+	else:
+		cmdline.append('cmake')
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}" ..'.format(buildDir.abspath))
 	cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	cmdline.append('-DBUILD_SHARED_LIBS=' + ('OFF' if buildStaticLinking else 'ON'))
 	cmdline.append('-DAVIF_ENABLE_GTEST=OFF')
@@ -81,8 +86,29 @@ def libavifBuild(target, source, env):
 	cmdline.append('-DAVIF_ENABLE_EXAMPLES=OFF')
 	cmdline.append('-DAVIF_ENABLE_FUZZERS=OFF')
 	cmdline.append('-DAVIF_ENABLE_LIBYUV=ON')
-	cmdline.append('-DAVIF_CODEC_DAV1D=ON')
-	cmdline.append('-DAVIF_CODEC_SVT=ON')
+	cmdline.append('-DAVIF_CODEC_DAV1D=SYSTEM')
+	cmdline.append('-DAVIF_CODEC_SVT=SYSTEM')
+	
+	if parent_targets['lib_libyuv']['cpppath']:
+		p = parent_targets['lib_libyuv']['cpppath'][0]
+		cmdline.append('-DLIBYUV_INCLUDE_DIR="{}"'.format(p if isinstance(p, str) else p.abspath))
+	if parent_targets['lib_libyuv']['libs']:
+		p = parent_targets['lib_libyuv']['libs'][0]
+		cmdline.append('-DLIBYUV_LIBRARY="{}"'.format(p if isinstance(p, str) else p.abspath))
+	
+	if parent_targets['lib_libdav1d']['cpppath']:
+		p = parent_targets['lib_libdav1d']['cpppath'][0]
+		cmdline.append('-DDAV1D_INCLUDE_DIR="{}"'.format(p if isinstance(p, str) else p.abspath))
+	if parent_targets['lib_libdav1d']['libs']:
+		p = parent_targets['lib_libdav1d']['libs'][0]
+		cmdline.append('-DDAV1D_LIBRARY="{}"'.format(p if isinstance(p, str) else p.abspath))
+	
+	if parent_targets['lib_svtav1']['cpppath']:
+		p = parent_targets['lib_svtav1']['cpppath'][0]
+		cmdline.append('-DSVT_INCLUDE_DIR="{}"'.format(p if isinstance(p, str) else p.abspath))
+	if parent_targets['lib_svtav1']['libs']:
+		p = parent_targets['lib_svtav1']['libs'][0]
+		cmdline.append('-DSVT_LIBRARY="{}"'.format(p if isinstance(p, str) else p.abspath))
 	
 	# cmake build system fails to detect libyuv, dav1d and svt-av1 in standard include
 	# path set in createScriptHeader

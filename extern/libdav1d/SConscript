@@ -64,7 +64,7 @@ def libdav1dBuild(target, source, env):
 	script.append('mkdir -p build_dir || exit 1')
 	script.append('cd build_dir || exit 1')
 	
-	cmdline = ['meson --prefix="{}" ..'.format(buildDir.abspath)]
+	cmdline = ['meson', 'setup', '--reconfigure', '--prefix="{}"'.format(buildDir.abspath), '..']
 	cmdline.append('--buildtype=release')
 	cmdline.append('-Denable_tests=false')
 	cmdline.append('-Denable_docs=false')
@@ -109,6 +109,8 @@ if envLibrary['platform_android'] != 'no':
 		envLibrary.Replace(CROSS_FILE=envLibrary.File('aarch64-android.meson').srcnode())
 	elif envLibrary['ANDROID_ARCH'] == 'arm':
 		envLibrary.Replace(CROSS_FILE=envLibrary.File('arm-android.meson').srcnode())
+elif envLibrary['platform_webwasm']:
+	envLibrary.Replace(CROSS_FILE=envLibrary.File('dav1d-1.4.1/package/crossfiles/wasm64.meson'))
 
 library = envLibrary.Command(targets,
 	nodeArtifacts,

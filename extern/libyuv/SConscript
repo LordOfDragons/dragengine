@@ -73,7 +73,12 @@ def libyuvBuild(target, source, env):
 	script.append('mkdir -p build_dir || exit 1')
 	script.append('cd build_dir || exit 1')
 	
-	cmdline = ['cmake -DCMAKE_INSTALL_PREFIX="{}" ..'.format(buildDir.abspath)]
+	cmdline = []
+	if env['platform_webwasm']:
+		cmdline.extend(['emcmake', 'cmake'])
+	else:
+		cmdline.append('cmake')
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}" ..'.format(buildDir.abspath))
 	cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	cmdline.append('-DBUILD_SHARED_LIBS=' + ('OFF' if buildStaticLinking else 'ON'))
 	cmdline.append('-DJPEG_INCLUDE_DIR="{}"'.format(';'.join([
