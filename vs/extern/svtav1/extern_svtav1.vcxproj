@@ -27,27 +27,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\extern\libavif\SConscript" />
+    <None Include="..\..\..\extern\svtav1\SConscript" />
     <None Include="build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\libdav1d\extern_libdav1d.vcxproj">
-      <Project>{a7f2d4c1-9b5e-4f2a-8c3d-e5f7b2a9c1d8}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libyuv\extern_libyuv.vcxproj">
-      <Project>{7E4A2C15-8B3F-4D91-A625-C9F8E2D4B1A7}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\svtav1\extern_svtav1.vcxproj">
-      <Project>{7e4a2c15-8b3f-4d91-a625-c9f8e2d4b1a8}</Project>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8D939424-491E-4721-9196-A8496C352FC6}</ProjectGuid>
-    <RootNamespace>externlibavif</RootNamespace>
+    <ProjectGuid>{7E4A2C15-8B3F-4D91-A625-C9F8E2D4B1A8}</ProjectGuid>
+    <RootNamespace>externsvtav1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>extern libavif</ProjectName>
+    <ProjectName>extern svtav1</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -121,7 +110,7 @@
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
-    <TargetName>avif</TargetName>
+    <TargetName>SvtAv1Enc</TargetName>
     <OutDir>$(ProjectDir)build\install\lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,7 +120,7 @@
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
-    <TargetName>avif</TargetName>
+    <TargetName>SvtAv1Enc</TargetName>
     <OutDir>$(ProjectDir)build\install\lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
@@ -139,7 +128,7 @@
     <PublicIncludeDirectories>$(ProjectDir)build\install\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories />
-    <TargetName>avif</TargetName>
+    <TargetName>SvtAv1Enc</TargetName>
     <OutDir>$(ProjectDir)build\install\lib\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -200,9 +189,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <CustomBuildStep>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\libavif" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -ProjectDir $(ProjectDir)</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\svtav1" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)build\install\lib\avif.lib</Outputs>
+      <Outputs>$(ProjectDir)build\install\lib\SvtAv1Enc.lib</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>
@@ -233,9 +222,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <CustomBuildStep>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\libavif" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -ProjectDir $(ProjectDir)</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\svtav1" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)build\install\lib\avif.lib</Outputs>
+      <Outputs>$(ProjectDir)build\install\lib\SvtAv1Enc.lib</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>
@@ -266,9 +255,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <CustomBuildStep>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\libavif" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -ProjectDir $(ProjectDir)</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\svtav1" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)build\install\lib\avif.lib</Outputs>
+      <Outputs>$(ProjectDir)build\install\lib\SvtAv1Enc.lib</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>

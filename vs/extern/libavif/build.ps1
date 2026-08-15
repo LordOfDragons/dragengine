@@ -29,6 +29,7 @@ $CmakeInstallDir = Join-Path -Path $ExpandedDir -ChildPath "install"
 
 $CmakeLibYuvLibDir = Join-Path -Path $ProjectDir -ChildPath "..\libyuv\build\install\lib"
 $CmakeLibDav1dLibDir = Join-Path -Path $ProjectDir -ChildPath "..\libdav1d\build\install\lib"
+$CmakeLibSvtav1LibDir = Join-Path -Path $ProjectDir -ChildPath "..\svtav1\build\install\lib"
 
 if (!(Test-Path $CmakeBuildDir)) {
     New-Item -Path $CmakeBuildDir -ItemType "directory" -Force | Out-Null
@@ -44,11 +45,13 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
     -DAVIF_ENABLE_FUZZERS=Off `
     -DAVIF_ENABLE_LIBYUV=On `
     -DAVIF_CODEC_DAV1D=SYSTEM `
+    -DAVIF_CODEC_SVT=SYSTEM `
     -DCMAKE_SYSTEM_NAME=Windows `
     -DCMAKE_SYSTEM_PROCESSOR=AMD64 `
-    -DCMAKE_PREFIX_PATH="$CmakeLibYuvLibDir;$CmakeLibDav1dLibDir" `
+    -DCMAKE_PREFIX_PATH="$CmakeLibYuvLibDir;$CmakeLibDav1dLibDir;$CmakeLibSvtav1LibDir" `
     -DLIBYUV_INCLUDE_DIR="$ProjectDir\..\libyuv\build\install\include" `
-    -DDAV1D_INCLUDE_DIR="$ProjectDir\..\libdav1d\build\install\include"
+    -DDAV1D_INCLUDE_DIR="$ProjectDir\..\libdav1d\build\install\include" `
+    -DSVT_INCLUDE_DIR="$ProjectDir\..\svtav1\build\install\include"
 
 cmake --build "$CmakeBuildDir" --config Release -j 8
 

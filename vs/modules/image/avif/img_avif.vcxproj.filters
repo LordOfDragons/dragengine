@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Include="post_build.ps1" />
     <None Include="..\..\..\..\src\modules\image\avif\SConscript" />
+    <None Include="pre_build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\image\avif\src\module.xml">

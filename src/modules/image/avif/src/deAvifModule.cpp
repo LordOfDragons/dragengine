@@ -268,13 +268,18 @@ void deAvifModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	const int height = image.GetHeight();
 	const int width = image.GetWidth();
 	
+	// avif encoding in format 4:2:0 does not allow odd sizes. for this to work the image has
+	// to be padded to even size and a clap box applied to restore the original size
+	const int encodeWidth = width + (width % 2);
+	const int encodeHeight = height + (height % 2);
+	
 	avifRGBImage rgbImage{};
 	bool isDataAllocated = false;
 	
 	avifRWData output = AVIF_DATA_EMPTY;
 	
 	try{
-		encodeImage = avifImageCreate(width, height, bitCount, AVIF_PIXEL_FORMAT_YUV420);
+		encodeImage = avifImageCreate(encodeWidth, encodeHeight, bitCount, AVIF_PIXEL_FORMAT_YUV420);
 		DEASSERT_NOTNULL(encodeImage)
 		
 		// create encode RGB image
@@ -420,10 +425,24 @@ void deAvifModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 			DETHROW_INFO(deeWriteFile, avifResultToString(result));
 		}
 		
+		// if size is odd add clap box for decoders to produce correct size
+		if(encodeWidth != width || encodeHeight != height){
+			encodeImage->transformFlags |= AVIF_TRANSFORM_CLAP;
+			encodeImage->clap.widthN = (int32_t)width;
+			encodeImage->clap.widthD = 1;
+			encodeImage->clap.heightN = (int32_t)height;
+			encodeImage->clap.heightD = 1;
+			encodeImage->clap.horizOffN = 0;
+			encodeImage->clap.horizOffD = 1;
+			encodeImage->clap.vertOffN = 0;
+			encodeImage->clap.vertOffD = 1;
+		}
+		
 		// encode image
 		encoder->quality = 80;
 		encoder->qualityAlpha = 80;
 		encoder->speed = 6; // 0-10, higher is faster
+		//encoder->maxThreads = 1; // thread safety on windows
 		
 		result = avifEncoderWrite(encoder, encodeImage, &output);
 		if(result != AVIF_RESULT_OK){

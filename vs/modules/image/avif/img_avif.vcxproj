@@ -55,10 +55,14 @@
     <ProjectReference Include="..\..\..\extern\libyuv\extern_libyuv.vcxproj">
       <Project>{7E4A2C15-8B3F-4D91-A625-C9F8E2D4B1A7}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\svtav1\extern_svtav1.vcxproj">
+      <Project>{7e4a2c15-8b3f-4d91-a625-c9f8e2d4b1a8}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\image\avif\SConscript" />
     <None Include="post_build.ps1" />
+    <None Include="pre_build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\image\avif\src\module.xml" />
