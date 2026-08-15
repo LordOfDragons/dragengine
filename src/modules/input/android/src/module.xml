@@ -2,7 +2,7 @@
 <module>
 	<name>AndroidInput</name>
 	<description>Processes input of Android Operating systems.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Input</type>
 	<priority>1</priority>

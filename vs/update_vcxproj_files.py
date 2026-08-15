@@ -106,6 +106,10 @@ def get_source_dir_from_vcxproj(vcxproj_path: Path) -> List[Path]:
 	if '/modules/graphic/opengl/' in vcxproj_str:
 		return [root_dir / 'src' / 'modules' / 'graphic' / 'opengl' / 'src',
 			root_dir / 'src' / 'modules' / 'graphic' / 'opengl' / 'squish']
+	if '/modules/image/avif3d/' in vcxproj_str:
+		return [root_dir / 'src' / 'modules' / 'image' / 'avif3d' / 'src']
+	if '/modules/image/avif/' in vcxproj_str:
+		return [root_dir / 'src' / 'modules' / 'image' / 'avif' / 'src']
 	if '/modules/image/ies/' in vcxproj_str:
 		return [root_dir / 'src' / 'modules' / 'image' / 'ies' / 'src']
 	if '/modules/image/jpeg/' in vcxproj_str:

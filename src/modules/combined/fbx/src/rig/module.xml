@@ -2,7 +2,7 @@
 <module>
 	<name>FBXRig</name>
 	<description>Handles rigs in the binary FBX format.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Rig</type>
 	<pattern>.fbx</pattern>

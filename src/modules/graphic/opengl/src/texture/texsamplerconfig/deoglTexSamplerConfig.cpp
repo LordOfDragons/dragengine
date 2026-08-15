@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglTexSamplerConfig.h"
 #include "../deoglTextureStageManager.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
@@ -48,7 +44,9 @@ pSamplerObject(0),
 pMinLodLevel(0),
 pMaxLodLevel(20),
 pFilterMode(deoglTextureStageManager::etfLinear),
-pWrapMode(GL_CLAMP_TO_EDGE),
+pWrapModeU(GL_CLAMP_TO_EDGE),
+pWrapModeV(GL_CLAMP_TO_EDGE),
+pWrapModeW(GL_CLAMP_TO_EDGE),
 pDepthCompareMode(false),
 pDepthCompareFunc(GL_LEQUAL)
 {
@@ -58,9 +56,9 @@ pDepthCompareFunc(GL_LEQUAL)
 	OGL_CHECK(renderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	OGL_CHECK(renderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 	
-	OGL_CHECK(renderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_WRAP_S, pWrapMode));
-	OGL_CHECK(renderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_WRAP_T, pWrapMode));
-	OGL_CHECK(renderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_WRAP_R, pWrapMode));
+	OGL_CHECK(renderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_WRAP_S, pWrapModeU));
+	OGL_CHECK(renderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_WRAP_T, pWrapModeV));
+	OGL_CHECK(renderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_WRAP_R, pWrapModeW));
 	
 	OGL_CHECK(renderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_COMPARE_MODE, GL_NONE));
 	OGL_CHECK(renderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_COMPARE_FUNC, pDepthCompareFunc));
@@ -144,16 +142,43 @@ void deoglTexSamplerConfig::SetFilterMode(deoglTextureStageManager::eTextureFilt
 	}
 }
 
-void deoglTexSamplerConfig::SetWrapMode(GLenum wrapMode){
-	if(wrapMode == pWrapMode){
+void deoglTexSamplerConfig::SetWrapModeU(GLenum wrapMode){
+	if(wrapMode == pWrapModeU){
 		return;
 	}
 	
-	pWrapMode = wrapMode;
-	
+	pWrapModeU = wrapMode;
 	OGL_CHECK(pRenderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_WRAP_S, wrapMode));
+}
+
+void deoglTexSamplerConfig::SetWrapModeV(GLenum wrapMode){
+	if(wrapMode == pWrapModeV){
+		return;
+	}
+	
+	pWrapModeV = wrapMode;
 	OGL_CHECK(pRenderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_WRAP_T, wrapMode));
+}
+
+void deoglTexSamplerConfig::SetWrapModeW(GLenum wrapMode){
+	if(wrapMode == pWrapModeW){
+		return;
+	}
+	
+	pWrapModeW = wrapMode;
 	OGL_CHECK(pRenderThread, pglSamplerParameteri(pSamplerObject, GL_TEXTURE_WRAP_R, wrapMode));
+}
+
+void deoglTexSamplerConfig::SetWrapMode(GLenum wrapMode){
+	SetWrapModeU(wrapMode);
+	SetWrapModeV(wrapMode);
+	SetWrapModeW(wrapMode);
+}
+
+void deoglTexSamplerConfig::SetWrapMode(GLenum u, GLenum v, GLenum w){
+	SetWrapModeU(u);
+	SetWrapModeV(v);
+	SetWrapModeW(w);
 }
 
 void deoglTexSamplerConfig::SetDepthCompareMode(bool depthCompareMode){

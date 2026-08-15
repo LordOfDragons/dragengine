@@ -2,7 +2,7 @@
 <module>
 	<name>Targa</name>
 	<description>Handles images in uncompressed Targe format.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Image</type>
 	<pattern>.tga</pattern>

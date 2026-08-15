@@ -2,7 +2,7 @@
 <module>
 	<name>DESkin</name>
 	<description>Handles skins in the XML Drag[en]gine skin format.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Skin</type>
 	<pattern>.deskin</pattern>

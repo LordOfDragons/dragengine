@@ -2,7 +2,7 @@
 <module>
 	<name>Theora</name>
 	<description>Handles videos in the theora format.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Video</type>
 	<pattern>.ogv</pattern>

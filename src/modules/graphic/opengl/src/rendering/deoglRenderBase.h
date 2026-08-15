@@ -121,6 +121,12 @@ public:
 	/** Add shared SPB defines for shaders. */
 	void AddSharedSPBDefines(deoglShaderDefines &defines);
 	
+	deoglTexSamplerConfig &GetSamplerNearest(bool clampU, bool clampV) const;
+	deoglTexSamplerConfig &GetSamplerNearestMipMap(bool clampU, bool clampV) const;
+	deoglTexSamplerConfig &GetSamplerLinear(bool clampU, bool clampV) const;
+	deoglTexSamplerConfig &GetSamplerLinearMipMap(bool clampU, bool clampV) const;
+	deoglTexSamplerConfig &GetSamplerLinearMipMapNearest(bool clampU, bool clampV) const;
+	
 	/** Clamped nearest sampler. */
 	deoglTexSamplerConfig &GetSamplerClampNearest() const;
 	

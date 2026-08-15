@@ -108,7 +108,8 @@ jobs:
           msbuild-architecture: x64
         
       - name: Install required packages
-        run: choco install ninja 7zip
+        run: |
+          choco install ninja meson 7zip nasm
       
       - name: Install GLSL Tools
         run: |

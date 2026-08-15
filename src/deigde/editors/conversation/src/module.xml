@@ -2,7 +2,7 @@
 <module>
 	<name>Conversation Editor</name>
 	<description>Edit conversations.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<iconSmall>icons/editorIconSmall.png</iconSmall>
 	<iconLarge>icons/editorIconLarge.png</iconLarge>

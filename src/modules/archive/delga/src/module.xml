@@ -2,7 +2,7 @@
 <module>
 	<name>DELGA</name>
 	<description>Handles archive in the DELGA format.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Archive</type>
 	<pattern>.delga .deal</pattern>

@@ -2,7 +2,7 @@
 <module>
 	<name>OpenAL</name>
 	<description>Ouputs audio using the OpenAL library.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Audio</type>
 	<priority>1</priority>

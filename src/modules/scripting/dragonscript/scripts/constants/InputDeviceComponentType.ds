@@ -48,4 +48,10 @@ enum InputDeviceComponentType
 	
 	/** \brief Gesture. */
 	gesture
+	
+	/**
+	 * \brief Thumbrest.
+	 * \version 1.34
+	 */
+	thumbrest
 end

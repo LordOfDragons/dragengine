@@ -56,6 +56,10 @@ int main(int argCount, char **args){
 ////////////////////////
 
 #ifdef OS_W32
+#include <dragengine/app/include_windows.h>
+
+DE_W32_DEFINE_GPU_EXPORTS
+
 static int WINAPI RealWinMain(){
 	(void)SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 	

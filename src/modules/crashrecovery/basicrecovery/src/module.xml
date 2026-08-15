@@ -3,7 +3,7 @@
 	<name>BasicRecovery</name>
 	<description>Provides basic crash recovery support using the FOX Toolkit.
 		Allows the user to restart failed systems and to change modules.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>CrashRecovery</type>
 	<priority>1</priority>

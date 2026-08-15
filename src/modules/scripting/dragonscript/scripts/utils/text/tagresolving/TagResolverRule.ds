@@ -29,7 +29,7 @@ namespace Dragengine.Utils
  * \brief Rule for resolving a tag in text.
  * 
  * Supports tags of the form {action[:params]} with optional parameters after action.
- * The special tag {{ prints a single { character. Output is a StyledTextDefinition.
+ * The special tag {{ prints a single { character.
  */
 interface TagResolverRule
 	/**

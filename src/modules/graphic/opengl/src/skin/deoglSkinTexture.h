@@ -199,7 +199,7 @@ private:
 	char pShadowImportance;
 	bool pHintNoCompression;
 	bool pHintLightBlocker;
-	bool pTexCoordClamp;
+	bool pTexCoordClampU, pTexCoordClampV;
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScale;
 	float pTexCoordRotate;
@@ -671,9 +671,12 @@ public:
 	void SetHintLightBlocker(bool hintLightBlocker);
 	
 	/** Determines if the texture coordinates are clamped. */
-	inline bool GetTexCoordClamp() const{ return pTexCoordClamp; }
+	inline bool GetTexCoordClampU() const{ return pTexCoordClampU; }
+	inline bool GetTexCoordClampV() const{ return pTexCoordClampV; }
+	
 	/** Sets if the texture coordinates are clamped. */
-	void SetTexCoordClamp(bool clamp);
+	void SetTexCoordClampU(bool clamp);
+	void SetTexCoordClampV(bool clamp);
 	
 	/** Texture coordinates offset. */
 	inline const decVector2 &GetTexCoordOffset() const{ return pTexCoordOffset; }

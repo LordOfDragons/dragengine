@@ -1,0 +1,4 @@
+IMGAVIF {
+  global: AvifCreateModule;
+  local: *;
+};

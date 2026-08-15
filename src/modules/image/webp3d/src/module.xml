@@ -4,7 +4,7 @@
 	<description>Handles images saved in the WebP-3D format (lossless and lossy compression).
 	WebP-3D files are actually a tarball with webp images one for each z coordinate in the 3D-image.
 	Files inside the tarball are named zX.webp where X is the z coordinate without leading 0s.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Image</type>
 	<pattern>.webp3d</pattern>

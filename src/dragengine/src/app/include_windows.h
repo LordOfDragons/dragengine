@@ -90,4 +90,21 @@
 
 #endif // OS_W32
 
+
+/**
+ * \brief Define GPU exports for enabling high-performance graphics on NVIDIA and AMD GPUs.
+ * 
+ * Use this macro in only one source file, typically the main entry point file of the application.
+ * It is safe to use this macro if windows is not the build target, in which case it is empty.
+ */
+#ifdef OS_W32
+#define DE_W32_DEFINE_GPU_EXPORTS \
+extern "C" {\
+	__declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;\
+	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;\
+}
+#else
+#define DE_W32_DEFINE_GPU_EXPORTS
+#endif
+
 #endif // _DE_INCLUDE_WINDOWS_H_

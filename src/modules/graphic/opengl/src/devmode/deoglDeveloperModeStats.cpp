@@ -574,10 +574,11 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations(const decUnicodeArgumen
 				const deoglTexUnitConfig &unit = tuc->GetUnits()[j];
 				
 				if(unit.GetTexture()){
-					text.Format("  - Unit %d Texture: gl=%u filtering=%d wrapping=%u depthCompare=%s\n", j,
+					text.Format("  - Unit %d Texture: gl=%u filtering=%d wrapping=(%u,%u) depthCompare=%s\n", j,
 						unit.GetTexture()->GetTexture(),
 						unit.GetSampler() ? unit.GetSampler()->GetFilterMode() : 0,
-						unit.GetSampler() ? unit.GetSampler()->GetWrapMode() : 0,
+						unit.GetSampler() ? unit.GetSampler()->GetWrapModeU() : 0,
+						unit.GetSampler() ? unit.GetSampler()->GetWrapModeV() : 0,
 						unit.GetSampler() ? (unit.GetSampler()->GetDepthCompareMode() ? "y" : "n") : "?");
 					
 				}else if(unit.GetCubeMap()){
@@ -590,10 +591,11 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations(const decUnicodeArgumen
 					text.Format("  - Unit %d TBO: gl=%u\n", j, unit.GetTBO());
 					
 				}else if(unit.GetSpecial() != deoglTexUnitConfig::estNone){
-					text.Format("  - Unit %d Special: type=%d filtering=%d wrapping=%u depthCompare=%s\n", j,
+					text.Format("  - Unit %d Special: type=%d filtering=%d wrapping=(%u,%u) depthCompare=%s\n", j,
 						unit.GetSpecial(),
 						unit.GetSampler() ? unit.GetSampler()->GetFilterMode() : 0,
-						unit.GetSampler() ? unit.GetSampler()->GetWrapMode() : 0,
+						unit.GetSampler() ? unit.GetSampler()->GetWrapModeU() : 0,
+						unit.GetSampler() ? unit.GetSampler()->GetWrapModeV() : 0,
 						unit.GetSampler() ? (unit.GetSampler()->GetDepthCompareMode() ? "y" : "n") : "?");
 					
 				}else{

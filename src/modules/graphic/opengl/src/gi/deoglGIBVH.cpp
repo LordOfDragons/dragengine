@@ -474,7 +474,8 @@ deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix){
 	const int materialIndex = tuc ? decMath::clamp(tuc->GetMaterialIndex(), 0, 16383) : 0;
 	
 	const bool ignoreMaterial = skinTexture.GetHasTransparency();
-	const bool texCoordClamp = skinTexture.GetTexCoordClamp();
+	const bool texCoordClampU = skinTexture.GetTexCoordClampU();
+	const bool texCoordClampV = skinTexture.GetTexCoordClampV();
 	const bool hasSolidity = skinTexture.GetHasSolidity();
 	const bool shadowNone = skinTexture.GetShadowNone();
 	
@@ -488,9 +489,10 @@ deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix){
 	
 	const uint32_t red = PACK_I(materialIndex, 16, 16)
 		| PACK_B(ignoreMaterial, 0)
-		| PACK_B(texCoordClamp, 1)
-		| PACK_B(hasSolidity, 2)
-		| PACK_B(shadowNone, 3);
+		| PACK_B(texCoordClampU, 1)
+		| PACK_B(texCoordClampV, 2)
+		| PACK_B(hasSolidity, 3)
+		| PACK_B(shadowNone, 4);
 	
 	const uint32_t green = PACK(colorTint.r, 8, 24)
 		| PACK(colorTint.g, 8, 16)
