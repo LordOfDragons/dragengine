@@ -34,7 +34,7 @@ apt-get -y -q install \
   libevdev-dev libsoundtouch-dev libwebp-dev libwebm-dev \
   libvpx-dev libopenvr-dev glslang-tools libfreetype-dev \
   libopus-dev libfftw3-dev libegl-dev libxkbcommon-dev \
-  libyuv-dev libdav1d-dev || exit 1
+  libyuv-dev libdav1d-dev libwayland-dev || exit 1
 
 export SCONSFLAGS="-j 8"
 
