@@ -28,55 +28,55 @@ def createScriptHeader(env, deps=[], cflags=[], cppflags=[], cxxflags=[], linkfl
 	
 	# append the cross compiler flags if present
 	if 'CROSSCOMPILE_CFLAGS' in env:
-		combinedCFlags.extend( env[ 'CROSSCOMPILE_CFLAGS' ] )
+		combinedCFlags.extend(env['CROSSCOMPILE_CFLAGS'])
 	
 	if 'CROSSCOMPILE_CXXFLAGS' in env:
-		combinedCXXFlags.extend( env[ 'CROSSCOMPILE_CXXFLAGS' ] )
+		combinedCXXFlags.extend(env['CROSSCOMPILE_CXXFLAGS'])
 	
 	if nosan:
 		if 'CROSSCOMPILE_NOSAN_CPPFLAGS' in env:
-			combinedCPPFlags.extend( env[ 'CROSSCOMPILE_NOSAN_CPPFLAGS' ] )
+			combinedCPPFlags.extend(env['CROSSCOMPILE_NOSAN_CPPFLAGS'])
 			
 		if 'CROSSCOMPILE_NOSAN_LINKFLAGS' in env:
-			combinedLinkFlags.extend( env[ 'CROSSCOMPILE_NOSAN_LINKFLAGS' ] )
+			combinedLinkFlags.extend(env['CROSSCOMPILE_NOSAN_LINKFLAGS'])
 		
 	else:
 		if 'CROSSCOMPILE_CPPFLAGS' in env:
-			combinedCPPFlags.extend( env[ 'CROSSCOMPILE_CPPFLAGS' ] )
+			combinedCPPFlags.extend(env['CROSSCOMPILE_CPPFLAGS'])
 			
 		if 'CROSSCOMPILE_LINKFLAGS' in env:
-			combinedLinkFlags.extend( env[ 'CROSSCOMPILE_LINKFLAGS' ] )
+			combinedLinkFlags.extend(env['CROSSCOMPILE_LINKFLAGS'])
 	
 	if 'CROSSCOMPILE_PKGCONFIG' in env:
-		combinedPkgConfig.extend( env[ 'CROSSCOMPILE_PKGCONFIG' ] )
+		combinedPkgConfig.extend(env['CROSSCOMPILE_PKGCONFIG'])
 	
 	# append manual flags
-	combinedCFlags.extend( cflags )
-	combinedCPPFlags.extend( cppflags )
-	combinedCXXFlags.extend( cxxflags )
-	combinedLinkFlags.extend( linkflags )
+	combinedCFlags.extend(cflags)
+	combinedCPPFlags.extend(cppflags)
+	combinedCXXFlags.extend(cxxflags)
+	combinedLinkFlags.extend(linkflags)
 	combinedPkgConfig.extend(pkgconfig)
 	
 	# append required flags for dependencies
 	for dep in deps:
 		if 'cflags' in dep:
-			combinedCFlags.extend( dep[ 'cflags' ] )
+			combinedCFlags.extend(dep['cflags'])
 		
 		if 'cppflags' in dep:
-			combinedCPPFlags.extend( dep[ 'cppflags' ] )
+			combinedCPPFlags.extend(dep['cppflags'])
 		
 		if 'cxxflags' in dep:
-			combinedCXXFlags.extend( dep[ 'cxxflags' ] )
+			combinedCXXFlags.extend(dep['cxxflags'])
 		
 		if 'cpppath' in dep:
-			for path in dep[ 'cpppath' ]:
-				combinedCPPFlags.append( '-I{}'.format(
-					env.Dir( '#{}'.format( path ) ).abspath ) )
+			for path in dep['cpppath']:
+				combinedCPPFlags.append('-I{}'.format(
+					env.Dir('#{}'.format(path)).abspath))
 		
 		if 'libpath' in dep:
-			for path in dep[ 'libpath' ]:
-				combinedLinkFlags.append( '-L{}'.format(
-					env.Dir( '#{}'.format( path ) ).abspath ) )
+			for path in dep['libpath']:
+				combinedLinkFlags.append('-L{}'.format(
+					env.Dir('#{}'.format(path)).abspath))
 		
 		if 'pkgconfig' in dep:
 			for path in dep['pkgconfig']:
@@ -84,20 +84,20 @@ def createScriptHeader(env, deps=[], cflags=[], cppflags=[], cxxflags=[], linkfl
 	
 	# write flags to script
 	if combinedCFlags:
-		script.append( 'export CFLAGS="{}"'.format( ' '.join(
-			[ env.subst( x ) for x in flatten( combinedCFlags ) ] ) ) )
+		script.append('export CFLAGS="{}"'.format(' '.join(
+			[env.subst(x) for x in flatten(combinedCFlags)])))
 	
 	if combinedCPPFlags:
-		script.append( 'export CPPFLAGS="{}"'.format( ' '.join(
-			[ env.subst( x ) for x in flatten( combinedCPPFlags ) ] ) ) )
+		script.append('export CPPFLAGS="{}"'.format(' '.join(
+			[env.subst(x) for x in flatten(combinedCPPFlags)])))
 	
 	if combinedCXXFlags:
-		script.append( 'export CXXFLAGS="{}"'.format( ' '.join(
-			[ env.subst( x ) for x in flatten( combinedCXXFlags ) ] ) ) )
+		script.append('export CXXFLAGS="{}"'.format(' '.join(
+			[env.subst(x) for x in flatten(combinedCXXFlags)])))
 	
 	if combinedLinkFlags:
-		script.append( 'export LDFLAGS="{}"'.format( ' '.join(
-			[ env.subst( x ) for x in flatten( combinedLinkFlags ) ] ) ) )
+		script.append('export LDFLAGS="{}"'.format(' '.join(
+			[env.subst(x) for x in flatten(combinedLinkFlags)])))
 	
 	if combinedPkgConfig:
 		script.append('export PKG_CONFIG_PATH="{}"'.format(':'.join(
