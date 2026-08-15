@@ -2,7 +2,7 @@
 <module>
 	<name>Bullet</name>
 	<description>Provides physical simulation using the free-software Bullet physics library.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Physics</type>
 	<homepage>http://www.continuousphysics.com/Bullet/</homepage>

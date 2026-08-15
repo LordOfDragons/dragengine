@@ -61,6 +61,10 @@
 			"path": "src/modules/image/avif"
 		},
 		{
+			"name": "Module Image: AVIF-3D",
+			"path": "src/modules/image/avif3d"
+		},
+		{
 			"name": "Module Image: IES",
 			"path": "src/modules/image/ies"
 		},

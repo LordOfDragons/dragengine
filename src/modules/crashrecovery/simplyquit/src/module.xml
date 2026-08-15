@@ -2,7 +2,7 @@
 <module>
 	<name>SimplyQuit</name>
 	<description>Simply quits the engine gracefully on system failures.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>CrashRecovery</type>
 	<fallback/>

@@ -3,7 +3,7 @@
 	<name>NullGraphic</name>
 	<description>Renders nothing at all. Null modules are useful
 		for testing purpose or servers without a graphic system.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Graphic</type>
 	<fallback/>

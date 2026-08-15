@@ -4,7 +4,7 @@
 	<description>Renders game screen using OpenGL.
 		Required is a Pixel-Shader 1.3 aware graphic card.
 		Runs only on Linux operating systems.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Graphic</type>
 	<priority>1</priority>

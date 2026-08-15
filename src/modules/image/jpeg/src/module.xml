@@ -2,7 +2,7 @@
 <module>
 	<name>JPEG</name>
 	<description>Handles images saved in the JPEG format (lossy compression).</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Image</type>
 	<pattern>.jpg</pattern>

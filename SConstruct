@@ -960,6 +960,7 @@ scdirs.append('src/modules/image/ies')
 scdirs.append('src/modules/image/webp')
 scdirs.append('src/modules/image/webp3d')
 scdirs.append('src/modules/image/avif')
+scdirs.append('src/modules/image/avif3d')
 
 scdirs.append('src/modules/input/console')
 scdirs.append('src/modules/input/xsystem')

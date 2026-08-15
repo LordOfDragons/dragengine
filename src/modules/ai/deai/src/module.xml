@@ -2,7 +2,7 @@
 <module>
 	<name>DEAI</name>
 	<description>Provides AI support to the engine.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>AI</type>
 	<priority>1</priority>

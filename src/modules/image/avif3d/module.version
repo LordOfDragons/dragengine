@@ -1,0 +1,4 @@
+IMGAVIF3D {
+  global: AVIF3DCreateModule;
+  local: *;
+};

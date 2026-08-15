@@ -2,7 +2,7 @@
 <module>
 	<name>PNG</name>
 	<description>Handles images saved in the PNG format (lossless compression).</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Image</type>
 	<pattern>.png</pattern>
