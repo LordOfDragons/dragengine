@@ -76,8 +76,12 @@ def libyuvBuild(target, source, env):
 	cmdline = ['cmake -DCMAKE_INSTALL_PREFIX="{}" ..'.format(buildDir.abspath)]
 	cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	cmdline.append('-DBUILD_SHARED_LIBS=' + ('OFF' if buildStaticLinking else 'ON'))
-	cmdline.append('-DJPEG_INCLUDE_DIR="{}"'.format(';'.join([x.abspath for x in parent_targets['lib_libjpeg']['cpppath']])))
-	cmdline.append('-DJPEG_LIBRARY_RELEASE="{}"'.format(';'.join([x.abspath for x in parent_targets['lib_libjpeg']['libs']])))
+	cmdline.append('-DJPEG_INCLUDE_DIR="{}"'.format(';'.join([
+		x if isinstance(x, str) else x.abspath
+			for x in parent_targets['lib_libjpeg']['cpppath']])))
+	cmdline.append('-DJPEG_LIBRARY_RELEASE="{}"'.format(';'.join([
+		x if isinstance(x, str) else x.abspath
+			for x in parent_targets['lib_libjpeg']['libs']])))
 	
 	if 'CROSSCOMPILE_HOST' in env:
 		cmdline.append('-DCMAKE_SYSTEM_NAME=Linux')
