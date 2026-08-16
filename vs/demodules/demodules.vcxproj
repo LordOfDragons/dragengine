@@ -84,6 +84,9 @@
     <ProjectReference Include="..\modules\graphic\opengl\gra_opengl.vcxproj">
       <Project>{2255235a-4b02-4ae8-b4a1-ff52803da68f}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\modules\image\avif3d\img_avif3d.vcxproj">
+      <Project>{c3a3a56e-defa-7b79-e009-5fe50dd88761}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\modules\image\avif\img_avif.vcxproj">
       <Project>{9f1f844c-bfef-5e57-c977-3fc38bb66549}</Project>
     </ProjectReference>

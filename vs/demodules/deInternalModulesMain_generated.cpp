@@ -21,6 +21,7 @@ extern deTObjectReference<deInternalModule> deIesRegisterInternalModule(deModule
 extern deTObjectReference<deInternalModule> deWebpRegisterInternalModule(deModuleSystem*);
 extern deTObjectReference<deInternalModule> deWebp3DRegisterInternalModule(deModuleSystem*);
 extern deTObjectReference<deInternalModule> deAvifRegisterInternalModule(deModuleSystem*);
+extern deTObjectReference<deInternalModule> deAvif3DRegisterInternalModule(deModuleSystem*);
 extern deTObjectReference<deInternalModule> dewiRegisterInternalModule(deModuleSystem*);
 extern deTObjectReference<deInternalModule> delpRegisterInternalModule(deModuleSystem*);
 extern deTObjectReference<deInternalModule> demdlRegisterInternalModule(deModuleSystem*);
@@ -67,6 +68,7 @@ static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]
 	deWebpRegisterInternalModule,
 	deWebp3DRegisterInternalModule,
 	deAvifRegisterInternalModule,
+	deAvif3DRegisterInternalModule,
 	dewiRegisterInternalModule,
 	delpRegisterInternalModule,
 	demdlRegisterInternalModule,
