@@ -1,20 +1,16 @@
-diff -rupN org-libyuv-main/CMakeLists.txt cur-libyuv-main/CMakeLists.txt
---- org-libyuv-main/CMakeLists.txt	2026-08-14 18:06:42.000000000 +0200
-+++ cur-libyuv-main/CMakeLists.txt	2026-08-16 16:40:00.000000000 +0200
-@@ -171,15 +171,17 @@ endif()
- 
- # this creates the static library (.a)
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 18efc49..a435aa4 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -173,11 +173,13 @@ endif()
  add_library( ${ly_lib_static} STATIC ${ly_lib_parts})
  
--# this creates the shared library (.so)
+ # this creates the shared library (.so)
 -add_library( ${ly_lib_shared} SHARED ${ly_lib_parts})
 -set_target_properties( ${ly_lib_shared} PROPERTIES OUTPUT_NAME "${ly_lib_name}" )
 -set_target_properties( ${ly_lib_shared} PROPERTIES PREFIX "lib" )
 -if(WIN32)
 -  set_target_properties( ${ly_lib_shared} PROPERTIES IMPORT_PREFIX "lib" )
--endif()
--
-+# this creates the shared library (.so) - only when BUILD_SHARED_LIBS is ON
 +if(BUILD_SHARED_LIBS)
 +  add_library( ${ly_lib_shared} SHARED ${ly_lib_parts})
 +  set_target_properties( ${ly_lib_shared} PROPERTIES OUTPUT_NAME "${ly_lib_name}" )
@@ -22,13 +18,21 @@ diff -rupN org-libyuv-main/CMakeLists.txt cur-libyuv-main/CMakeLists.txt
 +  if(WIN32)
 +    set_target_properties( ${ly_lib_shared} PROPERTIES IMPORT_PREFIX "lib" )
 +  endif()
-+endif()
-+
- # this creates the cpuid tool
- #add_executable      ( cpuid ${ly_base_dir}/util/cpuid.c )
- #target_link_libraries  ( cpuid ${ly_lib_static} )
-@@ -244,7 +246,9 @@ endif()
+ endif()
  
+ # this creates the cpuid tool
+@@ -195,7 +197,9 @@ endif()
+ find_package ( JPEG )
+ if (JPEG_FOUND)
+   include_directories( ${JPEG_INCLUDE_DIR} )
+-  target_link_libraries( ${ly_lib_shared} ${JPEG_LIBRARY} )
++  if(BUILD_SHARED_LIBS)
++    target_link_libraries( ${ly_lib_shared} ${JPEG_LIBRARY} )
++  endif()
+   add_definitions( -DHAVE_JPEG )
+ endif()
+ 
+@@ -244,7 +248,9 @@ endif()
  # install the conversion tool, .so, .a, and all the header files
  #install ( TARGETS yuvconvert DESTINATION bin )
  install ( TARGETS ${ly_lib_static}						DESTINATION lib )
@@ -37,3 +41,5 @@ diff -rupN org-libyuv-main/CMakeLists.txt cur-libyuv-main/CMakeLists.txt
 +  install ( TARGETS ${ly_lib_shared} LIBRARY DESTINATION lib RUNTIME DESTINATION bin ARCHIVE DESTINATION lib )
 +endif()
  install ( DIRECTORY ${PROJECT_SOURCE_DIR}/include/		DESTINATION include )
+ 
+ # create the .deb and .rpm packages using cpack
