@@ -169,7 +169,8 @@ jobs:
             lib_openvr \
             lib_libjpeg \
             lib_libwebm \
-            lib_modio
+            lib_modio \
+            lib_libdav1d
           scons -j 14 \
             lib_dragonscript \
             lib_fox \

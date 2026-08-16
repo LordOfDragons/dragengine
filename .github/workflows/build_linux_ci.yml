@@ -137,7 +137,13 @@ jobs:
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
-          scons --config=force -j 1 lib_openxr lib_openvr lib_libjpeg lib_libwebm lib_modio
+          scons --config=force -j 1 \
+            lib_openxr \
+            lib_openvr \
+            lib_libjpeg \
+            lib_libwebm \
+            lib_modio \
+            lib_libdav1d
           scons -j 14 archive installer
       
       - name: Debug Symbols
