@@ -104,12 +104,19 @@ def libdav1dBuild(target, source, env):
 	
 	script.append('ninja -j {} install || exit 1'.format(env['with_threads']))
 	
-	# fix strange library path choice in 64-bit systems
-	script.append('if [ -f "{}" ]'.format(buildDir.File('lib64/libdav1d.a').abspath))
-	script.append('then')
-	script.append('  cp -fL "{}" "{}"'.format(
-		buildDir.File('lib64/libdav1d.a').abspath,
-		buildDir.File('lib/libdav1d.a').abspath))
+	# handle Meson installing library to unpredictable path. find libdav1d.a anywhere
+	# under install_dir and copy to lib if needed
+	script.append('install_dir="{}"'.format(buildDir.abspath))
+	script.append('target_lib="$install_dir/lib/libdav1d.a"')
+	script.append('if [ ! -f "$target_lib" ]; then')
+	script.append('  mkdir -p "$install_dir/lib"')
+	script.append('  source_lib=$(find "$install_dir" -name "libdav1d.a" -type f 2>/dev/null | head -1)')
+	script.append('  if [ -n "$source_lib" ]; then')
+	script.append('    cp -fL "$source_lib" "$target_lib" || exit 1')
+	script.append('  else')
+	script.append('    echo "ERROR: libdav1d.a not found in $install_dir"')
+	script.append('    exit 1')
+	script.append('  fi')
 	script.append('fi')
 	
 	if not env.RunExternalCommand(script):

@@ -145,8 +145,7 @@ jobs:
             lib_openvr \
             lib_libjpeg \
             lib_libwebm \
-            lib_modio \
-            lib_libdav1d
+            lib_modio
           scons -j 14 archive installer
       
       - name: Debug Symbols
