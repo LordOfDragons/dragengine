@@ -60,11 +60,16 @@ def libdav1dBuild(target, source, env):
 	script = createScriptHeader(env)
 	
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+
+	# if '--reconfigure' is used on meson setup it fails if there exists no configuration yet.
+	# totally stupid check breaking automated build systems. as a workaround the directory is
+	# always deleted so the '--reconfigure' is not required to be used
+	script.append('rm -rf build_dir')
 	
 	script.append('mkdir -p build_dir || exit 1')
 	script.append('cd build_dir || exit 1')
 	
-	cmdline = ['meson', 'setup', '--reconfigure', '--prefix="{}"'.format(buildDir.abspath), '..']
+	cmdline = ['meson', 'setup', '--prefix="{}"'.format(buildDir.abspath), '..']
 	cmdline.append('--buildtype=release')
 	cmdline.append('-Denable_tests=false')
 	cmdline.append('-Denable_docs=false')
