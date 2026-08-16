@@ -28,6 +28,11 @@ else:
 # fetching is always allowed
 nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libdav1d', 'lib_libdav1d_fetch')
 
+# patches
+patches = []
+globFiles(envLibrary, 'patches/{}'.format(libVersion), '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
 # check if system libdav1d is present
 hasSystemDav1d = False
 conf = envLibrary.Configure()
@@ -59,7 +64,6 @@ def libdav1dBuild(target, source, env):
 	untarArchive(buildDir.abspath, source[0].abspath)
 	
 	# create vcs_version.h otherwise meson tries to use git on a non-existing git repository
-	# and everything blows up
 	srcPath = buildDir.Dir(srcdir).abspath
 	vcsVersionFile = os.path.join(srcPath, 'include', 'vcs_version.h')
 	os.makedirs(os.path.dirname(vcsVersionFile), exist_ok=True)
@@ -70,6 +74,10 @@ def libdav1dBuild(target, source, env):
 	script = createScriptHeader(env)
 	
 	script.append('cd "{}" || exit 1'.format(srcPath))
+	
+	# apply patches
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
 	# if '--reconfigure' is used on meson setup it fails if there exists no configuration yet.
 	# totally stupid check breaking automated build systems. as a workaround the directory is
@@ -128,7 +136,7 @@ elif envLibrary['platform_webwasm']:
 	envLibrary.Replace(CROSS_FILE=envLibrary.File('dav1d-{}/package/crossfiles/wasm64.meson'.format(libVersion)))
 
 library = envLibrary.Command(targets,
-	nodeArtifacts,
+	[nodeArtifacts, patches],
 	envLibrary.Action(libdav1dBuild, 'Build libdav1d'))
 
 depends = envLibrary.Alias('lib_libdav1d', library)
