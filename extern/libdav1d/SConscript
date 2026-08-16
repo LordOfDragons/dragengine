@@ -13,7 +13,8 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-srcdir = 'dav1d-1.5.4'
+libVersion = '1.5.4'
+srcdir = 'dav1d-{}'.format(libVersion)
 
 libLinkName = 'dav1d'
 
@@ -57,10 +58,19 @@ def libdav1dBuild(target, source, env):
 	
 	untarArchive(buildDir.abspath, source[0].abspath)
 	
+	# create vcs_version.h otherwise meson tries to use git on a non-existing git repository
+	# and everything blows up
+	srcPath = buildDir.Dir(srcdir).abspath
+	vcsVersionFile = os.path.join(srcPath, 'include', 'vcs_version.h')
+	os.makedirs(os.path.dirname(vcsVersionFile), exist_ok=True)
+	with open(vcsVersionFile, 'w') as f:
+		f.write('/* auto-generated, do not edit */\n')
+		f.write('#define DAV1D_VERSION "{}"\n'.format(libVersion))
+	
 	script = createScriptHeader(env)
 	
-	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
-
+	script.append('cd "{}" || exit 1'.format(srcPath))
+	
 	# if '--reconfigure' is used on meson setup it fails if there exists no configuration yet.
 	# totally stupid check breaking automated build systems. as a workaround the directory is
 	# always deleted so the '--reconfigure' is not required to be used
@@ -115,7 +125,7 @@ if envLibrary['platform_android'] != 'no':
 	elif envLibrary['ANDROID_ARCH'] == 'arm':
 		envLibrary.Replace(CROSS_FILE=envLibrary.File('arm-android.meson').srcnode())
 elif envLibrary['platform_webwasm']:
-	envLibrary.Replace(CROSS_FILE=envLibrary.File('dav1d-1.5.4/package/crossfiles/wasm64.meson'))
+	envLibrary.Replace(CROSS_FILE=envLibrary.File('dav1d-{}/package/crossfiles/wasm64.meson'.format(libVersion)))
 
 library = envLibrary.Command(targets,
 	nodeArtifacts,
