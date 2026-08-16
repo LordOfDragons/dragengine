@@ -111,8 +111,7 @@ jobs:
         run: |
           choco install ninja meson 7zip nasm
           # ensure Meson is in PATH after installation
-          $env:PATH = "C:\ProgramData\chocolatey\bin;$env:PATH"
-          meson --version
+          Add-Content -Path $env:GITHUB_ENV -Value "PATH=C:\ProgramData\chocolatey\bin;$env:PATH"
         
       - name: Install GLSL Tools
         run: |
