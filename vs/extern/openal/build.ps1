@@ -41,7 +41,8 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
 	-DALSOFT_REQUIRE_WASAPI=ON `
 	-DCMAKE_POSITION_INDEPENDENT_CODE=ON `
 	-DLIBTYPE=STATIC `
-	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir"
+	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
+	-DCMAKE_POLICY_VERSION_MINIMUM="3.5"
 
 cmake --build "$CmakeBuildDir" -- /p:Configuration=Release
 cmake --install "$CmakeBuildDir"

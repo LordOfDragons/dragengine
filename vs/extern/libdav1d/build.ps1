@@ -58,6 +58,7 @@ if (Test-Path "$NasmStandardPath\nasm.exe") {
 }
 
 $env:PATH = "$TargetNasmDir;$env:PATH"
+$env:CMAKE_ARGS = "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
 
 meson setup "$MesonBuildDir" "$MesonSourceDir" `
     --prefix="$MesonInstallDir" `
