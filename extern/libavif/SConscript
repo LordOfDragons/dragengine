@@ -42,6 +42,8 @@ libs.extend(parent_targets['lib_libyuv']['libs'])
 libs.extend(parent_targets['lib_libdav1d']['libs'])
 libs.extend(parent_targets['lib_svtav1']['libs'])
 
+staticlibs = []
+
 parent_report['use system libavif'] = 'yes' if hasSystemAvif else 'no'
 
 if hasSystemAvif:
@@ -50,6 +52,7 @@ if hasSystemAvif:
 		'cpppath' : [],
 		'libpath' : [],
 		'libs' : libs,
+		'staticlibs' : staticlibs,
 		'runtimelibs' : [],
 		'depends' : [] }
 	Return()
@@ -169,9 +172,9 @@ libpath.extend(parent_targets['lib_svtav1']['libpath'])
 
 if buildStaticLinking:
 	libs = library[0:1]
-	libs.extend(parent_targets['lib_libyuv']['libs'])
-	libs.extend(parent_targets['lib_libdav1d']['libs'])
-	libs.extend(parent_targets['lib_svtav1']['libs'])
+	staticlibs.extend(parent_targets['lib_libyuv']['libs'])
+	staticlibs.extend(parent_targets['lib_libdav1d']['libs'])
+	staticlibs.extend(parent_targets['lib_svtav1']['libs'])
 	runtimelibs = []
 else:
 	runtimelibs = library[0:1]
@@ -184,5 +187,6 @@ parent_targets['lib_libavif'] = {
 	'cpppath' : cpppath,
 	'libpath' : libpath,
 	'libs' : libs,
+	'staticlibs' : staticlibs,
 	'runtimelibs' : runtimelibs,
 	'depends' : depends }
