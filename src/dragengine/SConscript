@@ -531,10 +531,6 @@ def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[], priority=F
 					libenv['LIBS'].insert(0, x)
 			#libenv['LIBS'].extend(elt['libs'])
 			#binlibs.extend(parent_targets['lib_zlib']['libs'])
-		if 'staticlibs' in elt:
-			for x in reversed(elt['staticlibs']):
-				if not x in libenv['LIBS']:
-					libenv['LIBS'].insert(0, x)
 		if 'libpath' in elt:
 			for x in elt['libpath']:
 				if not x in libenv['LIBPATH']:

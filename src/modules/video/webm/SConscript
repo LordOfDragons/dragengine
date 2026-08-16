@@ -13,10 +13,10 @@ if not buildModule:
 
 libs = []
 appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
-appendLibrary(envModule, parent_targets['lib_libvorbis'], libs)
-appendLibrary(envModule, parent_targets['lib_libopus'], libs)
-appendLibrary(envModule, parent_targets['lib_libvpx'], libs)
-appendLibrary(envModule, parent_targets['lib_libwebm'], libs)
+appendLibrary(envModule, parent_targets['lib_libvorbis'], libs, internalModule=internalModule)
+appendLibrary(envModule, parent_targets['lib_libopus'], libs, internalModule=internalModule)
+appendLibrary(envModule, parent_targets['lib_libvpx'], libs, internalModule=internalModule)
+appendLibrary(envModule, parent_targets['lib_libwebm'], libs, internalModule=internalModule)
 
 # fetch values in expanded form for later use
 versionString = '1.32'

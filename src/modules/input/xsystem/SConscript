@@ -91,7 +91,7 @@ data = []
 globFiles(envModule, 'data', '*', data)
 
 appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
-appendLibrary(envModule, parent_targets['lib_libevdev'], libs)
+appendLibrary(envModule, parent_targets['lib_libevdev'], libs, internalModule=internalModule)
 
 install = []
 archive = {}

@@ -35,8 +35,8 @@ envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
 appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
-appendLibrary(envModule, parent_targets['lib_soundtouch'], libs)
-appendLibrary(envModule, parent_targets['lib_libfftw'], libs)
+appendLibrary(envModule, parent_targets['lib_soundtouch'], libs, internalModule=internalModule)
+appendLibrary(envModule, parent_targets['lib_libfftw'], libs, internalModule=internalModule)
 
 # setup the builders
 sources = []
