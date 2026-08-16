@@ -64,6 +64,9 @@ on:
         default: true
         type: boolean
 
+env:
+  CMAKE_ARGS: "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+
 jobs:
   build:
     runs-on: ubuntu-22.04
