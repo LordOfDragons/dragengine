@@ -13,13 +13,38 @@ if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
 }
 
 
-$LibVersion = "1.7.85"
-
-$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "fox-$LibVersion-bin"
+$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "fox-$LibVersion-bin.tar.xz" -UrlPath "fox"
+$LibVersion = "1.7.85"
 
-Expand-TarXz -Path "$ProjectDir\fox-$LibVersion-bin.tar.xz" -Destination $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "fox-$LibVersion.tar.xz" -UrlPath "fox"
+
+Expand-TarXz -Path "$ProjectDir\fox-$LibVersion.tar.xz" -Destination $ExpandedDir
+
+$CmakeSourceDir = "$ExpandedDir\fox-$LibVersion"
+$CmakeBuildDir = "$ExpandedDir\build"
+$CmakeInstallDir = "$ExpandedDir\install"
+
+cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
+    -DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
+    -DCMAKE_BUILD_TYPE=Release `
+    -DBUILD_SHARED_LIBS=Off `
+    -DOPTION_BUILD_SHARED=Off `
+    -DCMAKE_SYSTEM_NAME=Windows `
+    -DCMAKE_SYSTEM_PROCESSOR=AMD64 `
+    -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
+
+cmake --build "$CmakeBuildDir" -j 8 -- /property:Configuration=Release
+
+if (!(Test-Path $CmakeInstallDir)) {
+    New-Item -Path $CmakeInstallDir -ItemType "directory"
+}
+
+Copy-Item "$CmakeBuildDir\cmake_install.cmake" -Destination $CmakeInstallDir -Force
+
+cmake --install "$CmakeInstallDir"
+
+Remove-Item "$CmakeInstallDir\cmake_install.cmake" -Force

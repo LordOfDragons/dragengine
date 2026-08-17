@@ -13,11 +13,15 @@ if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
 }
 
 
-$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "libvorbis-1.3.5-vc64"
-if (Test-Path $ExpandedDir) {
-    Remove-Item $ExpandedDir -Force -Recurse
+# libvorbisfile is built as part of libvorbis, just copy the built libraries
+$VorbisInstallDir = Join-Path -Path $ProjectDir -ChildPath "..\libvorbis\build\install"
+
+if (Test-Path $VorbisInstallDir) {
+    # Copy the vorbisfile library to this project's expected location
+    $ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "libvorbis-1.3.7-vc64"
+    if (Test-Path $ExpandedDir) {
+        Remove-Item $ExpandedDir -Force -Recurse
+    }
+    New-Item -Path $ExpandedDir -ItemType "directory" -Force | Out-Null
+    Copy-Item "$VorbisInstallDir\*" -Destination $ExpandedDir -Recurse -Force
 }
-
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libvorbis-1.3.5-vc64.zip" -UrlPath "libvorbis"
-
-Expand-Archive -Path "$ProjectDir\libvorbis-1.3.5-vc64.zip" -DestinationPath $ProjectDir
