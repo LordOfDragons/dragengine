@@ -308,7 +308,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\image\avif3d\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -332,7 +336,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\image\avif3d\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_InternalModules|x64'">
     <ClCompile>
@@ -387,7 +395,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\image\avif3d\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug_InternalModules|x64'">
     <ClCompile>
