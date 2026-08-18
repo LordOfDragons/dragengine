@@ -18,9 +18,9 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-$LibVersion = "1.6.40"
+$LibVersion = "1.6.29"
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libpng-$LibVersion.tar.xz" -UrlPath "libpng"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libpng-$LibVersion.tar.xz" -UrlPath "libapng"
 
 Expand-TarXz -Path "$ProjectDir\libpng-$LibVersion.tar.xz" -Destination $ExpandedDir
 

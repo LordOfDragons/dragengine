@@ -17,5 +17,6 @@
   <ItemGroup>
     <None Include="..\..\modules\video\theora\post_build.ps1" />
     <None Include="..\..\..\extern\libtheora\SConscript" />
+    <None Include="build.ps1" />
   </ItemGroup>
 </Project>

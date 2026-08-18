@@ -18,7 +18,7 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-$LibVersion = "1.3.2"
+$LibVersion = "1.5.0"
 
 DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libwebp-$LibVersion.tar.xz" -UrlPath "libwebp"
 

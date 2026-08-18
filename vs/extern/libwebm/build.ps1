@@ -18,13 +18,21 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-$LibVersion = "1.0.0.31"
+$LibVersion = "1.0.0.32"
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libwebm-$LibVersion.tar.xz" -UrlPath "libwebm"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libwebm-libwebm-$LibVersion.tar.xz" -UrlPath "libwebm"
 
-Expand-TarXz -Path "$ProjectDir\libwebm-$LibVersion.tar.xz" -Destination $ExpandedDir
+Expand-TarXz -Path "$ProjectDir\libwebm-libwebm-$LibVersion.tar.xz" -Destination $ExpandedDir
 
-$CmakeSourceDir = "$ExpandedDir\libwebm-$LibVersion"
+# patch master_value_parser.h to fix MSVC C2248 error. since this is just an internal build
+# nobody is going to get to compile against just replace all "private:" with "public:".
+# ugly but enough to get it compiling
+$MasterValueParserHeader = "$ExpandedDir\libwebm-libwebm-$LibVersion\webm_parser\src\master_value_parser.h"
+$Content = Get-Content -Path $MasterValueParserHeader -Raw
+$Content = $Content -replace ' private:', ' public:'
+Set-Content -Path $MasterValueParserHeader -Value $Content -NoNewline
+
+$CmakeSourceDir = "$ExpandedDir\libwebm-libwebm-$LibVersion"
 $CmakeBuildDir = "$ExpandedDir\build"
 $CmakeInstallDir = "$ExpandedDir\install"
 
@@ -35,7 +43,8 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
 	-DENABLE_WEBMTS=Off `
 	-DCMAKE_SYSTEM_NAME=Windows `
 	-DCMAKE_SYSTEM_PROCESSOR=AMD64 `
-	-DCMAKE_POLICY_VERSION_MINIMUM="3.5"
+	-DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
+	-DENABLE_WEBM_PARSER=On
 
 cmake --build "$CmakeBuildDir" -j 8 -- /property:Configuration=Release
 

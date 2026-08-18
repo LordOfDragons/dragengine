@@ -18,32 +18,57 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-$LibVersion = "2.3.1"
+$LibVersion = "2.1.1"
 
 DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "soundtouch-$LibVersion.tar.xz" -UrlPath "soundtouch"
 
 Expand-TarXz -Path "$ProjectDir\soundtouch-$LibVersion.tar.xz" -Destination $ExpandedDir
 
-$CmakeSourceDir = "$ExpandedDir\soundtouch"
-$CmakeBuildDir = "$ExpandedDir\build"
-$CmakeInstallDir = "$ExpandedDir\install"
+# build static library using Visual Studio solution file. the upstream solution file is broken
+# and outdated so we have to patch some files
+$ExpandedSrcDir = "$ExpandedDir\soundtouch-$LibVersion"
+$vcxprojPath = "$ExpandedSrcDir\source\SoundTouch\SoundTouch.vcxproj"
+$msbuild = Get-MSBuildPath
+$dragengineToolset = Get-VisualStudioToolset
+$platformVersion = Get-VisualStudioPlatformVersion
+$configuration = "Release"
+$platform = "x64"
+$runtimeLibrary = "MultiThreadedDLL"
 
-cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
-	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
-	-DCMAKE_BUILD_TYPE=Release `
-	-DBUILD_SHARED_LIBS=Off `
-	-DCMAKE_SYSTEM_NAME=Windows `
-	-DCMAKE_SYSTEM_PROCESSOR=AMD64 `
-	-DCMAKE_POLICY_VERSION_MINIMUM="3.5"
-
-cmake --build "$CmakeBuildDir" -j 8 -- /property:Configuration=Release
-
-if (!(Test-Path $CmakeInstallDir)) {
-    New-Item -Path $CmakeInstallDir -ItemType "directory"
+Get-ChildItem -Path $ExpandedSrcDir -Filter *.vcxproj -Recurse | ForEach-Object {
+    (Get-Content $_.FullName) `
+        -replace '<PlatformToolset>.*</PlatformToolset>', "<PlatformToolset>$dragengineToolset</PlatformToolset>" `
+        -replace '<WindowsTargetPlatformVersion>.*</WindowsTargetPlatformVersion>', "<WindowsTargetPlatformVersion>$platformVersion</WindowsTargetPlatformVersion>" `
+        -replace '<RuntimeLibrary>.*</RuntimeLibrary>', "<RuntimeLibrary>$runtimeLibrary</RuntimeLibrary>" `
+        | Set-Content $_.FullName
 }
 
-Copy-Item "$CmakeBuildDir\cmake_install.cmake" -Destination $CmakeInstallDir -Force
+Write-Host "Building project: $vcxprojPath"
+Write-Host "Using MSBuild: $msbuild"
+& $msbuild $vcxprojPath /m /t:Build /p:Configuration=$configuration /p:Platform=$platform `
+	/p:PlatformToolset="$dragengineToolset" /p:RuntimeLibrary="$runtimeLibrary" `
+    /p:WindowsTargetPlatformVersion="$platformVersion"
+if ($LASTEXITCODE -ne 0) {
+	Write-Error "MSBuild failed with exit code $LASTEXITCODE"
+	throw "MSBuild failed with exit code $LASTEXITCODE"
+}
 
-cmake --install "$CmakeInstallDir"
+# copy the built static library to the expected location
+$projectDir = Split-Path -Path $vcxprojPath -Parent
+$libBuildDir = "$projectDir\x64\Release"
+$libFile = "$libBuildDir\SoundTouch_x64.lib"
+$targetLibDir = "$ExpandedDir\install\lib"
 
-Remove-Item "$CmakeInstallDir\cmake_install.cmake" -Force
+if (-not (Test-Path $targetLibDir)) {
+	New-Item -Path $targetLibDir -ItemType Directory | Out-Null
+}
+Copy-Item $libFile -Destination "$targetLibDir\SoundTouch.lib" -Force
+
+# copy the include directory
+$sourceIncludeDir = "$ExpandedSrcDir\include"
+$targetIncludeDir = "$ExpandedDir\install\include\soundtouch"
+
+if (Test-Path $targetIncludeDir) {
+	Remove-Item $targetIncludeDir -Force -Recurse
+}
+Copy-Item $sourceIncludeDir -Destination $targetIncludeDir -Recurse -Force

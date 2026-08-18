@@ -13,11 +13,11 @@ if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
 }
 
 
-$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "steamsdk"
+$ExpandedDir = "$ProjectDir\build\steamsdk"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
 DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "steamsdk160.tar.xz" -UrlPath "steamsdk"
 
-Expand-TarXz -Path "$ProjectDir\steamsdk160.tar.xz" -Destination "$ProjectDir\steamsdk"
+Expand-TarXz -Path "$ProjectDir\steamsdk160.tar.xz" -Destination $ExpandedDir

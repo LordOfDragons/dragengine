@@ -18,32 +18,56 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-$LibVersion = "1.3.5"
+$LibVersion = "1.3.2"
 
 DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libogg-$LibVersion.tar.xz" -UrlPath "libogg"
 
 Expand-TarXz -Path "$ProjectDir\libogg-$LibVersion.tar.xz" -Destination $ExpandedDir
 
-$CmakeSourceDir = "$ExpandedDir\libogg-$LibVersion"
-$CmakeBuildDir = "$ExpandedDir\build"
-$CmakeInstallDir = "$ExpandedDir\install"
+# build static library using Visual Studio solution file
+$ExpandedSrcDir = "$ExpandedDir\libogg-$LibVersion"
+$vcxprojPath = "$ExpandedSrcDir\win32\VS2010\libogg_static.vcxproj"
+$msbuild = Get-MSBuildPath
+$dragengineToolset = Get-VisualStudioToolset
+$platformVersion = Get-VisualStudioPlatformVersion
+$configuration = "Release"
+$platform = "x64"
+$runtimeLibrary = "MultiThreadedDLL"
 
-cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
-	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
-	-DCMAKE_BUILD_TYPE=Release `
-	-DBUILD_SHARED_LIBS=Off `
-	-DCMAKE_SYSTEM_NAME=Windows `
-	-DCMAKE_SYSTEM_PROCESSOR=AMD64 `
-	-DCMAKE_POLICY_VERSION_MINIMUM="3.5"
-
-cmake --build "$CmakeBuildDir" -j 8 -- /property:Configuration=Release
-
-if (!(Test-Path $CmakeInstallDir)) {
-    New-Item -Path $CmakeInstallDir -ItemType "directory"
+Get-ChildItem -Path $ExpandedSrcDir -Filter *.vcxproj -Recurse | ForEach-Object {
+    (Get-Content $_.FullName) `
+        -replace '<PlatformToolset>.*</PlatformToolset>', "<PlatformToolset>$dragengineToolset</PlatformToolset>" `
+        -replace '<WindowsTargetPlatformVersion>.*</WindowsTargetPlatformVersion>', "<WindowsTargetPlatformVersion>$platformVersion</WindowsTargetPlatformVersion>" `
+        -replace '<RuntimeLibrary>.*</RuntimeLibrary>', "<RuntimeLibrary>$runtimeLibrary</RuntimeLibrary>" `
+        | Set-Content $_.FullName
 }
 
-Copy-Item "$CmakeBuildDir\cmake_install.cmake" -Destination $CmakeInstallDir -Force
+Write-Host "Building project: $vcxprojPath"
+Write-Host "Using MSBuild: $msbuild"
+& $msbuild $vcxprojPath /m /t:Build /p:Configuration=$configuration /p:Platform=$platform `
+	/p:PlatformToolset="$dragengineToolset" /p:RuntimeLibrary="$runtimeLibrary" `
+    /p:WindowsTargetPlatformVersion="$platformVersion" `
+    /p:ClCommandLineParameters="/MD" /p:LinkIncremental=No
+if ($LASTEXITCODE -ne 0) {
+	Write-Error "MSBuild failed with exit code $LASTEXITCODE"
+	throw "MSBuild failed with exit code $LASTEXITCODE"
+}
 
-cmake --install "$CmakeInstallDir"
+# copy the built static library to the expected location
+$projectDir = Split-Path -Path $vcxprojPath -Parent
+$libBuildDir = "$projectDir\x64\Release"
+$targetLibDir = "$ExpandedDir\install\lib"
 
-Remove-Item "$CmakeInstallDir\cmake_install.cmake" -Force
+if (-not (Test-Path $targetLibDir)) {
+	New-Item -Path $targetLibDir -ItemType Directory | Out-Null
+}
+Copy-Item "$libBuildDir\libogg_static.lib" -Destination "$targetLibDir\libogg_static.lib" -Force
+
+# copy the include directory
+$sourceIncludeDir = "$ExpandedSrcDir\include"
+$targetIncludeDir = "$ExpandedDir\install\include"
+
+if (Test-Path $targetIncludeDir) {
+	Remove-Item $targetIncludeDir -Force -Recurse
+}
+Copy-Item $sourceIncludeDir -Destination $targetIncludeDir -Recurse -Force

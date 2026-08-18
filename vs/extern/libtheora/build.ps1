@@ -15,39 +15,72 @@ if (Test-Path $ExpandedDir) {
 
 $LibVersion = "1.1.1"
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "theora-$LibVersion.tar.xz" -UrlPath "libtheora"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libtheora-$LibVersion.tar.xz" -UrlPath "libtheora"
 
-Expand-TarXz -Path "$ProjectDir\theora-$LibVersion.tar.xz" -Destination $ExpandedDir
+Expand-TarXz -Path "$ProjectDir\libtheora-$LibVersion.tar.xz" -Destination $ExpandedDir
 
-$CmakeSourceDir = "$ExpandedDir\theora-$LibVersion"
-$CmakeBuildDir = "$ExpandedDir\build"
-$CmakeInstallDir = "$ExpandedDir\install"
+# build static library using Visual Studio solution file
+$ExpandedSrcDir = "$ExpandedDir\libtheora-$LibVersion"
+$vcprojPath = "$ExpandedSrcDir\win32\VS2008\libtheora\libtheora_static.vcproj"
+$vcxprojPath = "$ExpandedSrcDir\win32\VS2008\libtheora\libtheora_static.vcxproj"
+$msbuild = Get-MSBuildPath
+$devenv = Get-DevenvPath
+$dragengineToolset = Get-VisualStudioToolset
+$platformVersion = Get-VisualStudioPlatformVersion
+$configuration = "Release"
+$platform = "x64"
+$runtimeLibrary = "MultiThreadedDLL"
 
-$OggIncludeDir = Join-Path -Path $ProjectDir -ChildPath "..\libogg\build\install\include"
-$OggLibDir = Join-Path -Path $ProjectDir -ChildPath "..\libogg\build\install\lib"
-$VorbisIncludeDir = Join-Path -Path $ProjectDir -ChildPath "..\libvorbis\build\install\include"
-$VorbisLibDir = Join-Path -Path $ProjectDir -ChildPath "..\libvorbis\build\install\lib"
+& $devenv $vcprojPath /upgrade
 
-cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
-	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
-	-DCMAKE_BUILD_TYPE=Release `
-	-DBUILD_SHARED_LIBS=Off `
-	-DCMAKE_SYSTEM_NAME=Windows `
-	-DCMAKE_SYSTEM_PROCESSOR=AMD64 `
-	-DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
-	-DOgg_INCLUDE_DIR="$OggIncludeDir" `
-	-DOgg_LIBRARY_RELEASE="$OggLibDir\ogg.lib" `
-	-DVorbis_INCLUDE_DIR="$VorbisIncludeDir" `
-	-DVorbis_LIBRARY_RELEASE="$VorbisLibDir\vorbis.lib"
-
-cmake --build "$CmakeBuildDir" -j 8 -- /property:Configuration=Release
-
-if (!(Test-Path $CmakeInstallDir)) {
-    New-Item -Path $CmakeInstallDir -ItemType "directory"
+Get-ChildItem -Path $ExpandedSrcDir -Filter *.vcxproj -Recurse | ForEach-Object {
+    (Get-Content $_.FullName) `
+        -replace '<PlatformToolset>.*</PlatformToolset>', "<PlatformToolset>$dragengineToolset</PlatformToolset>" `
+        -replace '<WindowsTargetPlatformVersion>.*</WindowsTargetPlatformVersion>', "<WindowsTargetPlatformVersion>$platformVersion</WindowsTargetPlatformVersion>" `
+        -replace '<RuntimeLibrary>.*</RuntimeLibrary>', "<RuntimeLibrary>$runtimeLibrary</RuntimeLibrary>" `
+        | Set-Content $_.FullName
 }
 
-Copy-Item "$CmakeBuildDir\cmake_install.cmake" -Destination $CmakeInstallDir -Force
+Write-Host "Building project: $vcxprojPath"
+Write-Host "Using MSBuild: $msbuild"
 
-cmake --install "$CmakeInstallDir"
+$propsPath = "$ExpandedSrcDir\win32\VS2008\libogg.props"
+$propsContent = Get-Content $propsPath -Raw
+$propsContent = $propsContent -replace '<AdditionalIncludeDirectories>.*</AdditionalIncludeDirectories>', "<AdditionalIncludeDirectories>..\..\..\..\..\..\libogg\build\install\include</AdditionalIncludeDirectories>"
+$propsContent = $propsContent -replace '<AdditionalLibraryDirectories>.*</AdditionalLibraryDirectories>', "<AdditionalLibraryDirectories>..\..\..\..\..\..\libogg\build\install\lib</AdditionalLibraryDirectories>"
+Set-Content $propsPath -Value $propsContent
 
-Remove-Item "$CmakeInstallDir\cmake_install.cmake" -Force
+$propsPath = "$ExpandedSrcDir\win32\VS2008\libvorbis.props"
+$propsContent = Get-Content $propsPath -Raw
+$propsContent = $propsContent -replace '<AdditionalIncludeDirectories>.*</AdditionalIncludeDirectories>', "<AdditionalIncludeDirectories>..\..\..\..\..\..\libvorbis\build\install\include</AdditionalIncludeDirectories>"
+$propsContent = $propsContent -replace '<AdditionalLibraryDirectories>.*</AdditionalLibraryDirectories>', "<AdditionalLibraryDirectories>..\..\..\..\..\..\libvorbis\build\install\lib</AdditionalLibraryDirectories>"
+Set-Content $propsPath -Value $propsContent
+
+& $msbuild $vcxprojPath /m /t:Build /p:Configuration=$configuration /p:Platform=$platform `
+	/p:PlatformToolset="$dragengineToolset" /p:RuntimeLibrary="$runtimeLibrary" `
+    /p:WindowsTargetPlatformVersion="$platformVersion"
+if ($LASTEXITCODE -ne 0) {
+	Write-Error "MSBuild failed with exit code $LASTEXITCODE"
+	throw "MSBuild failed with exit code $LASTEXITCODE"
+}
+
+# copy the built static library to the expected location
+$projectDir = Split-Path -Path $vcxprojPath -Parent
+$libBuildDir = "$projectDir\x64\Release"
+$libFile = "$libBuildDir\libtheora_static.lib"
+$targetLibDir = "$ExpandedDir\install\lib"
+
+if (-not (Test-Path $targetLibDir)) {
+	New-Item -Path $targetLibDir -ItemType Directory | Out-Null
+}
+
+Copy-Item "$libBuildDir\libtheora_static.lib" -Destination "$targetLibDir\libtheora_static.lib" -Force
+
+# copy the include directory
+$sourceIncludeDir = "$ExpandedSrcDir\include"
+$targetIncludeDir = "$ExpandedDir\install\include"
+
+if (Test-Path $targetIncludeDir) {
+	Remove-Item $targetIncludeDir -Force -Recurse
+}
+Copy-Item $sourceIncludeDir -Destination $targetIncludeDir -Recurse -Force

@@ -18,7 +18,7 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-$LibVersion = "1.2.13"
+$LibVersion = "1.2.11"
 
 DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "zlib-$LibVersion.tar.xz" -UrlPath "zlib"
 

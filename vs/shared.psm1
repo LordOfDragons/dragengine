@@ -346,6 +346,73 @@ function Invoke-WebRequestWithRetry {
 }
 
 
+# Get Visual Studio platform toolset from dragengine.sln
+#########################################################
+
+function Get-VisualStudioToolset {
+    $projectPath = "$PSScriptRoot\dragengine\dragengine.vcxproj"
+    $projContent = Get-Content $projectPath -Raw
+    if ($projContent -match '<PlatformToolset>(v\d+)</PlatformToolset>') {
+        return $matches[1]
+    }
+
+    throw "This should not happen!"
+}
+
+function Get-VisualStudioPlatformVersion {
+    $projectPath = "$PSScriptRoot\dragengine\dragengine.vcxproj"
+    $projContent = Get-Content $projectPath -Raw
+    if ($projContent -match '<WindowsTargetPlatformVersion>([\d\.]+)</WindowsTargetPlatformVersion>') {
+        return $matches[1]
+    }
+
+    throw "This should not happen!"
+}
+
+
+# Get MSBuild executable path
+###############################
+
+function Get-MSBuildPath {
+	# try vswhere to find the latest Visual Studio
+	$vswhere = Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath "Microsoft Visual Studio\Installer\vswhere.exe"
+	if (Test-Path $vswhere) {
+		try {
+			$inst = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath 2>$null
+			if ($inst) {
+				$msbuildCandidate = Join-Path -Path $inst -ChildPath "MSBuild\Current\Bin\MSBuild.exe"
+				if (Test-Path $msbuildCandidate) { return $msbuildCandidate }
+				$msbuildCandidate = Join-Path -Path $inst -ChildPath "MSBuild\15.0\Bin\MSBuild.exe"
+				if (Test-Path $msbuildCandidate) { return $msbuildCandidate }
+			}
+		} catch { }
+	}
+	# fallback: rely on msbuild in PATH
+	return "msbuild.exe"
+}
+
+function Get-DevenvPath {
+    $vswhere = Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath "Microsoft Visual Studio\Installer\vswhere.exe"
+    
+    if (Test-Path $vswhere) {
+        try {
+            # -requires CoreEditor ensures a full IDE package is present (devenv doesn't exist in Build Tools)
+            # -find handles hunting down the Common7\IDE folder structure automatically
+            $devenvPath = & $vswhere -latest -products * `
+                -requires Microsoft.VisualStudio.Component.CoreEditor `
+                -find "Common7\IDE\devenv.com" -format text 2>$null
+            
+            if ($devenvPath -and (Test-Path $devenvPath)) { 
+                return $devenvPath 
+            }
+        } catch { }
+    }
+    
+    # Fallback: hope it is already mapped to the system environment PATH
+    return "devenv.com"
+}
+
+
 # Various path constants
 ##########################
 
