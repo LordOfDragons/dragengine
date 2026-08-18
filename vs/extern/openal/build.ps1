@@ -29,20 +29,18 @@ $CmakeSourceDir = "$ExpandedDir\openal-soft-$OpenALVersion"
 $CmakeInstallDir = "$ExpandedDir\install"
 
 cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
+	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
+	$(Common-CMakeConfigParameters) `
 	-DALSOFT_NO_CONFIG_UTIL=ON `
 	-DALSOFT_EXAMPLES=OFF `
 	-DALSOFT_TESTS=OFF `
 	-DALSOFT_UTILS=OFF `
 	-DALSOFT_INSTALL=ON `
 	-DALSOFT_EAX=ON `
-	-DCMAKE_BUILD_TYPE=Release `
 	-DALSOFT_REQUIRE_DSOUND=ON `
 	-DALSOFT_REQUIRE_WINMM=ON `
 	-DALSOFT_REQUIRE_WASAPI=ON `
-	-DCMAKE_POSITION_INDEPENDENT_CODE=ON `
-	-DLIBTYPE=STATIC `
-	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
-	-DCMAKE_POLICY_VERSION_MINIMUM="3.5"
+	-DLIBTYPE=STATIC
 
 cmake --build "$CmakeBuildDir" -- /p:Configuration=Release
 cmake --install "$CmakeBuildDir"

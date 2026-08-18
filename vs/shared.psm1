@@ -355,7 +355,6 @@ function Get-VisualStudioToolset {
     if ($projContent -match '<PlatformToolset>(v\d+)</PlatformToolset>') {
         return $matches[1]
     }
-
     throw "This should not happen!"
 }
 
@@ -365,7 +364,15 @@ function Get-VisualStudioPlatformVersion {
     if ($projContent -match '<WindowsTargetPlatformVersion>([\d\.]+)</WindowsTargetPlatformVersion>') {
         return $matches[1]
     }
+    throw "This should not happen!"
+}
 
+function Get-VisualStudioCppStandard {
+    $projectPath = "$PSScriptRoot\dragengine\dragengine.vcxproj"
+    $projContent = Get-Content $projectPath -Raw
+    if ($projContent -match '<LanguageStandard>(stdcpp\d+)</LanguageStandard>') {
+        return $matches[1]
+    }
     throw "This should not happen!"
 }
 
@@ -412,6 +419,24 @@ function Get-DevenvPath {
     return "devenv.com"
 }
 
+
+# Common CMake config parameters
+#################################
+
+function Common-CMakeConfigParameters {
+    $cppStandard = Get-VisualStudioCppStandard
+    # convert LanguageStandard values to CMake format
+    # stdcpp20 -> /std:c++20, stdcpp17 -> /std:c++17, ...
+    $cppStandard = $cppStandard -replace 'stdcpp', '/std:c++'
+
+    return @(
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
+        "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
+        "-DCMAKE_CXX_FLAGS=$cppStandard",
+        "-DCMAKE_C_FLAGS=$cppStandard"
+    )
+}
 
 # Various path constants
 ##########################
