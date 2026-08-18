@@ -66,7 +66,7 @@ Copy-Item "$libBuildDir\libdscript-static.lib" -Destination $targetLibDir -Force
 Copy-Item "$libBuildDir\libdscript-static.pdb" -Destination $targetLibDir -Force
 
 # copy the include directory
-$sourceIncludeDir = "$ExpandedSrcDir\include"
+$sourceIncludeDir = "$libBuildDir\Distribute\SDK\include"
 $targetIncludeDir = "$ExpandedDir\install\include"
 
 if (Test-Path $targetIncludeDir) {
@@ -75,7 +75,7 @@ if (Test-Path $targetIncludeDir) {
 Copy-Item $sourceIncludeDir -Destination $targetIncludeDir -Recurse -Force
 
 # copy dsinstall directory
-$sourceDsinstallDir = "$ExpandedSrcDir\Distribute\SDK\dsinstall"
+$sourceDsinstallDir = "$libBuildDir\Distribute\SDK\dsinstall"
 $targetDsinstallDir = "$ExpandedDir\install\dsinstall"
 
 if (Test-Path $targetDsinstallDir) {
