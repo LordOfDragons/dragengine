@@ -424,17 +424,14 @@ function Get-DevenvPath {
 #################################
 
 function Common-CMakeConfigParameters {
-    $cppStandard = Get-VisualStudioCppStandard
-    # convert LanguageStandard values to CMake format
-    # stdcpp20 -> /std:c++20, stdcpp17 -> /std:c++17, ...
-    $cppStandard = $cppStandard -replace 'stdcpp', '/std:c++'
-
+    $cppStandard = Get-VisualStudioCppStandard -replace 'stdcpp', ''
     return @(
-        "-DCMAKE_BUILD_TYPE=Release",
-        "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
-        "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
-        "-DCMAKE_CXX_FLAGS=$cppStandard",
-        "-DCMAKE_C_FLAGS=$cppStandard"
+        '-DCMAKE_BUILD_TYPE=Release',
+        '-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
+        '-DCMAKE_POLICY_VERSION_MINIMUM=3.5',
+        "-DCMAKE_CXX_STANDARD=$cppStandard",
+        '-DCMAKE_CXX_STANDARD_REQUIRED=ON',
+        '-DCMAKE_CXX_EXTENSIONS=OFF'
     )
 }
 
