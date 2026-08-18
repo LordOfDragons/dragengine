@@ -106,22 +106,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)eossdk\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\eossdk\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>EOSSDK-Win64-Shipping</TargetName>
-    <OutDir>$(ProjectDir)eossdk\lib\</OutDir>
+    <OutDir>$(ProjectDir)build\eossdk\lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)eossdk\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\eossdk\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>EOSSDK-Win64-Shipping</TargetName>
-    <OutDir>$(ProjectDir)eossdk\lib\</OutDir>
+    <OutDir>$(ProjectDir)build\eossdk\lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <CustomBuildBeforeTargets />

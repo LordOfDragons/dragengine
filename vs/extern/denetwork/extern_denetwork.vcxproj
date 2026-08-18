@@ -106,23 +106,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)DENetworkSDK\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\DENetworkSDK\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>DENetwork</TargetName>
-    <OutDir>$(ProjectDir)DENetworkSDK\Library\x64\</OutDir>
+    <OutDir>$(ProjectDir)build\DENetworkSDK\Library\x64\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)DENetworkSDK\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\DENetworkSDK\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>DENetwork</TargetName>
-    <OutDir>$(ProjectDir)DENetworkSDK\Library\x64\</OutDir>
+    <OutDir>$(ProjectDir)build\DENetworkSDK\Library\x64\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">

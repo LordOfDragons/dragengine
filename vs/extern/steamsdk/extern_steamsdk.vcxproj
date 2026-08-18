@@ -106,22 +106,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)steamsdk\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\steamsdk\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>steam_api64</TargetName>
-    <OutDir>$(ProjectDir)steamsdk\bin\</OutDir>
+    <OutDir>$(ProjectDir)build\steamsdk\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)steamsdk\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\steamsdk\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>steam_api64</TargetName>
-    <OutDir>$(ProjectDir)steamsdk\bin\</OutDir>
+    <OutDir>$(ProjectDir)build\steamsdk\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <CustomBuildBeforeTargets />

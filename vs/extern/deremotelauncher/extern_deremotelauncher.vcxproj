@@ -106,23 +106,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)DERemoteLauncherSDK\Include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\DERemoteLauncherSDK\Include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>DERemoteLauncher</TargetName>
-    <OutDir>$(ProjectDir)DERemoteLauncherSDK\Library\x64\</OutDir>
+    <OutDir>$(ProjectDir)build\DERemoteLauncherSDK\Library\x64\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)DERemoteLauncherSDK\Include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\DERemoteLauncherSDK\Include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>DERemoteLauncher</TargetName>
-    <OutDir>$(ProjectDir)DERemoteLauncherSDK\Library\x64\</OutDir>
+    <OutDir>$(ProjectDir)build\DERemoteLauncherSDK\Library\x64\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">

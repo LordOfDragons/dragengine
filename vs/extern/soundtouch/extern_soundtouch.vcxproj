@@ -106,23 +106,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)build\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\install\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>SoundTouch</TargetName>
-    <OutDir>$(ProjectDir)build\lib\</OutDir>
+    <OutDir>$(ProjectDir)build\install\lib\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)build\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\install\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>SoundTouch</TargetName>
-    <OutDir>$(ProjectDir)build\lib\</OutDir>
+    <OutDir>$(ProjectDir)build\install\lib\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">

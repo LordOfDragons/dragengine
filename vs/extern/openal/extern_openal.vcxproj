@@ -107,6 +107,7 @@
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <AllProjectBMIsArePublic />
+    <OutDir>$(ProjectDir)\build\install\lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)build\install\lib\</OutDir>
@@ -116,6 +117,7 @@
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <AllProjectBMIsArePublic />
+    <OutDir>$(ProjectDir)\build\install\lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <OutDir>$(ProjectDir)build\install\lib\</OutDir>
@@ -124,6 +126,7 @@
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories />
     <AllProjectBMIsArePublic />
+    <OutDir>$(ProjectDir)\build\install\lib\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

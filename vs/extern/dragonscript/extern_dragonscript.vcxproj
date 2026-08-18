@@ -106,32 +106,32 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)dragonscript-1.5.1\vs\x64\Release\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\install\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>libdscript-static</TargetName>
-    <OutDir>$(ProjectDir)dragonscript-1.5.1\vs\x64\Release\</OutDir>
+    <OutDir>$(ProjectDir)build\install\lib\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)dragonscript-1.5.1\vs\x64\Release\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\install\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>libdscript-static</TargetName>
-    <OutDir>$(ProjectDir)dragonscript-1.5.1\vs\x64\Release\</OutDir>
+    <OutDir>$(ProjectDir)build\install\lib\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <CustomBuildBeforeTargets />
-    <PublicIncludeDirectories>$(ProjectDir)build\dragonscript-1.5.1\vs\x64\Release\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)build\install\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories />
     <TargetName>libdscript-static</TargetName>
-    <OutDir>$(ProjectDir)build\dragonscript-1.5.1\vs\x64\Release\</OutDir>
+    <OutDir>$(ProjectDir)build\install\lib\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

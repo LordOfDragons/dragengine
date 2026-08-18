@@ -25,7 +25,8 @@ Expand-TarXz -Path "$ProjectDir\dragonscript-$LibraryVersion.tar.xz" -Destinatio
 
 # Build the downloaded Visual Studio solution in-place.
 # Locate MSBuild via vswhere if available, otherwise fall back to msbuild.exe in PATH.
-$slnPath = "$ExpandedDir\dragonscript-$LibraryVersion\vs\dragonscript.sln"
+$ExpandedSrcDir = "$ExpandedDir\dragonscript-$LibraryVersion"
+$slnPath = "$ExpandedSrcDir\vs\dragonscript.sln"
 $msbuild = Get-MSBuildPath
 $dragengineToolset = Get-VisualStudioToolset
 $platformVersion = Get-VisualStudioPlatformVersion
@@ -33,7 +34,7 @@ $configuration = "Release"
 $platform = "x64"
 $runtimeLibrary = "MultiThreadedDLL"
 
-Get-ChildItem -Path "$ExpandedDir\dragonscript-$LibraryVersion\vs" -Filter *.vcxproj -Recurse | ForEach-Object {
+Get-ChildItem -Path "$ExpandedSrcDir\vs" -Filter *.vcxproj -Recurse | ForEach-Object {
     (Get-Content $_.FullName) `
         -replace '<PlatformToolset>.*</PlatformToolset>', "<PlatformToolset>$dragengineToolset</PlatformToolset>" `
         -replace '<WindowsTargetPlatformVersion>.*</WindowsTargetPlatformVersion>', "<WindowsTargetPlatformVersion>$platformVersion</WindowsTargetPlatformVersion>" `
@@ -51,3 +52,33 @@ if ($LASTEXITCODE -ne 0) {
 	Write-Error "MSBuild failed with exit code $LASTEXITCODE"
 	throw "MSBuild failed with exit code $LASTEXITCODE"
 }
+
+# copy the built static library to the expected location
+$projectDir = "$ExpandedSrcDir\vs"
+$libBuildDir = "$projectDir\x64\Release"
+$targetLibDir = "$ExpandedDir\install\lib"
+
+if (-not (Test-Path $targetLibDir)) {
+	New-Item -Path $targetLibDir -ItemType Directory | Out-Null
+}
+
+Copy-Item "$libBuildDir\libdscript-static.lib" -Destination $targetLibDir -Force
+Copy-Item "$libBuildDir\libdscript-static.pdb" -Destination $targetLibDir -Force
+
+# copy the include directory
+$sourceIncludeDir = "$ExpandedSrcDir\include"
+$targetIncludeDir = "$ExpandedDir\install\include"
+
+if (Test-Path $targetIncludeDir) {
+	Remove-Item $targetIncludeDir -Force -Recurse
+}
+Copy-Item $sourceIncludeDir -Destination $targetIncludeDir -Recurse -Force
+
+# copy dsinstall directory
+$sourceDsinstallDir = "$ExpandedSrcDir\Distribute\SDK\dsinstall"
+$targetDsinstallDir = "$ExpandedDir\install\dsinstall"
+
+if (Test-Path $targetDsinstallDir) {
+	Remove-Item $targetDsinstallDir -Force -Recurse
+}
+Copy-Item $sourceDsinstallDir -Destination $targetDsinstallDir -Recurse -Force
