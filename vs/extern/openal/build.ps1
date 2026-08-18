@@ -42,6 +42,8 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
 	-DALSOFT_REQUIRE_WASAPI=ON `
 	-DLIBTYPE=STATIC
 
+Patch-VisualStudioProjectFiles -ProjectFile "$CmakeBuildDir\OpenAL.vcxproj"
+
 cmake --build "$CmakeBuildDir" -- /p:Configuration=Release
 cmake --install "$CmakeBuildDir"
 

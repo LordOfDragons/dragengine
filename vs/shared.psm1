@@ -424,7 +424,7 @@ function Get-DevenvPath {
 #################################
 
 function Common-CMakeConfigParameters {
-    $cppStandard = Get-VisualStudioCppStandard -replace 'stdcpp', ''
+    $cppStandard = (Get-VisualStudioCppStandard).Replace('stdcpp', '')
     return @(
         '-DCMAKE_BUILD_TYPE=Release',
         '-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
@@ -434,6 +434,47 @@ function Common-CMakeConfigParameters {
         '-DCMAKE_CXX_EXTENSIONS=OFF'
     )
 }
+
+
+# Patch visual studio project files
+####################################
+
+function Patch-VisualStudioProjectFiles {
+    param (
+        [Parameter(Mandatory=$false)][string]$ProjectDir,
+        [Parameter(Mandatory=$false)][string]$ProjectFile
+    )
+    
+    $dragengineToolset = Get-VisualStudioToolset
+    $platformVersion = Get-VisualStudioPlatformVersion
+    $cppStandard = Get-VisualStudioCppStandard
+    $runtimeLibrary = "MultiThreadedDLL"
+
+    $files = @()
+    if ($ProjectFile) {
+        $files += $ProjectFile
+    } elseif ($ProjectDir) {
+        Get-ChildItem -Path $ProjectDir -Filter *.vcxproj -Recurse | ForEach-Object {
+            $files += $_.FullName
+        }
+    } else {
+        throw "Either ProjectDir or ProjectFile must be specified."
+    }
+
+    $files | ForEach-Object {
+        (Get-Content $_) `
+            -replace '<PlatformToolset>.*</PlatformToolset>', `
+                "<PlatformToolset>$dragengineToolset</PlatformToolset>" `
+            -replace '<WindowsTargetPlatformVersion>.*</WindowsTargetPlatformVersion>', `
+                "<WindowsTargetPlatformVersion>$platformVersion</WindowsTargetPlatformVersion>" `
+            -replace '<RuntimeLibrary>.*</RuntimeLibrary>', `
+                "<RuntimeLibrary>$runtimeLibrary</RuntimeLibrary>" `
+            -replace '<LanguageStandard>.*</LanguageStandard>', `
+                "<LanguageStandard>$cppStandard</LanguageStandard>" `
+            | Set-Content $_
+    }
+}
+
 
 # Various path constants
 ##########################
