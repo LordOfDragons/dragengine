@@ -37,7 +37,7 @@ else:
 
 # fetching is always allowed
 nodeArtifacts = envLibrary.DownloadArtifactHelper(
-	'{}.tar.bz2'.format(srcdir), 'libtheora', 'lib_libtheora_fetch')
+	'{}.tar.xz'.format(srcdir), 'libtheora', 'lib_libtheora_fetch')
 
 # check if system libtheora is present
 hasSystemVorbis = False

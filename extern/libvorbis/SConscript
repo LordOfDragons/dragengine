@@ -33,7 +33,7 @@ else:
 
 # fetching is always allowed
 nodeArtifacts = envLibrary.DownloadArtifactHelper(
-	'{}.tar.bz2'.format(srcdir), 'libvorbis', 'lib_libvorbis_fetch')
+	'{}.tar.xz'.format(srcdir), 'libvorbis', 'lib_libvorbis_fetch')
 
 # check if system libvorbis is present
 hasSystemVorbis = False
