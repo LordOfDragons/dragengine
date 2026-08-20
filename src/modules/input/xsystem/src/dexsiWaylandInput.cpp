@@ -200,30 +200,35 @@ pReady(false)
 }
 
 dexsiWaylandInput::~dexsiWaylandInput(){
-	pUnlockPointer();
-	pDestroyPointer();
-	pDestroyKeyboard();
-	
-	pRelPtrManager.Unbind();
-	pPointerConstraints.Unbind();
+	// protectect against wayland design problem on cleanup
+	try{ pUnlockPointer(); }catch(...){}
+	try{ pDestroyPointer(); }catch(...){}
+	try{ pDestroyKeyboard(); }catch(...){}
+	try{ pRelPtrManager.Unbind(); }catch(...){}
+	try{ pPointerConstraints.Unbind(); }catch(...){}
 	
 	if(pXkbState){
 		xkb_state_unref(pXkbState);
+		pXkbState = nullptr;
 	}
 	if(pXkbKeymap){
 		xkb_keymap_unref(pXkbKeymap);
+		pXkbKeymap = nullptr;
 	}
 	if(pXkbContext){
 		xkb_context_unref(pXkbContext);
+		pXkbContext = nullptr;
 	}
 	
-	pWlSeat.Unbind();
+	try{ pWlSeat.Unbind(); }catch(...){}
 	
 	if(pWlRegistry){
 		wl_proxy_destroy((wl_proxy*)pWlRegistry);
+		pWlRegistry = nullptr;
 	}
 	if(pInputQueue){
 		wl_event_queue_destroy(pInputQueue);
+		pInputQueue = nullptr;
 	}
 }
 
