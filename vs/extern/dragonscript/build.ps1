@@ -13,7 +13,7 @@ if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
 }
 
 
-$LibraryVersion = "1.5.1"
+$LibraryVersion = "1.5.2"
 $ExpandedDir = "$ProjectDir\build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
