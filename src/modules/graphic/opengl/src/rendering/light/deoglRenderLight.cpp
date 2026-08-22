@@ -428,10 +428,10 @@ void deoglRenderLight::RenderLights(deoglRenderPlan &plan, bool solid, const deo
 	}
 	
 	// render lights
-	const bool hasGIStateUpdate = plan.GetUpdateGIState() != nullptr;
+	const bool hasGIStateUpdate = !xray && plan.GetUpdateGIState();
 	const bool hasGIStateRender = plan.GetRenderGIState() != nullptr;
 	
-	if(solid && !mask && !xray && hasGIStateUpdate){
+	if(solid && !mask && hasGIStateUpdate){
 		pRenderGI->ClearProbes(plan);
 	}
 	
@@ -449,8 +449,8 @@ void deoglRenderLight::RenderLights(deoglRenderPlan &plan, bool solid, const deo
 		pRenderGI->PrepareUBORenderLight(plan);
 	}
 	
-	pRenderLightPoint->RenderLights(plan, solid, mask);
-	pRenderLightSpot->RenderLights(plan, solid, mask);
+	pRenderLightPoint->RenderLights(plan, solid, mask, xray);
+	pRenderLightSpot->RenderLights(plan, solid, mask, xray);
 	
 	// sky light requires large render tasks that can be expensive to build. to do this as
 	// fast as possible the render task building is done using parallel tasks. by rendering

@@ -159,10 +159,12 @@ public:
 	void CalculateBoxBoundary(deoglRenderPlanLight &planLight);
 	
 	/** Renders lights. */
-	void RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask);
+	void RenderLights(deoglRenderPlan &plan, bool solid,
+		const deoglRenderPlanMasked *mask, bool xray);
 	
 	/** Render point light. */
-	void RenderLight(deoglRenderPlanLight &planLight, bool solid, const deoglRenderPlanMasked *mask);
+	void RenderLight(deoglRenderPlanLight &planLight, bool solid,
+		const deoglRenderPlanMasked *mask, bool xray);
 	
 	/** Activate textures for lighting. */
 	void ActivateTextures(deoglRenderPlanLight &planLight, deoglLightShader &shader,

@@ -612,7 +612,8 @@ void deoglRenderLightPoint::CalculateBoxBoundary(deoglRenderPlanLight &planLight
 
 
 
-void deoglRenderLightPoint::RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask){
+void deoglRenderLightPoint::RenderLights(deoglRenderPlan &plan, bool solid,
+const deoglRenderPlanMasked *mask, bool xray){
 DEBUG_RESET_TIMER_TOTAL
 	const deoglDebugTraceGroup debugTrace(GetRenderThread(), "LightPoint.RenderLights");
 	const int lightCount = plan.GetLightCount();
@@ -630,7 +631,7 @@ DEBUG_RESET_TIMER_TOTAL
 			continue;
 		}
 		
-		RenderLight(planLight, solid, mask);
+		RenderLight(planLight, solid, mask, xray);
 	}
 	
 	// clean up job
@@ -646,7 +647,7 @@ DEBUG_PRINT_TIMER_TOTAL
 
 
 void deoglRenderLightPoint::RenderLight(deoglRenderPlanLight &planLight, bool solid,
-const deoglRenderPlanMasked *mask){
+const deoglRenderPlanMasked *mask, bool xray){
 	// determine what needs to be rendered
 	deoglCollideListLight &cllight = *planLight.GetLight();
 	if(!cllight.GetCulled() && cllight.IsHiddenByOccQuery()){
@@ -655,7 +656,7 @@ const deoglRenderPlanMasked *mask){
 	
 	deoglRenderPlan &plan = planLight.GetPlan();
 	const bool lightGeometry = !cllight.GetCulled();
-	deoglGIState * const giState = !mask && solid ? plan.GetUpdateGIState() : nullptr;
+	deoglGIState * const giState = !mask && solid && !xray ? plan.GetUpdateGIState() : nullptr;
 	
 	if(!lightGeometry && !giState){
 		return;
