@@ -46,17 +46,3 @@ jobs:
       uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}"
-        upload: false
-    
-    - name: filter-sarif
-      uses: advanced-security/filter-sarif@v1.1
-      with:
-        patterns: |
-          -extern/*/build/**/*
-        input: ${{ runner.workspace }}/results/c-cpp.sarif
-        output: ${{ runner.workspace }}/results/c-cpp.sarif
-    
-    - name: Upload SARIF
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: ${{ runner.workspace }}/results/c-cpp.sarif
