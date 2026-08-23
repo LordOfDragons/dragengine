@@ -212,20 +212,6 @@ jobs:
         if: ${{ inputs.codeql }}
         with:
           category: "/language:c-cpp"
-          upload: false
-      
-      - name: CodeQL Filter Results
-        uses: advanced-security/filter-sarif@v1.1
-        with:
-          patterns: |
-            -extern/*/build/**/*
-          input: ${{ runner.workspace }}/results/c-cpp.sarif
-          output: ${{ runner.workspace }}/results/c-cpp.sarif
-      
-      - name: CodeQL Upload Results
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ${{ runner.workspace }}/results/c-cpp.sarif
       
       - name: Run Low Level Tests
         run: |
