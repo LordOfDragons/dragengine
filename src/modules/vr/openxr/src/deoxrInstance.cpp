@@ -111,6 +111,7 @@ pRuntimeVersion(0)
 	#endif
 	pSupportsExtension[extMNDXXDevSpace].name = XR_MNDX_XDEV_SPACE_EXTENSION_NAME;
 	pSupportsExtension[extMSFTHandInteraction].name = XR_MSFT_HAND_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[extKHRCompositionLayerCylinder].name = XR_KHR_COMPOSITION_LAYER_CYLINDER_EXTENSION_NAME;
 	
 	#ifdef OS_ANDROID
 		pSupportsExtension[extKHRAndroidCreateInstance].name = XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME;
@@ -163,6 +164,7 @@ pRuntimeVersion(0)
 		oxr.GetRequestFeatureBodyTracking() != deBaseVRModule::efslDisabled;
 	pSupportsExtension[extMETABodyTrackingFullBody].enableIfSupported =
 		oxr.GetRequestFeatureBodyTracking() != deBaseVRModule::efslDisabled;
+	pSupportsExtension[extKHRCompositionLayerCylinder].enableIfSupported = true;
 	
 	memset(&pSupportsLayer, 0, sizeof(pSupportsLayer));
 	pSupportsLayer[layerLunarCoreValidation].name = "XR_APILAYER_LUNARG_core_validation";

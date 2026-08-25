@@ -56,7 +56,6 @@ pHasShapes(false),
 pHasFaces(false),
 
 pVBO(0),
-pVAO(nullptr),
 pDirtyVBO(true),
 
 pWorldMarkedRemove(false){
@@ -65,10 +64,8 @@ pWorldMarkedRemove(false){
 
 deoglRDebugDrawer::~deoglRDebugDrawer(){
 	LEAK_CHECK_FREE(pRenderThread, DebugDrawer);
-	if(pVAO){
-		delete pVAO;
-	}
-	
+	pVAO.Clear();
+
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
 	dops.DeleteOpenGLBuffer(pVBO);
 }
@@ -165,7 +162,7 @@ void deoglRDebugDrawer::UpdateVBO(){
 		attrPos.SetDataType(deoglVBOAttribute::edtFloat);
 		attrPos.SetOffset(0);
 		
-		pVAO = new deoglVAO(pRenderThread);
+		pVAO = deTUniqueReference<deoglVAO>::New(pRenderThread);
 		pVAO->SetIndexType(deoglVBOLayout::eitNone);
 		OGL_CHECK(pRenderThread, pglBindVertexArray(pVAO->GetVAO()));
 		

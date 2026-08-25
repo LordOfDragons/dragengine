@@ -26,14 +26,15 @@
 #define _DEOGLRPARTICLEEMITTER_H_
 
 #include "../deoglBasics.h"
+#include "../vbo/deoglVBOLayout.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
 class deoglRParticleEmitterType;
-class deoglVBOLayout;
 
 
 /**
@@ -45,8 +46,8 @@ private:
 	
 	decTObjectList<deoglRParticleEmitterType> pTypes;
 	
-	deoglVBOLayout *pVBOLayoutShared;
-	deoglVBOLayout *pVBOLayoutLocal;
+	deTUniqueReference<deoglVBOLayout> pVBOLayoutShared;
+	deTUniqueReference<deoglVBOLayout> pVBOLayoutLocal;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -71,10 +72,10 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Shared VBO layout. */
-	deoglVBOLayout *GetVBOLayoutShared();
+	const deTUniqueReference<deoglVBOLayout> &GetVBOLayoutShared();
 	
 	/** Local VBO layout. */
-	deoglVBOLayout *GetVBOLayoutLocal();
+	const deTUniqueReference<deoglVBOLayout> &GetVBOLayoutLocal();
 	
 	/** Prepare for rendering. */
 	void PrepareForRender();

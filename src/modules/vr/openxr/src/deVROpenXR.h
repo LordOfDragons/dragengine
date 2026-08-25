@@ -245,7 +245,7 @@ public:
 	
 	/** Log level. */
 	inline LogLevel GetLogLevel() const{ return pLogLevel; }
-	void SetLogLevel(LogLevel level){pLogLevel = level;}
+	void SetLogLevel(LogLevel level);
 	/*@}*/
 	
 	

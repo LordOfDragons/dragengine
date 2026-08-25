@@ -865,6 +865,10 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	// stereo rendering
 	const decMatrix &cameraStereoMatrix = plan.GetCameraStereoMatrix();
 	
+	// vr
+	const float vrHudFov = config.GetVRHudFov() * DEG2RAD;
+	const float vrHudCurvature = config.GetVRHudCurvature() * 0.5f;
+	
 	// conditions, aka specializations
 	const bool condClipPlane = mask && mask->GetUseClipPlane();
 	
@@ -988,6 +992,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataVec2(deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapWhiteScale);
 		spb.SetParameterDataVec3(deoglSkinShader::erutToneMapAdaption, toneMapLowInt, toneMapHighInt, toneMapAdaptationTime);
 		spb.SetParameterDataVec3(deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, toneMapBloomIntensity, toneMapBloomBlend);
+		
+		// vr
+		spb.SetParameterDataVec4(deoglSkinShader::erutVRParams, vrHudFov, vrHudCurvature, 0.0f, 0.0f);
 		
 		// debug depth transform
 		spb.SetParameterDataVec2(deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift);

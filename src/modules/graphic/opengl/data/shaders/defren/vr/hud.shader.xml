@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>VR Hud</name>
+	
+	<parameter name='pGamma' location='0'/>
+	
+	<sourceCode unit='vertex'>V VR Hud</sourceCode>
+	<sourceCode unit='fragment'>F VR Hud</sourceCode>
+</shader>

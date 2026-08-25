@@ -113,8 +113,8 @@ private:
 	deBaseGraphicModule *pActiveModule;
 	deRenderWindow::Ref pRenderWindow;
 	
-	deCanvasView::Ref pInputOverlayCanvas;
-	deCanvasView::Ref pDebugOverlayCanvas;
+	deCanvasView::Ref pInputOverlayCanvas, pDebugOverlayCanvas;
+	deCanvasView::Ref pVRHudOverlayCanvas;
 	
 	
 	
@@ -163,11 +163,17 @@ public:
 		const char *title, deImage *icon, HWND hostWindow);
 	#endif
 	
-	/** \brief Input system overlay canvas or NULL if not used. */
+	/** \brief Input system overlay canvas or nullptr if not used. */
 	inline const deCanvasView::Ref &GetInputOverlayCanvas() const{ return pInputOverlayCanvas; }
 	
-	/** \brief Set input system overlay canvas or NULL if not used. */
+	/** \brief Set input system overlay canvas or nullptr if not used. */
 	void SetInputOverlayCanvas(deCanvasView *view);
+	
+	/** \brief VR HUD overlay canvas or nullptr if not used. */
+	inline const deCanvasView::Ref &GetVRHudOverlayCanvas() const{ return pVRHudOverlayCanvas; }
+	
+	/** \brief Set VR HUD overlay canvas or nullptr if not used. */
+	void SetVRHudOverlayCanvas(deCanvasView *view);
 	
 	/**
 	 * \brief Debug overlay canvas.

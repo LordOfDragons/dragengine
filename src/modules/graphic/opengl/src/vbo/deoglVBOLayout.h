@@ -31,7 +31,6 @@ class deoglVBOAttribute;
 class deoglRenderThread;
 
 
-
 /**
  * OpenGL VBO Layout.
  */
@@ -53,7 +52,6 @@ public:
 	};
 	
 	
-	
 private:
 	int pSize;
 	int pStride;
@@ -61,7 +59,6 @@ private:
 	eIndexTypes pIndexType;
 	int pIndexSize;
 	int pIndexGLType;
-	
 	
 	
 public:
@@ -77,7 +74,6 @@ public:
 	~deoglVBOLayout();
 	/*@}*/
 	
-
 	
 	/** \name Management */
 	/*@{*/

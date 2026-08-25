@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deVROpenXR.h"
 #include "deoxrThreadSync.h"
 #include "deoxrPath.h"
@@ -249,6 +246,9 @@ void deVROpenXR::RequestRestartSession(){
 	pRestartSession = true;
 }
 
+void deVROpenXR::SetLogLevel(LogLevel level){
+	pLogLevel = level;
+}
 
 
 // Module Management
@@ -945,7 +945,7 @@ int deVROpenXR::AcquireEyeViewImage(eEye eye){
 void deVROpenXR::ReleaseEyeViewImage(eEye eye){
 	const deMutexGuard lock(pMutexOpenXR);
 	deoxrSwapchain * const swapchain = GetEyeSwapchain(eye);
-	if(swapchain || !pSession->GetFrameRunning()){
+	if(swapchain && pSession->GetFrameRunning()){
 		swapchain->ReleaseImage();
 	}
 }

@@ -31,6 +31,7 @@
 #include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../model/deoglModel.h"
 #include "../model/deoglRModel.h"
+#include "../rendering/deoglRenderVR.h"
 #include "../rendering/deoglRenderWorld.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
@@ -250,7 +251,7 @@ void deoglVREye::Submit(deBaseVRModule &vrmodule){
 		// shutdown protection
 		return;
 	}
-
+	
 	if(pVRViewImages.IsNotEmpty()){
 		const int acquiredImageIndex = vrmodule.AcquireEyeViewImage(pEye);
 		if(acquiredImageIndex == -1){
@@ -453,6 +454,9 @@ void deoglVREye::pRender(deoglRenderThread &renderThread){
 	plan.Render();
 	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO(plan, true, pUseGammaCorrection);
 	DEBUG_PRINT_TIMER("RenderWorld")
+	
+	renderThread.GetRenderers().GetVR().RenderHud(plan);
+	DEBUG_PRINT_TIMER("RenderHud")
 	// set render target dirty?
 }
 

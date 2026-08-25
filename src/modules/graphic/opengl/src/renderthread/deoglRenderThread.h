@@ -120,9 +120,8 @@ private:
 	deoglMemoryManager pMemoryManager;
 	decTObjectOrderedSet<deoglRRenderWindow> pRRenderWindowList;
 	decTObjectOrderedSet<deoglRCaptureCanvas> pRCaptureCanvasList;
-	deoglRCanvasView::Ref pCanvasInputOverlay;
-	deoglRCanvasView::Ref pCanvasDebugOverlay;
-	deoglRCanvasView::Ref pCanvasOverlay;
+	deoglRCanvasView::Ref pCanvasInputOverlay, pCanvasDebugOverlay, pCanvasOverlay;
+	deoglRCanvasView::Ref pCanvasVRHudOverlay;
 	
 	deoglRTChoices *pChoices;
 	deoglRTBufferObject *pBufferObject;
@@ -299,6 +298,12 @@ public:
 	
 	/** Set overlay canvas view or nullptr. */
 	void SetCanvasOverlay(deoglRCanvasView *canvas);
+	
+	/** VR HUD overlay canvas view or nullptr. */
+	inline const deoglRCanvasView::Ref &GetCanvasVRHudOverlay() const{ return pCanvasVRHudOverlay; }
+	
+	/** Set VR HUD overlay canvas view or nullptr. */
+	void SetCanvasVRHudOverlay(deoglRCanvasView *canvas);
 	
 	
 	

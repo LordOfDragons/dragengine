@@ -1072,6 +1072,56 @@ class BehaviorFactoryHelper
 	
 	
 	/**
+	 * \brief Player controllable behavior.
+	 * 
+	 * Parameter can be of string type with value empty string or null. Throws exception if
+	 * parameter is not null and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorPlayerControllable playerControllable(BehaviorElementClass eclass,\
+	Dictionary parameters, String name, String defaultId)
+		var ECBehaviorPlayerControllable b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				if not id.empty()
+					throw EInvalidParam.new("ECBehaviorPlayerControllable parameter must be empty string or null: " + id)
+				end
+				b = ECBehaviorPlayerControllable.getBehaviorIn(eclass)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorPlayerControllable not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			if not defaultId.empty()
+				throw EInvalidParam.new("ECBehaviorPlayerControllable parameter must be empty string or null: " + defaultId)
+			end
+			b = ECBehaviorPlayerControllable.getBehaviorIn(eclass)
+		end
+		return b
+	end
+	
+	/**
+	 * \brief Optional player controllable behavior using parameter "playerControllable".
+	 * \version 1.34
+	 * 
+	 * Parameter can be of string type with value empty string or null. Throws exception if
+	 * parameter is not null and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorPlayerControllable optionalPlayerControllable(BehaviorElementClass eclass, Dictionary parameters)
+		return playerControllable(eclass, parameters, "playerControllable", null)
+	end
+	
+	
+	/**
 	 * \brief Trigger table matching value.
 	 * 
 	 * Returns \ref BaseGameApp#getTriggerTable() for value "default" and null otherwise.

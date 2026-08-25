@@ -40,7 +40,6 @@
 
 class deoglRenderThread;
 class deoglRParticleEmitterInstanceType;
-class deoglVAO;
 class deoglRWorld;
 class deoglWorldOctree;
 
@@ -119,7 +118,7 @@ private:
 	GLuint pVBOShared;
 	GLuint pVBOLocal;
 	GLuint pIBO;
-	deoglVAO *pVAO;
+	deTUniqueReference<deoglVAO> pVAO;
 	
 	bool pDirtyParticles;
 	
@@ -206,7 +205,7 @@ public:
 	
 	
 	/** VAO. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline const deTUniqueReference<deoglVAO> &GetVAO() const{ return pVAO; }
 	
 	
 	

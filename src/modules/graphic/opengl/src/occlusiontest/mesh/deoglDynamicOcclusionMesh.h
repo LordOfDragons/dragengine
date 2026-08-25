@@ -27,6 +27,7 @@
 
 #include "deoglROcclusionMesh.h"
 #include "../../deoglBasics.h"
+#include "../../vao/deoglVAO.h"
 
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
@@ -34,7 +35,6 @@
 class deoglRComponent;
 class deoglSharedVBOBlock;
 class deoglRenderThread;
-class deoglVAO;
 class deoglBVH;
 
 class deComponent;
@@ -56,7 +56,7 @@ public:
 	decTList<decVector> pVertices;
 	
 	GLuint pVBO;
-	deoglVAO *pVAO;
+	deTUniqueReference<deoglVAO> pVAO;
 	decTList<deoglVBOp> pVBOData;
 	
 	bool pDirtyOccMesh;

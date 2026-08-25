@@ -111,6 +111,6 @@ int deBaseVRModule::AcquireEyeViewImage(eEye){
 void deBaseVRModule::ReleaseEyeViewImage(eEye){
 }
 
-bool deBaseVRModule::GetButtonNear(int device, int button){
+bool deBaseVRModule::GetButtonNear(int, int){
 	return false;
 }

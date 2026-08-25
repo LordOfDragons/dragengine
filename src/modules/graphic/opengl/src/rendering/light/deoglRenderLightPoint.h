@@ -28,6 +28,7 @@
 #include "deoglRenderLightBase.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../texture/cubemap/deoglCubeMap.h"
+#include "../../vao/deoglVAO.h"
 
 class deoglLightShader;
 class deoglRenderPlan;
@@ -37,8 +38,6 @@ class deoglSPBlockUBO;
 class deoglShadowMapper;
 class deoglRTRenderers;
 class deoglRenderPlanMasked;
-class deoglVAO;
-
 
 
 /**
@@ -106,7 +105,7 @@ private:
 	const deoglPipeline *pPipelineCopyDepth;
 	
 	GLuint pVBOCopyShadow;
-	deoglVAO *pVAOCopyShadow;
+	deTUniqueReference<deoglVAO> pVAOCopyShadow;
 	
 	
 	

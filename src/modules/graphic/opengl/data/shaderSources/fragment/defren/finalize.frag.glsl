@@ -1,7 +1,7 @@
 #include "shared/preamble.glsl"
 
-precision lowp float;
-precision lowp int;
+precision mediump float;
+precision mediump int;
 
 UNIFORM_BIND(3) uniform vec4 pGamma; // red, green, blue
 UNIFORM_BIND(4) uniform vec4 pBrightness; // red, green, blue

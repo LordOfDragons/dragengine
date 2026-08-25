@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglRenderVR.h"
+#include "deoglRenderWorld.h"
 #include "defren/deoglDeferredRendering.h"
 #include "plan/deoglRenderPlan.h"
+#include "../debug/deoglDebugTraceGroup.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -37,11 +37,14 @@
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../renderthread/deoglRTRenderers.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../texture/texture2d/deoglTexture.h"
+#include "../texture/deoglTextureStageManager.h"
 #include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
@@ -58,7 +61,9 @@
 ////////////////////////////
 
 deoglRenderVR::deoglRenderVR(deoglRenderThread &renderThread) :
-deoglRenderBase(renderThread)
+deoglRenderBase(renderThread),
+pVBOHud(0),
+pHudVertexCount(0)
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const bool vsRenderLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
@@ -94,7 +99,6 @@ deoglRenderBase(renderThread)
 		pAsyncGetPipeline(pPipelineHiddenAreaDepth, pipconf2, sources, defines);
 		
 		// hidden area stereo left
-		sources = shaderManager.GetSourcesNamed(vsRenderLayer ? "VR Hidden Area" : "VR Hidden Area Stereo");
 		defines.SetDefines("SPLIT_LAYERS");
 		defines.SetDefine("RENDER_PASS", 0);
 		pAsyncGetPipeline(pPipelineHiddenAreaClearMaskStereoLeft, pipconf, sources, defines);
@@ -104,6 +108,18 @@ deoglRenderBase(renderThread)
 		defines.SetDefine("RENDER_PASS", 1);
 		pAsyncGetPipeline(pPipelineHiddenAreaClearMaskStereoRight, pipconf, sources, defines);
 		pAsyncGetPipeline(pPipelineHiddenAreaDepthStereoRight, pipconf2, sources, defines);
+		
+		
+		// hud
+		pipconf.Reset();
+		pipconf.SetMasks(true, true, true, true, false);
+		pipconf.SetEnableScissorTest(true);
+		pipconf.EnableBlendBlend();
+		
+		defines = commonDefines;
+		pAsyncGetPipeline(pPipelineHud, pipconf, "VR Hud", defines);
+		
+		pCreateHudVAO();
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -186,12 +202,57 @@ void deoglRenderVR::RenderHiddenArea(deoglRenderPlan &plan, bool clearMask){
 	pglBindVertexArray(0);
 }
 
+void deoglRenderVR::RenderHud(deoglRenderPlan &plan){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const auto &canvas = renderThread.GetCanvasVRHudOverlay();
+	if(!canvas || canvas->HasNoChildren() || !plan.GetCamera()->GetVR()){
+		return;
+	}
+	
+	const deoglDebugTraceGroup debugTrace(renderThread, "Hud.Render");
+	
+	pPipelineHud->Activate();
+	auto &shader = pPipelineHud->GetShader();
+	
+	renderThread.GetFramebuffer().Activate(plan.GetFBOTarget());
+	
+	const int viewportWidth = plan.GetViewportWidth();
+	const int viewportHeight = plan.GetViewportHeight();
+	OGL_CHECK(renderThread, glViewport(0, 0, viewportWidth, viewportHeight));
+	OGL_CHECK(renderThread, glScissor(0, 0, viewportWidth, viewportHeight));
+	
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	tsmgr.DisableAllStages();
+	tsmgr.EnableTexture(0, *canvas->GetRenderTarget()->GetTexture(), GetSamplerClampNearest());
+	
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
+	float gamma = OGL_RENDER_GAMMA;
+	if(plan.GetUseHdrOutput() || plan.GetCamera()->GetVR()->GetLeftEye().GetUseGammaCorrection()){
+		gamma = 1.0f;
+	}
+	shader.SetParameterFloat(0, gamma, gamma, gamma);
+	
+	OGL_CHECK(renderThread, pglBindVertexArray(pVAOHud->GetVAO()));
+	
+	OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES,
+		plan.GetRenderVR() == deoglRenderPlan::ervrLeftEye ? 0 : pHudVertexCount,
+		pHudVertexCount));
+	
+	OGL_CHECK(renderThread, pglBindVertexArray(0));
+	
+	tsmgr.DisableAllStages();
+}
 
 
 // Private Functions
 //////////////////////
 
 void deoglRenderVR::pCleanUp(){
+	if(pVBOHud){
+		GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer(pVBOHud);
+		pVBOHud = 0;
+	}
 }
 
 void deoglRenderVR::pRenderHiddenArea(const deoglSharedVBOBlock &vboBlock){
@@ -211,4 +272,67 @@ void deoglRenderVR::pRenderHiddenArea(const deoglSharedVBOBlock &vboBlock){
 			vboBlock.GetIndexCount(), vao.GetIndexGLType(),
 			(GLvoid*)(intptr_t)(vao.GetIndexSize() * vboBlock.GetIndexOffset())));
 	}
+}
+
+void deoglRenderVR::pCreateHudVAO(){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const int quadCount = 10;
+	
+	pHudVertexCount = quadCount * quadCount * 6; // 2 triangles per quad
+	const int totalVertexCount = pHudVertexCount * 2; // two layers
+	
+	// create VBO with interleaved vertex data. not using a pre-allocated array since gcc
+	// out-of-bounds check fails to understand the loop is correct
+	OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOHud));
+	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOHud));
+	
+	struct sVertex{
+		float x, y, u, v;
+		int eye;
+	};
+	decTList<sVertex> vertices(totalVertexCount);
+	const float factorPos = 2.0f / (float)quadCount;
+	const float factorTc = 1.0f / (float)quadCount;
+	
+	for(int e=0; e<2; e++){
+		for(int y=0; y<quadCount; y++){
+			for(int x=0; x<quadCount; x++){
+				const float x0 = (float)x * factorPos - 1.0f;
+				const float x1 = (float)(x + 1) * factorPos - 1.0f;
+				const float y0 = (float)y * factorPos - 1.0f;
+				const float y1 = (float)(y + 1) * factorPos - 1.0f;
+				
+				const float u0 = (float)x * factorTc;
+				const float u1 = (float)(x + 1) * factorTc;
+				const float v0 = 1.0f - (float)y * factorTc;
+				const float v1 = 1.0f - (float)(y + 1) * factorTc;
+				
+				// triangle 1: top left, top right, bottom right
+				vertices.Add({x0, y0, u0, v0, e});
+				vertices.Add({x1, y0, u1, v0, e});
+				vertices.Add({x1, y1, u1, v1, e});
+				
+				// triangle 2: top left, bottom right, bottom left
+				vertices.Add({x0, y0, u0, v0, e});
+				vertices.Add({x1, y1, u1, v1, e});
+				vertices.Add({x0, y1, u0, v1, e});
+			}
+		}
+	}
+	
+	OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER,
+		totalVertexCount * sizeof(sVertex), vertices.GetArrayPointer(), GL_STATIC_DRAW));
+	
+	// create VAO
+	pVAOHud = deTUniqueReference<deoglVAO>::New(renderThread);
+	OGL_CHECK(renderThread, pglBindVertexArray(pVAOHud->GetVAO()));
+	
+	OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
+	OGL_CHECK(renderThread, pglVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 20, (const GLvoid *)0));
+	
+	OGL_CHECK(renderThread, pglEnableVertexAttribArray(1));
+	OGL_CHECK(renderThread, pglVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 20, (const GLvoid *)8));
+	
+	OGL_CHECK(renderThread, pglEnableVertexAttribArray(2));
+	OGL_CHECK(renderThread, pglVertexAttribIPointer(2, 1, GL_INT, 20, (const GLvoid *)16));
 }

@@ -22,20 +22,17 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglVR.h"
 #include "../deGraphicOpenGl.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../debug/deoglDebugTraceGroup.h"
-#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../model/deoglModel.h"
 #include "../model/deoglRModel.h"
+#include "../rendering/deoglRenderVR.h"
 #include "../rendering/deoglRenderWorld.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
@@ -103,9 +100,7 @@ pDebugPanelRenderSize(0.4f, 0.2f)
 	pDebugPanelColorTransform.SetScaling(1.0f, 1.0f, 1.0f, 0.9f);
 }
 
-deoglVR::~deoglVR(){
-}
-
+deoglVR::~deoglVR() = default;
 
 
 // Management
@@ -226,6 +221,15 @@ void deoglVR::Render(){
 	}
 	
 	const deoglDebugTraceGroup debugTrace(renderThread, "VR.Render");
+	
+	const auto &canvasHud = renderThread.GetCanvasVRHudOverlay();
+	if(canvasHud && canvasHud->HasChildren()){
+		const deoglDebugTraceGroup debugTrace2(renderThread, "Hud.RenderCanvas");
+		canvasHud->SetRetainFBO(true);
+		canvasHud->PrepareRenderTarget(nullptr, 4, 8);
+		canvasHud->RenderRenderTarget(nullptr, false);
+	}
+	
 	if(!pUseRenderStereo){
 		pLeftEye.Render();
 		pRightEye.Render();
@@ -396,5 +400,16 @@ void deoglVR::pRenderStereo(){
 	plan.Render();
 	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO(plan, true, pLeftEye.GetUseGammaCorrection());
 	DEBUG_PRINT_TIMER("RenderWorld")
+	
+	// render hud. this is a bit more complicated since the eye images have been split already
+	plan.SetFBOTarget(pLeftEye.GetRenderTarget()->GetFBO());
+	plan.SetRenderVR(deoglRenderPlan::ervrLeftEye);
+	plan.SetRenderStereo(false);
+	renderThread.GetRenderers().GetVR().RenderHud(plan);
+	
+	plan.SetFBOTarget(pRightEye.GetRenderTarget()->GetFBO());
+	plan.SetRenderVR(deoglRenderPlan::ervrRightEye);
+	renderThread.GetRenderers().GetVR().RenderHud(plan);
+	DEBUG_PRINT_TIMER("RenderHud")
 	// set render target dirty?
 }

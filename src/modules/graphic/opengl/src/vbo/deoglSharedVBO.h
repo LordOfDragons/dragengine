@@ -29,12 +29,13 @@
 #include "deoglSharedVBOBlock.h"
 #include "../deoglBasics.h"
 #include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
+#include "../vao/deoglVAO.h"
 
-#include <dragengine/common/collection/decTList.h>
 #include <dragengine/deObject.h>
+#include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglSharedVBOList;
-class deoglVAO;
 
 
 /**
@@ -53,7 +54,7 @@ public:
 	deoglSharedVBOList *pParentList;
 	GLuint pVBO;
 	GLuint pIBO;
-	deoglVAO *pVAO;
+	deTUniqueReference<deoglVAO> pVAO;
 	decTObjectList<deoglSharedVBOBlock> pBlocks;
 	int pSize;
 	int pUsedSize;
@@ -87,7 +88,7 @@ public:
 	/** Retrieves the IBO. */
 	inline GLuint GetIBO() const{ return pIBO; }
 	/** Retrieves the VAO. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline const deTUniqueReference<deoglVAO> &GetVAO() const{ return pVAO; }
 	/** Retrieves the used size. */
 	inline int GetUsedSize() const{ return pUsedSize; }
 	/** Retrieves the size. */

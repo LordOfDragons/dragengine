@@ -32,6 +32,8 @@
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/pipeline/deoglSkinTexturePipelines.h"
+#include "../vao/deoglVAO.h"
+#include "../vbo/deoglVBOLayout.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
@@ -40,8 +42,6 @@
 class deoglModelLOD;
 class deoglRComponent;
 class deoglTexture;
-class deoglVAO;
-class deoglVBOLayout;
 class deoglSharedVBOBlock;
 class deoglGIBVHDynamic;
 
@@ -66,8 +66,8 @@ public:
 	const int pLODIndex;
 	
 	deoglSPBlockSSBO::Ref pVBO;
-	deoglVAO *pVAO;
-	deoglVBOLayout *pVBOLayout;
+	deTUniqueReference<deoglVAO> pVAO;
+	deTUniqueReference<deoglVBOLayout> pVBOLayout;
 	const deoglSharedVBOBlock *pVBOBlock;
 	
 	decTList<oglMatrix3x4> pWeights;
@@ -186,7 +186,7 @@ public:
 	inline const deoglSPBlockSSBO::Ref &GetVBO() const{ return pVBO; }
 	
 	/** VAO. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline const deTUniqueReference<deoglVAO> &GetVAO() const{ return pVAO; }
 	
 	/** VAO to use. Can be dynamic VAO or static model VAO. */
 	deoglVAO *GetUseVAO() const;

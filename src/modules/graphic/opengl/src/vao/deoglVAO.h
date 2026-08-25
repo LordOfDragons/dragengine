@@ -37,7 +37,7 @@ class deoglRenderTaskSharedVAO;
  * properties and speeding up render task creation.
  */
 class deoglVAO{
-public:
+private:
 	deoglRenderThread &pRenderThread;
 	
 	GLuint pVAO;
@@ -50,17 +50,15 @@ public:
 	deoglRenderTaskSharedVAO *pRTSVAO;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create vao. */
-	deoglVAO(deoglRenderThread &renderThread);
+	explicit deoglVAO(deoglRenderThread &renderThread);
 	
 	/** Clean up vao. */
-	virtual ~deoglVAO();
+	~deoglVAO();
 	/*@}*/
-	
 	
 	
 	/** \name Management */

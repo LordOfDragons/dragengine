@@ -578,93 +578,162 @@ void deoxrSession::EndFrame(){
 	
 	// end frame. views have to be submitted even if not rendered to otherwise runtimes
 	// like SteamVR can crash entire OpenGL
-	XrFrameEndInfo endInfo;
-	memset(&endInfo, 0, sizeof(endInfo));
+	pPresentLayers.RemoveAll();
 	
-	endInfo.type = XR_TYPE_FRAME_END_INFO;
+	
+	// pass through layer
+	if(passthrough){
+		if(passthrough->ShowPassthroughLayerFB()){
+			pPresentLayers.Add(reinterpret_cast<const XrCompositionLayerBaseHeader*>(
+				&passthrough->GetCompositeLayerFB()));
+		}
+	}
+	
+	
+	// rendered world for left and right eye
+	XrCompositionLayerProjectionView viewEyes[2]{};
+	
+	viewEyes[0].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
+	viewEyes[0].subImage.swapchain = pSwapchainLeftEye->GetSwapchain();
+	viewEyes[0].subImage.imageRect.extent.width = pSwapchainLeftEye->GetSize().x;
+	viewEyes[0].subImage.imageRect.extent.height = pSwapchainLeftEye->GetSize().y;
+	viewEyes[0].subImage.imageRect.offset.x = 0;
+	viewEyes[0].subImage.imageRect.offset.y = 0;
+	viewEyes[0].pose = pLeftEyePose;
+	viewEyes[0].fov = pLeftEyeFov;
+	const void **nextLayerLeftEye = &viewEyes[0].next;
+	
+	viewEyes[1].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
+	viewEyes[1].subImage.swapchain = pSwapchainRightEye->GetSwapchain();
+	viewEyes[1].subImage.imageRect.extent.width = pSwapchainRightEye->GetSize().x;
+	viewEyes[1].subImage.imageRect.extent.height = pSwapchainRightEye->GetSize().y;
+	viewEyes[1].subImage.imageRect.offset.x = 0;
+	viewEyes[1].subImage.imageRect.offset.y = 0;
+	viewEyes[1].pose = pRightEyePose;
+	viewEyes[1].fov = pRightEyeFov;
+	const void **nextLayerRightEye = &viewEyes[1].next;
+	
+	XrCompositionLayerDepthInfoKHR viewDepth[2]{};
+	if(pSwapchainDepthLeftEye && pSwapchainDepthRightEye){
+		// rendered depth for left and right eye
+		viewDepth[0].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
+		viewDepth[0].subImage.swapchain = pSwapchainDepthLeftEye->GetSwapchain();
+		viewDepth[0].subImage.imageRect.extent.width = pSwapchainDepthLeftEye->GetSize().x;
+		viewDepth[0].subImage.imageRect.extent.height = pSwapchainDepthLeftEye->GetSize().y;
+		viewDepth[0].subImage.imageRect.offset.x = 0;
+		viewDepth[0].subImage.imageRect.offset.y = 0;
+		viewDepth[0].minDepth = 0.0f; // TODO get parameters from graphic module
+		viewDepth[0].maxDepth = 1.0f;
+		viewDepth[0].nearZ = 0.01f;
+		viewDepth[0].farZ = 100.0f;
+		*nextLayerLeftEye = &viewDepth[0];
+		nextLayerLeftEye = &viewDepth[0].next;
+		
+		viewDepth[1].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
+		viewDepth[1].subImage.swapchain = pSwapchainDepthRightEye->GetSwapchain();
+		viewDepth[1].subImage.imageRect.extent.width = pSwapchainDepthRightEye->GetSize().x;
+		viewDepth[1].subImage.imageRect.extent.height = pSwapchainDepthRightEye->GetSize().y;
+		viewDepth[1].subImage.imageRect.offset.x = 0;
+		viewDepth[1].subImage.imageRect.offset.y = 0;
+		viewDepth[1].minDepth = 0.0f; // TODO get parameters from graphic module
+		viewDepth[1].maxDepth = 1.0f;
+		viewDepth[1].nearZ = 0.01f;
+		viewDepth[1].farZ = 100.0f;
+		*nextLayerRightEye = &viewDepth[1];
+		nextLayerRightEye = &viewDepth[1].next;
+	}
+	
+	
+	XrCompositionLayerProjection layerEyes{XR_TYPE_COMPOSITION_LAYER_PROJECTION};
+	if(passthrough){
+		layerEyes.layerFlags |= passthrough->GetCompositeLayerFlags();
+	}
+	layerEyes.space = pMainSpace->GetSpace();
+	layerEyes.views = viewEyes;
+	layerEyes.viewCount = 2;
+	pPresentLayers.Add(reinterpret_cast<const XrCompositionLayerBaseHeader*>(&layerEyes));
+	
+	
+	#if 0
+	// hud overlay layer
+	XrCompositionLayerQuad layerHud{XR_TYPE_COMPOSITION_LAYER_QUAD};
+	if(pSwapchainHudOverlay && pHudOverlayReady){
+		layerHud.layerFlags = XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT
+			| XR_COMPOSITION_LAYER_UNPREMULTIPLIED_ALPHA_BIT;
+		layerHud.space = pSpaceView->GetSpace();
+		layerHud.eyeVisibility = XR_EYE_VISIBILITY_BOTH;
+		
+		layerHud.pose.orientation.x = 0.0f;
+		layerHud.pose.orientation.y = 0.0f;
+		layerHud.pose.orientation.z = 0.0f;
+		layerHud.pose.orientation.w = 1.0f;
+		layerHud.pose.position.x = 0.0f;
+		layerHud.pose.position.y = 0.0f;
+		layerHud.pose.position.z = -1.0f;
+		
+		layerHud.subImage.swapchain = pSwapchainHudOverlay->GetSwapchain();
+		layerHud.subImage.imageRect.offset.x = 0;
+		layerHud.subImage.imageRect.offset.y = 0;
+		layerHud.subImage.imageRect.extent.width = pSwapchainHudOverlay->GetSize().x;
+		layerHud.subImage.imageRect.extent.height = pSwapchainHudOverlay->GetSize().y;
+		
+		const float fov = pSystem.GetInstance().GetOxr().GetHudFov() * DEG2RAD;
+		layerHud.size.height = layerHud.size.width = 2.0f * tanf(fov * 0.5f);
+		
+		pPresentLayers.Add(reinterpret_cast<const XrCompositionLayerBaseHeader*>(&layerHud));
+	}
+	#endif
+	
+	#if 0
+	// overlay layer
+	XrCompositionLayerCylinderKHR layerOverlay{XR_TYPE_COMPOSITION_LAYER_CYLINDER_KHR};
+	if(pSwapchainOverlay
+	&& pSystem.GetInstance().SupportsExtension(deoxrInstance::extKHRCompositionLayerCylinder)){
+		layerOverlay.layerFlags = XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT
+			| XR_COMPOSITION_LAYER_UNPREMULTIPLIED_ALPHA_BIT;
+		layerOverlay.space = pSpaceView->GetSpace();
+		layerOverlay.eyeVisibility = XR_EYE_VISIBILITY_BOTH;
+		
+		layerOverlay.pose.orientation.x = 0.0f;
+		layerOverlay.pose.orientation.y = 0.0f;
+		layerOverlay.pose.orientation.z = 0.0f;
+		layerOverlay.pose.orientation.w = 1.0f;
+		layerOverlay.pose.position.x = 0.0f;
+		layerOverlay.pose.position.y = 0.0f;
+		layerOverlay.pose.position.z = 0.0f;
+		
+		layerOverlay.subImage.swapchain = pSwapchainOverlay->GetSwapchain();
+		layerOverlay.subImage.imageRect.offset.x = 0;
+		layerOverlay.subImage.imageRect.offset.y = 0;
+		layerOverlay.subImage.imageRect.extent.width = pSwapchainOverlay->GetSize().x;
+		layerOverlay.subImage.imageRect.extent.height = pSwapchainOverlay->GetSize().y;
+		
+		const float hfov = pLeftEyeFov.angleRight - pLeftEyeFov.angleLeft;
+		const float vfov = pLeftEyeFov.angleUp - pLeftEyeFov.angleDown;
+		
+		layerOverlay.radius = 1.0f;
+		layerOverlay.centralAngle = hfov;
+		layerOverlay.aspectRatio = vfov / hfov;
+		
+		pPresentLayers.Add(reinterpret_cast<const XrCompositionLayerBaseHeader*>(&layerOverlay));
+	}
+	#endif
+	
+	
+	// present layers
+	XrFrameEndInfo endInfo{XR_TYPE_FRAME_END_INFO};
 	endInfo.environmentBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
 	if(passthrough){
 		endInfo.environmentBlendMode = passthrough->GetEnvBlendMode();
 	}
 	endInfo.displayTime = pPredictedDisplayTime;
-	
-	XrCompositionLayerProjectionView views[2];
-	memset(&views, 0, sizeof(views));
-	
-	const void **nextLayer[2] = {&views[0].next, &views[1].next};
-	
-	views[0].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
-	views[0].subImage.swapchain = pSwapchainLeftEye->GetSwapchain();
-	views[0].subImage.imageRect.extent.width = pSwapchainLeftEye->GetSize().x;
-	views[0].subImage.imageRect.extent.height = pSwapchainLeftEye->GetSize().y;
-	views[0].subImage.imageRect.offset.x = 0;
-	views[0].subImage.imageRect.offset.y = 0;
-	views[0].pose = pLeftEyePose;
-	views[0].fov = pLeftEyeFov;
-	
-	views[1].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
-	views[1].subImage.swapchain = pSwapchainRightEye->GetSwapchain();
-	views[1].subImage.imageRect.extent.width = pSwapchainRightEye->GetSize().x;
-	views[1].subImage.imageRect.extent.height = pSwapchainRightEye->GetSize().y;
-	views[1].subImage.imageRect.offset.x = 0;
-	views[1].subImage.imageRect.offset.y = 0;
-	views[1].pose = pRightEyePose;
-	views[1].fov = pRightEyeFov;
-	
-	if(pSwapchainDepthLeftEye && pSwapchainDepthRightEye){
-		XrCompositionLayerDepthInfoKHR depth[2];
-		memset(&depth, 0, sizeof(depth));
-		
-		depth[0].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
-		depth[0].subImage.swapchain = pSwapchainDepthLeftEye->GetSwapchain();
-		depth[0].subImage.imageRect.extent.width = pSwapchainDepthLeftEye->GetSize().x;
-		depth[0].subImage.imageRect.extent.height = pSwapchainDepthLeftEye->GetSize().y;
-		depth[0].subImage.imageRect.offset.x = 0;
-		depth[0].subImage.imageRect.offset.y = 0;
-		depth[0].minDepth = 0.0f; // TODO get parameters from graphic module
-		depth[0].maxDepth = 1.0f;
-		depth[0].nearZ = 0.01f;
-		depth[0].farZ = 100.0f;
-		*nextLayer[ 0 ] = &depth[ 0 ];
-		nextLayer[0] = &depth[0].next;
-		
-		depth[1].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
-		depth[1].subImage.swapchain = pSwapchainDepthRightEye->GetSwapchain();
-		depth[1].subImage.imageRect.extent.width = pSwapchainDepthRightEye->GetSize().x;
-		depth[1].subImage.imageRect.extent.height = pSwapchainDepthRightEye->GetSize().y;
-		depth[1].subImage.imageRect.offset.x = 0;
-		depth[1].subImage.imageRect.offset.y = 0;
-		depth[1].minDepth = 0.0f; // TODO get parameters from graphic module
-		depth[1].maxDepth = 1.0f;
-		depth[1].nearZ = 0.01f;
-		depth[1].farZ = 100.0f;
-		*nextLayer[ 1 ] = &depth[ 1 ];
-		nextLayer[1] = &depth[1].next;
-	}
-	
-	const XrCompositionLayerBaseHeader *layers[2];
-	int layerCount = 0;
-	
-	if(passthrough){
-		if(passthrough->ShowPassthroughLayerFB()){
-			layers[layerCount++] = (const XrCompositionLayerBaseHeader*)&passthrough->GetCompositeLayerFB();
-		}
-	}
-	
-	XrCompositionLayerProjection layerProjection{XR_TYPE_COMPOSITION_LAYER_PROJECTION};
-	if(passthrough){
-		layerProjection.layerFlags |= passthrough->GetCompositeLayerFlags();
-	}
-	layerProjection.space = pMainSpace->GetSpace();
-	layerProjection.viewCount = 2;
-	layerProjection.views = views;
-	layers[layerCount++] = (const XrCompositionLayerBaseHeader*)&layerProjection;
-	
-	endInfo.layerCount = layerCount;
-	endInfo.layers = layers;
+	endInfo.layers = pPresentLayers.GetArrayPointer();
+	endInfo.layerCount = pPresentLayers.GetCount();
 	
 	OXR_CHECK(instance.xrEndFrame(pSession, &endInfo));
 	pFrameRunning = false;
+	
+	pPresentLayers.RemoveAll();
 	
 	if(pIsGACOpenGL){
 		// WARNING SteamVR messes with the current context state causing all future OpenGL
@@ -833,22 +902,22 @@ void deoxrSession::pCleanUp(){
 		End();
 	}
 	
-	pAttachedActionSet = nullptr;
+	pAttachedActionSet.Clear();
 	
-	pSwapchainDepthLeftEye = nullptr;
-	pSwapchainDepthRightEye = nullptr;
+	pSwapchainDepthLeftEye.Clear();
+	pSwapchainDepthRightEye.Clear();
 	
-	pSwapchainLeftEye = nullptr;
-	pSwapchainRightEye = nullptr;
+	pSwapchainLeftEye.Clear();
+	pSwapchainRightEye.Clear();
 	
-	pSpaceStage = nullptr;
+	pSpaceStage.Clear();
 	
-	pSpaceStageOrigin = nullptr;
-	pSpaceView = nullptr;
-	pSpaceLocal = nullptr;
-	pSpaceLocalOrigin = nullptr;
-	pMainSpace = nullptr;
-	pMainSpaceOrigin = nullptr;
+	pSpaceStageOrigin.Clear();
+	pSpaceView.Clear();
+	pSpaceLocal.Clear();
+	pSpaceLocalOrigin.Clear();
+	pMainSpace.Clear();
+	pMainSpaceOrigin.Clear();
 	
 	if(pSession){
 		pSystem.GetInstance().GetOxr().GetDeviceProfiles().OnSessionEnd();

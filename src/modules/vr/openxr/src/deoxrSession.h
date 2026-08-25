@@ -102,10 +102,8 @@ private:
 	
 	decTList<int64_t> pSwapchainFormats;
 	
-	deoxrSwapchain::Ref pSwapchainLeftEye;
-	deoxrSwapchain::Ref pSwapchainRightEye;
-	deoxrSwapchain::Ref pSwapchainDepthLeftEye;
-	deoxrSwapchain::Ref pSwapchainDepthRightEye;
+	deoxrSwapchain::Ref pSwapchainLeftEye, pSwapchainRightEye;
+	deoxrSwapchain::Ref pSwapchainDepthLeftEye, pSwapchainDepthRightEye;
 	
 	XrPosef pLeftEyePose, pRightEyePose;
 	XrFovf pLeftEyeFov, pRightEyeFov;
@@ -116,6 +114,8 @@ private:
 	decVector pHeadPosition, pHeadLinearVelocity, pHeadAngularVelocity;
 	decQuaternion pHeadOrientation;
 	decMatrix pLeftEyeMatrix, pRightEyeMatrix, pSpaceOriginPose;
+	
+	decTList<const XrCompositionLayerBaseHeader*> pPresentLayers;
 	
 	// graphic api connection
 	bool pIsGACOpenGL;

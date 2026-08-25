@@ -92,7 +92,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create system. */
-	deoxrSystem(deoxrInstance &instance);
+	explicit deoxrSystem(deoxrInstance &instance);
 	
 protected:
 	/** Clean up system. */

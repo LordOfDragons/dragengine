@@ -244,8 +244,7 @@ copyShadow(nullptr){
 deoglRenderLightPoint::deoglRenderLightPoint(deoglRenderThread &renderThread,
 deoglRTRenderers &renderers) :
 deoglRenderLightBase(renderThread),
-pVBOCopyShadow(0),
-pVAOCopyShadow(nullptr)
+pVBOCopyShadow(0)
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
@@ -377,7 +376,7 @@ pVAOCopyShadow(nullptr)
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER,
 			sizeof(csp), (const GLvoid *)&csp, GL_STATIC_DRAW));
 		
-		pVAOCopyShadow = new deoglVAO(renderThread);
+		pVAOCopyShadow = deTUniqueReference<deoglVAO>::New(renderThread);
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAOCopyShadow->GetVAO()));
 		
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
@@ -2028,9 +2027,6 @@ void deoglRenderLightPoint::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderLightPoint::pCleanUp(){
-	if(pVAOCopyShadow){
-		delete pVAOCopyShadow;
-	}
-	
+	pVAOCopyShadow.Clear();
 	pRenderThread.GetDelayedOperations().DeleteOpenGLBuffer(pVBOCopyShadow);
 }

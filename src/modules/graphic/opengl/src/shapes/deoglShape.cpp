@@ -172,7 +172,7 @@ void deoglShape::SetPointCountLines(int pointCount){
 
 
 
-deoglVAO *deoglShape::GetVAO(){
+const deTUniqueReference<deoglVAO> &deoglShape::GetVAO(){
 	return GetVBOBlock()->GetVBO()->GetVAO();
 }
 

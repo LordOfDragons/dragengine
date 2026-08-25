@@ -26,18 +26,18 @@
 #define _DEOGLHTSCLUSTER_H_
 
 #include "../../deoglBasics.h"
+#include "../../vao/deoglVAO.h"
 #include "../../world/deoglWorldComputeElement.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTList.h>
 
-#define HTSC_MAX_LOD				4
+#define HTSC_MAX_LOD 4
 
 class deHeightTerrainSector;
 class deoglRHTSector;
 class deImage;
 class deoglTerrainHeightImage;
-class deoglVAO;
 
 
 /** Height Terrain Sector Cluster LOD. */
@@ -98,7 +98,7 @@ private:
 	int pOffsetVBODataPoints;
 	GLuint pVBODataFaces;
 	int pOffsetVBODataFaces;
-	deoglVAO *pVAO;
+	deTUniqueReference<deoglVAO> pVAO;
 	
 	decTList<deoglVBOHeightTerrain1> pDataPoints1;
 	decTList<deoglVBOHeightTerrain2> pDataPoints2;
@@ -222,7 +222,7 @@ public:
 	
 	
 	/** VAO. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline const deTUniqueReference<deoglVAO> &GetVAO() const{ return pVAO; }
 	
 	/** Update vao. */
 	void UpdateVAO();

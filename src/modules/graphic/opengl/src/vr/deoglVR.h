@@ -78,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create VR support. */
-	deoglVR(deoglRCamera &camera);
+	explicit deoglVR(deoglRCamera &camera);
 	
 	/** Clean up VR support. */
 	~deoglVR();
@@ -143,7 +143,6 @@ public:
 	
 	/** Debug panel color transform. */
 	inline const decColorMatrix &GetDebugPanelColorTransform() const{ return pDebugPanelColorTransform; }
-	
 	
 	
 	/** Start begin frame. */
