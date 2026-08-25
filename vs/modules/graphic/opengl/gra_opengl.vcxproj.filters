@@ -774,6 +774,12 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRForceFrameRate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudCurvature.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudFov.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2703,6 +2709,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRForceFrameRate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudCurvature.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudFov.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.h">
