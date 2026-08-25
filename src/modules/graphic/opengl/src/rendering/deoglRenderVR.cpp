@@ -216,8 +216,13 @@ void deoglRenderVR::RenderHud(deoglRenderPlan &plan){
 	
 	renderThread.GetFramebuffer().Activate(plan.GetFBOTarget());
 	
-	const int viewportWidth = plan.GetViewportWidth();
-	const int viewportHeight = plan.GetViewportHeight();
+	const bool upscale = plan.GetUseUpscaling();
+	const int upscaleWidth = plan.GetUpscaleWidth();
+	const int upscaleHeight = plan.GetUpscaleHeight();
+
+	const int viewportHeight = upscale ? upscaleHeight : plan.GetViewportHeight();
+	const int viewportWidth = upscale ? upscaleWidth : plan.GetViewportWidth();
+
 	OGL_CHECK(renderThread, glViewport(0, 0, viewportWidth, viewportHeight));
 	OGL_CHECK(renderThread, glScissor(0, 0, viewportWidth, viewportHeight));
 	
