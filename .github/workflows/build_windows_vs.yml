@@ -115,7 +115,7 @@ jobs:
         
       - name: Install GLSL Tools
         run: |
-          Invoke-WebRequest "https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-main-windows-x86_64-release.zip" `
+          Invoke-WebRequest "https://github.com/KhronosGroup/glslang/releases/download/16.5.0/glslang-16.5.0-windows-x86_64-release.zip" `
             -OutFile "${{ github.workspace }}/glslang.zip"
           Expand-Archive -LiteralPath "${{ github.workspace }}/glslang.zip" `
             -DestinationPath "${{ github.workspace }}/glslang"
