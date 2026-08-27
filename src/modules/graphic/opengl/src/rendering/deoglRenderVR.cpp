@@ -112,7 +112,7 @@ pHudVertexCount(0)
 		
 		// hud
 		pipconf.Reset();
-		pipconf.SetMasks(true, true, true, true, false);
+		pipconf.SetMasks(true, true, true, true, false/*true*/);
 		pipconf.SetEnableScissorTest(true);
 		pipconf.EnableBlendBlend();
 		
@@ -120,6 +120,24 @@ pHudVertexCount(0)
 		pAsyncGetPipeline(pPipelineHud, pipconf, "VR Hud", defines);
 		
 		pCreateHudVAO();
+		
+		
+		// submit image
+		pipconf.Reset();
+		pipconf.SetMasks(true, true, true, true, false);
+		pipconf.SetEnableScissorTest(true);
+		
+		defines = commonDefines;
+		pAsyncGetPipeline(pPipelineSubmitColor, pipconf,
+			shaderManager.GetSourcesNamed("DefRen Copy Color"), defines);
+		
+		
+		pipconf.SetMasks(false, false, false, false, true);
+		pipconf.EnableDepthTestAlways();
+		
+		defines = commonDefines;
+		pAsyncGetPipeline(pPipelineSubmitDepth, pipconf,
+			shaderManager.GetSourcesNamed("DefRen Copy Depth"), defines);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -160,7 +178,7 @@ void deoglRenderVR::RenderHiddenArea(deoglRenderPlan &plan, bool clearMask){
 		modelRight = vr.GetRightEye().GetHiddenMesh();
 		break;
 		
-	case deoglRenderPlan::ervrNone:
+	default:
 		return;
 	}
 	
@@ -212,19 +230,8 @@ void deoglRenderVR::RenderHud(deoglRenderPlan &plan){
 	const deoglDebugTraceGroup debugTrace(renderThread, "Hud.Render");
 	
 	pPipelineHud->Activate();
-	auto &shader = pPipelineHud->GetShader();
-	
 	renderThread.GetFramebuffer().Activate(plan.GetFBOTarget());
-	
-	const bool upscale = plan.GetUseUpscaling();
-	const int upscaleWidth = plan.GetUpscaleWidth();
-	const int upscaleHeight = plan.GetUpscaleHeight();
-
-	const int viewportHeight = upscale ? upscaleHeight : plan.GetViewportHeight();
-	const int viewportWidth = upscale ? upscaleWidth : plan.GetViewportWidth();
-
-	OGL_CHECK(renderThread, glViewport(0, 0, viewportWidth, viewportHeight));
-	OGL_CHECK(renderThread, glScissor(0, 0, viewportWidth, viewportHeight));
+	SetViewportUnscaled(plan);
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	tsmgr.DisableAllStages();
@@ -236,6 +243,8 @@ void deoglRenderVR::RenderHud(deoglRenderPlan &plan){
 	if(plan.GetUseHdrOutput() || plan.GetCamera()->GetVR()->GetLeftEye().GetUseGammaCorrection()){
 		gamma = 1.0f;
 	}
+	
+	auto &shader = pPipelineHud->GetShader();
 	shader.SetParameterFloat(0, gamma, gamma, gamma);
 	
 	OGL_CHECK(renderThread, pglBindVertexArray(pVAOHud->GetVAO()));
@@ -247,6 +256,99 @@ void deoglRenderVR::RenderHud(deoglRenderPlan &plan){
 	OGL_CHECK(renderThread, pglBindVertexArray(0));
 	
 	tsmgr.DisableAllStages();
+}
+
+void deoglRenderVR::SubmitImages(deoglRenderPlan &plan, deoglVREye &eye, deBaseVRModule &vrmodule){
+	const auto &renderTarget = eye.GetRenderTarget();
+	if(!renderTarget || !renderTarget->GetFBO() || !renderTarget->GetTexture()){
+		// shutdown protection
+		return;
+	}
+	
+	if(eye.GetVRViewImages().IsEmpty()){
+		pSubmitImagesOld(plan, eye, vrmodule);
+		return;
+	}
+	
+	auto &renderThread = eye.GetVR().GetCamera().GetRenderThread();
+	const deoglDebugTraceGroup debugTrace(renderThread, "SubmitImages");
+	
+	int index = vrmodule.AcquireEyeViewImage(eye.GetEye());
+	if(index == -1){
+		// do not render. perhaps we can honor this earlier but right now it is not
+		// known if somebody else than the VR headset requires the rendered image.
+		// so for the time being we render but we do not submit
+		return;
+	}
+	
+	auto &tsmgr = renderThread.GetTexture().GetStages();
+	auto &fbomgr = renderThread.GetFramebuffer();
+	
+	const auto &tcFrom = eye.GetVRViewTCFrom();
+	const auto &tcTo = eye.GetVRViewTCTo();
+	
+	// transform position from [-1..1] to [tcFrom..tcTo]
+	// scale: [-1..1] -> [-range/2..range/2]
+	// offset: -range/2 -> tcFrom
+	const float posScaleU = (tcTo.x - tcFrom.x) / 2.0f;
+	const float posScaleV = (tcTo.y - tcFrom.y) / 2.0f;
+	const float posOffsetU = tcFrom.x + posScaleU;
+	const float posOffsetV = tcFrom.y + posScaleV;
+	
+	tsmgr.DisableAllStages();
+	
+	try{
+		pPipelineSubmitColor->Activate();
+		fbomgr.Activate(eye.GetVRViewImages()[index].fbo);
+		SetViewportUnscaled(plan);
+		
+		tsmgr.EnableTexture(0, renderTarget->GetTexture(), GetSamplerClampNearest());
+		
+		pPipelineSubmitColor->GetShader().SetParameterFloat(0,
+			posScaleU, posScaleV, posOffsetU, posOffsetV);
+		
+		RenderFullScreenQuadVAO(plan);
+		
+		vrmodule.ReleaseEyeViewImage(eye.GetEye());
+		
+	}catch(const deException &){
+		vrmodule.ReleaseEyeViewImage(eye.GetEye());
+		throw;
+	}
+	
+	if(eye.GetVRViewDepthImages().IsNotEmpty()){
+		index = vrmodule.AcquireEyeDepthImage(eye.GetEye());
+		if(index != -1){
+			float znear, zfar;
+			if(renderThread.GetChoices().GetUseInverseDepth()){
+				znear = std::numeric_limits<float>::infinity();
+				zfar = plan.GetCameraImageDistance();
+				
+			}else{
+				znear = plan.GetCameraImageDistance();
+				zfar = plan.GetCameraViewDistance();
+			}
+			
+			try{
+				pPipelineSubmitDepth->Activate();
+				fbomgr.Activate(eye.GetVRViewDepthImages()[index].fbo);
+				SetViewportUnscaled(plan);
+				
+				tsmgr.EnableTexture(0, renderTarget->GetDepthTexture(), GetSamplerClampNearest());
+				
+				pPipelineSubmitDepth->GetShader().SetParameterFloat(0,
+					posScaleU, posScaleV, posOffsetU, posOffsetV);
+				
+				RenderFullScreenQuadVAO(plan);
+				
+				vrmodule.ReleaseEyeDepthImage(eye.GetEye(), znear, zfar);
+				
+			}catch(const deException &){
+				vrmodule.ReleaseEyeDepthImage(eye.GetEye(), znear, zfar);
+				throw;
+			}
+		}
+	}
 }
 
 
@@ -340,4 +442,17 @@ void deoglRenderVR::pCreateHudVAO(){
 	
 	OGL_CHECK(renderThread, pglEnableVertexAttribArray(2));
 	OGL_CHECK(renderThread, pglVertexAttribIPointer(2, 1, GL_INT, 20, (const GLvoid *)16));
+}
+
+void deoglRenderVR::pSubmitImagesOld(deoglRenderPlan &plan, deoglVREye &eye, deBaseVRModule &vrmodule){
+	// OpenVR uses blitting which is very slow with scaling
+	const decVector2 tcFrom(0.0f, 0.0f);
+	const decVector2 tcTo(1.0f, 1.0f);
+// 	const decVector2 tcTo( ( float )pRenderSize.x / ( float )pTargetSize.x,
+// 		( float )pRenderSize.y / ( float )pTargetSize.y );
+// 	pVR.GetCamera().GetRenderThread().GetLogger().LogInfoFormat("tcTo (%g,%g)", tcTo.x, tcTo.y );
+	
+	vrmodule.SubmitOpenGLTexture2D(eye.GetEye(),
+		(void*)(intptr_t)eye.GetRenderTarget()->GetTexture()->GetTexture(),
+		tcFrom, tcTo, false);
 }

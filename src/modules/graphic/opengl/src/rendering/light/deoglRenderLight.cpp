@@ -321,6 +321,7 @@ pAddToRenderTask(nullptr)
 	pipconf.EnableDepthTestAlways();
 	
 	defines = commonDefines;
+	defines.SetDefines("INPUT_ARRAY_TEXTURES");
 	sources = shaderManager.GetSourcesNamed("DefRen Copy Depth");
 	pAsyncGetPipeline(pPipelineCopyDepth, pipconf, sources, defines);
 	

@@ -147,6 +147,8 @@ pFrameRunning(false),
 pRequestCenterSpaceOrigin(false),
 pLeftEyePose(deoxrUtils::IdentityPose()),
 pRightEyePose(deoxrUtils::IdentityPose()),
+pLeftEyeDepthSubmitted(false),
+pRightEyeDepthSubmitted(false),
 pIsGACOpenGL(false),
 #ifdef OS_ANDROID
 	pGACOpenGLDisplay(nullptr),
@@ -183,6 +185,12 @@ pIsGACOpenGL(false),
 	pRightEyeFov.angleRight = atanf(1.39166f);
 	pRightEyeFov.angleUp = atanf(1.47029f);
 	pRightEyeFov.angleDown = atanf(-1.45786f);
+	
+	pLeftDepthNearZ = 0.1f;
+	pLeftDepthFarZ = 100.0f;
+	
+	pRightDepthNearZ = 0.1f;
+	pRightDepthFarZ = 100.0f;
 	
 	try{
 		// query graphic api connection parameters
@@ -339,10 +347,10 @@ pIsGACOpenGL(false),
 			*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etColor);
 		
 		if(pSystem.GetInstance().SupportsExtension(deoxrInstance::extKHRCompositionLayerDepth)){
-			// pSwapchainDepthLeftEye = deoxrSwapchain::Ref::New(
-			// 	*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etDepth);
-			// pSwapchainDepthRightEye = deoxrSwapchain::Ref::New(
-			// 	*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etDepth);
+			pSwapchainDepthLeftEye = deoxrSwapchain::Ref::New(
+				*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etDepth);
+			pSwapchainDepthRightEye = deoxrSwapchain::Ref::New(
+				*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etDepth);
 		}
 		
 		if(pIsGACOpenGL){
@@ -614,7 +622,8 @@ void deoxrSession::EndFrame(){
 	const void **nextLayerRightEye = &viewEyes[1].next;
 	
 	XrCompositionLayerDepthInfoKHR viewDepth[2]{};
-	if(pSwapchainDepthLeftEye && pSwapchainDepthRightEye){
+	if(pSwapchainDepthLeftEye && pSwapchainDepthRightEye
+	&& pLeftEyeDepthSubmitted && pRightEyeDepthSubmitted){
 		// rendered depth for left and right eye
 		viewDepth[0].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
 		viewDepth[0].subImage.swapchain = pSwapchainDepthLeftEye->GetSwapchain();
@@ -622,10 +631,10 @@ void deoxrSession::EndFrame(){
 		viewDepth[0].subImage.imageRect.extent.height = pSwapchainDepthLeftEye->GetSize().y;
 		viewDepth[0].subImage.imageRect.offset.x = 0;
 		viewDepth[0].subImage.imageRect.offset.y = 0;
-		viewDepth[0].minDepth = 0.0f; // TODO get parameters from graphic module
+		viewDepth[0].minDepth = 0.0f;
 		viewDepth[0].maxDepth = 1.0f;
-		viewDepth[0].nearZ = 0.01f;
-		viewDepth[0].farZ = 100.0f;
+		viewDepth[0].nearZ = pLeftDepthNearZ;
+		viewDepth[0].farZ = pLeftDepthFarZ;
 		*nextLayerLeftEye = &viewDepth[0];
 		nextLayerLeftEye = &viewDepth[0].next;
 		
@@ -635,12 +644,15 @@ void deoxrSession::EndFrame(){
 		viewDepth[1].subImage.imageRect.extent.height = pSwapchainDepthRightEye->GetSize().y;
 		viewDepth[1].subImage.imageRect.offset.x = 0;
 		viewDepth[1].subImage.imageRect.offset.y = 0;
-		viewDepth[1].minDepth = 0.0f; // TODO get parameters from graphic module
+		viewDepth[1].minDepth = 0.0f;
 		viewDepth[1].maxDepth = 1.0f;
-		viewDepth[1].nearZ = 0.01f;
-		viewDepth[1].farZ = 100.0f;
+		viewDepth[1].nearZ = pRightDepthNearZ;
+		viewDepth[1].farZ = pRightDepthFarZ;
 		*nextLayerRightEye = &viewDepth[1];
 		nextLayerRightEye = &viewDepth[1].next;
+		
+		pLeftEyeDepthSubmitted = false;
+		pRightEyeDepthSubmitted = false;
 	}
 	
 	
@@ -781,6 +793,18 @@ void deoxrSession::SyncActions(){
 	syncInfo.activeActionSets = activeActionSets;
 	
 	OXR_CHECK(instance.xrSyncActions(pSession, &syncInfo));
+}
+
+void deoxrSession::LeftEyeDepthSubmitted(float nearZ, float farZ){
+	pLeftDepthNearZ = nearZ;
+	pLeftDepthFarZ = farZ;
+	pLeftEyeDepthSubmitted = true;
+}
+
+void deoxrSession::RightEyeDepthSubmitted(float nearZ, float farZ){
+	pRightDepthNearZ = nearZ;
+	pRightDepthFarZ = farZ;
+	pRightEyeDepthSubmitted = true;
 }
 
 void deoxrSession::UpdateLeftEyeHiddenMesh(){

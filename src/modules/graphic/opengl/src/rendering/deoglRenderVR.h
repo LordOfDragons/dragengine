@@ -32,6 +32,8 @@
 
 class deoglRWorld;
 class deoglSharedVBOBlock;
+class deoglVREye;
+class deBaseVRModule;
 
 
 /**
@@ -54,6 +56,7 @@ private:
 	
 	const deoglPipeline *pPipelineHud, *pPipelineHudSplit;
 	
+	const deoglPipeline *pPipelineSubmitColor, *pPipelineSubmitDepth;
 	
 	
 public:
@@ -75,6 +78,9 @@ public:
 	
 	/** Render hud. */
 	void RenderHud(deoglRenderPlan &plan);
+	
+	/** Submit eye images. */
+	void SubmitImages(deoglRenderPlan &plan, deoglVREye &eye, deBaseVRModule &vrmodule);
 	/*@}*/
 	
 	
@@ -83,6 +89,7 @@ private:
 	void pCleanUp();
 	void pRenderHiddenArea(const deoglSharedVBOBlock &vboBlock);
 	void pCreateHudVAO();
+	void pSubmitImagesOld(deoglRenderPlan &plan, deoglVREye &eye, deBaseVRModule &vrmodule);
 };
 
 #endif

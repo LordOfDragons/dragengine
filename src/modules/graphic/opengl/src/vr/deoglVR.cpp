@@ -137,7 +137,7 @@ void deoglVR::UpdateTargetFPS(float elapsed){
 }
 
 void deoglVR::DropFBOStereo(){
-	pFBOStereo = nullptr;
+	pFBOStereo.Clear();
 }
 
 
@@ -398,7 +398,20 @@ void deoglVR::pRenderStereo(){
 	defren.Resize(pRenderStereoSize.x, pRenderStereoSize.y, 2);
 	
 	plan.Render();
+	
+	// we can not finalize using split rendering if we also copy depth since an FBO can have
+	// only one depth. technically this would work with an array texture but we get two separate
+	// textures from the vr module so we have to use two separate render calls
+	
+	//renderThread.GetRenderers().GetWorld().RenderFinalizeFBO(plan, true, pLeftEye.GetUseGammaCorrection());
+	
+	plan.SetRenderVR(deoglRenderPlan::ervrSplitLeftEye);
+	plan.SetFBOTarget(pLeftEye.GetRenderTarget()->GetFBO());
 	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO(plan, true, pLeftEye.GetUseGammaCorrection());
+	
+	plan.SetRenderVR(deoglRenderPlan::ervrSplitRightEye);
+	plan.SetFBOTarget(pRightEye.GetRenderTarget()->GetFBO());
+	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO(plan, true, pRightEye.GetUseGammaCorrection());
 	DEBUG_PRINT_TIMER("RenderWorld")
 	
 	// render hud. this is a bit more complicated since the eye images have been split already

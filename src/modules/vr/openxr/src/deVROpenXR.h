@@ -216,6 +216,7 @@ public:
 	
 	/** Session swapchain for eye or nullptr. */
 	deoxrSwapchain *GetEyeSwapchain(eEye eye) const;
+	deoxrSwapchain *GetEyeDepthSwapchain(eEye eye) const;
 	
 	/** Session state. */
 	inline XrSessionState GetSessionState() const{ return pSessionState; }
@@ -439,6 +440,9 @@ public:
 	/** Get eye view images to use for rendering. */
 	int GetEyeViewImages(eEye eye, int count, void *views) override;
 	
+	/** Get eye depth images to use for rendering. */
+	int GetEyeDepthImages(eEye eye, int count, void *views) override;
+	
 	/** Get eye view render texture coordinates. */
 	void GetEyeViewRenderTexCoords(eEye eye, decVector2 &tcFrom, decVector2 &tcTo) override;
 	
@@ -453,6 +457,12 @@ public:
 	
 	/** Release eye view image after render into. */
 	void ReleaseEyeViewImage(eEye eye) override;
+	
+	/** Acquire eye depth image to render into. */
+	int AcquireEyeDepthImage(eEye eye) override;
+	
+	/** Release eye depth image after render into. */
+	void ReleaseEyeDepthImage(eEye eye, float nearZ, float farZ) override;
 	
 	/** Submit OpenGL rendered image to the HMD. */
 	void SubmitOpenGLTexture2D(eEye eye, void *texture, const decVector2 &tcFrom,

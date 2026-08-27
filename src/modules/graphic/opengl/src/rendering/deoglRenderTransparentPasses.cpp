@@ -133,7 +133,7 @@ deoglRenderBase(renderThread)
 	sources = shaderManager.GetSourcesNamed("DefRen Copy Depth");
 	
 	defines = commonDefines;
-	defines.SetDefines("COPY_COLOR");
+	defines.SetDefines("COPY_COLOR", "INPUT_ARRAY_TEXTURES");
 	defines.SetDefine("DEPTH_TEST", deoglSkinShaderConfig::edtmSmaller);
 	if(useInverseDepth){
 		defines.SetDefine("SHADOW_INVERSE_DEPTH", true);
@@ -160,6 +160,7 @@ deoglRenderBase(renderThread)
 	sources = shaderManager.GetSourcesNamed("DefRen Copy Depth");
 	
 	defines = commonDefines;
+	defines.SetDefines("INPUT_ARRAY_TEXTURES");
 	defines.SetDefine("DEPTH_TEST", deoglSkinShaderConfig::edtmSmaller);
 	if(!useInverseDepth){
 		defines.SetDefine("SHADOW_INVERSE_DEPTH", true);

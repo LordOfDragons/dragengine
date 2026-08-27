@@ -100,6 +100,7 @@ void deoglSkinStateConstructed::PrepareForRender(deoglSkinState &skinState){
 	
 	skinState.GetRenderThread().GetRenderers().GetConstructed().Prepare(context);
 	
+	skinState.GetRenderThread().GetRenderers().GetConstructed().GetPipelineClearBuffers()->Activate();
 	const GLfloat clearColor[4] = {pProperty->GetColor().r, pProperty->GetColor().g,
 		pProperty->GetColor().b, pRenderTarget->GetComponentCount() == 4 ? 0.0f : 1.0f};
 	OGL_CHECK(skinState.GetRenderThread(), pglClearBufferfv(GL_COLOR, 0, clearColor));

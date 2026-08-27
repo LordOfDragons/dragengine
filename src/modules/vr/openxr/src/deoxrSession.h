@@ -107,6 +107,9 @@ private:
 	
 	XrPosef pLeftEyePose, pRightEyePose;
 	XrFovf pLeftEyeFov, pRightEyeFov;
+	float pLeftDepthNearZ, pLeftDepthFarZ;
+	float pRightDepthNearZ, pRightDepthFarZ;
+	bool pLeftEyeDepthSubmitted, pRightEyeDepthSubmitted;
 	
 	deoxrHiddenMesh::Ref pLeftEyeHiddenMesh;
 	deoxrHiddenMesh::Ref pRightEyeHiddenMesh;
@@ -235,6 +238,12 @@ public:
 	
 	/** Right eye fov. */
 	inline const XrFovf &GetRightEyeFov() const{ return pRightEyeFov; }
+	
+	/** Left eye depth submitted. */
+	void LeftEyeDepthSubmitted(float nearZ, float farZ);
+	
+	/** Right eye depth submitted. */
+	void RightEyeDepthSubmitted(float nearZ, float farZ);
 	
 	/** Left eye hidden mesh or null. */
 	inline const deoxrHiddenMesh::Ref &GetLeftEyeHiddenMesh() const{ return pLeftEyeHiddenMesh; }

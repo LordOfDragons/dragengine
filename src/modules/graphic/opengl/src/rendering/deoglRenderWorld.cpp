@@ -229,6 +229,14 @@ pDebugInfo(renderThread)
 		defines.SetDefines("NO_POSTRANSFORM", "SPLIT_LAYERS");
 		pAsyncGetPipeline(pPipelineFinalizeSplit, pipconf, "DefRen Finalize Split", defines);
 		
+		// finalize depth
+		pipconf.SetDepthMask(true);
+		pipconf.EnableDepthTestAlways();
+		
+		defines = commonDefines;
+		defines.SetDefines("NO_POSTRANSFORM", "WITH_DEPTH");
+		pAsyncGetPipeline(pPipelineFinalizeDepth, pipconf, "DefRen Finalize", defines);
+		
 		
 		
 		DevModeDebugInfoChanged();
@@ -1208,9 +1216,30 @@ DBG_ENTER("RenderFinalizeFBO")
 	const int upscaleWidth = plan.GetUpscaleWidth();
 	const int upscaleHeight = plan.GetUpscaleHeight();
 	
-	const deoglPipeline &pipeline = plan.GetRenderVR() == deoglRenderPlan::ervrStereo
-		? *pPipelineFinalizeSplit : (plan.GetRenderStereo() ? *pPipelineFinalizeStereo : *pPipelineFinalize);
-	pipeline.Activate();
+	const deoglPipeline *pipeline;
+	
+	switch(plan.GetRenderVR()){
+	case deoglRenderPlan::ervrStereo:
+		pipeline = pPipelineFinalizeSplit;
+		break;
+		
+	case deoglRenderPlan::ervrLeftEye:
+	case deoglRenderPlan::ervrRightEye:
+	case deoglRenderPlan::ervrSplitLeftEye:
+	case deoglRenderPlan::ervrSplitRightEye:
+		pipeline = pPipelineFinalizeDepth;
+		break;
+		
+	default:
+		if(plan.GetRenderStereo()){
+			pipeline = pPipelineFinalizeStereo;
+			
+		}else{
+			pipeline = pPipelineFinalize;
+		}
+	}
+	
+	pipeline->Activate();
 	
 	renderThread.GetFramebuffer().Activate(plan.GetFBOTarget());
 	
@@ -1224,9 +1253,21 @@ DBG_ENTER("RenderFinalizeFBO")
 	tsmgr.EnableArrayTexture(0, *defren.GetPostProcessTexture(),
 		plan.GetUseUpscaling() ? GetSamplerClampLinear() : GetSamplerClampNearest());
 	
+	switch(plan.GetRenderVR()){
+	case deoglRenderPlan::ervrLeftEye:
+	case deoglRenderPlan::ervrRightEye:
+	case deoglRenderPlan::ervrSplitLeftEye:
+	case deoglRenderPlan::ervrSplitRightEye:
+		tsmgr.EnableArrayTexture(1, *defren.GetDepthTexture1(), GetSamplerClampNearest());
+		break;
+		
+	default:
+		break;
+	}
+	
 	pRenderPB->Activate();
 	
-	deoglShaderCompiled * const shader = &pipeline.GetShader();
+	deoglShaderCompiled * const shader = &pipeline->GetShader();
 	
 	if(withGammaCorrection){
 		const float gamma = 1.0f / (OGL_RENDER_GAMMA * config.GetGammaCorrection());
@@ -1270,11 +1311,24 @@ DBG_ENTER("RenderFinalizeFBO")
 		// const float ptransp = renderThread.GetVRCamera()->GetVR()->GetPassthroughTransparency();
 	}
 	
-	if(plan.GetRenderVR() == deoglRenderPlan::ervrStereo){
+	switch(plan.GetRenderVR()){
+	case deoglRenderPlan::ervrStereo:
 		RenderFullScreenQuadVAO();
+		break;
 		
-	}else{
+	case deoglRenderPlan::ervrLeftEye:
+	case deoglRenderPlan::ervrRightEye:
+	case deoglRenderPlan::ervrSplitLeftEye:
+		RenderFullScreenQuadVAOLayer(plan, 0);
+		break;
+		
+	case deoglRenderPlan::ervrSplitRightEye:
+		RenderFullScreenQuadVAOLayer(plan, 1);
+		break;
+		
+	default:
 		RenderFullScreenQuadVAO(plan);
+		break;
 	}
 	
 	

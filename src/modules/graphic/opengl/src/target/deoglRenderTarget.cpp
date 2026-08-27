@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRenderTarget.h"
 #include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -37,15 +33,19 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class deoglRenderTarget
-/////////////////////////////
+////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
 deoglRenderTarget::deoglRenderTarget(deoglRenderThread &renderThread,
 	const decPoint &size, int componentCount, int bitCount) :
+deoglRenderTarget(renderThread, size, componentCount, bitCount, false){
+}
+
+deoglRenderTarget::deoglRenderTarget(deoglRenderThread &renderThread,
+	const decPoint &size, int componentCount, int bitCount, bool withDepth) :
 pRenderThread(renderThread),
 
 pSize(decPoint(1, 1).Largest(size)),
@@ -54,39 +54,29 @@ pAspectRatio((float)pSize.x / (float)pSize.y),
 pBitCount(bitCount),
 pComponentCount(componentCount),
 pFloatTexture(bitCount != 8),
+pWithDepth(withDepth),
 
-pDirtyTexture(true),
-
-pTexture(nullptr){
+pDirtyTexture(true){
 }
 
 deoglRenderTarget::~deoglRenderTarget(){
 	ReleaseFramebuffer();
-	
-	if(pTexture){
-		delete pTexture;
-	}
 }
-
 
 
 // Management
 ///////////////
 
 void deoglRenderTarget::SetSize(const decPoint &size){
-	if(!(size > decPoint())){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(size > decPoint())
 	
 	if(size == pSize){
 		return;
 	}
 	
 	ReleaseFramebuffer();
-	if(pTexture){
-		delete pTexture;
-		pTexture = nullptr;
-	}
+	pTexture.Clear();
+	pDepthTexture.Clear();
 	
 	pSize = size;
 	pAspectRatio = (float)pSize.x / (float)pSize.y;
@@ -97,17 +87,22 @@ void deoglRenderTarget::SetSize(const decPoint &size){
 }
 
 
-
 void deoglRenderTarget::PrepareTexture(){
-	if(pTexture){
-		return;
+	if(!pTexture){
+		pTexture = deTUniqueReference<deoglTexture>::New(pRenderThread);
+		pTexture->SetSize(pTextureSize);
+		pTexture->SetFBOFormat(pComponentCount, pFloatTexture);
+		pTexture->SetMipMapped(false);
+		pTexture->CreateTexture(); // required or framebuffer attaching fails
 	}
 	
-	pTexture = new deoglTexture(pRenderThread);
-	pTexture->SetSize(pTextureSize);
-	pTexture->SetFBOFormat(pComponentCount, pFloatTexture);
-	pTexture->SetMipMapped(false);
-	pTexture->CreateTexture(); // required or framebuffer attaching fails
+	if(pWithDepth && !pDepthTexture){
+		pDepthTexture = deTUniqueReference<deoglTexture>::New(pRenderThread);
+		pDepthTexture->SetSize(pTextureSize);
+		pDepthTexture->SetDepthFormat(false, false);
+		pDepthTexture->SetMipMapped(false);
+		pDepthTexture->CreateTexture(); // required or framebuffer attaching fails
+	}
 }
 
 void deoglRenderTarget::PrepareFramebuffer(){
@@ -123,6 +118,10 @@ void deoglRenderTarget::PrepareFramebuffer(){
 	
 	pRenderThread.GetFramebuffer().Activate(pFBO);
 	
+	if(pWithDepth){
+		pFBO->AttachDepthTexture(pDepthTexture);
+	}
+	
 	pFBO->AttachColorTexture(0, pTexture);
 	
 	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
@@ -133,7 +132,7 @@ void deoglRenderTarget::PrepareFramebuffer(){
 }
 
 void deoglRenderTarget::ReleaseFramebuffer(){
-	pFBO = nullptr;
+	pFBO.Clear();
 }
 
 

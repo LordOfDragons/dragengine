@@ -174,6 +174,7 @@ void deoglRCanvasView::RenderRenderTarget(const deoglRenderPlanMasked *renderPla
 	
 	// clear the render target. this is required for situations where transparent overlays
 	// are rendered with children canvas not covering all pixels
+	GetRenderThread().GetRenderers().GetCanvas().GetPipelineClearBuffers()->Activate();
 	const GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f,
 		pRenderTarget->GetComponentCount() == 4 ? 0.0f : 1.0f};
 	OGL_CHECK(GetRenderThread(), pglClearBufferfv(GL_COLOR, 0, clearColor));

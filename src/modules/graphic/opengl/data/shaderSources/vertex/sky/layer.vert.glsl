@@ -20,8 +20,9 @@ void main( void ){
 	gl_Position = vec4( inPosition, vZFar, 1 );
 	vTexCoord = inPosition;
 	
+	vLayer = inLayer;
+	
 	if(VSRenderLayer){
-		vLayer = inLayer;
 		#if defined SUPPORTS_VSLAYER && ! defined OPENGLES
 		gl_Layer = vLayer;
 		#endif

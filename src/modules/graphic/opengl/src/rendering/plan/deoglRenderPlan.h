@@ -85,7 +85,9 @@ public:
 		ervrNone,
 		ervrLeftEye,
 		ervrRightEye,
-		ervrStereo
+		ervrStereo,
+		ervrSplitLeftEye,
+		ervrSplitRightEye
 	};
 	
 	
