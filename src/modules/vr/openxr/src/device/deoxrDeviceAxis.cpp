@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoxrDevice.h"
 #include "deoxrDeviceAxis.h"
 #include "../deVROpenXR.h"
@@ -55,11 +52,11 @@ pMaximum(1.0f),
 pCenter(0.0f),
 pDeadZone(0.0f),
 pResolution(0.01f),
+pInvert(false),
 pValue(0.0f){
 }
 
-deoxrDeviceAxis::~deoxrDeviceAxis(){
-}
+deoxrDeviceAxis::~deoxrDeviceAxis() = default;
 
 
 
@@ -148,6 +145,10 @@ void deoxrDeviceAxis::SetResolution(float resolution){
 	pResolution = resolution;
 }
 
+void deoxrDeviceAxis::SetInvert(bool invert){
+	pInvert = invert;
+}
+
 void deoxrDeviceAxis::SetValue(float value){
 	pValue = value;
 }
@@ -161,6 +162,10 @@ void deoxrDeviceAxis::UpdateValue(float value){
 	
 	if(fabsf(value - pValue) < pResolution){
 		return;
+	}
+	
+	if(pInvert){
+		value = -value;
 	}
 	
 	SetValue(value);

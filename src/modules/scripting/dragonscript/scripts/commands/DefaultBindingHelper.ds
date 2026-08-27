@@ -735,7 +735,7 @@ class DefaultBindingHelper
 	func bool vrHandBindStick(bool rightHand, InputDeviceAxisType type,\
 	int stick , String horizontal, String vertical)
 		return getAllVRHands(rightHand).collect(block InputDevice each
-			return bindStick(each, type, stick, horizontal, vertical, false, true)
+			return bindStick(each, type, stick, horizontal, vertical, false)
 		end).getCount() > 0
 	end
 	
@@ -754,7 +754,7 @@ class DefaultBindingHelper
 	func bool vrHandBindStick(bool rightHand, InputDeviceAxisType type, int stick,\
 	String left, String right, String up, String down)
 		return getAllVRHands(rightHand).collect(block InputDevice each
-			return bindStick(each, type, stick, left, right, up, down, false, true)
+			return bindStick(each, type, stick, left, right, up, down, false)
 		end).getCount() > 0
 	end
 	
