@@ -51,13 +51,16 @@ function register_mimetypes()
 {
 	echo ">>> Register Mime-Types..."
 	
-	xdg-mime install /usr/share/mime/packages/dragonscript-dragonscript.xml
-	xdg-mime install /usr/share/mime/packages/dragengine-deigde.xml
+	xdg-mime install /usr/share/mime/packages/ch.dragondreams.deigde-mime.xml
 }
 
 function uninstall_files()
 {
+	# unregister and remove current version files and deprecated, old version files if present
 	echo ">>> Unregister Mime-Types..."
+	if [ -f /usr/share/mime/packages/ch.dragondreams.deigde-mime.xml ]; then
+		xdg-mime uninstall /usr/share/mime/packages/ch.dragondreams.deigde-mime.xml
+	fi
 	if [ -f /usr/share/mime/packages/dragonscript-dragonscript.xml ]; then
 		xdg-mime uninstall /usr/share/mime/packages/dragonscript-dragonscript.xml
 	fi
@@ -74,6 +77,7 @@ function uninstall_files()
 	rm -f /usr/share/icons/hicolor/*/mimetypes/dragengine-deigde.png
 	rm -f /usr/share/katepart5/syntax/dragonscript.xml
 	rm -f /usr/share/man/man1/deigde.1
+	rm -f /usr/share/mime/packages/ch.dragondreams.deigde-mime.xml
 	rm -f /usr/share/mime/packages/dragengine-deigde.xml
 	rm -f /usr/share/mime/packages/dragonscript-dragonscript.xml
 	rm -f /usr/share/pixmaps/dragengine-deigde.png
@@ -85,6 +89,7 @@ function uninstall_files()
 
 function remove_old_files()
 {
+	# remove current version files and deprecated, old version files if present
 	echo ">>> Removing old files if present"
 	rm -f /usr/bin/deigde
 	rm -f /usr/lib/libdeigdeshared.so
@@ -94,6 +99,7 @@ function remove_old_files()
 	rm -f /usr/share/icons/hicolor/*/mimetypes/dragengine-deigde.png
 	rm -f /usr/share/katepart5/syntax/dragonscript.xml
 	rm -f /usr/share/man/man1/deigde.1
+	rm -f /usr/share/mime/packages/ch.dragondreams.deigde-mime.xml
 	rm -f /usr/share/mime/packages/dragengine-deigde.xml
 	rm -f /usr/share/mime/packages/dragonscript-dragonscript.xml
 	rm -f /usr/share/pixmaps/dragengine-deigde.png
