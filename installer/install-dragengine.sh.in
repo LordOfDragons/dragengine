@@ -84,13 +84,9 @@ function create_games_directory()
 
 function uninstall_files()
 {
-	# unregister and remove current version files and deprecated, old version files if present
 	echo ">>> Unregister Mime-Types..."
 	if [ -f /usr/share/mime/packages/ch.dragondreams.delauncher-mime.xml ]; then
 		xdg-mime uninstall /usr/share/mime/packages/ch.dragondreams.delauncher-mime.xml
-	fi
-	if [ -f /usr/share/mime/packages/dragengine-dragengine.xml ]; then
-		xdg-mime uninstall /usr/share/mime/packages/dragengine-dragengine.xml
 	fi
 	
 	echo ">>> Removing files"
@@ -108,7 +104,6 @@ function uninstall_files()
 	rm -f /usr/share/man/man1/delauncher-console.1
 	rm -f /usr/share/man/man1/delauncher-gui.1
 	rm -f /usr/share/mime/packages/ch.dragondreams.delauncher-mime.xml
-	rm -f /usr/share/mime/packages/dragengine-dragengine.xml
 	rm -f /usr/share/pixmaps/dragengine-delauncher-gui.png
 	
 	echo ">>> Removing directories"
@@ -118,7 +113,6 @@ function uninstall_files()
 
 function remove_old_files()
 {
-	# remove current version files and deprecated, old version files if present
 	echo ">>> Removing old files if present"
 	rm -f /usr/bin/delauncher
 	rm -f /usr/bin/delauncher-console
