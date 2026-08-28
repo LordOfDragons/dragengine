@@ -63,7 +63,6 @@ pMemUseIBO(parentList->GetRenderThread().GetMemoryManager().GetConsumption().buf
 	pParentList = parentList;
 	pVBO = 0;
 	pIBO = 0;
-	pVAO = nullptr;
 	pUsedSize = 0;
 	pSize = size;
 	pIndexSize = indexSize;
@@ -78,7 +77,7 @@ pMemUseIBO(parentList->GetRenderThread().GetMemoryManager().GetConsumption().buf
 		}
 		
 		// create vao
-		pVAO = new deoglVAO(parentList->GetRenderThread());
+		pVAO = deTUniqueReference<deoglVAO>::New(parentList->GetRenderThread());
 		pVAO->SetIndexType(parentList->GetLayout().GetIndexType());
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAO->GetVAO()));
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
@@ -340,9 +339,7 @@ void deoglSharedVBO::pCleanUp(){
 	}
 	pBlocks.RemoveAll();
 	
-	if(pVAO){
-		delete pVAO;
-	}
+	pVAO.Clear();
 	
 	deoglDelayedOperations &dops = pParentList->GetRenderThread().GetDelayedOperations();
 	dops.DeleteOpenGLBuffer(pVBO);

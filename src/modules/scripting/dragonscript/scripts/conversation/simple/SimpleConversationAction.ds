@@ -280,6 +280,12 @@ class SimpleConversationAction
 		
 		/** Do not change camera and use 0 second delay for speak. */
 		noCameraNoDelay
+		
+		/** Do not change camera and use 0 second delay for speak and no waiting. */
+		noCameraNoDelayWait
+		
+		/** No waiting. */
+		noWait
 	end
 	
 	

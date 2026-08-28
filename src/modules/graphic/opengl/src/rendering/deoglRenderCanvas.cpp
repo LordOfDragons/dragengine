@@ -357,7 +357,13 @@ void deoglRenderCanvas::DrawCanvasPaint(const deoglRenderCanvasContext &context,
 		context.GetTCClampMaximum().x, context.GetTCClampMaximum().y);
 	
 	shader.SetParameterTexMatrix3x2(spcTransform, context.GetTransform());
-	shader.SetParameterTexMatrix3x2(spcTCTransformMask, context.GetTCTransformMask());
+	
+	// vertex input data is in screen space. TC transform has to be map to texture space
+	shader.SetParameterTexMatrix3x2(spcTCTransformMask,
+		decTexMatrix2::CreateScale(
+			1.0f / decMath::max(canvas.GetSize().x - 1.0f, 1.0f),
+			1.0f / decMath::max(canvas.GetSize().y - 1.0f, 1.0f))
+		* context.GetTCTransformMask());
 	shader.SetParameterFloat(spcGamma, 1.0f, 1.0f, 1.0f, 1.0f);
 	shader.SetParameterInt(spcHdrOutput, context.GetUseHdrOutput() ? 1 : 0);
 	

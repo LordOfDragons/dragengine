@@ -244,8 +244,7 @@ copyShadow(nullptr){
 deoglRenderLightPoint::deoglRenderLightPoint(deoglRenderThread &renderThread,
 deoglRTRenderers &renderers) :
 deoglRenderLightBase(renderThread),
-pVBOCopyShadow(0),
-pVAOCopyShadow(nullptr)
+pVBOCopyShadow(0)
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
@@ -377,7 +376,7 @@ pVAOCopyShadow(nullptr)
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER,
 			sizeof(csp), (const GLvoid *)&csp, GL_STATIC_DRAW));
 		
-		pVAOCopyShadow = new deoglVAO(renderThread);
+		pVAOCopyShadow = deTUniqueReference<deoglVAO>::New(renderThread);
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAOCopyShadow->GetVAO()));
 		
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
@@ -612,7 +611,8 @@ void deoglRenderLightPoint::CalculateBoxBoundary(deoglRenderPlanLight &planLight
 
 
 
-void deoglRenderLightPoint::RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask){
+void deoglRenderLightPoint::RenderLights(deoglRenderPlan &plan, bool solid,
+const deoglRenderPlanMasked *mask, bool xray){
 DEBUG_RESET_TIMER_TOTAL
 	const deoglDebugTraceGroup debugTrace(GetRenderThread(), "LightPoint.RenderLights");
 	const int lightCount = plan.GetLightCount();
@@ -630,7 +630,7 @@ DEBUG_RESET_TIMER_TOTAL
 			continue;
 		}
 		
-		RenderLight(planLight, solid, mask);
+		RenderLight(planLight, solid, mask, xray);
 	}
 	
 	// clean up job
@@ -646,7 +646,7 @@ DEBUG_PRINT_TIMER_TOTAL
 
 
 void deoglRenderLightPoint::RenderLight(deoglRenderPlanLight &planLight, bool solid,
-const deoglRenderPlanMasked *mask){
+const deoglRenderPlanMasked *mask, bool xray){
 	// determine what needs to be rendered
 	deoglCollideListLight &cllight = *planLight.GetLight();
 	if(!cllight.GetCulled() && cllight.IsHiddenByOccQuery()){
@@ -655,7 +655,7 @@ const deoglRenderPlanMasked *mask){
 	
 	deoglRenderPlan &plan = planLight.GetPlan();
 	const bool lightGeometry = !cllight.GetCulled();
-	deoglGIState * const giState = !mask && solid ? plan.GetUpdateGIState() : nullptr;
+	deoglGIState * const giState = !mask && solid && !xray ? plan.GetUpdateGIState() : nullptr;
 	
 	if(!lightGeometry && !giState){
 		return;
@@ -2027,9 +2027,6 @@ void deoglRenderLightPoint::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderLightPoint::pCleanUp(){
-	if(pVAOCopyShadow){
-		delete pVAOCopyShadow;
-	}
-	
+	pVAOCopyShadow.Clear();
 	pRenderThread.GetDelayedOperations().DeleteOpenGLBuffer(pVBOCopyShadow);
 }

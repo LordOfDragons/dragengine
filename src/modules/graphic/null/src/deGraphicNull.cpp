@@ -107,6 +107,9 @@ void deGraphicNull::RenderWindows(){
 void deGraphicNull::InputOverlayCanvasChanged(){
 }
 
+void deGraphicNull::VRHudOverlayCanvasChanged(){
+}
+
 
 deBaseGraphicCanvas *deGraphicNull::CreateCanvas(deCanvas*){
 	return nullptr;

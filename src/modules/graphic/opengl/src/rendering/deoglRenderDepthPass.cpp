@@ -316,10 +316,8 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 				addToRenderTask.SetSolid(true);
 				addToRenderTask.SetNoNotReflected(plan.GetNoReflections());
 				addToRenderTask.SetNoRendered(mask);
-				if(xray){
-					addToRenderTask.SetFilterXRay(true);
-					addToRenderTask.SetXRay(true);
-				}
+				addToRenderTask.SetFilterXRay(true);
+				addToRenderTask.SetXRay(xray);
 				addToRenderTask.SetSkinPipelineType(pipelineType);
 				addToRenderTask.SetSkinPipelineModifier(pipelineModifier);
 				addToRenderTask.AddHeightTerrainSectorClusters(collideList, true);
@@ -350,10 +348,8 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		addToRenderTask.SetSolid(solid);
 		addToRenderTask.SetNoNotReflected(plan.GetNoReflections());
 		addToRenderTask.SetNoRendered(mask);
-		if(xray){
-			addToRenderTask.SetFilterXRay(true);
-			addToRenderTask.SetXRay(true);
-		}
+		addToRenderTask.SetFilterXRay(true);
+		addToRenderTask.SetXRay(xray);
 		addToRenderTask.SetSkinPipelineType(pipelineType);
 		addToRenderTask.SetSkinPipelineModifier(pipelineModifier);
 		

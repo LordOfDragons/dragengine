@@ -371,12 +371,12 @@ void deoglGIState::TouchDynamicArea(const decDVector &minExtend, const decDVecto
 	pBVHDynamic.MarkDirty();
 }
 
-void deoglGIState::ValidatedRayCaches(){
+void deoglGIState::ValidateRayCaches(){
 	#ifdef GISTATE_SPECIAL_DEBUG
 	return;
 	#endif
 	
-	GetActiveCascade().ValidatedRayCaches();
+	GetActiveCascade().ValidateRayCaches();
 	pProbesExtendsChanged = true;
 }
 

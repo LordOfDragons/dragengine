@@ -314,28 +314,41 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 	}
 	
 	// determine if texture coordinates have to be clamped
-	bool clampTexCoord = skinTexture.GetTexCoordClamp();
+	bool clampTexCoordU = skinTexture.GetTexCoordClampU();
+	bool clampTexCoordV = skinTexture.GetTexCoordClampV();
 	
 	if(skinChannel == deoglSkinChannel::ectColorOmnidirEquirect){
 		// this is important here. if not clamped opengl adds thin artifact lines across the
 		// 0-degrees angle from top to bottom as well as causing poles to be distorted and
 		// flipped upside down (top pole is down). no idea what driver problem causes this
 		// but forcing clamping solves the problem
-		clampTexCoord = true;
+		clampTexCoordU = clampTexCoordV = true;
 	}
 	
 	// determine sampler to use
 	if(useTexture && useTexture->GetMipMapped()){
-		if(clampTexCoord){
+		if(clampTexCoordU && clampTexCoordV){
 			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinearMipMap);
+			
+		}else if(clampTexCoordU){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampULinearMipMap);
+			
+		}else if(clampTexCoordV){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVLinearMipMap);
 			
 		}else{
 			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinearMipMap);
 		}
 		
 	}else{
-		if(clampTexCoord){
+		if(clampTexCoordU && clampTexCoordV){
 			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinear);
+			
+		}else if(clampTexCoordU){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampULinear);
+			
+		}else if(clampTexCoordV){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVLinear);
 			
 		}else{
 			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinear);
@@ -452,16 +465,28 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglArra
 	
 	// determine sampler to use
 	if(useTexture && useTexture->GetMipMapped()){
-		if(skinTexture.GetTexCoordClamp()){
+		if(skinTexture.GetTexCoordClampU() && skinTexture.GetTexCoordClampV()){
 			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinearMipMap);
+			
+		}else if(skinTexture.GetTexCoordClampU()){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampULinearMipMap);
+			
+		}else if(skinTexture.GetTexCoordClampV()){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVLinearMipMap);
 			
 		}else{
 			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinearMipMap);
 		}
 		
 	}else{
-		if(skinTexture.GetTexCoordClamp()){
+		if(skinTexture.GetTexCoordClampU() && skinTexture.GetTexCoordClampV()){
 			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinear);
+			
+		}else if(skinTexture.GetTexCoordClampU()){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampULinear);
+			
+		}else if(skinTexture.GetTexCoordClampV()){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVLinear);
 			
 		}else{
 			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinear);

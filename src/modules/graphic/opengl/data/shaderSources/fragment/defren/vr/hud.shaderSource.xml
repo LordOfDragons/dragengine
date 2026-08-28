@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F VR Hud</name>
+	<stage>fragment</stage>
+	<source>hud.frag.glsl</source>
+	
+	<output name='outColor' location='0'/>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+</shaderSource>

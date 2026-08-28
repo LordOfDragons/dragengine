@@ -194,7 +194,7 @@ pPipelines(*this)
 	pShadowImportance = 10;
 	pHintNoCompression = false;
 	pHintLightBlocker = false;
-	pTexCoordClamp = false;
+	pTexCoordClampU = pTexCoordClampV = false;
 	pTexCoordOffset.Set(0.0f, 0.0f);
 	pTexCoordScale.Set(1.0f, 1.0f);
 	pTexCoordRotate = 0.0f;
@@ -747,8 +747,12 @@ void deoglSkinTexture::SetHintLightBlocker(bool hintLightBlocker){
 
 
 
-void deoglSkinTexture::SetTexCoordClamp(bool clamp){
-	pTexCoordClamp = clamp;
+void deoglSkinTexture::SetTexCoordClampU(bool clamp){
+	pTexCoordClampU = clamp;
+}
+
+void deoglSkinTexture::SetTexCoordClampV(bool clamp){
+	pTexCoordClampV = clamp;
 }
 
 void deoglSkinTexture::SetTexCoordOffset(const decVector2 &offset){
@@ -1687,7 +1691,7 @@ void deoglSkinTexture::pProcessProperty(deoglRSkin &skin, deSkinProperty &proper
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordClamp:
-			pTexCoordClamp = value > 0.5f;
+			pTexCoordClampU = pTexCoordClampV = value > 0.5f;
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordOffset:
@@ -1866,6 +1870,11 @@ void deoglSkinTexture::pProcessProperty(deoglRSkin &skin, deSkinProperty &proper
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomEmissivityTint:
 			pEnvironmentRoomEmissivityTint = color;
+			break;
+			
+		case deoglSkinPropertyMap::eptTexCoordClamp:
+			pTexCoordClampU = color.r > 0.5f;
+			pTexCoordClampV = color.g > 0.5f;
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordOffset:

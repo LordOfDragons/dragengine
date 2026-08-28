@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module>
+	<name>AVIF-3D</name>
+	<description>Handles images saved in the AVIF-3D format (lossless and lossy compression).
+	AVIF-3D files are actually a tarball with AVIF images one for each z coordinate in the 3D-image.
+	Files inside the tarball are named zX.avif where X is the z coordinate without leading 0s.</description>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
+	<version>VERSION</version>
+	<type>Image</type>
+	<pattern>.avif3d</pattern>
+	<noCompress/>
+	<priority>1</priority>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>AVIF3DCreateModule</entrypoint>
+	</library>
+</module>

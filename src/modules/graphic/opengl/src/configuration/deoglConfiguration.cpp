@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglConfiguration.h"
 
 #include <dragengine/dragengine_configuration.h>
@@ -148,6 +144,8 @@ pEnableHDRMonitor(true),
 
 pVRRenderScale(1.0f),
 pVRForceFrameRate(0),
+pVRHudFov(50.0f),
+pVRHudCurvature(0.0f),
 
 pRenderDocMode(false)
 {
@@ -959,5 +957,25 @@ void deoglConfiguration::SetVRForceFrameRate(int framerate){
 	}
 	
 	pVRForceFrameRate = framerate;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVRHudFov(float fov){
+	fov = decMath::clamp(fov, 30.0f, 90.0f);
+	if(fabsf(fov - pVRHudFov) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pVRHudFov = fov;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVRHudCurvature(float curvature){
+	curvature = decMath::clamp(curvature, 0.0f, 1.0f);
+	if(fabsf(curvature - pVRHudCurvature) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pVRHudCurvature = curvature;
 	pDirty = true;
 }

@@ -73,7 +73,7 @@ void deoglHTSCluster::WorldComputeElement::UpdateDataGeometries(sDataElementGeom
 	const deoglHTSCluster &htcluster = sector.GetClusters()[pCluster.GetIndex()];
 	const bool valid = sector.GetValid() && sector.GetValidTextures();
 	const int count = pCluster.GetHTSector()->GetTextureCount();
-	const deoglVAO * const vao = htcluster.GetVAO();
+	const auto &vao = htcluster.GetVAO();
 	const deoglHTViewSectorCluster &htvscluster = *clhtscluster.GetCluster();
 	int i, j;
 	
@@ -152,16 +152,9 @@ pWorldComputeElement(WorldComputeElement::Ref::New(*this))
 	pOffsetVBODataFaces = 0;
 	pVBODataFaces = 0;
 	pDataPointCount = 0;
+}
 	
-	pVAO = nullptr;
-}
-
-deoglHTSCluster::~deoglHTSCluster(){
-	if(pVAO){
-		delete pVAO;
-	}
-}
-
+deoglHTSCluster::~deoglHTSCluster() = default;
 
 
 // Management
@@ -419,7 +412,7 @@ void deoglHTSCluster::UpdateVAO(){
 	
 	if(pVBODataPoints1 && pVBODataPoints2 && pVBODataFaces){
 		if(!pVAO){
-			pVAO = new deoglVAO(renderThread);
+			pVAO = deTUniqueReference<deoglVAO>::New(renderThread);
 			
 			pVAO->SetIndexType(deoglVBOLayout::eitUnsignedShort);
 			OGL_CHECK(renderThread, pglBindVertexArray(pVAO->GetVAO()));
@@ -449,10 +442,7 @@ void deoglHTSCluster::UpdateVAO(){
 		}
 		
 	}else{
-		if(pVAO){
-			delete pVAO;
-			pVAO = nullptr;
-		}
+		pVAO.Clear();
 	}
 }
 

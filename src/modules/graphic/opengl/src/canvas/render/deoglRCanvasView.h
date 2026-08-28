@@ -46,7 +46,7 @@ private:
 	decTObjectList<deoglRCanvas> pChildren;
 	unsigned int pPaintTracker;
 	deoglRenderTarget::Ref pRenderTarget;
-	bool pResizeRenderTarget;
+	bool pResizeRenderTarget, pRetainFBO;
 	
 	
 	
@@ -70,6 +70,9 @@ public:
 	/** Remove all children. */
 	void RemoveAllChildren();
 	
+	/** Has children. */
+	bool HasChildren() const;
+	
 	/** Has no children. */
 	bool HasNoChildren() const;
 	
@@ -86,6 +89,12 @@ public:
 	
 	/** Render target has to be resized. */
 	void SetResizeRenderTarget();
+	
+	/** Retain FBO after rendering. */
+	inline bool GetRetainFBO() const{ return pRetainFBO; }
+	
+	/** Set retain FBO after rendering. */
+	void SetRetainFBO(bool retain);
 	
 	/**
 	 * Prepare render target. If not existing the render target is created. If dirty the render

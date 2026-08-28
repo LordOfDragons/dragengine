@@ -99,6 +99,15 @@ int deBaseVRModule::GetEyeViewImages(eEye, int count, void*){
 	}
 }
 
+int deBaseVRModule::GetEyeDepthImages(eEye, int count, void*){
+	if(count == 0){
+		return 0;
+		
+	}else{
+		DETHROW_INFO(deeInvalidParam, "count > 0");
+	}
+}
+
 void deBaseVRModule::GetEyeViewRenderTexCoords(eEye, decVector2& tcFrom, decVector2& tcTo){
 	tcFrom.Set(0.0f, 0.0f);
 	tcTo.Set(1.0f, 1.0f);
@@ -111,6 +120,13 @@ int deBaseVRModule::AcquireEyeViewImage(eEye){
 void deBaseVRModule::ReleaseEyeViewImage(eEye){
 }
 
-bool deBaseVRModule::GetButtonNear(int device, int button){
+int deBaseVRModule::AcquireEyeDepthImage(eEye){
+	return -1;
+}
+
+void deBaseVRModule::ReleaseEyeDepthImage(eEye, float, float){
+}
+
+bool deBaseVRModule::GetButtonNear(int, int){
 	return false;
 }

@@ -884,6 +884,7 @@ void deoglRRenderWindow::Render(){
 	context.SetHdrReferenceNits(pHdrReferenceNits);
 	pRenderThread.GetRenderers().GetCanvas().Prepare(context);
 	
+	pRenderThread.GetRenderers().GetCanvas().GetPipelineClearBuffers()->Activate();
 	const GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 	OGL_CHECK(pRenderThread, pglClearBufferfv(GL_COLOR, 0, clearColor));
 	

@@ -1,0 +1,45 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 18efc49..a435aa4 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -173,11 +173,13 @@ endif()
+ add_library( ${ly_lib_static} STATIC ${ly_lib_parts})
+ 
+ # this creates the shared library (.so)
+-add_library( ${ly_lib_shared} SHARED ${ly_lib_parts})
+-set_target_properties( ${ly_lib_shared} PROPERTIES OUTPUT_NAME "${ly_lib_name}" )
+-set_target_properties( ${ly_lib_shared} PROPERTIES PREFIX "lib" )
+-if(WIN32)
+-  set_target_properties( ${ly_lib_shared} PROPERTIES IMPORT_PREFIX "lib" )
++if(BUILD_SHARED_LIBS)
++  add_library( ${ly_lib_shared} SHARED ${ly_lib_parts})
++  set_target_properties( ${ly_lib_shared} PROPERTIES OUTPUT_NAME "${ly_lib_name}" )
++  set_target_properties( ${ly_lib_shared} PROPERTIES PREFIX "lib" )
++  if(WIN32)
++    set_target_properties( ${ly_lib_shared} PROPERTIES IMPORT_PREFIX "lib" )
++  endif()
+ endif()
+ 
+ # this creates the cpuid tool
+@@ -195,7 +197,9 @@ endif()
+ find_package ( JPEG )
+ if (JPEG_FOUND)
+   include_directories( ${JPEG_INCLUDE_DIR} )
+-  target_link_libraries( ${ly_lib_shared} ${JPEG_LIBRARY} )
++  if(BUILD_SHARED_LIBS)
++    target_link_libraries( ${ly_lib_shared} ${JPEG_LIBRARY} )
++  endif()
+   add_definitions( -DHAVE_JPEG )
+ endif()
+ 
+@@ -244,7 +248,9 @@ endif()
+ # install the conversion tool, .so, .a, and all the header files
+ #install ( TARGETS yuvconvert DESTINATION bin )
+ install ( TARGETS ${ly_lib_static}						DESTINATION lib )
+-install ( TARGETS ${ly_lib_shared} LIBRARY DESTINATION lib RUNTIME DESTINATION bin ARCHIVE DESTINATION lib )
++if(BUILD_SHARED_LIBS)
++  install ( TARGETS ${ly_lib_shared} LIBRARY DESTINATION lib RUNTIME DESTINATION bin ARCHIVE DESTINATION lib )
++endif()
+ install ( DIRECTORY ${PROJECT_SOURCE_DIR}/include/		DESTINATION include )
+ 
+ # create the .deb and .rpm packages using cpack

@@ -26,12 +26,13 @@
 #define _DEOGLRRENDERTARGET_H_
 
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
-class deoglTexture;
 
 
 /**
@@ -49,17 +50,23 @@ private:
 	float pAspectRatio;
 	int pBitCount, pComponentCount;
 	float pFloatTexture;
+	bool pWithDepth;
 	
 	bool pDirtyTexture;
 	
-	deoglTexture *pTexture;
+	deTUniqueReference<deoglTexture> pTexture, pDepthTexture;
 	deoglFramebuffer::Ref pFBO;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render render target. */
-	deoglRenderTarget(deoglRenderThread &renderThread, const decPoint &size, int componentCount, int bitCount);
+	deoglRenderTarget(deoglRenderThread &renderThread, const decPoint &size,
+		int componentCount, int bitCount);
+	
+	/** Create render render target. */
+	deoglRenderTarget(deoglRenderThread &renderThread, const decPoint &size,
+		int componentCount, int bitCount, bool withDepth);
 	
 protected:
 	/** Clean up render render target. */
@@ -108,7 +115,8 @@ public:
 	void SetTextureDirty(bool dirty);
 	
 	// texture management
-	inline deoglTexture *GetTexture() const{ return pTexture; }
+	inline const deTUniqueReference<deoglTexture> &GetTexture() const{ return pTexture; }
+	inline const deTUniqueReference<deoglTexture> &GetDepthTexture() const{ return pDepthTexture; }
 	inline const decPoint &GetTextureSize() const{ return pTextureSize; }
 	/*@}*/
 };

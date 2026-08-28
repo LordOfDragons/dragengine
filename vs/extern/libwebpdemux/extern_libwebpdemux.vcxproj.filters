@@ -16,6 +16,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\extern\libwebp\SConscript" />
-    <None Include="build.ps1" />
   </ItemGroup>
 </Project>

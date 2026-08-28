@@ -41,7 +41,7 @@ globFiles(envModule, 'data', '*', data)
 
 libs = []
 appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
-appendLibrary(envModule, parent_targets['lib_openvr'], libs)
+appendLibrary(envModule, parent_targets['lib_openvr'], libs, internalModule=internalModule)
 
 install = []
 archive = {}

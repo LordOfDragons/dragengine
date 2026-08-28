@@ -550,7 +550,9 @@ class SimpleConversationConverter
 		
 		select mode
 		case SimpleConversationAction.SpecialMode.noCameraDelayWait,\
-			SimpleConversationAction.SpecialMode.noDelayWait
+			SimpleConversationAction.SpecialMode.noDelayWait,\
+			SimpleConversationAction.SpecialMode.noCameraNoDelayWait,\
+			SimpleConversationAction.SpecialMode.noWait
 				action.setWaitSpeakOnly(false)
 				action.setWaitForActor(false)
 		end
@@ -591,7 +593,8 @@ class SimpleConversationConverter
 			
 			select mode
 			case SimpleConversationAction.SpecialMode.noCamera,\
-				SimpleConversationAction.SpecialMode.noCameraNoDelay
+				SimpleConversationAction.SpecialMode.noCameraNoDelay,\
+				SimpleConversationAction.SpecialMode.noCameraNoDelayWait
 					id = null
 			end
 			
@@ -629,7 +632,8 @@ class SimpleConversationConverter
 		select mode
 		case SimpleConversationAction.SpecialMode.noSpeakDelay,\
 			SimpleConversationAction.SpecialMode.noDelay,\
-			SimpleConversationAction.SpecialMode.noCameraNoDelay
+			SimpleConversationAction.SpecialMode.noCameraNoDelay,\
+			SimpleConversationAction.SpecialMode.noCameraNoDelayWait
 				actorDelay = 0
 		end
 		
@@ -891,7 +895,9 @@ class SimpleConversationConverter
 		case SimpleConversationAction.SpecialMode.noDelay,\
 			SimpleConversationAction.SpecialMode.noDelayWait,\
 			SimpleConversationAction.SpecialMode.noCameraDelay,\
-			SimpleConversationAction.SpecialMode.noCameraDelayWait
+			SimpleConversationAction.SpecialMode.noCameraDelayWait,\
+			SimpleConversationAction.SpecialMode.noCameraNoDelay,\
+			SimpleConversationAction.SpecialMode.noCameraNoDelayWait
 				return state.pauseTime
 			
 		else

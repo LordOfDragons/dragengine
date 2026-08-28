@@ -2,7 +2,7 @@
 <module>
 	<name>OpenXR</name>
 	<description>OpenXR.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>VR</type>
 	<priority>2</priority>

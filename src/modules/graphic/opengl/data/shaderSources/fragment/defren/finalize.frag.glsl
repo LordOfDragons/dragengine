@@ -1,7 +1,7 @@
 #include "shared/preamble.glsl"
 
-precision lowp float;
-precision lowp int;
+precision mediump float;
+precision mediump int;
 
 UNIFORM_BIND(3) uniform vec4 pGamma; // red, green, blue
 UNIFORM_BIND(4) uniform vec4 pBrightness; // red, green, blue
@@ -9,6 +9,9 @@ UNIFORM_BIND(5) uniform vec4 pContrast; // red, green, blue
 UNIFORM_BIND(6) uniform vec2 pHdrNits; // x=maxNits, y=refWhiteNits
 
 layout(binding=0) uniform lowp sampler2DArray texColor;
+
+// WithDepth
+layout(binding=1) uniform HIGHP sampler2DArray texDepth;
 
 #include "shared/interface/2d/fragment.glsl"
 #include "shared/hdr_output.glsl"
@@ -48,5 +51,9 @@ void main(void){
 		
 	}else{
 		outColor1.a = clamp(outColor1.a, 0.0, 1.0);
+	}
+	
+	if(WithDepth){
+		gl_FragDepth = texture(texDepth, vec3(vTexCoord, vLayer)).r;
 	}
 }

@@ -105,6 +105,8 @@
 #include "parameters/shadow/deoglPShadowMapOffsetScale.h"
 #include "parameters/vr/deoglPVRRenderScale.h"
 #include "parameters/vr/deoglPVRForceFrameRate.h"
+#include "parameters/vr/deoglPVRHudFov.h"
+#include "parameters/vr/deoglPVRHudCurvature.h"
 
 #include "particle/deoglParticleEmitter.h"
 #include "particle/deoglParticleEmitterInstance.h"
@@ -303,6 +305,9 @@ void deGraphicOpenGl::CleanUp(){
 void deGraphicOpenGl::InputOverlayCanvasChanged(){
 }
 
+void deGraphicOpenGl::VRHudOverlayCanvasChanged(){
+}
+
 #ifdef WITH_OPENGLES
 /** Application window has been created. */
 void deGraphicOpenGl::InitAppWindow(){
@@ -389,14 +394,6 @@ void deGraphicOpenGl::RenderWindows(){
 	// synchronize VR
 	if(pVRCamera){
 		pVRCamera->SyncToRender();
-	}
-	
-	// synchronize overlay canvas view if present
-	deCanvasView * const inputOverlayCanvas = GetGameEngine()->GetGraphicSystem()->GetInputOverlayCanvas();
-	if(inputOverlayCanvas){
-		deoglCanvasView &oglCanvas = *((deoglCanvasView*)inputOverlayCanvas->GetPeerGraphic());
-		oglCanvas.SyncToRender();
-		pRenderThread->SetCanvasInputOverlay(oglCanvas.GetRCanvasView());
 	}
 	
 	pDebugOverlay.PrepareOverlay(*GetGameEngine()->GetGraphicSystem()->GetDebugOverlayCanvas());
@@ -790,6 +787,9 @@ void deGraphicOpenGl::pCreateParameters() {
 	
 	pParameters.Add(deTUniqueReference<deoglPVRRenderScale>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPVRForceFrameRate>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPVRHudFov>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPVRHudCurvature>::New(*this));
+	
 	pParameters.Add(deTUniqueReference<deoglPEnableHDRMonitor>::New(*this));
 	
 #if defined WITH_DEBUG || defined WITH_DEBUG_CONTEXT

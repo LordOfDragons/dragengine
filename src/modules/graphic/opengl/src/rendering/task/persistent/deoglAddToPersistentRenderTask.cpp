@@ -245,7 +245,7 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 	}
 	
 	// obtain render task vao and add faces
-	deoglVAO * const vao = component.GetVAO(lodLevel);
+	const auto &vao = component.GetVAO(lodLevel);
 	if(!vao){
 		return;
 	}

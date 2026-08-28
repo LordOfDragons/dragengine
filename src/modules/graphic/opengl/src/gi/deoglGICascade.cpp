@@ -262,7 +262,7 @@ void deoglGICascade::TouchDynamicArea(const decDVector &minExtend, const decDVec
 	}
 }
 
-void deoglGICascade::ValidatedRayCaches(){
+void deoglGICascade::ValidateRayCaches(){
 	pRayCacheProbes.Visit([&](uint16_t &index){
 		pProbes[index].flags |= epfRayCacheValid;
 	});

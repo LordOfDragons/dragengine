@@ -510,7 +510,8 @@ void deoglRenderLightSpot::CalculateBoxBoundary(deoglRenderPlanLight &planLight)
 
 
 
-void deoglRenderLightSpot::RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask){
+void deoglRenderLightSpot::RenderLights(deoglRenderPlan &plan, bool solid,
+const deoglRenderPlanMasked *mask, bool xray){
 	const deoglDebugTraceGroup debugTrace(GetRenderThread(), "LightSpot.RenderLights");
 	const int count = plan.GetLightCount();
 	int i;
@@ -523,7 +524,7 @@ void deoglRenderLightSpot::RenderLights(deoglRenderPlan &plan, bool solid, const
 		switch(light.GetLight()->GetLight()->GetLightType()){
 		case deLight::eltSpot:
 		case deLight::eltProjector:
-			RenderLight(light, solid, mask);
+			RenderLight(light, solid, mask, xray);
 			break;
 			
 		default:
@@ -541,7 +542,7 @@ void deoglRenderLightSpot::RenderLights(deoglRenderPlan &plan, bool solid, const
 
 
 void deoglRenderLightSpot::RenderLight(deoglRenderPlanLight &planLight, bool solid,
-const deoglRenderPlanMasked *mask){
+const deoglRenderPlanMasked *mask, bool xray){
 	// determine what needs to be rendered
 	deoglCollideListLight &cllight = *planLight.GetLight();
 	if(!cllight.GetCulled() && cllight.IsHiddenByOccQuery()){
@@ -550,7 +551,7 @@ const deoglRenderPlanMasked *mask){
 	
 	const bool lightGeometry = !cllight.GetCulled();
 	deoglRenderPlan &plan = planLight.GetPlan();
-	deoglGIState * const giState = !mask && solid ? plan.GetUpdateGIState() : nullptr;
+	deoglGIState * const giState = !mask && solid && !xray ? plan.GetUpdateGIState() : nullptr;
 	
 	if(!lightGeometry && !giState){
 		return;

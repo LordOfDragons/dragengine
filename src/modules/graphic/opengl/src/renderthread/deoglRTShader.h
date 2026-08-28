@@ -47,27 +47,43 @@ public:
 	enum eTextureSamplerConfigurations{
 		/** Clamp to edge with nearest filtering without mip mapping. */
 		etscClampNearest,
+		etscClampUNearest,
+		etscClampVNearest,
 		
 		/** Clamp to edge with linear filtering without mip mapping. */
 		etscClampLinear,
+		etscClampULinear,
+		etscClampVLinear,
 		
 		/** Clamp to edge with nearest filtering with mip mapping. */
 		etscClampNearestMipMap,
+		etscClampUNearestMipMap,
+		etscClampVNearestMipMap,
 		
 		/** Clamp to edge with linear filtering with mip mapping. */
 		etscClampLinearMipMap,
+		etscClampULinearMipMap,
+		etscClampVLinearMipMap,
 		
 		/** Clamp to edge with linear filtering with nearest mip mapping. */
 		etscClampLinearMipMapNearest,
+		etscClampULinearMipMapNearest,
+		etscClampVLinearMipMapNearest,
 		
 		/** Repeating with nearest filtering without mip mapping. */
 		etscRepeatNearest,
+		
+		/** Repeating with nearest filtering with mip mapping. */
+		etscRepeatNearestMipMap,
 		
 		/** Repeating with linear filtering without mip mapping. */
 		etscRepeatLinear,
 		
 		/** Repeating with linear filtering with mip mapping. */
 		etscRepeatLinearMipMap,
+		
+		/** Repeating with linear filtering with nearest mip mapping. */
+		etscRepeatLinearMipMapNearest,
 		
 		/** Clamped shadow testing with nearest filtering. */
 		etscShadowClampNearest,

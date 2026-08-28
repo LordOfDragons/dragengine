@@ -133,7 +133,7 @@ deoglRenderBase(renderThread)
 	sources = shaderManager.GetSourcesNamed("DefRen Copy Depth");
 	
 	defines = commonDefines;
-	defines.SetDefines("COPY_COLOR");
+	defines.SetDefines("COPY_COLOR", "INPUT_ARRAY_TEXTURES");
 	defines.SetDefine("DEPTH_TEST", deoglSkinShaderConfig::edtmSmaller);
 	if(useInverseDepth){
 		defines.SetDefine("SHADOW_INVERSE_DEPTH", true);
@@ -160,6 +160,7 @@ deoglRenderBase(renderThread)
 	sources = shaderManager.GetSourcesNamed("DefRen Copy Depth");
 	
 	defines = commonDefines;
+	defines.SetDefines("INPUT_ARRAY_TEXTURES");
 	defines.SetDefine("DEPTH_TEST", deoglSkinShaderConfig::edtmSmaller);
 	if(!useInverseDepth){
 		defines.SetDefine("SHADOW_INVERSE_DEPTH", true);
@@ -571,6 +572,8 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.SetNoNotReflected(plan.GetNoReflections());
 	addToRenderTask.SetSkinPipelineType(deoglSkinTexturePipelines::etGeometry);
 	addToRenderTask.SetSkinPipelineModifier(pipelineModifier);
+	addToRenderTask.SetFilterXRay(true);
+	addToRenderTask.SetXRay(xray);
 	
 	addToRenderTask.AddComponents(collideList);
 	addToRenderTask.AddBillboards(collideList);
@@ -604,6 +607,8 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.SetNoRendered(true);
 	addToRenderTask.SetSkinPipelineType(deoglSkinTexturePipelines::etGeometry);
 	addToRenderTask.SetSkinPipelineModifier(pipelineModifier);
+	addToRenderTask.SetFilterXRay(true);
+	addToRenderTask.SetXRay(xray);
 	
 	addToRenderTask.AddComponents(collideList);
 	

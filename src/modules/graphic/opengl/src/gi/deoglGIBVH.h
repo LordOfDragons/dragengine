@@ -116,8 +116,9 @@ class deoglTexUnitsConfig;
  *   - roughness.gamma:         8         => 8
  *   - reflectivity.multiplier: 8         => 8
  *   - ignore:                  1         => 1
- *   - texCoord.clamp:          1         => 1
+ *   - texCoord.clamp:          2         => 2
  *   - has solidity:            1         => 1
+ *   - shadow none:             1         => 1
  *   
  *   also store the index of the material in the material texture atlas as 16 bits value.
  *   14 bits allows for a maximum of 16383 materials. this equals a 128x128 atlas size or

@@ -20,8 +20,8 @@ externLibPng = 'lib_libapng' if internalModule else 'lib_libpng'
 
 libs = []
 appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
-appendLibrary(envModule, parent_targets['lib_freetype'], libs)
-appendLibrary(envModule, parent_targets[externLibPng], libs)
+appendLibrary(envModule, parent_targets['lib_freetype'], libs, internalModule=internalModule)
+appendLibrary(envModule, parent_targets[externLibPng], libs, internalModule=internalModule)
 
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])

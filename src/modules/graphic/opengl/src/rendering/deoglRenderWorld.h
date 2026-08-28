@@ -56,6 +56,7 @@ private:
 	const deoglPipeline *pPipelineFinalizeBlend;
 	const deoglPipeline *pPipelineFinalizeBlendStereo;
 	const deoglPipeline *pPipelineFinalizeSplit;
+	const deoglPipeline *pPipelineFinalizeDepth;
 	
 	deoglRenderWorldInfo pDebugInfo;
 	

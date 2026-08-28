@@ -2,7 +2,7 @@
 <module>
 	<name>WebP</name>
 	<description>Handles images saved in the WebP format.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Image</type>
 	<pattern>.webp</pattern>

@@ -452,6 +452,8 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender(deoglRenderThread &renderT
 	spb->GetParameterAt(erutToneMapAdaption).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3
 	spb->GetParameterAt(erutToneMapBloom).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec2
 	
+	spb->GetParameterAt(erutVRParams).SetAll(deoglSPBParameter::evtFloat, 4, 1, 1); // vec4
+	
 	spb->GetParameterAt(erutDebugDepthTransform).SetAll(deoglSPBParameter::evtFloat, 2, 1, 1); // vec2
 	
 	spb->GetParameterAt(erutConditions1).SetAll(deoglSPBParameter::evtBool, 4, 1, 1); // bvec4

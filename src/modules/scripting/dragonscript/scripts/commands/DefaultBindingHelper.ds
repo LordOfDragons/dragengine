@@ -1009,11 +1009,29 @@ class DefaultBindingHelper
 	 * \param stick Number of stick of given type.
 	 * \param horizontal Name of command to bind to horizontal movement or null.
 	 * \param vertical Name of command to bind to vertical movement or null.
+	 * \param inverse True to invert both axes.
 	 * \returns true if device is present and all commands have been bound.
 	 */
 	func bool bindStick(InputDevice device, InputDeviceAxisType type,\
 	int stick , String horizontal, String vertical, bool inverse)
 		return bindStick(device, type, stick, horizontal, horizontal, vertical, vertical, inverse)
+	end
+	
+	/**
+	 * \brief Bind command to joystick.
+	 * \version 1.34
+	 * \param type Type of stick
+	 * \param stick Number of stick of given type.
+	 * \param horizontal Name of command to bind to horizontal movement or null.
+	 * \param vertical Name of command to bind to vertical movement or null.
+	 * \param inverseHorizontal True to invert horizontal axis.
+	 * \param inverseVertical True to invert vertical axis.
+	 * \returns true if device is present and all commands have been bound.
+	 */
+	func bool bindStick(InputDevice device, InputDeviceAxisType type, int stick,\
+	String horizontal, String vertical, bool inverseHorizontal, bool inverseVertical)
+		return bindStick(device, type, stick, horizontal, horizontal,\
+			vertical, vertical, inverseHorizontal, inverseVertical)
 	end
 	
 	/**
@@ -1025,10 +1043,29 @@ class DefaultBindingHelper
 	 * \param right Name of command to bind to right movement or null.
 	 * \param up Name of command to bind to up movement or null.
 	 * \param down Name of command to bind to down movement or null.
+	 * \param inverse True to invert both axes.
 	 * \returns true if device is present and all commands have been bound.
 	 */
 	func bool bindStick(InputDevice device, InputDeviceAxisType type, int stick,\
 	String left, String right, String up, String down, bool inverse)
+		return bindStick(device, type, stick, left, right, up, down, inverse, inverse)
+	end
+	
+	/**
+	 * \brief Bind command to joystick.
+	 * \version 1.34
+	 * \param type Type of stick.
+	 * \param stick Number of stick of given type.
+	 * \param left Name of command to bind to left movement or null.
+	 * \param right Name of command to bind to right movement or null.
+	 * \param up Name of command to bind to up movement or null.
+	 * \param down Name of command to bind to down movement or null.
+	 * \param inverseHorizonal True to invert horizontal axis.
+	 * \param inverseVertical True to invert vertical axis.
+	 * \returns true if device is present and all commands have been bound.
+	 */
+	func bool bindStick(InputDevice device, InputDeviceAxisType type, int stick, String left,\
+	String right, String up, String down, bool inverseHorizontal, bool inverseVertical)
 		if stick < 0
 			throw EInvalidParam.new("stick < 0")
 		end
@@ -1053,7 +1090,7 @@ class DefaultBindingHelper
 				if right != null
 					var Command command = pCommandManager.getNamed(right)
 					if command != null
-						addAxisBinding(Binding.new(device.getID(), axis.getID(), command, inverse))
+						addAxisBinding(Binding.new(device.getID(), axis.getID(), command, inverseHorizontal))
 						if right.equals(left)
 							left = null
 						end
@@ -1063,7 +1100,7 @@ class DefaultBindingHelper
 				if left != null
 					var Command command = pCommandManager.getNamed(left)
 					if command != null
-						addAxisBinding(Binding.new(device.getID(), axis.getID(), command, not inverse))
+						addAxisBinding(Binding.new(device.getID(), axis.getID(), command, not inverseHorizontal))
 						left = null  // mark as found
 					end
 				end
@@ -1072,7 +1109,7 @@ class DefaultBindingHelper
 				if up != null
 					var Command command = pCommandManager.getNamed(up)
 					if command != null
-						addAxisBinding(Binding.new(device.getID(), axis.getID(), command, inverse))
+						addAxisBinding(Binding.new(device.getID(), axis.getID(), command, inverseVertical))
 						if up.equals(down)
 							down = null
 						end
@@ -1082,7 +1119,7 @@ class DefaultBindingHelper
 				if down != null
 					var Command command = pCommandManager.getNamed(down)
 					if command != null
-						addAxisBinding(Binding.new(device.getID(), axis.getID(), command, not inverse))
+						addAxisBinding(Binding.new(device.getID(), axis.getID(), command, not inverseVertical))
 						down = null  // mark as found
 					end
 				end

@@ -69,7 +69,6 @@ pBVH(nullptr)
 	pComponent = component;
 	
 	pVBO = 0;
-	pVAO = nullptr;
 	
 	pDirtyOccMesh = true;
 	pDirtyVBO = true;
@@ -94,10 +93,7 @@ deoglVAO *deoglDynamicOcclusionMesh::GetVAO() const{
 }
 
 void deoglDynamicOcclusionMesh::InvalidateVAO(){
-	if(pVAO){
-		delete pVAO;
-		pVAO = nullptr;
-	}
+	pVAO.Clear();
 }
 
 
@@ -189,9 +185,7 @@ void deoglDynamicOcclusionMesh::PrepareBVH(){
 //////////////////////
 
 void deoglDynamicOcclusionMesh::pCleanUp(){
-	if(pVAO){
-		delete pVAO;
-	}
+	pVAO.Clear();
 	
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
 	dops.DeleteOpenGLBuffer(pVBO);
@@ -396,7 +390,7 @@ void deoglDynamicOcclusionMesh::pUpdateVAO(){
 	const deoglSharedVBOBlock &vboBlock = *pOcclusionMesh->GetVBOBlock();
 	deoglVBOLayout &vboLayout = vboBlock.GetVBO()->GetParentList()->GetLayout();
 	
-	pVAO = new deoglVAO(pRenderThread);
+	pVAO = deTUniqueReference<deoglVAO>::New(pRenderThread);
 	pVAO->SetIndexType(vboLayout.GetIndexType());
 	OGL_CHECK(pRenderThread, pglBindVertexArray(pVAO->GetVAO()));
 	

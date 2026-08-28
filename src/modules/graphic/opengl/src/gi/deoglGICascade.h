@@ -249,7 +249,7 @@ public:
 	void TouchDynamicArea(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** Validate ray caches marked for update. */
-	void ValidatedRayCaches();
+	void ValidateRayCaches();
 	
 	/** Invalidate all ray caches. */
 	void InvalidateAllRayCaches();

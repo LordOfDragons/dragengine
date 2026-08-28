@@ -1,0 +1,165 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'libyuv-main'
+
+libLinkName = 'yuv'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}.dll'.format(libLinkName)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}{}'.format(libLinkName, envLibrary['SHLIBSUFFIX']))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}{}'.format(libLinkName, envLibrary['LIBSUFFIX']))
+
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libyuv', 'lib_libyuv_fetch')
+
+# check if system libyuv is present
+hasSystemYuv = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_libyuv'] != TernaryVariableNo:
+	hasSystemYuv = conf.CheckLibWithHeader(libLinkName,
+		'libyuv.h', 'c', call='I420ToARGB(0,0,0,0,0,0,0,0,0,0);')
+conf.Finish()
+
+if not hasSystemYuv and envLibrary['with_system_libyuv'] == TernaryVariableYes:
+	Exit('Requested to use system libyuv but no usable libyuv found.')
+
+libs = [libLinkName]
+libs.extend(parent_targets['lib_libjpeg']['libs'])
+
+parent_report['use system libyuv'] = 'yes' if hasSystemYuv else 'no'
+
+if hasSystemYuv:
+	parent_targets['lib_libyuv'] = {
+		'name' : 'Internal libyuv library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build libyuv
+def libyuvBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	deps = []
+	deps.append(parent_targets['lib_libjpeg']['depends'])
+	
+	script = createScriptHeader(env, deps=deps)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	# Create build directory
+	script.append('mkdir -p build_dir || exit 1')
+	script.append('cd build_dir || exit 1')
+	
+	cmdline = []
+	if env['platform_webwasm']:
+		cmdline.extend(['emcmake', 'cmake'])
+	else:
+		cmdline.append('cmake')
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}" ..'.format(buildDir.abspath))
+	cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	cmdline.append('-DBUILD_SHARED_LIBS=' + ('OFF' if buildStaticLinking else 'ON'))
+	cmdline.append('-DJPEG_INCLUDE_DIR="{}"'.format(';'.join([
+		x if isinstance(x, str) else x.abspath
+			for x in parent_targets['lib_libjpeg']['cpppath']])))
+	cmdline.append('-DJPEG_LIBRARY_RELEASE="{}"'.format(';'.join([
+		x if isinstance(x, str) else x.abspath
+			for x in parent_targets['lib_libjpeg']['libs']])))
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME=Linux')
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building libyuv')
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+targets.extend([
+	'include/libyuv/basic_types.h',
+	'include/libyuv/compare.h',
+	'include/libyuv/compare_row.h',
+	'include/libyuv/convert.h',
+	'include/libyuv/convert_argb.h',
+	'include/libyuv/convert_from.h',
+	'include/libyuv/convert_from_argb.h',
+	'include/libyuv/cpu_id.h',
+	'include/libyuv/cpu_support.h',
+	'include/libyuv/loongson_intrinsics.h',
+	'include/libyuv/mjpeg_decoder.h',
+	'include/libyuv/planar_functions.h',
+	'include/libyuv/rotate.h',
+	'include/libyuv/rotate_argb.h',
+	'include/libyuv/rotate_row.h',
+	'include/libyuv/row.h',
+	'include/libyuv/row_sve.h',
+	'include/libyuv/scale.h',
+	'include/libyuv/scale_argb.h',
+	'include/libyuv/scale_rgb.h',
+	'include/libyuv/scale_row.h',
+	'include/libyuv/scale_uv.h',
+	'include/libyuv/version.h',
+	'include/libyuv/video_common.h',
+	'include/libyuv.h'])
+
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+library = envLibrary.Command(targets,
+	[nodeArtifacts, patches,
+		parent_targets['lib_libjpeg']['depends']],
+	envLibrary.Action(libyuvBuild, 'Build libyuv'))
+
+depends = parent_env.Alias('lib_libyuv', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'share', srcdir, 'build_dir'])
+
+cpppath = [envLibrary.Dir('include')]
+cpppath.extend(parent_targets['lib_libjpeg']['cpppath'])
+
+libpath = [envLibrary.Dir('lib')]
+libpath.extend(parent_targets['lib_libjpeg']['libpath'])
+
+if buildStaticLinking:
+	libs = library[0:1]
+	libs.extend(parent_targets['lib_libjpeg']['libs'])
+	runtimelibs = []
+else:
+	runtimelibs = library[0:1]
+runtimelibs.extend(parent_targets['lib_libjpeg']['runtimelibs'])
+
+parent_targets['lib_libyuv'] = {
+	'name' : 'Internal libyuv library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

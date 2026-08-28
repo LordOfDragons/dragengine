@@ -46,7 +46,8 @@ pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 	try{
 		XrSwapchainCreateInfo createInfo{XR_TYPE_SWAPCHAIN_CREATE_INFO};
 		createInfo.createFlags = 0;
-		createInfo.usageFlags = XR_SWAPCHAIN_USAGE_TRANSFER_DST_BIT;
+		createInfo.usageFlags = XR_SWAPCHAIN_USAGE_TRANSFER_DST_BIT
+			| XR_SWAPCHAIN_USAGE_SAMPLED_BIT;
 		createInfo.sampleCount = 1;
 		createInfo.width = size.x;
 		createInfo.height = size.y;
@@ -62,6 +63,8 @@ pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 		case deoxrSession::egaOpenGL:
 			switch(type){
 			case etColor:
+				createInfo.usageFlags |= XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT;
+				
 				for(i=0; !createInfo.format && i<formatCount; i++){
 					switch(formats[i]){
 #ifndef OS_ANDROID
@@ -113,6 +116,8 @@ pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 				break;
 				
 			case etDepth:
+				createInfo.usageFlags |= XR_SWAPCHAIN_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+				
 				for(i=0; !createInfo.format && i<formatCount; i++){
 					switch(formats[i]){
 					case deoxrSession::escfGlDepth16:

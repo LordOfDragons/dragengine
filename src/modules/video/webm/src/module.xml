@@ -2,7 +2,7 @@
 <module>
 	<name>WebM</name>
 	<description>Handles videos in the WebM format.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Video</type>
 	<pattern>.webm</pattern>

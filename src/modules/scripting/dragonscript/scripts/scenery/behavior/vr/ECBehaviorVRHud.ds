@@ -1,0 +1,367 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Behavior adding renderable HUD support to VR.
+ * \version 1.34
+ * 
+ * This behavior works similar to \ref ECBehaviorRenderablePanel but shows the content on the
+ * VR HUD canvas overlay instead of a dynamic skin. The VR HUD canvas overlay is a canvas displayed
+ * on top of the VR view using a user defined field of view. This avoids the developer guessing
+ * the best field of view to render the HUD content. This also ensures users can adjust the HUD
+ * field of view to their personal preferences easily.
+ * 
+ * The behavior allows other behaviors to add their content Widget to the Panel separating logic
+ * for reuse. This also allows to use the full power of the GUI ToolKit including using GuiThemes
+ * to create complex content easily.
+ * 
+ * The default layout for the Panel is \ref StackLayout. The default gui theme is
+ * "/shareddata/guithemes/modern/modern.degt". The default Panel designer selector is "VRHudPanel".
+ * 
+ * To use this behavior add it to the element class and set the designer selector and GuiTheme
+ * to use for the Panel. Now you can add other behaviors targeting the \ref ECBehaviorVRHud to
+ * add Widget resources to.
+ * 
+ * The Panel is created with a default size of 1024x1024 . You can change the size using the
+ * element property to fit the HUD size to your needs.
+ * 
+ * This behavior can be used only once.
+ * 
+ * If ECBehaviorPlayerControllable is present the HUD is activated while the actor is controlled
+ * by the player. If absent the HUD has to be activated manually. This is required since only one
+ * canvas can be the active VR Hud overlay canvas.
+ * 
+ * Element class properties have the prefix "vrHud.".
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhud
+ */
+class ECBehaviorVRHud extends DefaultECBehavior
+	/** \brief Create renderable panel content. */
+	interface ContentCreator
+		/** \brief Create content. */
+		func void createContent(Instance instance)
+	end
+	
+	/** \brief Factory creating renderable content using block. */
+	class BlockContentCreator implements ContentCreator
+		var Block pBlock
+		
+		/** \brief Create content using block receiving Instance as parameter. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create content. */
+		func void createContent(Instance instance)
+			pBlock.run(instance)
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorPlayerControllable
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRHud'>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
+	 */
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorVRHud")
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorVRHud behavior = ECBehaviorVRHud.new(eclass,\
+				getHelper().optionalPlayerControllable(eclass, parameters))
+			getHelper().setPropertiesFromParameters(eclass, parameters, "vrHud")
+			return behavior
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Watch player controllable behavior. */
+		class PlayerTakesControl extends ECBehaviorPlayerControllable.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void playerTakesControl(ECBehaviorPlayerControllable.Instance instance)
+				pInstance.activate()
+			end
+			
+			func void playerReleasesControl(ECBehaviorPlayerControllable.Instance instance)
+				pInstance.deactivate()
+			end
+		end
+		
+		
+		var ECBehaviorVRHud pECBehavior
+		var Panel pPanel
+		var bool pActive
+		
+		
+		/** \brief Create behavior instance. */
+		func new(ECBehaviorVRHud ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			deactivate()
+			if pPanel != null
+				pPanel.safeDispose()
+				pPanel = null
+			end
+			
+			super.dispose()
+		end
+		
+		
+		/** \brief Initialize behavior from stub. */
+		func void init(StubElement stub)
+			var ElementClass eclass = getElement().getClass()
+			var int size = pECBehavior.getSize().getValue(stub)
+			
+			pPanel = Panel.new(StackLayout.new(), block Panel p
+				p.setSize(Point.new(size, size))
+				p.setGuiTheme(pECBehavior.getGuiTheme().getGuiTheme(stub, eclass))
+				p.setDesignerSelector(pECBehavior.getDesignerSelector().getValue(stub))
+			end)
+			
+			pECBehavior.createContent(this)
+			
+			var ECBehaviorPlayerControllable playerControllable = pECBehavior.getPlayerControllable()
+			if playerControllable != null
+				playerControllable.instance(getElement()).addListener(PlayerTakesControl.new(this))
+			end
+		end
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorVRHud getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Panel to add widgets to. */
+		func Panel getPanel()
+			return pPanel
+		end
+		
+		
+		/** \brief HUD is active. */
+		func bool isActive()
+			return pActive
+		end
+		
+		/** \brief Activate HUD if not active. */
+		func void activate()
+			if pActive
+				return
+			end
+			
+			GraphicSystem.setVRHudOverlayCanvas(pPanel.getCanvasWidget())
+			pActive = true
+		end
+
+		/** \brief Deactivate HUD if active. */
+		func void deactivate()
+			if not pActive
+				return
+			end
+			
+			pActive = false
+			GraphicSystem.setVRHudOverlayCanvas(null)
+		end
+	end
+	
+	
+	var String pPrefix
+	var ECBehaviorPlayerControllable pPlayerControllable
+	var ECPInteger pSize
+	var ECPGuiTheme pGuiTheme
+	var ECPString pDesignerSelector
+	var Array pContentCreators
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * Player controllable is optional. If present the HUD is activated while the actor is
+	 * controlled by the player. If absent the HUD has to be activated manually.
+	 */
+	func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable)\
+	this(eclass, playerControllable, eclass.sharedFactoryHelper.defaultLoaders())
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable,\
+	Loaders loaders) this(eclass, playerControllable, loaders, "vrHud.")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable,\
+	Loaders loaders, String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
+		end
+		
+		pPrefix = prefix
+		pPlayerControllable = playerControllable
+		
+		pContentCreators = Array.new()
+		
+		pSize = ECPInteger.new(prefix + "size", 1024, 128)
+		eclass.addProperty(pSize)
+		
+		pGuiTheme = ECPGuiTheme.new(prefix + "guiTheme", loaders.getGuiTheme(),\
+			"/shareddata/guithemes/modern/modern.degt")
+		eclass.addProperty(pGuiTheme)
+		
+		pDesignerSelector = ECPString.new(prefix + "designerSelector", "VRHudPanel")
+		eclass.addProperty(pDesignerSelector)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pContentCreators = null
+		pPlayerControllable = null
+		super.dispose()
+	end
+	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/** \brief Player controllable behavior. */
+	func ECBehaviorPlayerControllable getPlayerControllable()
+		return pPlayerControllable
+	end
+	
+	/** \brief Size of canvas. */
+	func ECPInteger getSize()
+		return pSize
+	end
+	
+	/** \brief Gui Theme to use for Panel. */
+	func ECPGuiTheme getGuiTheme()
+		return pGuiTheme
+	end
+	
+	/** \brief Designer selector to use for Panel. */
+	func ECPString getDesignerSelector()
+		return pDesignerSelector
+	end
+	
+	
+	/** \brief Add content creator. */
+	func void addContentCreator(ContentCreator creator)
+		if creator == null
+			throw ENullPointer.new("creator")
+		end
+		pContentCreators.add(creator)
+	end
+	
+	/**
+	 * \brief Add content creator using block.
+	 * 
+	 * Block receives as parameter Instance.
+	 */
+	func void addContentCreator(Block blockCreator)
+		pContentCreators.add(BlockContentCreator.new(blockCreator))
+	end
+	
+	/** \brief Visit content creators with block with argument ContentCreator. */
+	func void forEachContentCreator(Block ablock)
+		pContentCreators.forEach(ablock)
+	end
+	
+	/** \brief Create content using creators. */
+	func void createContent(Instance instance)
+		pContentCreators.forEach(block ContentCreator each
+			each.createContent(instance)
+		end)
+	end
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular \ref BehaviorElementClass contains a behavior
+	 * of type \ref ECBehaviorVRHud.
+	 */
+	static func ECBehaviorVRHud getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHud each
+			return true
+		end) cast ECBehaviorVRHud
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular \ref BehaviorElement contains a behavior instance
+	 * of type \ref ECBehaviorVRHud.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

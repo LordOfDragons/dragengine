@@ -1,0 +1,140 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'svt-av1-2.1.0'
+
+libLinkName = 'SvtAv1Enc'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}.dll'.format(libLinkName)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}{}'.format(libLinkName, envLibrary['SHLIBSUFFIX']))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}{}'.format(libLinkName, envLibrary['LIBSUFFIX']))
+
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'svtav1', 'lib_svtav1_fetch')
+
+# check if system SVT-AV1 is present
+hasSystemSvtAv1 = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_svtav1'] != TernaryVariableNo:
+	hasSystemSvtAv1 = conf.CheckLibWithHeader(libLinkName, 'svt-av1/EbSvtAv1Enc.h', 'c++', call='svt_av1_enc_init(nullptr);')
+conf.Finish()
+
+if not hasSystemSvtAv1 and envLibrary['with_system_svtav1'] == TernaryVariableYes:
+	Exit('Requested to use system SVT-AV1 but no usable SVT-AV1 found.')
+
+libs = [libLinkName]
+
+parent_report['use system svt-av1'] = 'yes' if hasSystemSvtAv1 else 'no'
+
+if hasSystemSvtAv1:
+	parent_targets['lib_svtav1'] = {
+		'name' : 'Internal SVT-AV1 library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build SVT-AV1
+def svtAv1Build(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	# Create build directory
+	script.append('mkdir -p build || exit 1')
+	script.append('cd build || exit 1')
+	
+	cmdline = ['cmake .. -DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath)]
+	cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	cmdline.append('-DCMAKE_POLICY_VERSION_MINIMUM=3.5')
+	cmdline.append('-DBUILD_SHARED_LIBS=OFF')
+	cmdline.append('-DBUILD_TESTING=OFF')
+	cmdline.append('-DBUILD_APPS=OFF')
+	cmdline.append('-DBUILD_DEC=OFF')
+	cmdline.append('-DCMAKE_POLICY_DEFAULT_CMP0048=NEW')
+	
+	# Configure shared vs static
+	if not buildStaticLinking:
+		cmdline[-2] = '-DBUILD_SHARED_LIBS=ON'
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		# For cross-compilation, would need cross-compile toolchain file
+		pass
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	# fix libraries installed in strange location on 64-bit systems
+	script.append('if [ -f "{}" ]'.format(buildDir.File('lib64/libSvtAv1Enc.a').abspath))
+	script.append('then')
+	script.append('  cp -fL "{}" "{}"'.format(
+		buildDir.File('lib64/libSvtAv1Enc.a').abspath,
+		buildDir.File('lib/libSvtAv1Enc.a').abspath))
+	script.append('fi')
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building SVT-AV1')
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+targets.extend([
+	'include/svt-av1/EbDebugMacros.h',
+	'include/svt-av1/EbSvtAv1.h',
+	'include/svt-av1/EbSvtAv1Dec.h',
+	'include/svt-av1/EbSvtAv1Enc.h',
+	'include/svt-av1/EbSvtAv1ErrorCodes.h',
+	'include/svt-av1/EbSvtAv1ExtFrameBuf.h',
+	'include/svt-av1/EbSvtAv1Formats.h',
+	'include/svt-av1/EbSvtAv1Metadata.h'])
+
+# Depend on nothing (SVT-AV1 has no external dependencies)
+library = envLibrary.Command(targets,
+	nodeArtifacts,
+	envLibrary.Action(svtAv1Build, 'Build SVT-AV1'))
+
+depends = envLibrary.Alias('lib_svtav1', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'share', srcdir, 'build'])
+
+cpppath = [envLibrary.Dir('include')]
+
+libpath = [envLibrary.Dir('lib')]
+
+if buildStaticLinking:
+	libs = library[0:1]
+	runtimelibs = []
+else:
+	runtimelibs = library[0:1]
+	libs = [libLinkName]
+
+parent_targets['lib_svtav1'] = {
+	'name' : 'Internal SVT-AV1 library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

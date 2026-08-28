@@ -148,6 +148,7 @@ public:
 		erutToneMapSceneKey,
 		erutToneMapAdaption,
 		erutToneMapBloom,
+		erutVRParams,
 		erutDebugDepthTransform,
 		erutConditions1,
 		ERUT_COUNT

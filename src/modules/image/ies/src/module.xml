@@ -2,7 +2,7 @@
 <module>
 	<name>IES</name>
 	<description>Handles photometric IES files loading them as Equi-Rectangular 3D images.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Image</type>
 	<pattern>.ies</pattern>

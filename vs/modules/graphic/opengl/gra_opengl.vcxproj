@@ -670,6 +670,8 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOTapCount.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOTurnCount.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRForceFrameRate.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudCurvature.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudFov.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstance.cpp" />
@@ -1315,6 +1317,8 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOTapCount.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOTurnCount.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRForceFrameRate.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudCurvature.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudFov.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstance.h" />

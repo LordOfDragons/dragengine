@@ -29,7 +29,7 @@ else:
 
 # fetching is always allowed
 nodeArtifacts = envLibrary.DownloadArtifactHelper(
-	'{}.tar.bz2'.format(srcdir), 'soundtouch', 'lib_soundtouch_fetch')
+	'{}.tar.xz'.format(srcdir), 'soundtouch', 'lib_soundtouch_fetch')
 
 # check if system soundtouch is present
 hasSystemSoundTouch = False

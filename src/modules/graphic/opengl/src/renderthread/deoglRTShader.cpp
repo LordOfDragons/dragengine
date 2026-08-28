@@ -277,50 +277,122 @@ void deoglRTShader::pCreateTexSamplerConfigs(){
 	pTexSamplerConfigs[etscClampNearest]->SetWrapMode(GL_CLAMP_TO_EDGE);
 	pTexSamplerConfigs[etscClampNearest]->SetDepthCompareMode(false);
 	
+	pTexSamplerConfigs[etscClampUNearest] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampUNearest]->SetFilterMode(deoglTextureStageManager::etfNearest);
+	pTexSamplerConfigs[etscClampUNearest]->SetWrapMode(GL_CLAMP_TO_EDGE, GL_REPEAT, GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampUNearest]->SetDepthCompareMode(false);
+	
+	pTexSamplerConfigs[etscClampVNearest] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampVNearest]->SetFilterMode(deoglTextureStageManager::etfNearest);
+	pTexSamplerConfigs[etscClampVNearest]->SetWrapMode(GL_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampVNearest]->SetDepthCompareMode(false);
+	
+	
 	pTexSamplerConfigs[etscClampLinear] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscClampLinear]->SetFilterMode(deoglTextureStageManager::etfLinear);
 	pTexSamplerConfigs[etscClampLinear]->SetWrapMode(GL_CLAMP_TO_EDGE);
 	pTexSamplerConfigs[etscClampLinear]->SetDepthCompareMode(false);
+	
+	pTexSamplerConfigs[etscClampULinear] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampULinear]->SetFilterMode(deoglTextureStageManager::etfLinear);
+	pTexSamplerConfigs[etscClampULinear]->SetWrapMode(GL_CLAMP_TO_EDGE, GL_REPEAT, GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampULinear]->SetDepthCompareMode(false);
+	
+	pTexSamplerConfigs[etscClampVLinear] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampVLinear]->SetFilterMode(deoglTextureStageManager::etfLinear);
+	pTexSamplerConfigs[etscClampVLinear]->SetWrapMode(GL_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampVLinear]->SetDepthCompareMode(false);
+	
 	
 	pTexSamplerConfigs[etscClampNearestMipMap] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscClampNearestMipMap]->SetFilterMode(deoglTextureStageManager::etfNearestMipMap);
 	pTexSamplerConfigs[etscClampNearestMipMap]->SetWrapMode(GL_CLAMP_TO_EDGE);
 	pTexSamplerConfigs[etscClampNearestMipMap]->SetDepthCompareMode(false);
 	
+	pTexSamplerConfigs[etscClampUNearestMipMap] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampUNearestMipMap]->SetFilterMode(deoglTextureStageManager::etfNearestMipMap);
+	pTexSamplerConfigs[etscClampUNearestMipMap]->SetWrapMode(GL_CLAMP_TO_EDGE, GL_REPEAT, GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampUNearestMipMap]->SetDepthCompareMode(false);
+	
+	pTexSamplerConfigs[etscClampVNearestMipMap] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampVNearestMipMap]->SetFilterMode(deoglTextureStageManager::etfNearestMipMap);
+	pTexSamplerConfigs[etscClampVNearestMipMap]->SetWrapMode(GL_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampVNearestMipMap]->SetDepthCompareMode(false);
+	
+	
 	pTexSamplerConfigs[etscClampLinearMipMap] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscClampLinearMipMap]->SetFilterMode(deoglTextureStageManager::etfLinearMipMap);
 	pTexSamplerConfigs[etscClampLinearMipMap]->SetWrapMode(GL_CLAMP_TO_EDGE);
 	pTexSamplerConfigs[etscClampLinearMipMap]->SetDepthCompareMode(false);
+	
+	pTexSamplerConfigs[etscClampULinearMipMap] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampULinearMipMap]->SetFilterMode(deoglTextureStageManager::etfLinearMipMap);
+	pTexSamplerConfigs[etscClampULinearMipMap]->SetWrapMode(GL_CLAMP_TO_EDGE, GL_REPEAT, GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampULinearMipMap]->SetDepthCompareMode(false);
+	
+	pTexSamplerConfigs[etscClampVLinearMipMap] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampVLinearMipMap]->SetFilterMode(deoglTextureStageManager::etfLinearMipMap);
+	pTexSamplerConfigs[etscClampVLinearMipMap]->SetWrapMode(GL_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampVLinearMipMap]->SetDepthCompareMode(false);
+	
 	
 	pTexSamplerConfigs[etscClampLinearMipMapNearest] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscClampLinearMipMapNearest]->SetFilterMode(deoglTextureStageManager::etfLinearMipMapNearest);
 	pTexSamplerConfigs[etscClampLinearMipMapNearest]->SetWrapMode(GL_CLAMP_TO_EDGE);
 	pTexSamplerConfigs[etscClampLinearMipMapNearest]->SetDepthCompareMode(false);
 	
+	pTexSamplerConfigs[etscClampULinearMipMapNearest] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampULinearMipMapNearest]->SetFilterMode(deoglTextureStageManager::etfLinearMipMapNearest);
+	pTexSamplerConfigs[etscClampULinearMipMapNearest]->SetWrapMode(GL_CLAMP_TO_EDGE, GL_REPEAT, GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampULinearMipMapNearest]->SetDepthCompareMode(false);
+	
+	pTexSamplerConfigs[etscClampVLinearMipMapNearest] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampVLinearMipMapNearest]->SetFilterMode(deoglTextureStageManager::etfLinearMipMapNearest);
+	pTexSamplerConfigs[etscClampVLinearMipMapNearest]->SetWrapMode(GL_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampVLinearMipMapNearest]->SetDepthCompareMode(false);
+	
+	
 	pTexSamplerConfigs[etscRepeatNearest] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscRepeatNearest]->SetFilterMode(deoglTextureStageManager::etfNearest);
 	pTexSamplerConfigs[etscRepeatNearest]->SetWrapMode(GL_REPEAT);
 	pTexSamplerConfigs[etscRepeatNearest]->SetDepthCompareMode(false);
+	
+	
+	pTexSamplerConfigs[etscRepeatNearestMipMap] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscRepeatNearestMipMap]->SetFilterMode(deoglTextureStageManager::etfNearestMipMap);
+	pTexSamplerConfigs[etscRepeatNearestMipMap]->SetWrapMode(GL_REPEAT);
+	pTexSamplerConfigs[etscRepeatNearestMipMap]->SetDepthCompareMode(false);
+	
 	
 	pTexSamplerConfigs[etscRepeatLinear] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscRepeatLinear]->SetFilterMode(deoglTextureStageManager::etfLinear);
 	pTexSamplerConfigs[etscRepeatLinear]->SetWrapMode(GL_REPEAT);
 	pTexSamplerConfigs[etscRepeatLinear]->SetDepthCompareMode(false);
 	
+	
 	pTexSamplerConfigs[etscRepeatLinearMipMap] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscRepeatLinearMipMap]->SetFilterMode(deoglTextureStageManager::etfLinearMipMap);
 	pTexSamplerConfigs[etscRepeatLinearMipMap]->SetWrapMode(GL_REPEAT);
 	pTexSamplerConfigs[etscRepeatLinearMipMap]->SetDepthCompareMode(false);
+	
+	
+	pTexSamplerConfigs[etscRepeatLinearMipMapNearest] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscRepeatLinearMipMapNearest]->SetFilterMode(deoglTextureStageManager::etfLinearMipMapNearest);
+	pTexSamplerConfigs[etscRepeatLinearMipMapNearest]->SetWrapMode(GL_REPEAT);
+	pTexSamplerConfigs[etscRepeatLinearMipMapNearest]->SetDepthCompareMode(false);
+	
 	
 	pTexSamplerConfigs[etscShadowClampNearest] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscShadowClampNearest]->SetFilterMode(deoglTextureStageManager::etfNearest);
 	pTexSamplerConfigs[etscShadowClampNearest]->SetWrapMode(GL_CLAMP_TO_EDGE);
 	pTexSamplerConfigs[etscShadowClampNearest]->SetDepthCompareMode(true);
 	
+	
 	pTexSamplerConfigs[etscShadowClampLinear] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscShadowClampLinear]->SetFilterMode(deoglTextureStageManager::etfLinear);
 	pTexSamplerConfigs[etscShadowClampLinear]->SetWrapMode(GL_CLAMP_TO_EDGE);
 	pTexSamplerConfigs[etscShadowClampLinear]->SetDepthCompareMode(true);
+	
 	
 	pTexSamplerConfigs[etscShadowClampLinearInverse] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscShadowClampLinearInverse]->SetFilterMode(deoglTextureStageManager::etfLinear);
@@ -328,10 +400,12 @@ void deoglRTShader::pCreateTexSamplerConfigs(){
 	pTexSamplerConfigs[etscShadowClampLinearInverse]->SetDepthCompareMode(true);
 	pTexSamplerConfigs[etscShadowClampLinearInverse]->SetDepthCompareFunc(GL_GEQUAL);
 	
+	
 	pTexSamplerConfigs[etscShadowRepeatNearest] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscShadowRepeatNearest]->SetFilterMode(deoglTextureStageManager::etfNearest);
 	pTexSamplerConfigs[etscShadowRepeatNearest]->SetWrapMode(GL_REPEAT);
 	pTexSamplerConfigs[etscShadowRepeatNearest]->SetDepthCompareMode(true);
+	
 	
 	pTexSamplerConfigs[etscShadowRepeatLinear] = new deoglTexSamplerConfig(pRenderThread);
 	pTexSamplerConfigs[etscShadowRepeatLinear]->SetFilterMode(deoglTextureStageManager::etfLinear);

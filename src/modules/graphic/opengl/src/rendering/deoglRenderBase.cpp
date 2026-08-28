@@ -148,6 +148,81 @@ void deoglRenderBase::AddSharedSPBDefines(deoglShaderDefines &defines){
 	}
 }
 
+deoglTexSamplerConfig &deoglRenderBase::GetSamplerNearest(bool clampU, bool clampV) const{
+	if(clampU && clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampNearest);
+		
+	}else if(clampU){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampUNearest);
+		
+	}else if(clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVNearest);
+		
+	}else{
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatNearest);
+	}
+}
+
+deoglTexSamplerConfig &deoglRenderBase::GetSamplerNearestMipMap(bool clampU, bool clampV) const{
+	if(clampU && clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampNearestMipMap);
+		
+	}else if(clampU){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampUNearestMipMap);
+		
+	}else if(clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVNearestMipMap);
+		
+	}else{
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatNearestMipMap);
+	}
+}
+
+deoglTexSamplerConfig &deoglRenderBase::GetSamplerLinear(bool clampU, bool clampV) const{
+	if(clampU && clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinear);
+		
+	}else if(clampU){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampULinear);
+		
+	}else if(clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVLinear);
+		
+	}else{
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinear);
+	}
+}
+
+deoglTexSamplerConfig &deoglRenderBase::GetSamplerLinearMipMap(bool clampU, bool clampV) const{
+	if(clampU && clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinearMipMap);
+		
+	}else if(clampU){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampULinearMipMap);
+		
+	}else if(clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVLinearMipMap);
+		
+	}else{
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinearMipMap);
+	}
+}
+
+deoglTexSamplerConfig &deoglRenderBase::GetSamplerLinearMipMapNearest(bool clampU, bool clampV) const{
+	if(clampU && clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinearMipMapNearest);
+		
+	}else if(clampU){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampULinearMipMapNearest);
+		
+	}else if(clampV){
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampVLinearMipMapNearest);
+		
+	}else{
+		return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinearMipMapNearest);
+	}
+}
+
 deoglTexSamplerConfig &deoglRenderBase::GetSamplerClampNearest() const{
 	return *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampNearest);
 }
@@ -220,7 +295,18 @@ void deoglRenderBase::SetViewport(const decPoint &offset, const decPoint &size) 
 	SetViewport(offset.x, offset.y, size.x, size.y);
 }
 
-
+void deoglRenderBase::SetViewportUnscaled(const deoglRenderPlan &plan) const{
+	const bool upscale = plan.GetUseUpscaling();
+	const int upscaleWidth = plan.GetUpscaleWidth();
+	const int upscaleHeight = plan.GetUpscaleHeight();
+	
+	const int viewportHeight = upscale ? upscaleHeight : plan.GetViewportHeight();
+	const int viewportWidth = upscale ? upscaleWidth : plan.GetViewportWidth();
+	
+	OGL_CHECK(pRenderThread, glViewport(0, 0, viewportWidth, viewportHeight));
+	OGL_CHECK(pRenderThread, glScissor(0, 0, viewportWidth, viewportHeight));
+}
+	
 
 void deoglRenderBase::RenderFullScreenQuad() const{
 	OGL_CHECK(pRenderThread, glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
@@ -257,6 +343,13 @@ void deoglRenderBase::RenderFullScreenQuadVAO(bool useStereo) const{
 		OGL_CHECK(pRenderThread, glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
 	}
 	
+	OGL_CHECK(pRenderThread, pglBindVertexArray(0));
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAOLayer(const deoglRenderPlan &plan, int layer) const{
+	OGL_CHECK(pRenderThread, pglBindVertexArray(
+		pRenderThread.GetDeferredRendering().GetVAOFullScreenQuad()->GetVAO()));
+	OGL_CHECK(pRenderThread, glDrawArrays(GL_TRIANGLE_FAN, 6 * layer, 4));
 	OGL_CHECK(pRenderThread, pglBindVertexArray(0));
 }
 

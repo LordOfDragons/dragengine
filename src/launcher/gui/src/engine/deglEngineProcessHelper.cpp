@@ -27,6 +27,9 @@
 #include <windows.h>
 
 #include <delauncher/engine/delEngineProcessMain.h>
+#include <dragengine/app/include_windows.h>
+
+DE_W32_DEFINE_GPU_EXPORTS
 
 int main(int argc, char **args){
 	return delEngineProcessMain().RunMain(argc, args);

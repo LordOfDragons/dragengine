@@ -99,10 +99,12 @@ public:
 	void RenderAO(deoglRenderPlan &plan);
 	
 	/** Render sky light. */
-	void RenderLight(deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray);
+	void RenderLight(deoglRenderPlanSkyLight &plan, bool solid,
+		const deoglRenderPlanMasked *mask, bool xray);
 	
 	/** Render shadows maps. */
-	void RenderShadows(deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask);
+	void RenderShadows(deoglRenderPlanSkyLight &plan, bool solid,
+		const deoglRenderPlanMasked *mask);
 	
 	/** Render shadow map. */
 	void RenderShadowMap(deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper);

@@ -26,6 +26,7 @@
 #define _DEOGLRDEBUGDRAWER_H_
 
 #include "../deoglBasics.h"
+#include "../vao/deoglVAO.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
@@ -35,7 +36,6 @@
 class deoglRWorld;
 class deoglDebugDrawerShape;
 class deoglVBOLayout;
-class deoglVAO;
 class deoglRenderThread;
 
 class deDebugDrawer;
@@ -64,7 +64,7 @@ private:
 	decTList<oglVector3> pVBOData;
 	
 	GLuint pVBO;
-	deoglVAO *pVAO;
+	deTUniqueReference<deoglVAO> pVAO;
 	
 	bool pDirtyVBO;
 	
@@ -143,7 +143,7 @@ public:
 	void UpdateVBO();
 	
 	/** Retrieves the vao or NULL if there are no shapes with faces. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline const deTUniqueReference<deoglVAO> &GetVAO() const{ return pVAO; }
 	
 	
 	

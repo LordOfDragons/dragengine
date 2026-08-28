@@ -362,8 +362,6 @@ pTexRenderDocDebug(nullptr)
 	
 	pVBOFullScreenQuad = 0;
 	pVBOBillboard = 0;
-	pVAOFullScreenQuad = nullptr;
-	pVAOBillboard = nullptr;
 	
 	try{
 		pCreateTextures();
@@ -373,7 +371,7 @@ pTexRenderDocDebug(nullptr)
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOFullScreenQuad));
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(fsquad), (const GLvoid *)&fsquad, GL_STATIC_DRAW));
 		
-		pVAOFullScreenQuad = new deoglVAO(renderThread);
+		pVAOFullScreenQuad = deTUniqueReference<deoglVAO>::New(renderThread);
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAOFullScreenQuad->GetVAO()));
 		
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
@@ -386,7 +384,7 @@ pTexRenderDocDebug(nullptr)
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOBillboard));
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(billboard), (const GLvoid *)&billboard, GL_STATIC_DRAW));
 		
-		pVAOBillboard = new deoglVAO(renderThread);
+		pVAOBillboard = deTUniqueReference<deoglVAO>::New(renderThread);
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAOBillboard->GetVAO()));
 		
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
@@ -1119,12 +1117,8 @@ void deoglDeferredRendering::pCleanUp(){
 	}
 	pDestroyFBOs();
 	
-	if(pVAOBillboard){
-		delete pVAOBillboard;
-	}
-	if(pVAOFullScreenQuad){
-		delete pVAOFullScreenQuad;
-	}
+	pVAOBillboard.Clear();
+	pVAOFullScreenQuad.Clear();
 	
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
 	dops.DeleteOpenGLBuffer(pVBOBillboard);

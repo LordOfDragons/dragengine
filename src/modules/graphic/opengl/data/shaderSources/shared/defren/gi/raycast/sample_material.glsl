@@ -11,8 +11,9 @@
 //   - reflectivity.multiplier: 8         => 8
 //   - emissivity.intensity:    16 16 16  => 48
 //   - ignore:                  1         => 1
-//   - texCoord.clamp:          1         => 1
+//   - texCoord.clamp:          2         => 2
 //   - has ignore back face:    1         => 1
+//   - shadow none:             1         => 1
 //   
 //   also store the index of the material in the material texture atlas as 16 bits value.
 //   14 bits allows for a maximum of 16383 materials. this equals a 128x128 atlas size or
@@ -82,10 +83,11 @@ layout(binding=11) uniform mediump sampler2D tboGIRayCastMaterialEmissivity; // 
 
 
 // Material parameter flag constants
-const uint giRayCastMatFlagIgnore = uint( 0x1 );
-const uint giRayCastMatFlagClampTC = uint( 0x2 );
-const uint giRayCastMatFlagHasSolidity = uint( 0x4 );
-const uint giRayCastMatFlagIgnoreBackFace = uint( 0x8 );
+const uint giRayCastMatFlagIgnore = uint(0x1);
+const uint giRayCastMatFlagClampTexCoordU = uint(0x2);
+const uint giRayCastMatFlagClampTexCoordV = uint(0x4);
+const uint giRayCastMatFlagHasSolidity = uint(0x8);
+const uint giRayCastMatFlagIgnoreBackFace = uint(0x10);
 
 
 // Sample material parameters.
@@ -156,16 +158,19 @@ vec2 giRayCastTCTransform( in int material, in vec2 texCoord ){
 // - params: giRayCastMaterialParams(RayResult.material).r
 // - texCoord: giRayCastTCTransform(RayResult.material,
 //                giRayCastFaceTexCoord(RayResult.face, RayResult.barycentric))
-ivec2 giRayCastMaterialTC( in uint params, in vec2 texCoord ){
-	int mapIndex = int( params >> 16 );
+ivec2 giRayCastMaterialTC(in uint params, in vec2 texCoord){
+	int mapIndex = int(params >> 16);
 	
-	ivec2 matTC = ivec2( mapIndex % pGIMaterialMapsPerRow, mapIndex / pGIMaterialMapsPerRow );
-	matTC *= ivec2( pGIMaterialMapSize ); // base coord of material map
+	ivec2 matTC = ivec2(mapIndex % pGIMaterialMapsPerRow, mapIndex / pGIMaterialMapsPerRow);
+	matTC *= ivec2(pGIMaterialMapSize); // base coord of material map
 	
-	ivec2 realMatTC = ivec2( texCoord * vec2( pGIMaterialMapSize ) );
-	matTC += ( ( params & giRayCastMatFlagClampTC ) != uint( 0 ) )
-		? clamp( realMatTC, ivec2( 0 ), ivec2( pGIMaterialMapSize - 1 ) )
-		: realMatTC % ivec2( pGIMaterialMapSize );
+	ivec2 realMatTC = ivec2(texCoord * vec2(pGIMaterialMapSize));
+	bvec2 clampTC = bvec2(
+		(params & giRayCastMatFlagClampTexCoordU) != uint(0),
+		(params & giRayCastMatFlagClampTexCoordV) != uint(0));
+	
+	matTC += mix(realMatTC % ivec2(pGIMaterialMapSize),
+		clamp(realMatTC, ivec2(0), ivec2(pGIMaterialMapSize - 1)), clampTC);
 	
 	return matTC;
 }

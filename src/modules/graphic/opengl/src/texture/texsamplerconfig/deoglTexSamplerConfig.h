@@ -43,7 +43,7 @@ private:
 	int pMinLodLevel;
 	int pMaxLodLevel;
 	deoglTextureStageManager::eTextureFiltering pFilterMode;
-	GLenum pWrapMode;
+	GLenum pWrapModeU, pWrapModeV, pWrapModeW;
 	bool pDepthCompareMode;
 	GLenum pDepthCompareFunc;
 	
@@ -87,10 +87,16 @@ public:
 	void SetFilterMode(deoglTextureStageManager::eTextureFiltering filterMode);
 	
 	/** Wrapping mode. */
-	inline GLenum GetWrapMode() const{ return pWrapMode; }
+	inline GLenum GetWrapModeU() const{ return pWrapModeU; }
+	inline GLenum GetWrapModeV() const{ return pWrapModeV; }
+	inline GLenum GetWrapModeW() const{ return pWrapModeW; }
 	
 	/** Set wrapping mode. */
+	void SetWrapModeU(GLenum wrapMode);
+	void SetWrapModeV(GLenum wrapMode);
+	void SetWrapModeW(GLenum wrapMode);
 	void SetWrapMode(GLenum wrapMode);
+	void SetWrapMode(GLenum u, GLenum v, GLenum w);
 	
 	/** Texture uses depth compare mode. */
 	inline bool GetDepthCompareMode() const{ return pDepthCompareMode; }

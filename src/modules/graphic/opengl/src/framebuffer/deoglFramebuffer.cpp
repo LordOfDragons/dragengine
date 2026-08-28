@@ -478,6 +478,28 @@ void deoglFramebuffer::AttachDepthTextureLevel(deoglTexture *texture, int level)
 	}
 }
 
+void deoglFramebuffer::AttachDepthTextureLevel(GLuint texture, int level){
+	if(pPrimary){
+		DETHROW(deeInvalidParam);
+	}
+	
+	if(pAttDepth.DoesNotMatch(texture, eatTexture, level)){
+		DetachDepthImage();
+		
+		if(pglFramebufferTexture
+		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working()){
+			OGL_CHECK(pRenderThread, pglFramebufferTexture(GL_FRAMEBUFFER,
+				GL_DEPTH_ATTACHMENT, texture, level));
+			
+		}else{
+			OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture, level));
+		}
+		
+		pAttDepth.Set(texture, eatTexture, level);
+	}
+}
+
 void deoglFramebuffer::AttachDepthCubeMap(deoglCubeMap *texture){
 	AttachDepthCubeMapLevel(texture, 0);
 }

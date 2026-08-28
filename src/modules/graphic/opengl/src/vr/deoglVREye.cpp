@@ -31,6 +31,7 @@
 #include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../model/deoglModel.h"
 #include "../model/deoglRModel.h"
+#include "../rendering/deoglRenderVR.h"
 #include "../rendering/deoglRenderWorld.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
@@ -209,11 +210,12 @@ void deoglVREye::BeginFrame(deBaseVRModule &vrmodule){
 			pRenderTarget->SetSize(pTargetSize);
 			
 		}else{
-			pRenderTarget = deoglRenderTarget::Ref::New(renderThread, pTargetSize, 4, 8);
+			pRenderTarget = deoglRenderTarget::Ref::New(renderThread, pTargetSize, 4, 8, true);
 		}
 	}
 	
 	pUpdateEyeViews(vrmodule);
+	pUpdateEyeDepthViews(vrmodule);
 }
 
 void deoglVREye::Render(){
@@ -246,14 +248,20 @@ void deoglVREye::Render(){
 }
 
 void deoglVREye::Submit(deBaseVRModule &vrmodule){
+	pVR.GetCamera().GetRenderThread().GetRenderers().GetVR().
+		SubmitImages(pVR.GetCamera().GetPlan(), *this, vrmodule);
+	
+#if 0
 	if(!pRenderTarget->GetFBO() || !pRenderTarget->GetTexture()){
 		// shutdown protection
 		return;
 	}
-
+	
+	deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
+	
 	if(pVRViewImages.IsNotEmpty()){
-		const int acquiredImageIndex = vrmodule.AcquireEyeViewImage(pEye);
-		if(acquiredImageIndex == -1){
+		int index = vrmodule.AcquireEyeViewImage(pEye);
+		if(index == -1){
 			// do not render. perhaps we can honor this earlier but right now it is not
 			// known if somebody else than the VR headset requires the rendered image.
 			// so for the time being we render but we do not submit
@@ -265,9 +273,7 @@ void deoglVREye::Submit(deBaseVRModule &vrmodule){
 			// this we could avoid the up-sampling during rendering. this way we could
 			// use a smaller render target which saves memory and allows other users
 			// to operate on a sharp image instead of an upscaled one
-			deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
-			
-			renderThread.GetFramebuffer().Activate(pVRViewImages[acquiredImageIndex].fbo);
+			renderThread.GetFramebuffer().Activate(pVRViewImages[index].fbo);
 			
 			OGL_CHECK(renderThread, pglBindFramebuffer(
 				GL_READ_FRAMEBUFFER, pRenderTarget->GetFBO()->GetFBO()));
@@ -288,6 +294,45 @@ void deoglVREye::Submit(deBaseVRModule &vrmodule){
 			throw;
 		}
 		
+		if(pVRViewDepthImages.IsNotEmpty()){
+			index = vrmodule.AcquireEyeDepthImage(pEye);
+			if(index != -1){
+				deoglRenderPlan &plan = pVR.GetCamera().GetPlan();
+				float znear, zfar;
+				
+				if(renderThread.GetChoices().GetUseInverseDepth()){
+					znear = std::numeric_limits<float>::infinity();
+					zfar = plan.GetCameraImageDistance();
+					
+				}else{
+					znear = plan.GetCameraImageDistance();
+					zfar = plan.GetCameraViewDistance();
+				}
+				
+				try{
+					renderThread.GetFramebuffer().Activate(pVRViewDepthImages[index].fbo);
+					
+					OGL_CHECK(renderThread, pglBindFramebuffer(
+						GL_READ_FRAMEBUFFER, pRenderTarget->GetFBO()->GetFBO()));
+					
+					const decPoint src1(0, 0);
+					const decPoint &src2 = pTargetSize;
+					
+					const decPoint dest1(pVRViewTCFrom.Multiply(decVector2(pTargetSize)).Round());
+					const decPoint dest2(pVRViewTCTo.Multiply(decVector2(pTargetSize)).Round());
+					
+					OGL_CHECK(renderThread, pglBlitFramebuffer(src1.x, src1.y, src2.x, src2.y,
+						dest1.x, dest1.y, dest2.x, dest2.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST));
+					
+					vrmodule.ReleaseEyeDepthImage(pEye, znear, zfar);
+					
+				}catch(const deException &){
+					vrmodule.ReleaseEyeDepthImage(pEye, znear, zfar);
+					throw;
+				}
+			}
+		}
+		
 	}else{
 		// OpenVR uses blitting which is very slow with scaling
 		const decVector2 tcFrom(0.0f, 0.0f);
@@ -299,6 +344,7 @@ void deoglVREye::Submit(deBaseVRModule &vrmodule){
 		vrmodule.SubmitOpenGLTexture2D(pEye,
 			(void*)(intptr_t)pRenderTarget->GetTexture()->GetTexture(), tcFrom, tcTo, false);
 	}
+#endif
 }
 
 
@@ -417,6 +463,64 @@ void deoglVREye::pUpdateEyeViews(deBaseVRModule &vrmodule){
 	renderThread.GetLogger().LogInfoFormat("%s: view images %d", LogPrefix(), pVRViewImages.GetCount());
 }
 
+void deoglVREye::pUpdateEyeDepthViews(deBaseVRModule &vrmodule){
+	const int count = vrmodule.GetEyeDepthImages(pEye, 0, nullptr);
+	
+	if(count > 0){
+		pVRGetViewsDepthBuffer.SetAll(count, 0);
+		
+		if(vrmodule.GetEyeDepthImages(pEye, count, pVRGetViewsDepthBuffer.GetArrayPointer()) != count){
+			DETHROW(deeInvalidAction);
+		}
+	}
+	
+	bool same = count == pVRViewDepthImages.GetCount();
+	if(same){
+		int i;
+		for(i=0; i<count; i++){
+			if(pVRViewDepthImages[i].texture != pVRGetViewsDepthBuffer[i]){
+				same = false;
+				break;
+			}
+		}
+	}
+	
+	if(same){
+		return;
+	}
+	
+	pVRViewDepthImages.RemoveAll();
+	
+	deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
+	
+	if(count == 0){
+		renderThread.GetLogger().LogInfoFormat("%s: depth images 0", LogPrefix());
+		return;
+	}
+	
+	const deoglRestoreFramebuffer restoreFbo(renderThread);
+	
+	pVRViewDepthImages.SetAll(count, {});
+	
+	pVRViewDepthImages.VisitIndexed([&](int i, cViewImage &vi){
+		vi.texture = pVRGetViewsDepthBuffer[i];
+		
+		vi.fbo = deoglFramebuffer::Ref::New(renderThread, false);
+		renderThread.GetFramebuffer().Activate(vi.fbo);
+		
+		vi.fbo->AttachDepthTextureLevel(vi.texture, 0);
+		
+		const GLenum buffers[1] = {GL_NONE};
+		OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+		OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
+		
+		vi.fbo->Verify();
+	});
+
+	renderThread.GetLogger().LogInfoFormat("%s: view depth images %d",
+		LogPrefix(), pVRViewDepthImages.GetCount());
+}
+
 void deoglVREye::pRender(deoglRenderThread &renderThread){
 	DEBUG_RESET_TIMER
 	// prepare render target and fbo
@@ -453,6 +557,9 @@ void deoglVREye::pRender(deoglRenderThread &renderThread){
 	plan.Render();
 	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO(plan, true, pUseGammaCorrection);
 	DEBUG_PRINT_TIMER("RenderWorld")
+	
+	renderThread.GetRenderers().GetVR().RenderHud(plan);
+	DEBUG_PRINT_TIMER("RenderHud")
 	// set render target dirty?
 }
 

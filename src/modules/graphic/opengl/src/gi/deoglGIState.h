@@ -275,7 +275,7 @@ public:
 	void TouchDynamicArea(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** Validate ray caches marked for update. */
-	void ValidatedRayCaches();
+	void ValidateRayCaches();
 	
 	/** Notification component entered world. */
 	void ComponentEnteredWorld(deoglRComponent *component);

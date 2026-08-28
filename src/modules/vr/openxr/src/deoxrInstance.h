@@ -80,6 +80,7 @@ public:
 		extHTCXViveTrackerInteraction, //!< XR_HTCX_vive_tracker_interaction
 		extHUAWEIControllerInteraction, // <!XR_HUAWEI_controller_interaction
 		extKHRAndroidCreateInstance, //!< XR_KHR_android_create_instance
+		extKHRCompositionLayerCylinder, //!< XR_KHR_composition_layer_cylinder
 		extKHRCompositionLayerDepth, //!< XR_KHR_composition_layer_depth
 		extKHROpenglEnable, //!< XR_KHR_opengl_enable
 		extKHRVisibilityMask, //!< XR_KHR_visibility_mask

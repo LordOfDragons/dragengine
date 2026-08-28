@@ -345,7 +345,7 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
 
 void deoglRenderDebugDrawer::pRenderDDSFaces(const deoglRenderPlan &plan,
 const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
-	deoglVAO * const vao = debugDrawer.GetVAO();
+	const auto &vao = debugDrawer.GetVAO();
 	if(!vao){
 		return;
 	}

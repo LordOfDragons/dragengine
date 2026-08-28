@@ -2,7 +2,7 @@
 <module>
 	<name>DERig</name>
 	<description>Handles rigs in the XML Drag[en]gine rig format.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Rig</type>
 	<pattern>.derig</pattern>

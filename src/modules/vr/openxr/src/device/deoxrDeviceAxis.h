@@ -68,6 +68,7 @@ private:
 	float pCenter;
 	float pDeadZone;
 	float pResolution;
+	bool pInvert;
 	
 	float pValue;
 	
@@ -190,7 +191,11 @@ public:
 	/** Set resolution value. */
 	void SetResolution(float resolution);
 	
+	/** Invert range. */
+	inline bool GetInvert() const{ return pInvert; }
 	
+	/** Set invert range. */
+	void SetInvert(bool invert);
 	
 	/** Value. */
 	inline float GetValue() const{ return pValue; }

@@ -2,7 +2,7 @@
 <module>
 	<name>OggVorbis</name>
 	<description>Handles sounds in ogg vorbis format.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Sound</type>
 	<pattern>.ogg</pattern>

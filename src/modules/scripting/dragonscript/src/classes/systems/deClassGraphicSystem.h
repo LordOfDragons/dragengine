@@ -102,6 +102,8 @@ private:
 	DEF_NATFUNC(nfSendCommand);
 	DEF_NATFUNC(nfGetFPSRate);
 	DEF_NATFUNC(nfSetVRDebugPanelPosition);
+	DEF_NATFUNC(nfGetVRHudOverlayCanvas);
+	DEF_NATFUNC(nfSetVRHudOverlayCanvas);
 #undef DEF_NATFUNC
 };
 

@@ -241,6 +241,24 @@
 					</xs:documentation>
 				</xs:annotation>
 			</xs:enumeration>
+			<xs:enumeration value='noCameraNoDelayWait'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Do not change camera and use 0 second delay for speak and no waiting
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='noWait'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						No waiting
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1115,10 +1133,24 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
+	<xs:complexType name='condition_none'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Condition evaluating to true if all child conditions evaluate to false
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base='condition_multi'/>
+		</xs:complexContent>
+	</xs:complexType>
+	
 	<xs:complexType name='condition'>
 		<xs:choice>
 			<xs:element name='all' type='condition_all'/>
 			<xs:element name='any' type='condition_any'/>
+			<xs:element name='none' type='condition_none'/>
 			<xs:element name='command' type='condition_command'/>
 			<xs:element name='trigger' type='condition_trigger'/>
 			<xs:element name='variable' type='condition_variable'/>
@@ -1131,6 +1163,7 @@
 			<xs:choice minOccurs='0' maxOccurs='unbounded'>
 				<xs:element name='all' type='condition_all'/>
 				<xs:element name='any' type='condition_any'/>
+				<xs:element name='none' type='condition_none'/>
 				<xs:element name='command' type='condition_command'/>
 				<xs:element name='trigger' type='condition_trigger'/>
 				<xs:element name='variable' type='condition_variable'/>

@@ -2,7 +2,7 @@
 <module>
 	<name>DESynthesizer</name>
 	<description>Generate sound using synthesizers.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<author>Plüss Roland (roland@drragondreams.ch)</author>
 	<version>VERSION</version>
 	<type>Synthesizer</type>
 	<priority>1</priority>

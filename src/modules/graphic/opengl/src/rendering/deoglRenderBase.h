@@ -121,6 +121,12 @@ public:
 	/** Add shared SPB defines for shaders. */
 	void AddSharedSPBDefines(deoglShaderDefines &defines);
 	
+	deoglTexSamplerConfig &GetSamplerNearest(bool clampU, bool clampV) const;
+	deoglTexSamplerConfig &GetSamplerNearestMipMap(bool clampU, bool clampV) const;
+	deoglTexSamplerConfig &GetSamplerLinear(bool clampU, bool clampV) const;
+	deoglTexSamplerConfig &GetSamplerLinearMipMap(bool clampU, bool clampV) const;
+	deoglTexSamplerConfig &GetSamplerLinearMipMapNearest(bool clampU, bool clampV) const;
+	
 	/** Clamped nearest sampler. */
 	deoglTexSamplerConfig &GetSamplerClampNearest() const;
 	
@@ -162,6 +168,9 @@ public:
 	void SetViewport(int x, int y, int width, int height) const;
 	void SetViewport(const decPoint &offset, const decPoint &size) const;
 	
+	/** Set viewport and scissor to unscaled plan size. */
+	void SetViewportUnscaled(const deoglRenderPlan &plan) const;
+	
 	/** Render full screen quad without changing VAO. Requires GetVAOFullScreenQuad() to be active. */
 	void RenderFullScreenQuad() const;
 	
@@ -182,6 +191,8 @@ public:
 	void RenderFullScreenQuadVAO(const deoglRenderPlan &plan) const;
 	void RenderFullScreenQuadVAO(bool useStereo) const;
 	
+	/** Render full screen quad for layer. */
+	void RenderFullScreenQuadVAOLayer(const deoglRenderPlan &plan, int layer) const;
 	
 	
 	/** Convert sRGB color to linear color space. */
