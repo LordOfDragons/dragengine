@@ -245,24 +245,19 @@ void deoglRenderThread::SetVRDebugPanelMatrix(const decDMatrix &matrix){
 }
 
 void deoglRenderThread::SetCanvasInputOverlay(deoglRCanvasView *canvas){
-	if(canvas == pCanvasInputOverlay){
-		return;
-	}
 	pCanvasInputOverlay = canvas;
 }
 
 void deoglRenderThread::SetCanvasDebugOverlay(deoglRCanvasView *canvas){
-	if(canvas == pCanvasDebugOverlay){
-		return;
-	}
 	pCanvasDebugOverlay = canvas;
 }
 
 void deoglRenderThread::SetCanvasOverlay(deoglRCanvasView *canvas){
-	if(canvas == pCanvasOverlay){
-		return;
-	}
 	pCanvasOverlay = canvas;
+}
+
+void deoglRenderThread::SetCanvasVRHudOverlay(deoglRCanvasView *canvas){
+	pCanvasVRHudOverlay = canvas;
 }
 
 
@@ -2452,9 +2447,10 @@ void deoglRenderThread::pCleanUpThread(){
 	#endif
 	
 	// remove canvas if present
-	pCanvasOverlay = nullptr;
-	pCanvasDebugOverlay = nullptr;
-	pCanvasInputOverlay = nullptr;
+	pCanvasOverlay.Clear();
+	pCanvasDebugOverlay.Clear();
+	pCanvasInputOverlay.Clear();
+	pCanvasVRHudOverlay.Clear();
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: canvas overlay (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 	#endif

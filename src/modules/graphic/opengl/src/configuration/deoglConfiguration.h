@@ -198,6 +198,7 @@ private:
 	
 	float pVRRenderScale;
 	int pVRForceFrameRate;
+	float pVRHudFov, pVRHudCurvature;
 	
 	bool pRenderDocMode;
 	
@@ -553,6 +554,12 @@ public:
 	
 	inline int GetVRForceFrameRate() const{ return pVRForceFrameRate; }
 	void SetVRForceFrameRate(int framerate);
+	
+	inline float GetVRHudFov() const{ return pVRHudFov; }
+	void SetVRHudFov(float fov);
+	
+	inline float GetVRHudCurvature() const{ return pVRHudCurvature; }
+	void SetVRHudCurvature(float curvature);
 	
 	inline bool GetRenderDocMode() const{ return pRenderDocMode; }
 };

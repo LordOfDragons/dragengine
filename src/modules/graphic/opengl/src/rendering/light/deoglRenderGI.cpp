@@ -508,7 +508,7 @@ void deoglRenderGI::TraceRays(deoglRenderPlan &plan){
 		
 		ismgr.DisableAllStages();
 		
-		giState->ValidatedRayCaches(); // comment out for performance test
+		giState->ValidateRayCaches(); // comment out for performance test
 	}
 	#endif
 	

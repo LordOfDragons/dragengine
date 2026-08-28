@@ -255,10 +255,18 @@ void deAvif3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image)
 	const int strideImage = width * componentCount * (bitCount == 16 ? 2 : 1);
 	const char * const imageData = reinterpret_cast<const char*>(image.GetData());
 	
+	//avifPixelFormat pixelFormat = AVIF_PIXEL_FORMAT_YUV420;
+	avifPixelFormat pixelFormat = AVIF_PIXEL_FORMAT_YUV444;
+	
 	// avif encoding in format 4:2:0 does not allow odd sizes. for this to work the image has
 	// to be padded to even size and a clap box applied to restore the original size
-	const int encodeWidth = width + (width % 2);
-	const int encodeHeight = height + (height % 2);
+	int encodeWidth = width;
+	int encodeHeight = height;
+	
+	if(pixelFormat == AVIF_PIXEL_FORMAT_YUV420){
+		encodeWidth += width % 2;
+		encodeHeight += height % 2;
+	}
 	
 	sTarballHeader header;
 	memset(&header, '\0', 512);
@@ -316,7 +324,7 @@ void deAvif3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image)
 		avifRWData output = AVIF_DATA_EMPTY;
 		
 		try{
-			encodeImage = avifImageCreate(encodeWidth, encodeHeight, bitCount, AVIF_PIXEL_FORMAT_YUV420);
+			encodeImage = avifImageCreate(encodeWidth, encodeHeight, bitCount, pixelFormat);
 			DEASSERT_NOTNULL(encodeImage)
 			
 			// create encode RGB image
@@ -478,8 +486,8 @@ void deAvif3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image)
 			}
 			
 			// encode image
-			encoder->quality = 80;
-			encoder->qualityAlpha = 80;
+			encoder->quality = 75; // 80 is better but with 444 using 75 is good enough
+			encoder->qualityAlpha = encoder->quality;
 			encoder->speed = 6; // 0-10, higher is faster
 			
 			result = avifEncoderWrite(encoder, encodeImage, &output);

@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglCamera.h"
 #include "deoglRCamera.h"
 #include "deoglWorld.h"
 #include "../deGraphicOpenGl.h"
+#include "../canvas/deoglCanvasView.h"
 #include "../component/deoglComponent.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../canvas/deoglCanvasRenderWorld.h"
@@ -39,12 +36,14 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../skin/dynamic/renderables/deoglDSRenderableCamera.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/effect/deEffect.h>
 #include <dragengine/resources/propfield/dePropField.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/world/deWorld.h>
+#include <dragengine/systems/deGraphicSystem.h>
 
 
 
@@ -243,6 +242,16 @@ void deoglCamera::SyncToRender(){
 			pOgl.SetVRCamera(nullptr);
 		}
 		pDirtyVR = false;
+	}
+	
+	const auto &vrHudOverlay = pOgl.GetGameEngine()->GetGraphicSystem()->GetVRHudOverlayCanvas();
+	if(vrHudOverlay){
+		deoglCanvasView &oglCanvas = *static_cast<deoglCanvasView*>(vrHudOverlay->GetPeerGraphic());
+		oglCanvas.SyncToRender();
+		pOgl.GetRenderThread().SetCanvasVRHudOverlay(oglCanvas.GetRCanvasView());
+		
+	}else{
+		pOgl.GetRenderThread().SetCanvasVRHudOverlay(nullptr);
 	}
 }
 

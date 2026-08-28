@@ -237,6 +237,17 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	
 	
 	
+	// vr
+	// x: hud-fov
+	// y: hud-curvature
+	// z: n/a
+	// w: n/a
+	vec4 pVRParams;
+	#define pVRHudFov (pVRParams.x)
+	#define pVRHudCurvature (pVRParams.y)
+	
+	
+	
 	// debug
 	
 	// debug depth scale and shift

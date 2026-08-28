@@ -88,7 +88,10 @@ on:
         required: false
         default: true
         type: boolean
-      
+
+env:
+  CMAKE_ARGS: "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -132,7 +135,7 @@ jobs:
       
       - name: Install GLSL Tools
         run: |
-          wget https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-main-linux-x86_64-release.zip -O "${{ github.workspace }}/glslang.zip"
+          wget https://github.com/KhronosGroup/glslang/releases/download/16.5.0/glslang-16.5.0-linux-x86_64-release.zip -O "${{ github.workspace }}/glslang.zip"
           unzip -d "${{ github.workspace }}/glslang" "${{ github.workspace }}/glslang.zip"
           echo "PATH=${{ github.workspace }}/glslang/bin:$PATH" >> $GITHUB_ENV
       

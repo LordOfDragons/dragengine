@@ -48,20 +48,15 @@
 ////////////////////////////
 
 deoglRParticleEmitter::deoglRParticleEmitter(deoglRenderThread &renderThread) :
-pRenderThread(renderThread),
-pVBOLayoutShared(nullptr),
-pVBOLayoutLocal(nullptr){
+pRenderThread(renderThread)
+{
 	LEAK_CHECK_CREATE(renderThread, ParticleEmitter);
 }
 
 deoglRParticleEmitter::~deoglRParticleEmitter(){
 	LEAK_CHECK_FREE(pRenderThread, ParticleEmitter);
-	if(pVBOLayoutLocal){
-		delete pVBOLayoutLocal;
-	}
-	if(pVBOLayoutShared){
-		delete pVBOLayoutShared;
-	}
+	pVBOLayoutLocal.Clear();
+	pVBOLayoutShared.Clear();
 }
 
 
@@ -69,9 +64,9 @@ deoglRParticleEmitter::~deoglRParticleEmitter(){
 // Management
 ///////////////
 
-deoglVBOLayout *deoglRParticleEmitter::GetVBOLayoutShared(){
+const deTUniqueReference<deoglVBOLayout> &deoglRParticleEmitter::GetVBOLayoutShared(){
 	if(!pVBOLayoutShared){
-		pVBOLayoutShared = new deoglVBOLayout;
+		pVBOLayoutShared = deTUniqueReference<deoglVBOLayout>::New();
 		
 		// name        | offset | type  | components
 		// ------------+--------+-------+------------------------------------------------------------------
@@ -108,12 +103,12 @@ deoglVBOLayout *deoglRParticleEmitter::GetVBOLayoutShared(){
 	return pVBOLayoutShared;
 }
 
-deoglVBOLayout *deoglRParticleEmitter::GetVBOLayoutLocal(){
+const deTUniqueReference<deoglVBOLayout> &deoglRParticleEmitter::GetVBOLayoutLocal(){
 	if(!pVBOLayoutLocal){
-		pVBOLayoutLocal = new deoglVBOLayout;
+		pVBOLayoutLocal = deTUniqueReference<deoglVBOLayout>::New();
 		
 		// name        | offset | type  | components
-		// ------------+--------+-------+------------------------------------------------------------------
+		// ------------+--------+-------+-------------
 		// attribute 0 |      0 | float | beamLocation
 		pVBOLayoutLocal->GetAttributes().SetAll(1, {});
 		pVBOLayoutLocal->SetStride(4);

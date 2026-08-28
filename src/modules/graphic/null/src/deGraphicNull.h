@@ -68,6 +68,7 @@ public:
 	void RenderWindows() override;
 	
 	void InputOverlayCanvasChanged() override;
+	void VRHudOverlayCanvasChanged() override;
 	
 	
 	deBaseGraphicCanvas *CreateCanvas(deCanvas*) override;

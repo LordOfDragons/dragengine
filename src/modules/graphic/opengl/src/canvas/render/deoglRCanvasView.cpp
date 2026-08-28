@@ -49,7 +49,8 @@
 deoglRCanvasView::deoglRCanvasView(deoglRenderThread &renderThread) :
 deoglRCanvas(renderThread),
 pPaintTracker(0),
-pResizeRenderTarget(false)
+pResizeRenderTarget(false),
+pRetainFBO(false)
 {
 	LEAK_CHECK_CREATE(renderThread, CanvasView);
 }
@@ -92,8 +93,12 @@ void deoglRCanvasView::RemoveAllChildren(){
 	pChildren.RemoveAll();
 }
 
+bool deoglRCanvasView::HasChildren() const{
+	return pChildren.IsNotEmpty();
+}
+
 bool deoglRCanvasView::HasNoChildren() const{
-	return pChildren.GetCount() == 0;
+	return pChildren.IsEmpty();
 }
 
 
@@ -108,6 +113,10 @@ void deoglRCanvasView::IncrementPaintTracker(){
 
 void deoglRCanvasView::SetResizeRenderTarget(){
 	pResizeRenderTarget = true;
+}
+
+void deoglRCanvasView::SetRetainFBO(bool retain){
+	pRetainFBO = retain;
 }
 
 void deoglRCanvasView::PrepareRenderTarget(const deoglRenderPlanMasked *renderPlanMask,
@@ -165,6 +174,7 @@ void deoglRCanvasView::RenderRenderTarget(const deoglRenderPlanMasked *renderPla
 	
 	// clear the render target. this is required for situations where transparent overlays
 	// are rendered with children canvas not covering all pixels
+	GetRenderThread().GetRenderers().GetCanvas().GetPipelineClearBuffers()->Activate();
 	const GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f,
 		pRenderTarget->GetComponentCount() == 4 ? 0.0f : 1.0f};
 	OGL_CHECK(GetRenderThread(), pglClearBufferfv(GL_COLOR, 0, clearColor));
@@ -173,7 +183,9 @@ void deoglRCanvasView::RenderRenderTarget(const deoglRenderPlanMasked *renderPla
 	Render(context);
 	
 	// release framebuffer
-	pRenderTarget->ReleaseFramebuffer(); // temporary
+	if(!pRetainFBO){
+		pRenderTarget->ReleaseFramebuffer(); // temporary
+	}
 }
 
 

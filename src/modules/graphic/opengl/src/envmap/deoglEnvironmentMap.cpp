@@ -438,6 +438,7 @@ void deoglEnvironmentMap::PrepareForRender(){
 	const deoglFramebuffer::Ref &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
 	const GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 	
+	pRenderThread.GetRenderers().GetWorld().GetPipelineClearBuffers()->Activate();
 	pRenderThread.GetFramebuffer().Activate(fbo);
 	fbo->DetachAllImages();
 	fbo->AttachColorCubeMap(0, pEnvMap);

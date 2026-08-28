@@ -8,6 +8,7 @@
 	<output name='outDepth' location='1'/>
 	
 	<define>COPY_COLOR</define>
+	<define>INPUT_ARRAY_TEXTURES</define>
 	<define>DEPTH_TEST</define>
 	<define>ENCODED_DEPTH</define>
 	<define>LAYERED_RENDERING</define>

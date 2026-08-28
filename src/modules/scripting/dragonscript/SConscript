@@ -13,7 +13,7 @@ envModule = parent_env.Clone()
 
 libs = []
 appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
-appendLibrary(envModule, parent_targets['lib_dragonscript'], libs)
+appendLibrary(envModule, parent_targets['lib_dragonscript'], libs, internalModule=internalModule)
 
 # fetch values in expanded form for later use
 versionString = '1.33'

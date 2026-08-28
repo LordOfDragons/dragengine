@@ -13,54 +13,72 @@ if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
 }
 
 
-$ExpandedDir = "$ProjectDir\dragonscript-1.5.1"
+$LibraryVersion = "1.5.2"
+$ExpandedDir = "$ProjectDir\build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "dragonscript-1.5.1.tar.xz" -UrlPath "dragonscript"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "dragonscript-$LibraryVersion.tar.xz" -UrlPath "dragonscript"
 
-Expand-TarXz -Path "$ProjectDir\dragonscript-1.5.1.tar.xz" -Destination $ProjectDir
+Expand-TarXz -Path "$ProjectDir\dragonscript-$LibraryVersion.tar.xz" -Destination $ExpandedDir
 
 # Build the downloaded Visual Studio solution in-place.
 # Locate MSBuild via vswhere if available, otherwise fall back to msbuild.exe in PATH.
-$slnPath = "$ExpandedDir\vs\dragonscript.sln"
-
-function Get-MSBuildPath {
-	# try vswhere
-	$vswhere = Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath "Microsoft Visual Studio\Installer\vswhere.exe"
-	if (Test-Path $vswhere) {
-		try {
-			$inst = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath 2>$null
-			if ($inst) {
-				$msbuildCandidate = Join-Path -Path $inst -ChildPath "MSBuild\Current\Bin\MSBuild.exe"
-				if (Test-Path $msbuildCandidate) { return $msbuildCandidate }
-				$msbuildCandidate = Join-Path -Path $inst -ChildPath "MSBuild\15.0\Bin\MSBuild.exe"
-				if (Test-Path $msbuildCandidate) { return $msbuildCandidate }
-			}
-		} catch { }
-	}
-	# fallback: rely on msbuild in PATH (e.g. Developer Command Prompt)
-	return "msbuild.exe"
-}
-
+$ExpandedSrcDir = "$ExpandedDir\dragonscript-$LibraryVersion"
+$slnPath = "$ExpandedSrcDir\vs\dragonscript.sln"
 $msbuild = Get-MSBuildPath
+$dragengineToolset = Get-VisualStudioToolset
+$platformVersion = Get-VisualStudioPlatformVersion
+$configuration = "Release"
+$platform = "x64"
+$runtimeLibrary = "MultiThreadedDLL"
 
-if (-not (Test-Path $slnPath)) {
-	Write-Error "Solution file $slnPath not found. Abort."
-	throw "Solution file not found: $slnPath"
+Get-ChildItem -Path "$ExpandedSrcDir\vs" -Filter *.vcxproj -Recurse | ForEach-Object {
+    (Get-Content $_.FullName) `
+        -replace '<PlatformToolset>.*</PlatformToolset>', "<PlatformToolset>$dragengineToolset</PlatformToolset>" `
+        -replace '<WindowsTargetPlatformVersion>.*</WindowsTargetPlatformVersion>', "<WindowsTargetPlatformVersion>$platformVersion</WindowsTargetPlatformVersion>" `
+        -replace '<RuntimeLibrary>.*</RuntimeLibrary>', "<RuntimeLibrary>$runtimeLibrary</RuntimeLibrary>" `
+        | Set-Content $_.FullName
 }
 
 Write-Host "Building solution: $slnPath"
 Write-Host "Using MSBuild: $msbuild"
 
-# Build arguments
-$configuration = "Release"
-$platform = "x64"
-
-# Run MSBuild and check Exitcode
-& $msbuild $slnPath /m /t:Build /p:Configuration=$configuration /p:Platform=$platform
+& $msbuild $slnPath /m /t:Build /p:Configuration=$configuration /p:Platform=$platform `
+	/p:PlatformToolset="$dragengineToolset" /p:RuntimeLibrary="$runtimeLibrary" `
+    /p:WindowsTargetPlatformVersion="$platformVersion"
 if ($LASTEXITCODE -ne 0) {
 	Write-Error "MSBuild failed with exit code $LASTEXITCODE"
 	throw "MSBuild failed with exit code $LASTEXITCODE"
 }
+
+# copy the built static library to the expected location
+$projectDir = "$ExpandedSrcDir\vs"
+$libBuildDir = "$projectDir\x64\Release"
+$targetLibDir = "$ExpandedDir\install\lib"
+
+if (-not (Test-Path $targetLibDir)) {
+	New-Item -Path $targetLibDir -ItemType Directory | Out-Null
+}
+
+Copy-Item "$libBuildDir\libdscript-static.lib" -Destination $targetLibDir -Force
+Copy-Item "$libBuildDir\libdscript-static.pdb" -Destination $targetLibDir -Force
+
+# copy the include directory
+$sourceIncludeDir = "$libBuildDir\Distribute\SDK\include"
+$targetIncludeDir = "$ExpandedDir\install\include"
+
+if (Test-Path $targetIncludeDir) {
+	Remove-Item $targetIncludeDir -Force -Recurse
+}
+Copy-Item $sourceIncludeDir -Destination $targetIncludeDir -Recurse -Force
+
+# copy dsinstall directory
+$sourceDsinstallDir = "$libBuildDir\Distribute\SDK\dsinstall"
+$targetDsinstallDir = "$ExpandedDir\install\dsinstall"
+
+if (Test-Path $targetDsinstallDir) {
+	Remove-Item $targetDsinstallDir -Force -Recurse
+}
+Copy-Item $sourceDsinstallDir -Destination $targetDsinstallDir -Recurse -Force

@@ -26,7 +26,7 @@ if(!$InternalModule)
         -Library $Library -Version $Version
 }
 
-$Library = "$SolutionDir\extern\steamsdk\steamsdk\bin\steam_api64.dll"
+$Library = "$SolutionDir\extern\steamsdk\build\steamsdk\bin\steam_api64.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 if($WithEngineDeal)

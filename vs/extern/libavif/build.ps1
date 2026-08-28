@@ -47,6 +47,7 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
     -DAVIF_CODEC_DAV1D=SYSTEM `
     -DAVIF_CODEC_SVT=SYSTEM `
     -DCMAKE_SYSTEM_NAME=Windows `
+	-DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
     -DCMAKE_SYSTEM_PROCESSOR=AMD64 `
     -DCMAKE_PREFIX_PATH="$CmakeLibYuvLibDir;$CmakeLibDav1dLibDir;$CmakeLibSvtav1LibDir" `
     -DLIBYUV_INCLUDE_DIR="$ProjectDir\..\libyuv\build\install\include" `

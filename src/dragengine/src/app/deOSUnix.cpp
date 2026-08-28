@@ -337,10 +337,32 @@ static deWlDynLibFunc<wl_proxy*(wl_proxy*, uint32_t, const wl_interface*, uint32
 
 extern "C" wl_proxy *wl_proxy_marshal_flags(wl_proxy *proxy, uint32_t opcode, const wl_interface *interface,
 uint32_t version, uint32_t flags, ...){
+	// wayland design problem workaround: proxy must not be null
+	if(!proxy){
+		DETHROW_INFO(deeInvalidAction, decString::Formatted(
+			"Cannot marshal Wayland message: proxy is null for opcode {0}", opcode));
+	}
+	
 	const struct wl_interface *proxyIface = wl_proxy_get_interface(proxy);
 	if(!proxyIface || !proxyIface->methods){
 		DETHROW_INFO(deeInvalidAction, decString::Formatted(
 			"Cannot marshal Wayland message: no method information available for opcode {0}", opcode));
+	}
+	
+	// wayland design problem workaround: detect if interface memory is corrupted/unmapped
+	if(!proxyIface->name){
+		DETHROW_INFO(deeInvalidAction, decString::Formatted(
+			"Cannot marshal Wayland message: interface name is null for opcode {0} (corrupted interface)", opcode));
+	}
+	
+	// wayland design problem workaround: sanity check against corrupted interface memory.
+	// wayland interfaces typically have < 100 methods. if count looks wrong,
+	// the interface memory is most likely corrupted
+	const int maxMethodCount = 1000;
+	if(proxyIface->method_count < 0 || proxyIface->method_count > maxMethodCount){
+		DETHROW_INFO(deeInvalidAction, decString::Formatted(
+			"Cannot marshal Wayland message: Interface '{0}' method count {1} is out of valid range (corrupted interface data)",
+			proxyIface->name, proxyIface->method_count));
 	}
 	
 	if(opcode >= (uint32_t)proxyIface->method_count) {

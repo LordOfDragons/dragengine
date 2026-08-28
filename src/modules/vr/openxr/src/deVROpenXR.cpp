@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deVROpenXR.h"
 #include "deoxrThreadSync.h"
 #include "deoxrPath.h"
@@ -245,10 +242,30 @@ deoxrSwapchain *deVROpenXR::GetEyeSwapchain(eEye eye) const{
 	}
 }
 
+deoxrSwapchain *deVROpenXR::GetEyeDepthSwapchain(eEye eye) const{
+	if(!pSession){
+		return nullptr;
+	}
+	
+	switch(eye){
+	case deBaseVRModule::evreLeft:
+		return pSession->GetSwapchainDepthLeftEye();
+		
+	case deBaseVRModule::evreRight:
+		return pSession->GetSwapchainDepthRightEye();
+		
+	default:
+		return nullptr;
+	}
+}
+
 void deVROpenXR::RequestRestartSession(){
 	pRestartSession = true;
 }
 
+void deVROpenXR::SetLogLevel(LogLevel level){
+	pLogLevel = level;
+}
 
 
 // Module Management
@@ -892,6 +909,39 @@ int deVROpenXR::GetEyeViewImages(eEye eye, int count, void *views){
 	return imageCount;
 }
 
+int deVROpenXR::GetEyeDepthImages(eEye eye, int count, void *views){
+	auto const swapchain = GetEyeDepthSwapchain(eye);
+	if(!swapchain){
+		return 0;
+	}
+	
+	const int imageCount = swapchain->GetImages().GetCount();
+	if(count == 0){
+		return imageCount;
+	}
+	
+	if(!views){
+		DETHROW_INFO(deeNullPointer, "images");
+	}
+	if(count < imageCount){
+		DETHROW_INFO(deeInvalidParam, "count < imageCount");
+	}
+	
+	if(pSession->GetIsGACOpenGL()){
+		uint32_t * const viewOpenGL = (uint32_t*)views;
+		int i;
+		
+		for(i=0; i<imageCount; i++){
+			viewOpenGL[i] = swapchain->GetImages()[i].openglImage;
+		}
+		
+	}else{
+		DETHROW_INFO(deeInvalidAction, "not implemented yet");
+	}
+	
+	return imageCount;
+}
+
 void deVROpenXR::GetEyeViewRenderTexCoords(eEye eye, decVector2 &tcFrom, decVector2 &tcTo){
 	tcFrom.Set(0.0f, 0.0f);
 	tcTo.Set(1.0f, 1.0f);
@@ -945,8 +995,37 @@ int deVROpenXR::AcquireEyeViewImage(eEye eye){
 void deVROpenXR::ReleaseEyeViewImage(eEye eye){
 	const deMutexGuard lock(pMutexOpenXR);
 	deoxrSwapchain * const swapchain = GetEyeSwapchain(eye);
-	if(swapchain || !pSession->GetFrameRunning()){
+	if(swapchain && pSession->GetFrameRunning()){
 		swapchain->ReleaseImage();
+	}
+}
+
+int deVROpenXR::AcquireEyeDepthImage(eEye eye){
+	const deMutexGuard lock(pMutexOpenXR);
+	deoxrSwapchain * const swapchain = GetEyeDepthSwapchain(eye);
+	if(!swapchain || !pSession->GetFrameRunning()){
+		return -1;
+	}
+	
+	swapchain->AcquireImage();
+	return (int)swapchain->GetAcquiredImage();
+}
+
+void deVROpenXR::ReleaseEyeDepthImage(eEye eye, float nearZ, float farZ){
+	const deMutexGuard lock(pMutexOpenXR);
+	deoxrSwapchain * const swapchain = GetEyeDepthSwapchain(eye);
+	if(swapchain && pSession->GetFrameRunning()){
+		swapchain->ReleaseImage();
+		
+		switch(eye){
+		case deBaseVRModule::evreLeft:
+			pSession->LeftEyeDepthSubmitted(nearZ, farZ);
+			break;
+			
+		case deBaseVRModule::evreRight:
+			pSession->RightEyeDepthSubmitted(nearZ, farZ);
+			break;
+		}
 	}
 }
 

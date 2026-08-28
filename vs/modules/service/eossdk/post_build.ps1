@@ -26,7 +26,7 @@ if(!$InternalModule)
         -Library $Library -Version $Version
 }
 
-$Library = "$SolutionDir\extern\eossdk\eossdk\bin\EOSSDK-Win64-Shipping.dll"
+$Library = "$SolutionDir\extern\eossdk\build\eossdk\bin\EOSSDK-Win64-Shipping.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
 if($WithEngineDeal)

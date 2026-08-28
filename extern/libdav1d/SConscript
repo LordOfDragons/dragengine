@@ -13,7 +13,8 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-srcdir = 'dav1d-1.4.1'
+libVersion = '1.5.4'
+srcdir = 'dav1d-{}'.format(libVersion)
 
 libLinkName = 'dav1d'
 
@@ -26,6 +27,11 @@ else:
 
 # fetching is always allowed
 nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libdav1d', 'lib_libdav1d_fetch')
+
+# patches
+patches = []
+globFiles(envLibrary, 'patches/{}'.format(libVersion), '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 # check if system libdav1d is present
 hasSystemDav1d = False
@@ -57,14 +63,31 @@ def libdav1dBuild(target, source, env):
 	
 	untarArchive(buildDir.abspath, source[0].abspath)
 	
+	# create vcs_version.h otherwise meson tries to use git on a non-existing git repository
+	srcPath = buildDir.Dir(srcdir).abspath
+	vcsVersionFile = os.path.join(srcPath, 'include', 'vcs_version.h')
+	os.makedirs(os.path.dirname(vcsVersionFile), exist_ok=True)
+	with open(vcsVersionFile, 'w') as f:
+		f.write('/* auto-generated, do not edit */\n')
+		f.write('#define DAV1D_VERSION "{}"\n'.format(libVersion))
+	
 	script = createScriptHeader(env)
 	
-	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	script.append('cd "{}" || exit 1'.format(srcPath))
+	
+	# apply patches
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	# if '--reconfigure' is used on meson setup it fails if there exists no configuration yet.
+	# totally stupid check breaking automated build systems. as a workaround the directory is
+	# always deleted so the '--reconfigure' is not required to be used
+	script.append('rm -rf build_dir')
 	
 	script.append('mkdir -p build_dir || exit 1')
 	script.append('cd build_dir || exit 1')
 	
-	cmdline = ['meson', 'setup', '--reconfigure', '--prefix="{}"'.format(buildDir.abspath), '..']
+	cmdline = ['meson', 'setup', '--prefix="{}"'.format(buildDir.abspath), '..']
 	cmdline.append('--buildtype=release')
 	cmdline.append('-Denable_tests=false')
 	cmdline.append('-Denable_docs=false')
@@ -81,12 +104,19 @@ def libdav1dBuild(target, source, env):
 	
 	script.append('ninja -j {} install || exit 1'.format(env['with_threads']))
 	
-	# fix strange library path choice in 64-bit systems
-	script.append('if [ -f "{}" ]'.format(buildDir.File('lib64/libdav1d.a').abspath))
-	script.append('then')
-	script.append('  cp -fL "{}" "{}"'.format(
-		buildDir.File('lib64/libdav1d.a').abspath,
-		buildDir.File('lib/libdav1d.a').abspath))
+	# handle Meson installing library to unpredictable path. find libdav1d.a anywhere
+	# under install_dir and copy to lib if needed
+	script.append('install_dir="{}"'.format(buildDir.abspath))
+	script.append('target_lib="$install_dir/lib/libdav1d.a"')
+	script.append('if [ ! -f "$target_lib" ]; then')
+	script.append('  mkdir -p "$install_dir/lib"')
+	script.append('  source_lib=$(find "$install_dir" -name "libdav1d.a" -type f 2>/dev/null | head -1)')
+	script.append('  if [ -n "$source_lib" ]; then')
+	script.append('    cp -fL "$source_lib" "$target_lib" || exit 1')
+	script.append('  else')
+	script.append('    echo "ERROR: libdav1d.a not found in $install_dir"')
+	script.append('    exit 1')
+	script.append('  fi')
 	script.append('fi')
 	
 	if not env.RunExternalCommand(script):
@@ -110,10 +140,10 @@ if envLibrary['platform_android'] != 'no':
 	elif envLibrary['ANDROID_ARCH'] == 'arm':
 		envLibrary.Replace(CROSS_FILE=envLibrary.File('arm-android.meson').srcnode())
 elif envLibrary['platform_webwasm']:
-	envLibrary.Replace(CROSS_FILE=envLibrary.File('dav1d-1.4.1/package/crossfiles/wasm64.meson'))
+	envLibrary.Replace(CROSS_FILE=envLibrary.File('dav1d-{}/package/crossfiles/wasm64.meson'.format(libVersion)))
 
 library = envLibrary.Command(targets,
-	nodeArtifacts,
+	[nodeArtifacts, patches],
 	envLibrary.Action(libdav1dBuild, 'Build libdav1d'))
 
 depends = envLibrary.Alias('lib_libdav1d', library)

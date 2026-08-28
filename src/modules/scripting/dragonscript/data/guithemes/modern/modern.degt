@@ -114,6 +114,8 @@
 		</colorMatrix>
 	</designer>
 	
+	<designer name='Icon' extendNamed='Image'/>
+	
 	<designer name='Button' type='Button'>
 		<canvasCreator parameter='normal.canvas' extend='button/normal.decc'/>
 		<canvasCreator parameter='pressed.canvas' extend='button/pressed.decc'/>

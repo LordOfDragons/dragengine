@@ -352,6 +352,7 @@ void deoxrDeviceProfile::pAddAxesJoystick(deoxrDevice &device, deoxrDeviceCompon
 		axis->SetIndex(device.GetAxes().GetCount());
 		axis->SetDeadZone(axis->GetResolution());
 		axis->SetInputDeviceComponent(component);
+		axis->SetInvert(i == 1); // invert Y axis to line up with gamepad sticks
 		device.AddAxis(axis);
 	}
 }

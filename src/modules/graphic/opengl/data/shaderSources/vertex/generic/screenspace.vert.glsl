@@ -63,8 +63,9 @@ void main( void ){
 		vTexCoord = texCoord;
 	}
 	
+	vLayer = inLayer;
+	
 	if(VSRenderLayer){
-		vLayer = inLayer;
 		#if defined SUPPORTS_VSLAYER && ! defined OPENGLES
 		gl_Layer = vLayer;
 		#endif

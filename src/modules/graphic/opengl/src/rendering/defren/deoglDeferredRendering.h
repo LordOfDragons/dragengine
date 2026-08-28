@@ -28,7 +28,9 @@
 #include "../../deoglBasics.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../memory/consumption/deoglMemoryConsumptionDeferredRenderingUse.h"
+#include "../../vao/deoglVAO.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -38,7 +40,6 @@ class deoglShaderCompiled;
 class deoglSPBlockUBO;
 class deoglArrayTexture;
 class deoglTexture;
-class deoglVAO;
 
 
 
@@ -106,8 +107,8 @@ private:
 	
 	GLuint pVBOFullScreenQuad;
 	GLuint pVBOBillboard;
-	deoglVAO *pVAOFullScreenQuad;
-	deoglVAO *pVAOBillboard;
+	deTUniqueReference<deoglVAO> pVAOFullScreenQuad;
+	deTUniqueReference<deoglVAO> pVAOBillboard;
 	
 	deoglTexture *pTexRenderDocDebug;
 	
@@ -306,9 +307,9 @@ public:
 // 	void ActivateFBOLuminanceNormal();
 	
 	/** Retrieves the full screen quad VAO. */
-	inline deoglVAO *GetVAOFullScreenQuad() const{ return pVAOFullScreenQuad; }
+	inline const deTUniqueReference<deoglVAO> &GetVAOFullScreenQuad() const{ return pVAOFullScreenQuad; }
 	/** Retrieves the billboard VAO. */
-	inline deoglVAO *GetVAOBillboard() const{ return pVAOBillboard; }
+	inline const deTUniqueReference<deoglVAO> &GetVAOBillboard() const{ return pVAOBillboard; }
 	
 	/** Memory consumption. */
 	inline const deoglMemoryConsumptionDeferredRenderingUse &GetMemoryConsumption() const{ return pMemUse; }

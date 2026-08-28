@@ -95,7 +95,6 @@ pDirtyRenderEnvMap(true),
 pVBOShared(0),
 pVBOLocal(0),
 pIBO(0),
-pVAO(nullptr),
 
 pDirtyParticles(true),
 
@@ -112,9 +111,7 @@ deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 	ReleaseParticles();
 	SetEmitter(nullptr);
 	
-	if(pVAO){
-		delete pVAO;
-	}
+	pVAO.Clear();
 	
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
 	dops.DeleteOpenGLBuffer(pIBO);
@@ -485,7 +482,7 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	
 	// vao
 	if(!pVAO){
-		pVAO = new deoglVAO(pRenderThread);
+		pVAO = deTUniqueReference<deoglVAO>::New(pRenderThread);
 		pVAO->SetIndexType(vboLayoutShared.GetIndexType());
 		OGL_CHECK(pRenderThread, pglBindVertexArray(pVAO->GetVAO()));
 		

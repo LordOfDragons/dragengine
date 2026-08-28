@@ -26,7 +26,7 @@ $CmakeBuildDir = "$ExpandedDir\build"
 $CmakeInstallDir = "$ExpandedDir\install"
 
 cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
-	-DCMAKE_POLICY_VERSION_MINIMUM=3.5 `
+	-DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
 	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
 	-DCMAKE_BUILD_TYPE=Release `
 	-DDISABLE_FORTRAN=ON `

@@ -206,6 +206,7 @@ public:
 	void AttachDepthTexture(deoglTexture *texture);
 	/** Attach a depth texture level. */
 	void AttachDepthTextureLevel(deoglTexture *texture, int level);
+	void AttachDepthTextureLevel(GLuint texture, int level);
 	/** Attach a depth cube map. */
 	void AttachDepthCubeMap(deoglCubeMap *texture);
 	/** Attach a depth cube map level. */

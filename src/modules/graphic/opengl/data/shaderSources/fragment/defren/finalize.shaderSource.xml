@@ -11,6 +11,7 @@
 	
 	<define>LAYERED_RENDERING</define>
 	<define>SPLIT_LAYERS</define>
+	<define>WITH_DEPTH</define>
 	<define>VS_RENDER_LAYER</define>
 	<define>HDR_OUTPUT</define>
 </shaderSource>

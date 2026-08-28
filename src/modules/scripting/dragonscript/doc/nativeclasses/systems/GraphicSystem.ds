@@ -185,5 +185,28 @@ fixed class GraphicSystem
 	 */
 	static func void setVRDebugPanelPosition(DVector position, Quaternion orientation)
 	end
+	
+	/**
+	 * \brief Get VR HUD overlay canvas view or null if not set.
+	 * \version 1.34
+	 * 
+	 * Returns the CanvasView used as HUD overlay in VR rendering. The HUD overlay is located in
+	 * front of the user. The VR module sizes the overlay to fit into the desired field of view
+	 * of the user.
+	 */
+	static func CanvasView getVRHudOverlayCanvas()
+		return null
+	end
+	
+	/**
+	 * \brief Set VR HUD overlay canvas view or null to unset.
+	 * \version 1.34
+	 * 
+	 * Sets the CanvasView to use as HUD overlay in VR rendering. The HUD overlay is located in
+	 * front of the user. The VR module sizes the overlay to fit into the desired field of view
+	 * of the user.
+	 */
+	static func void setVRHudOverlayCanvas(CanvasView overlay)
+	end
 	/*@}*/
 end

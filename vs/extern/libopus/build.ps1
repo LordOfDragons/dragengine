@@ -30,7 +30,8 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
 	-DCMAKE_BUILD_TYPE=Release `
 	-DOPUS_BUILD_SHARED_LIBRARY=OFF `
 	-DOPUS_BUILD_PROGRAMS=OFF `
-	-DOPUS_BUILD_TESTING=OFF
+	-DOPUS_BUILD_TESTING=OFF `
+	-DCMAKE_POLICY_VERSION_MINIMUM="3.5"
 
 cmake --build "$CmakeBuildDir" --config Release
 cmake --install "$CmakeBuildDir" --config Release

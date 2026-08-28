@@ -92,8 +92,6 @@ deoglRComponentLOD::deoglRComponentLOD(deoglRComponent &component, int lodIndex)
 pComponent(component),
 pLODIndex(lodIndex),
 
-pVAO(nullptr),
-pVBOLayout(nullptr),
 pVBOBlock(nullptr),
 
 pDirtyModelWeights(true),
@@ -198,10 +196,7 @@ float extDebugCompTBO = 0.0f;
 
 void deoglRComponentLOD::UpdateVBO(){
 	if(pDirtyVAO){
-		if(pVAO){
-			delete pVAO;
-			pVAO = nullptr;
-		}
+		pVAO.Clear();
 		pDirtyVAO = false;
 		
 		pDirtyVBO = true;
@@ -645,19 +640,13 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 void deoglRComponentLOD::pCleanUp(){
 	DropGIDynamicBVH();
 	
-	if(pVBOLayout){
-		delete pVBOLayout;
-	}
-	
 	pMemUse = 0;
 	
 	if(pTexTransformNormTan){
 		delete pTexTransformNormTan;
 	}
 	pFBOCalcNormalTangent = nullptr;
-	if(pVAO){
-		delete pVAO;
-	}
+	pVAO.Clear();
 	
 	deoglDelayedOperations &dops = pComponent.GetRenderThread().GetDelayedOperations();
 	dops.DeleteOpenGLBuffer(pTBOTransformVertices);
@@ -735,7 +724,7 @@ void deoglRComponentLOD::pUpdateVAO(deoglModelLOD &modelLOD){
 	const GLuint vboModel = pVBOBlock->GetVBO()->GetVBO();
 	deoglVBOLayout &vboLayout = pVBOBlock->GetVBO()->GetParentList()->GetLayout();
 	
-	pVAO = new deoglVAO(renderThread);
+	pVAO = deTUniqueReference<deoglVAO>::New(renderThread);
 	OGL_CHECK(renderThread, pglBindVertexArray(pVAO->GetVAO()));
 	
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO->GetSSBO()));
@@ -1156,7 +1145,7 @@ void deoglRComponentLOD::pPrepareVBOLayout(const deoglModelLOD &modelLOD){
 	}
 	
 	const int tcsetCount = modelLOD.GetTextureCoordSetCount();
-	pVBOLayout = new deoglVBOLayout;
+	pVBOLayout = deTUniqueReference<deoglVBOLayout>::New();
  	
  	// the layout of attributes. has to be ssbo compatible:
  	//

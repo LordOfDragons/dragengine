@@ -26,9 +26,14 @@
 #define _DEOGLRENDERVR_H_
 
 #include "deoglRenderBase.h"
+#include "../vao/deoglVAO.h"
+
+#include <dragengine/deTUniqueReference.h>
 
 class deoglRWorld;
 class deoglSharedVBOBlock;
+class deoglVREye;
+class deBaseVRModule;
 
 
 /**
@@ -36,6 +41,11 @@ class deoglSharedVBOBlock;
  */
 class deoglRenderVR : public deoglRenderBase{
 private:
+	GLuint pVBOHud;
+	deTUniqueReference<deoglVAO> pVAOHud;
+	int pHudVertexCount;
+	
+	
 	const deoglPipeline *pPipelineHiddenAreaDepth;
 	const deoglPipeline *pPipelineHiddenAreaDepthStereoLeft;
 	const deoglPipeline *pPipelineHiddenAreaDepthStereoRight;
@@ -44,6 +54,9 @@ private:
 	const deoglPipeline *pPipelineHiddenAreaClearMaskStereoLeft;
 	const deoglPipeline *pPipelineHiddenAreaClearMaskStereoRight;
 	
+	const deoglPipeline *pPipelineHud, *pPipelineHudSplit;
+	
+	const deoglPipeline *pPipelineSubmitColor, *pPipelineSubmitDepth;
 	
 	
 public:
@@ -62,6 +75,12 @@ public:
 	/*@{*/
 	/** Render hidden area. */
 	void RenderHiddenArea(deoglRenderPlan &plan, bool clearMask);
+	
+	/** Render hud. */
+	void RenderHud(deoglRenderPlan &plan);
+	
+	/** Submit eye images. */
+	void SubmitImages(deoglRenderPlan &plan, deoglVREye &eye, deBaseVRModule &vrmodule);
 	/*@}*/
 	
 	
@@ -69,6 +88,8 @@ public:
 private:
 	void pCleanUp();
 	void pRenderHiddenArea(const deoglSharedVBOBlock &vboBlock);
+	void pCreateHudVAO();
+	void pSubmitImagesOld(deoglRenderPlan &plan, deoglVREye &eye, deBaseVRModule &vrmodule);
 };
 
 #endif

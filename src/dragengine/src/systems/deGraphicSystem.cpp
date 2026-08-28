@@ -86,9 +86,7 @@ deBaseSystem(engine, "Graphic", deModuleSystem::emtGraphic),
 pActiveModule(nullptr){
 }
 
-deGraphicSystem::~deGraphicSystem(){
-}
-
+deGraphicSystem::~deGraphicSystem() = default;
 
 
 // Overloadables
@@ -102,9 +100,10 @@ void deGraphicSystem::SetActiveModule(deLoadableModule *module){
 void deGraphicSystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
 	
-	pRenderWindow = nullptr;
-	pInputOverlayCanvas = nullptr;
-	pDebugOverlayCanvas = nullptr;
+	pRenderWindow.Clear();
+	pInputOverlayCanvas.Clear();
+	pDebugOverlayCanvas.Clear();
+	pVRHudOverlayCanvas.Clear();
 	pActiveModule = nullptr;
 }
 
@@ -219,7 +218,17 @@ void deGraphicSystem::SetInputOverlayCanvas(deCanvasView *view){
 	pInputOverlayCanvas = view;
 }
 
-
+void deGraphicSystem::SetVRHudOverlayCanvas(deCanvasView *view){
+	if(pVRHudOverlayCanvas == view){
+		return;
+	}
+	
+	pVRHudOverlayCanvas = view;
+	
+	if(pActiveModule){
+		pActiveModule->VRHudOverlayCanvasChanged();
+	}
+}
 
 #ifdef OS_ANDROID
 void deGraphicSystem::InitAppWindow(){

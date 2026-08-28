@@ -110,7 +110,7 @@ void deoglRDecal::WorldComputeElement::UpdateDataGeometries(sDataElementGeometry
 		return;
 	}
 	
-	const deoglVAO * const vao = vboBlock->GetVBO()->GetVAO();
+	const auto &vao = vboBlock->GetVBO()->GetVAO();
 	if(!vao || !vao->GetRTSVAO()){
 		return;
 	}

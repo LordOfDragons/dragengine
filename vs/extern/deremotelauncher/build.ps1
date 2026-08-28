@@ -16,7 +16,7 @@ if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
 $DERemoteLauncherVersion = "1.1"
 
 
-$ExpandedDir = "$ProjectDir\DERemoteLauncherSDK"
+$ExpandedDir = "$ProjectDir\build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
@@ -28,4 +28,4 @@ if (!(Test-Path $ArchiveFile)) {
     Invoke-WebRequestWithRetry -Uri "$BaseUrl/DERemoteLauncherSDK-$DERemoteLauncherVersion.zip" -OutFile $ArchiveFile
 }
 
-Expand-Archive -Path $ArchiveFile -DestinationPath $ProjectDir
+Expand-Archive -Path $ArchiveFile -DestinationPath $ExpandedDir

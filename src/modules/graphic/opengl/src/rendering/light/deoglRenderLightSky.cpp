@@ -389,7 +389,7 @@ const deoglRenderPlanMasked *mask, bool xray){
 	const deoglDebugTraceGroup debugTrace(renderThread, "LightSky.RenderLight");
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	//deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
-	deoglGIState * const giState = plan.GetPlan().GetUpdateGIState();
+	deoglGIState * const giState = !xray ? plan.GetPlan().GetUpdateGIState() : nullptr;
 	const deoglLightPipeline *pipeline = nullptr;
 	
 	const bool useShadow = plan.GetUseShadow();
@@ -473,7 +473,7 @@ const deoglRenderPlanMasked *mask, bool xray){
 	}
 	
 	// GI rays
-	if(!mask && solid && !xray && giState){
+	if(!mask && solid && giState){
 		const deoglSkyLayerGICascade * const slgc = plan.GetLayer()->GetGICascade(giState->GetSkyShadowCascade());
 		const deoglSCSolid * const scsolid = slgc ? &slgc->GetShadowCaster().GetSolid() : nullptr;
 		

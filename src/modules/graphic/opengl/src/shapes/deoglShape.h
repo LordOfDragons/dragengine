@@ -26,10 +26,12 @@
 #define _DEOGLSHAPE_H_
 
 #include "../deoglBasics.h"
+#include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 
+#include <dragengine/deTUniqueReference.h>
+
 class deoglRenderThread;
-class deoglVAO;
 class deoglRenderPlan;
 
 
@@ -101,7 +103,7 @@ public:
 	void SetPointCountLines(int pointCount);
 	
 	/** Retrieves the VAO from the vbo block. */
-	deoglVAO *GetVAO();
+	const deTUniqueReference<deoglVAO> &GetVAO();
 	/** Activates the VAO from the vbo block. */
 	void ActivateVAO();
 	

@@ -181,7 +181,7 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 		public func void dispose()
 			pDynamicSkin = null
 			if pPanel != null
-				pPanel.dispose()
+				pPanel.safeDispose()
 				pPanel = null
 			end
 			super.dispose()

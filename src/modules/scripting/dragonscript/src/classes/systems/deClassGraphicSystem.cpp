@@ -364,6 +364,32 @@ void deClassGraphicSystem::nfSetVRDebugPanelPosition::RunFunction(dsRunTime *rt,
 	ds.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->SetVRDebugPanelPosition(position, orientation);
 }
 
+// static public func CanvasView getVRHudOverlay()
+deClassGraphicSystem::nfGetVRHudOverlayCanvas::nfGetVRHudOverlayCanvas(const sInitData &init) :
+dsFunction(init.clsGraSys, "getVRHudOverlayCanvas", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsCView){
+}
+void deClassGraphicSystem::nfGetVRHudOverlayCanvas::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassGraphicSystem &clsGraSys = *static_cast<deClassGraphicSystem*>(GetOwnerClass());
+	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
+	
+	clsGraSys.GetDS().GetClassCanvasView()->PushCanvas(rt, graSys.GetVRHudOverlayCanvas());
+}
+
+// static public func void setVRHudOverlay(CanvasView overlay)
+deClassGraphicSystem::nfSetVRHudOverlayCanvas::nfSetVRHudOverlayCanvas(const sInitData &init) :
+dsFunction(init.clsGraSys, "setVRHudOverlayCanvas", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsCView); // overlay
+}
+void deClassGraphicSystem::nfSetVRHudOverlayCanvas::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassGraphicSystem &clsGraSys = *static_cast<deClassGraphicSystem*>(GetOwnerClass());
+	const deScriptingDragonScript &ds = clsGraSys.GetDS();
+	
+	ds.GetGameEngine()->GetGraphicSystem()->SetVRHudOverlayCanvas(
+		ds.GetClassCanvasView()->GetCanvas(rt->GetValue(0)->GetRealObject()));
+}
+
 
 
 // class deClassGraphicSystem
@@ -420,6 +446,8 @@ void deClassGraphicSystem::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfSendCommand(init));
 	AddFunction(new nfGetFPSRate(init));
 	AddFunction(new nfSetVRDebugPanelPosition(init));
+	AddFunction(new nfGetVRHudOverlayCanvas(init));
+	AddFunction(new nfSetVRHudOverlayCanvas(init));
 }
 
 int deClassGraphicSystem::CoordCanvas2Window(int coordinates) const{

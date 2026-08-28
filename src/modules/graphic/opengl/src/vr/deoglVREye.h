@@ -72,9 +72,9 @@ private:
 	deoglRenderTarget::Ref pRenderTarget;
 	decVector2 pCanvasTCFrom, pCanvasTCTo;
 	
-	decTList<GLuint> pVRGetViewsBuffer;
+	decTList<GLuint> pVRGetViewsBuffer, pVRGetViewsDepthBuffer;
 	
-	decTList<cViewImage> pVRViewImages;
+	decTList<cViewImage> pVRViewImages, pVRViewDepthImages;
 	decVector2 pVRViewTCFrom, pVRViewTCTo;
 	
 	bool pUseGammaCorrection;
@@ -98,6 +98,9 @@ public:
 	/** VR. */
 	inline deoglVR &GetVR() const{ return pVR; }
 	
+	/** Eye. */
+	inline deBaseVRModule::eEye GetEye() const{ return pEye; }
+	
 	/** Target size. */
 	inline const decPoint &GetTargetSize() const{ return pTargetSize; }
 	
@@ -106,6 +109,10 @@ public:
 	inline double GetProjectionRight() const{ return pProjectionRight; }
 	inline double GetProjectionTop() const{ return pProjectionTop; }
 	inline double GetProjectionBottom() const{ return pProjectionBottom; }
+	
+	/** VR images. */
+	inline const decTList<cViewImage> &GetVRViewImages() const{ return pVRViewImages; }
+	inline const decTList<cViewImage> &GetVRViewDepthImages() const{ return pVRViewDepthImages; }
 	
 	/** Matrix transforming from view space to eye space. */
 	inline const decMatrix &GetMatrixViewToEye() const{ return pMatrixViewToEye; }
@@ -119,6 +126,10 @@ public:
 	/** Texture coordinates to use to render from render target to canvas. */
 	inline const decVector2 &GetCanvasTCFrom() const{ return pCanvasTCFrom; }
 	inline const decVector2 &GetCanvasTCTo() const{ return pCanvasTCTo; }
+	
+	/** VR image submit texture coordinates. */
+	inline const decVector2 &GetVRViewTCFrom() const{ return pVRViewTCFrom; }
+	inline const decVector2 &GetVRViewTCTo() const{ return pVRViewTCTo; }
 	
 	/** Use gamma correction. */
 	inline bool GetUseGammaCorrection() const{ return pUseGammaCorrection; }
@@ -151,6 +162,7 @@ private:
 	void pGetParameters(deBaseVRModule &vrmodule);
 	void pLogParameters(deoglRenderThread &renderThread);
 	void pUpdateEyeViews(deBaseVRModule &vrmodule);
+	void pUpdateEyeDepthViews(deBaseVRModule &vrmodule);
 	void pRender(deoglRenderThread &renderThread);
 	const char *LogPrefix() const;
 };

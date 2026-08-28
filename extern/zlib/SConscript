@@ -25,7 +25,7 @@ else:
 
 # fetching is always allowed
 nodeArtifacts = envLibrary.DownloadArtifactHelper(
-	'{}.tar.bz2'.format(srcdir), 'zlib', 'lib_zlib_fetch')
+	'{}.tar.xz'.format(srcdir), 'zlib', 'lib_zlib_fetch')
 
 # check if system zlib is present
 hasSystemZLib = False

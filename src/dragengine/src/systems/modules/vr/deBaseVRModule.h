@@ -427,6 +427,24 @@ public:
 	virtual int GetEyeViewImages(eEye eye, int count, void *views);
 	
 	/**
+	 * \brief Get eye depth images to use for rendering.
+	 * \version 1.34
+	 * \warning For Graphic Module use only.
+	 * 
+	 * If \em count is 0 returns the count of eye depth images.
+	 * 
+	 * If \em count is larger than 0 \em views is filled with the eye depth image handles
+	 * up to \em count entries. If \em count is larger than 0 but smaller than the
+	 * required count an exception is thrown. Returns the count of entries written.
+	 * 
+	 * \param[in] eye Eye to get depth images for.
+	 * \param[in] count Size of \em views array. Use 0 to query the required size.
+	 * \param[out] views Array of eye depth images. Pointer has to be cast to graphic api
+	 *                  specific object instance pointer. Can be nullptr if \em count is 0.
+	 */
+	virtual int GetEyeDepthImages(eEye eye, int count, void *views);
+	
+	/**
 	 * \brief Get eye view render texture coordinates.
 	 * \version 1.10
 	 * \warning For Graphic Module use only.
@@ -484,6 +502,34 @@ public:
 	 * \version 1.10
 	 */
 	virtual void ReleaseEyeViewImage(eEye eye);
+	
+	/**
+	 * \brief Acquire eye depth image to render into.
+	 * \version 1.34
+	 * \warning For Graphic Module use only.
+	 * 
+	 * If the VR module requires the graphic module to provide the rendered image so the
+	 * VR module can do the eye view update -1 is returned.
+	 * 
+	 * The VR module acquires the next image to use from the list of eye depth images.
+	 * This list is send by notification to the graphic module. The returned index matches
+	 * this list. The area to render to is also defined while sending the list and applies
+	 * to all eye depth images.
+	 * 
+	 * If -1 is returned the VR module does not support the graphic module rendering into
+	 * eye depth images. The graphic module has to submit the images instead.
+	 * 
+	 * Only one image can be acquired for each eye depth at the same time. The list of
+	 * available eye depth images is send by notification to the graphic module earlier.
+	 */
+	virtual int AcquireEyeDepthImage(eEye eye);
+	
+	/**
+	 * \brief Release eye depth image after render into.
+	 * \warning For Graphic Module use only.
+	 * \version 1.34
+	 */
+	virtual void ReleaseEyeDepthImage(eEye eye, float nearZ, float farZ);
 	
 	/**
 	 * \brief Submit OpenGL rendered image to the HMD.

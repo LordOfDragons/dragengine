@@ -295,7 +295,18 @@ void deoglRenderBase::SetViewport(const decPoint &offset, const decPoint &size) 
 	SetViewport(offset.x, offset.y, size.x, size.y);
 }
 
-
+void deoglRenderBase::SetViewportUnscaled(const deoglRenderPlan &plan) const{
+	const bool upscale = plan.GetUseUpscaling();
+	const int upscaleWidth = plan.GetUpscaleWidth();
+	const int upscaleHeight = plan.GetUpscaleHeight();
+	
+	const int viewportHeight = upscale ? upscaleHeight : plan.GetViewportHeight();
+	const int viewportWidth = upscale ? upscaleWidth : plan.GetViewportWidth();
+	
+	OGL_CHECK(pRenderThread, glViewport(0, 0, viewportWidth, viewportHeight));
+	OGL_CHECK(pRenderThread, glScissor(0, 0, viewportWidth, viewportHeight));
+}
+	
 
 void deoglRenderBase::RenderFullScreenQuad() const{
 	OGL_CHECK(pRenderThread, glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
@@ -332,6 +343,13 @@ void deoglRenderBase::RenderFullScreenQuadVAO(bool useStereo) const{
 		OGL_CHECK(pRenderThread, glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
 	}
 	
+	OGL_CHECK(pRenderThread, pglBindVertexArray(0));
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAOLayer(const deoglRenderPlan &plan, int layer) const{
+	OGL_CHECK(pRenderThread, pglBindVertexArray(
+		pRenderThread.GetDeferredRendering().GetVAOFullScreenQuad()->GetVAO()));
+	OGL_CHECK(pRenderThread, glDrawArrays(GL_TRIANGLE_FAN, 6 * layer, 4));
 	OGL_CHECK(pRenderThread, pglBindVertexArray(0));
 }
 

@@ -102,13 +102,14 @@ private:
 	
 	decTList<int64_t> pSwapchainFormats;
 	
-	deoxrSwapchain::Ref pSwapchainLeftEye;
-	deoxrSwapchain::Ref pSwapchainRightEye;
-	deoxrSwapchain::Ref pSwapchainDepthLeftEye;
-	deoxrSwapchain::Ref pSwapchainDepthRightEye;
+	deoxrSwapchain::Ref pSwapchainLeftEye, pSwapchainRightEye;
+	deoxrSwapchain::Ref pSwapchainDepthLeftEye, pSwapchainDepthRightEye;
 	
 	XrPosef pLeftEyePose, pRightEyePose;
 	XrFovf pLeftEyeFov, pRightEyeFov;
+	float pLeftDepthNearZ, pLeftDepthFarZ;
+	float pRightDepthNearZ, pRightDepthFarZ;
+	bool pLeftEyeDepthSubmitted, pRightEyeDepthSubmitted;
 	
 	deoxrHiddenMesh::Ref pLeftEyeHiddenMesh;
 	deoxrHiddenMesh::Ref pRightEyeHiddenMesh;
@@ -116,6 +117,8 @@ private:
 	decVector pHeadPosition, pHeadLinearVelocity, pHeadAngularVelocity;
 	decQuaternion pHeadOrientation;
 	decMatrix pLeftEyeMatrix, pRightEyeMatrix, pSpaceOriginPose;
+	
+	decTList<const XrCompositionLayerBaseHeader*> pPresentLayers;
 	
 	// graphic api connection
 	bool pIsGACOpenGL;
@@ -235,6 +238,12 @@ public:
 	
 	/** Right eye fov. */
 	inline const XrFovf &GetRightEyeFov() const{ return pRightEyeFov; }
+	
+	/** Left eye depth submitted. */
+	void LeftEyeDepthSubmitted(float nearZ, float farZ);
+	
+	/** Right eye depth submitted. */
+	void RightEyeDepthSubmitted(float nearZ, float farZ);
 	
 	/** Left eye hidden mesh or null. */
 	inline const deoxrHiddenMesh::Ref &GetLeftEyeHiddenMesh() const{ return pLeftEyeHiddenMesh; }

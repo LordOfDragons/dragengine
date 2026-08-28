@@ -12,7 +12,7 @@ if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
     return
 }
 
-$LibVersion = "1.4.1"
+$LibVersion = "1.5.4"
 
 $ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "build"
 if (Test-Path $ExpandedDir) {
@@ -58,6 +58,7 @@ if (Test-Path "$NasmStandardPath\nasm.exe") {
 }
 
 $env:PATH = "$TargetNasmDir;$env:PATH"
+$env:CMAKE_ARGS = "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
 
 meson setup "$MesonBuildDir" "$MesonSourceDir" `
     --prefix="$MesonInstallDir" `

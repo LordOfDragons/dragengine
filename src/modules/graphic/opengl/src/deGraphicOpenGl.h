@@ -97,6 +97,9 @@ public:
 	/** Input system overlay canvas view changed. */
 	void InputOverlayCanvasChanged() override;
 	
+	/** VR Hud overlay canvas view changed. */
+	void VRHudOverlayCanvasChanged() override;
+	
 	#ifdef OS_ANDROID
 	/** Application window has been created. */
 	void InitAppWindow() override;
