@@ -31,7 +31,7 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 's
 hasSystemSvtAv1 = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_svtav1'] != TernaryVariableNo:
-	hasSystemSvtAv1 = conf.CheckLibWithHeader(libLinkName, 'svt-av1/EbSvtAv1.h', 'c++', call='svt_av1_enc_init(nullptr);')
+	hasSystemSvtAv1 = conf.CheckLibWithHeader(libLinkName, 'svt-av1/EbSvtAv1Enc.h', 'c++', call='svt_av1_enc_init(nullptr);')
 conf.Finish()
 
 if not hasSystemSvtAv1 and envLibrary['with_system_svtav1'] == TernaryVariableYes:
