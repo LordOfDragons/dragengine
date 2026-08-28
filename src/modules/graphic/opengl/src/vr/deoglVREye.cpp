@@ -510,7 +510,8 @@ void deoglVREye::pUpdateEyeDepthViews(deBaseVRModule &vrmodule){
 		
 		vi.fbo->AttachDepthTextureLevel(vi.texture, 0);
 		
-		OGL_CHECK(renderThread, glDrawBuffer(GL_NONE));
+		const GLenum buffers[1] = {GL_NONE};
+		OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
 		OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 		
 		vi.fbo->Verify();
