@@ -131,6 +131,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
+      <PdbPath>.</PdbPath>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
@@ -145,6 +146,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
+      <PdbPath>.</PdbPath>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
@@ -161,6 +163,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
+      <PdbPath>.</PdbPath>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
@@ -179,6 +182,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
+      <PdbPath>.</PdbPath>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
@@ -200,6 +204,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
+      <PdbPath>.</PdbPath>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
@@ -223,6 +228,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
+      <PdbPath>.</PdbPath>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
