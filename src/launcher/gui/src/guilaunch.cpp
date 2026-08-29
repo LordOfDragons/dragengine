@@ -31,6 +31,7 @@
 
 #ifdef OS_W32
 #include <dragengine/app/deOSWindows.h>
+#include <wer.h>
 #endif
 
 #include "guilaunch.h"
@@ -58,6 +59,16 @@ int main(int argc, char **argv){
 	int foxArgCount = 0;
 	
 	(void)SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	
+	{
+	wchar_t logPath[MAX_PATH];
+	if(ExpandEnvironmentStringsW(L"%LOCALAPPDATA%\\DEIGDE\\Logs\\delauncher-gui.log", logPath, MAX_PATH)){
+		WerRegisterFile(logPath, WerRegFileTypeOther, WER_FILE_ANONYMOUS_DATA);
+	}
+	if(ExpandEnvironmentStringsW(L"%LOCALAPPDATA%\\DEIGDE\\Logs\\delauncher-gui-engine.log", logPath, MAX_PATH)){
+		WerRegisterFile(logPath, WerRegFileTypeOther, WER_FILE_ANONYMOUS_DATA);
+	}
+	}
 #endif
 	
 	int returnValue = 0;

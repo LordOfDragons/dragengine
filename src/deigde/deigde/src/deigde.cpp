@@ -57,11 +57,19 @@ int main(int argCount, char **args){
 
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
+#include <wer.h>
 
 DE_W32_DEFINE_GPU_EXPORTS
 
 static int WINAPI RealWinMain(){
 	(void)SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	
+	{
+	wchar_t logPath[MAX_PATH];
+	if(ExpandEnvironmentStringsW(L"%LOCALAPPDATA%\\DEIGDE\\Logs\\deigde.log", logPath, MAX_PATH)){
+		WerRegisterFile(logPath, WerRegFileTypeOther, WER_FILE_ANONYMOUS_DATA);
+	}
+	}
 	
 	try{
 		igdeRealApplication().Run();

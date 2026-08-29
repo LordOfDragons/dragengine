@@ -32,6 +32,7 @@
 #include <sys/types.h>
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
+#include <wer.h>
 #else
 #include <unistd.h>
 #include <sys/time.h>
@@ -260,6 +261,12 @@ void projTestRunProcess::pReadRunParameters(){
 	
 	pRunParameters.pathLogFile = ReadString16FromPipe();
 	pCreateLogger();
+	
+#ifdef OS_W32
+	WerRegisterFile(pRunParameters.pathLogFile.GetString(),
+		WerRegFileTypeOther, WER_FILE_ANONYMOUS_DATA);
+#endif
+	
 	pLogger->LogInfo(LOGSOURCE, "TestRunner launched. Reading run parameters...");
 
 	pRunParameters.pathDataDirectory = ReadString16FromPipe();

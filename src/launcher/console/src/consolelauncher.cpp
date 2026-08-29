@@ -28,6 +28,7 @@
 
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
+#include <wer.h>
 #endif
 
 #ifdef OS_BEOS
@@ -163,7 +164,14 @@ DE_W32_DEFINE_GPU_EXPORTS
 
 static int WINAPI RealWinMain(){
 	(void)SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-
+	
+	{
+	wchar_t logPath[MAX_PATH];
+	if(ExpandEnvironmentStringsW(L"%LOCALAPPDATA%\\DEIGDE\\Logs\\delauncher_console.log", logPath, MAX_PATH)){
+		WerRegisterFile(logPath, WerRegFileTypeOther, WER_FILE_ANONYMOUS_DATA);
+	}
+	}
+	
 	try{
 		decUnicodeArgumentList argsList;
 		argsList.ParseCommand(deOSWindows::WideToUnicode(GetCommandLineW()));
