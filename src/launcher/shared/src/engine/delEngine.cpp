@@ -424,7 +424,7 @@ void delEngine::UpdateResolutions(delEngineInstance &instance){
 			}
 		}
 		
-	}catch(const deException &e){
+	}catch(const deException &){
 	}
 	
 	// sort resolutions by decreasing pixel count

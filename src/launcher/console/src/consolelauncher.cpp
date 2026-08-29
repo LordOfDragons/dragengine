@@ -26,9 +26,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <dragengine/dragengine_configuration.h>
+
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
-#include <wer.h>
+#include <werapi.h>
 #endif
 
 #ifdef OS_BEOS

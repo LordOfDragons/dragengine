@@ -41,7 +41,7 @@
 #	include <dragengine/app/deOSConsole.h>
 #elif defined OS_W32
 #	include <dragengine/app/deOSWindows.h>
-#	include <wer.h>
+#	include <werapi.h>
 #else
 #	error OS not supported!
 #endif
@@ -126,7 +126,9 @@ int delEngineProcessMain::RunMain(int argc, char **args){
 			DETHROW_INFO(deeInvalidAction, "sending sync too short");
 		}
 		
-		WerRegisterFile(logfile.GetString(), WerRegFileTypeOther, WER_FILE_ANONYMOUS_DATA);
+		wchar_t logfileWide[MAX_PATH];
+		deOSWindows::Utf8ToWide(logfile, logfileWide, MAX_PATH);
+		WerRegisterFile(logfileWide, WerRegFileTypeOther, WER_FILE_ANONYMOUS_DATA);
 		
 		// start process
 //		printf( "start process\n");

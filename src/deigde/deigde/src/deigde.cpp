@@ -57,7 +57,7 @@ int main(int argCount, char **args){
 
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
-#include <wer.h>
+#include <werapi.h>
 
 DE_W32_DEFINE_GPU_EXPORTS
 

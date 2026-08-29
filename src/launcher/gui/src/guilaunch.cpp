@@ -31,7 +31,7 @@
 
 #ifdef OS_W32
 #include <dragengine/app/deOSWindows.h>
-#include <wer.h>
+#include <werapi.h>
 #endif
 
 #include "guilaunch.h"
