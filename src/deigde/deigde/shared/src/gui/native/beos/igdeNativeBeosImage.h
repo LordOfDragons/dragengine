@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,27 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIVEBEOSIMAGE_H_
+#define _IGDENATIVEBEOSIMAGE_H_
 
-#include "../../deigde_configuration.h"
+#include <interface/View.h>
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+class igdeImage;
+class igdeNativeBeosImageView;
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+/**
+ * BeOS Native image.
+ */
+class igdeNativeBeosImage{
+public:
+	igdeNativeBeosImage();
+	virtual ~igdeNativeBeosImage();
+	
+	static igdeNativeBeosImageView* CreateNativeWidget(igdeImage &owner);
+	static void PostCreateNativeWidget(igdeImage &owner, void *native);
+	static void DestroyNativeWidget(igdeImage &owner, void *native);
+};
 
-#endif
-
+typedef igdeNativeBeosImage igdeNativeImage;
 #endif

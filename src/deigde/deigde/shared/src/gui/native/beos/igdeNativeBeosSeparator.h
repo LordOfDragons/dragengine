@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,38 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIVEBEOSSEPARATOR_H_
+#define _IGDENATIVEBEOSSEPARATOR_H_
 
-#include "../../deigde_configuration.h"
+#include "beostoolkit.h"
+#include "../../igdeSeparator.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+class igdeSeparator;
+class igdeGuiTheme;
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+/**
+ * \brief BeOS native separator.
+ */
+class igdeNativeBeosSeparator : public BView{
+private:
+	igdeSeparator *pOwner;
+	
+public:
+	igdeNativeBeosSeparator(igdeSeparator &owner, BView *parent,
+		const igdeGuiTheme &guitheme);
+	~igdeNativeBeosSeparator() override;
+	
+	static igdeNativeBeosSeparator* CreateNativeWidget(igdeSeparator &owner);
+	void PostCreateNativeWidget() override;
+	void DestroyNativeWidget() override;
+	
+	void Focus() override;
+	void UpdateStyle() override;
+	
+	void Draw(BRect updateRect) override;
+};
 
-#endif
+typedef igdeNativeBeosSeparator igdeNativeSeparator;
 
 #endif

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,38 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIBEOSNVBOARD_H_
+#define _IGDENATIBEOSNVBOARD_H_
 
-#include "../../deigde_configuration.h"
+#include "../../igdeNVBoard.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+class igdeNVBoard;
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+/**
+ * BeOS Native node view board.
+ */
+class igdeNativeBeosNVBoard : public igdeNVBoard::cNativeBoard{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create native widget. */
+	igdeNativeBeosNVBoard();
+	
+	/** \brief Clean up native widget. */
+	virtual ~igdeNativeBeosNVBoard();
+	
+	/** \brief Create native widget. */
+	static igdeNativeBeosNVBoard* CreateNativeWidget(igdeNVBoard &owner);
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
+	/*@}*/
+};
 
-#endif
+typedef igdeNativeBeosNVBoard igdeNativeNVBoard;
 
 #endif

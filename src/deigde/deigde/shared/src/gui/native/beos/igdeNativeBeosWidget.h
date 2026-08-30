@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,38 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIVEBEOSWIDGET_H_
+#define _IGDENATIVEBEOSWIDGET_H_
 
-#include "../../deigde_configuration.h"
+#include "beostoolkit.h"
+#include "../../igdeWidget.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+class igdeWidget;
+class igdeEnvironment;
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+/**
+ * BeOS Native widget.
+ */
+class igdeNativeBeosWidget : public igdeWidget::cNativeWidget{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create native widget. */
+	igdeNativeBeosWidget();
+	
+	/** \brief Clean up native widget. */
+	virtual ~igdeNativeBeosWidget();
+	/*@}*/
+	
+	
+	/** \name Management */
+	/*@{*/
+	void UpdateEnabled() override;
+	void UpdateVisible() override;
+	/*@}*/
+};
 
-#endif
+typedef igdeNativeBeosWidget igdeNativeWidget;
 
 #endif

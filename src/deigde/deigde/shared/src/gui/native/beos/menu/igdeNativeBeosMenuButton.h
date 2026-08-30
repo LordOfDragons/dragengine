@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,25 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIVEBEOSMENUBUTTON_H_
+#define _IGDENATIVEBEOSMENUBUTTON_H_
 
-#include "../../deigde_configuration.h"
+class igdeMenuButton;
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+/**
+ * BeOS native menu button.
+ */
+class igdeNativeBeosMenuButton{
+public:
+	igdeNativeBeosMenuButton();
+	virtual ~igdeNativeBeosMenuButton();
+	
+	static void *CreateNativeWidget(igdeMenuButton &owner);
+	static void PostCreateNativeWidget(igdeMenuButton &owner, void *native);
+	static void DestroyNativeWidget(igdeMenuButton &owner, void *native);
+};
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
-
-#endif
+typedef igdeNativeBeosMenuButton igdeNativeMenuButton;
 
 #endif

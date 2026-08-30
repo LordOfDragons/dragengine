@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifdef IGDE_TOOLKIT_BEOS
 
-#include "../../deigde_configuration.h"
+#include "igdeNativeBeosMenuBar.h"
+#include "../../../igdeMenuBar.h"
+#include <dragengine/common/exceptions.h>
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+igdeNativeBeosMenuBar::igdeNativeBeosMenuBar() = default;
+igdeNativeBeosMenuBar::~igdeNativeBeosMenuBar() = default;
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
 
-#endif
+void *igdeNativeBeosMenuBar::CreateNativeWidget(igdeMenuBar &owner){
+	// MenuBar holds top-level menu items in application window
+	// Implementation uses BeOS/Haiku menu system or custom rendering
+	// DELint-Allow-NewWithoutRef
+	return new igdeNativeBeosMenuBar;
+}
+
+void igdeNativeBeosMenuBar::PostCreateNativeWidget(igdeMenuBar &owner, void *native){
+	// MenuBar post-creation setup
+}
+
+void igdeNativeBeosMenuBar::DestroyNativeWidget(igdeMenuBar &owner, void *native){
+	delete reinterpret_cast<igdeNativeBeosMenuBar*>(native);
+}
 
 #endif

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,34 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifdef IGDE_TOOLKIT_BEOS
 
-#include "../../deigde_configuration.h"
+#include "igdeNativeBeosToolBarDock.h"
+#include "../../igdeToolBarDock.h"
+#include <dragengine/common/exceptions.h>
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+// Class igdeNativeBeosToolBarDock
+////////////////////////////////////
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+igdeNativeBeosToolBarDock::igdeNativeBeosToolBarDock() = default;
+igdeNativeBeosToolBarDock::~igdeNativeBeosToolBarDock() = default;
 
-#endif
+
+void *igdeNativeBeosToolBarDock::CreateNativeWidget(igdeToolBarDock &owner){
+	// ToolBarDock is a container for docking tool bars
+	// Implementation manages toolbars that can be repositioned
+	DEASSERT_NOTNULL(owner.GetParent())
+	// DELint-Allow-NewWithoutRef
+	return new igdeNativeBeosToolBarDock;
+}
+
+void igdeNativeBeosToolBarDock::PostCreateNativeWidget(igdeToolBarDock &owner, void *native){
+	// ToolBarDock post-creation setup
+}
+
+void igdeNativeBeosToolBarDock::DestroyNativeWidget(igdeToolBarDock &owner, void *native){
+	delete (igdeNativeBeosToolBarDock*)native;
+}
 
 #endif

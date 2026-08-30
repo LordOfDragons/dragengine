@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifdef IGDE_TOOLKIT_BEOS
 
-#include "../../deigde_configuration.h"
+#include "igdeNativeBeosMenuOption.h"
+#include "../../../igdeMenuOption.h"
+#include <dragengine/common/exceptions.h>
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+// Class igdeNativeBeosMenuOption
+///////////////////////////////////
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+igdeNativeBeosMenuOption::igdeNativeBeosMenuOption() = default;
+igdeNativeBeosMenuOption::~igdeNativeBeosMenuOption() = default;
 
-#endif
+
+igdeNativeBeosMenuOption* igdeNativeBeosMenuOption::CreateNativeMenu(igdeMenuOption &owner){
+	// MenuOption is a radio-button style menu item
+	// Implementation shows selected indicator and mutual exclusion
+	igdeNativeBeosMenuOption *menu = NULL;
+	
+	try{
+		menu = new igdeNativeBeosMenuOption();
+		
+	}catch(const deException &){
+		return NULL;
+	}
+	
+	return menu;
+}
 
 #endif

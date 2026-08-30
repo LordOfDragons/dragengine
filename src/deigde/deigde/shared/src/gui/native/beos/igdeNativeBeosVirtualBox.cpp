@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,31 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifdef IGDE_TOOLKIT_BEOS
 
-#include "../../deigde_configuration.h"
+#include "igdeNativeBeosVirtualBox.h"
+#include "../../igdeVirtualBox.h"
+#include <dragengine/common/exceptions.h>
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+igdeNativeBeosVirtualBox::igdeNativeBeosVirtualBox() = default;
+igdeNativeBeosVirtualBox::~igdeNativeBeosVirtualBox() = default;
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
 
-#endif
+void *igdeNativeBeosVirtualBox::CreateNativeWidget(igdeVirtualBox &owner){
+	// VirtualBox is a container for managing virtual widget areas
+	// Implementation provides viewport with large virtual area
+	DEASSERT_NOTNULL(owner.GetParent())
+	// DELint-Allow-NewWithoutRef
+	return new igdeNativeBeosVirtualBox;
+}
+
+void igdeNativeBeosVirtualBox::PostCreateNativeWidget(igdeVirtualBox &owner, void *native){
+	// VirtualBox post-creation setup
+}
+
+void igdeNativeBeosVirtualBox::DestroyNativeWidget(igdeVirtualBox &owner, void *native){
+	delete (igdeNativeBeosVirtualBox*)native;
+}
 
 #endif

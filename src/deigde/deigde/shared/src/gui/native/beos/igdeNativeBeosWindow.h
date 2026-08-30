@@ -1,0 +1,96 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#ifndef _IGDENATIVEBEOSWINDOW_H_
+#define _IGDENATIVEBEOSWINDOW_H_
+
+#include "../../igdeWindow.h"
+
+class igdeWindow;
+
+
+class igdeNativeBeosWindowBase{
+public:
+	bool isClosed = false;
+	
+	virtual ~igdeNativeBeosWindowBase() = default;
+	virtual void OnFrameUpdate() = 0;
+};
+
+
+/**
+ * BeOS window.
+ */
+class igdeNativeBeosWindow : public BWindow, public igdeNativeBeosWindowBase,
+	public igdeWindow::cNativeWindow{
+private:
+	igdeWindow *pOwner;
+	BView *pContentView;
+		
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create native widget. */
+	explicit igdeNativeBeosWindow(igdeWindow &owner);
+	
+	/** \brief Clean up native widget. */
+	~igdeNativeBeosWindow() override;
+	
+	/** \brief Create native widget. */
+	static igdeNativeBeosWindow* CreateNativeWidget(igdeWindow &owner);
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
+	/*@}*/
+	
+	
+	/** \name Management */
+	/*@{*/
+	void UpdateStyle() override;
+	void UpdateEnabled() override;
+	void UpdatePosition() override;
+	void UpdateIcon() override;
+	void UpdateTitle() override;
+	void UpdateSize() override;
+	void RaiseAndActivate() override;
+	
+	void OnFrameUpdate() override;
+	
+	void *GetNativeContainer() const override;
+	/*@}*/
+	
+	
+	/** \name Events */
+	/*@{*/
+	void MessageReceived(BMessage *message) override;
+	bool QuitRequested() override;
+	/*@}*/
+};
+
+typedef igdeNativeBeosWindow igdeNativeWindow;
+
+#endif

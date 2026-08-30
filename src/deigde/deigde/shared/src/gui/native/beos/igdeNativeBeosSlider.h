@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,46 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIVEBEOSSLIDER_H_
+#define _IGDENATIVEBEOSSLIDER_H_
 
-#include "../../deigde_configuration.h"
+#include "beostoolkit.h"
+#include "../../igdeSlider.h"
+#include "../../resources/igdeFont.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+class igdeSlider;
+class igdeGuiTheme;
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+/**
+ * \brief BeOS native slider.
+ */
+class igdeNativeBeosSlider : public BSlider, public igdeSlider::cNativeSlider{
+private:
+	igdeSlider *pOwner;
+	igdeFont::Ref pFont;
+	bool pIgnoreValueChange;
+	
+public:
+	igdeNativeBeosSlider(igdeSlider &owner, BView *parent, const igdeGuiTheme &guitheme);
+	~igdeNativeBeosSlider() override;
+	
+	static igdeNativeBeosSlider* CreateNativeWidget(igdeSlider &owner);
+	void PostCreateNativeWidget() override;
+	void DestroyNativeWidget() override;
+	
+	void Focus() override;
+	void UpdateStyle() override;
+	void UpdateScale() override;
+	void UpdateRange() override;
+	void UpdateValue() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
+	
+	void MessageReceived(BMessage *msg) override;
+	bool IsFocusable() const override;
+};
 
-#endif
+typedef igdeNativeBeosSlider igdeNativeSlider;
 
 #endif

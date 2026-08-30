@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,23 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifdef IGDE_TOOLKIT_BEOS
+#include "igdeNativeBeosContainerFixed.h"
 
-#include "../../deigde_configuration.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+// Class igdeNativeBeosContainerFixed
+///////////////////////////////////////
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+igdeNativeBeosContainerFixed::igdeNativeBeosContainerFixed(){}
+igdeNativeBeosContainerFixed::~igdeNativeBeosContainerFixed(){}
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
 
-#endif
+void *igdeNativeBeosContainerFixed::CreateNativeWidget(igdeContainerFixed&){
+	return new igdeNativeBeosContainerFixed;
+}
 
+void igdeNativeBeosContainerFixed::PostCreateNativeWidget(igdeContainerFixed&, void*){}
+void igdeNativeBeosContainerFixed::DestroyNativeWidget(igdeContainerFixed&, void *native){
+	delete reinterpret_cast<igdeNativeBeosContainerFixed*>(native);
+}
 #endif

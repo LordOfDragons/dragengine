@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,43 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIVEBEOSTABOOK_H_
+#define _IGDENATIVEBEOSTABOOK_H_
 
-#include "../../deigde_configuration.h"
+#include "beostoolkit.h"
+#include "../../igdeTabBook.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+class igdeTabBook;
+class igdeGuiTheme;
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+/**
+ * \brief BeOS native tab book.
+ */
+class igdeNativeBeosTabBook : public BView, public igdeTabBook::cNativeTabBook{
+private:
+	igdeTabBook *pOwner;
+	BTabView *pTabView;
+	bool pIgnoreSelect;
+	
+public:
+	igdeNativeBeosTabBook(igdeTabBook &owner, BView *parent, const igdeGuiTheme &guitheme);
+	~igdeNativeBeosTabBook() override;
+	
+	static igdeNativeBeosTabBook* CreateNativeWidget(igdeTabBook &owner);
+	void PostCreateNativeWidget() override;
+	void DestroyNativeWidget() override;
+	
+	void Focus() override;
+	void UpdateStyle() override;
+	void AddHeader(const igdeTabBook::cHeader &header) override;
+	void UpdateHeader(int index, const igdeTabBook::cHeader &header) override;
+	void RemoveHeader(int index) override;
+	void RemoveAllHeaders() override;
+	void ChangePanel(int index) override;
+	void *GetNativeContainer() override;
+};
 
-#endif
+typedef igdeNativeBeosTabBook igdeNativeTabBook;
 
 #endif

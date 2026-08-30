@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,29 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifdef IGDE_TOOLKIT_BEOS
 
-#include "../../deigde_configuration.h"
+#include "igdeNativeBeosMenu.h"
+#include "../../../igdeMenu.h"
+#include <dragengine/common/exceptions.h>
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+igdeNativeBeosMenu::igdeNativeBeosMenu() = default;
+igdeNativeBeosMenu::~igdeNativeBeosMenu() = default;
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+void *igdeNativeBeosMenu::CreateNativeWidget(igdeMenu &owner){
+	// Menu is a container for menu items (popup menu)
+	// Implementation manages menu items and displays popup
+	// DELint-Allow-NewWithoutRef
+	return new igdeNativeBeosMenu;
+}
 
-#endif
+void igdeNativeBeosMenu::PostCreateNativeWidget(igdeMenu &owner, void *native){
+	// Menu post-creation setup
+}
+
+void igdeNativeBeosMenu::DestroyNativeWidget(igdeMenu &owner, void *native){
+	delete reinterpret_cast<igdeNativeBeosMenu*>(native);
+}
 
 #endif

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIVEBEOSCOLORBOX_H_
+#define _IGDENATIVEBEOSCOLORBOX_H_
 
-#include "../../deigde_configuration.h"
+#include "beostoolkit.h"
+#include "../../igdeColorBox.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+class igdeColorBox;
+class igdeGuiTheme;
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+class igdeNativeBeosColorBox : public BView, public igdeColorBox::cNativeColorBox{
+private:
+	igdeColorBox *pOwner;
+	BView *pColorView;
+	rgb_color pColor;
+	
+public:
+	igdeNativeBeosColorBox(igdeColorBox &owner, BView *parent,
+		const igdeGuiTheme &guitheme);
+	~igdeNativeBeosColorBox() override;
+	
+	static igdeNativeBeosColorBox* CreateNativeWidget(igdeColorBox &owner);
+	void PostCreateNativeWidget() override;
+	void DestroyNativeWidget() override;
+	
+	void Focus() override;
+	void UpdateStyle() override;
+	void UpdateColor() override;
+	void UpdateDescription() override;
+	void UpdateEnabled() override;
+	void ClipboardPutColor(const decColor &color) override;
+	decColor ClipboardGetColor() override;
+	
+	void MessageReceived(BMessage *message) override;
+	void Draw(BRect updateRect) override;
+};
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
-
-#endif
+typedef igdeNativeBeosColorBox igdeNativeColorBox;
 
 #endif

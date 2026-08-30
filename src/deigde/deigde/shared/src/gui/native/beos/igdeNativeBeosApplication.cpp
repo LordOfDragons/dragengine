@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifdef IGDE_TOOLKIT_BEOS
 
-#include "../../deigde_configuration.h"
+#include "igdeNativeBeosApplication.h"
+#include "../../igdeApplication.h"
+#include <dragengine/common/exceptions.h>
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+// Class igdeNativeBeosApplication
+////////////////////////////////////
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+igdeNativeBeosApplication::igdeNativeBeosApplication() = default;
+igdeNativeBeosApplication::~igdeNativeBeosApplication() = default;
 
-#endif
+igdeNativeBeosApplication* igdeNativeBeosApplication::CreateNativeApplication(igdeApplication &owner){
+	igdeNativeBeosApplication *native = nullptr;
+	try{
+		native = new igdeNativeBeosApplication();
+		native->PostCreateNativeApplication();
+		
+	}catch(const deException &){
+		if(native){
+			delete native;
+		}
+		throw;
+	}
+	return native;
+}
+
+void igdeNativeBeosApplication::PostCreateNativeApplication(){
+	// Application initializes BeOS/Haiku runtime
+	// This would create BApplication and start event loop
+}
+
+int igdeNativeBeosApplication::RunApplication(){
+	// Application main event loop - would call BApplication::Run()
+	return 0;
+}
 
 #endif

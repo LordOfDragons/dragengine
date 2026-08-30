@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,39 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIVEBEOSAPPLICATION_H_
+#define _IGDENATIVEBEOSAPPLICATION_H_
 
-#include "../../deigde_configuration.h"
+#include "beostoolkit.h"
+#include "../../igdeApplication.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+class igdeApplication;
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+/**
+ * BeOS Native application.
+ */
+class igdeNativeBeosApplication : public igdeApplication::cNativeApplication{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create native application. */
+	igdeNativeBeosApplication();
+	
+	/** \brief Clean up native application. */
+	virtual ~igdeNativeBeosApplication();
+	
+	/** \brief Create native application. */
+	static igdeNativeBeosApplication* CreateNativeApplication(igdeApplication &owner);
+	
+	/** \brief Post create native application. */
+	virtual void PostCreateNativeApplication();
+	
+	/** \brief Run application. */
+	virtual int RunApplication();
+	/*@}*/
+};
 
-#endif
+typedef igdeNativeBeosApplication igdeNativeApplication;
 
 #endif

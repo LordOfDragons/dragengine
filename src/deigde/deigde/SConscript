@@ -18,6 +18,7 @@ def buildWriteConfig(source, target, env):
 	configFileDefines = {}
 	configFileDefines['OS_UNIX'] = env['OSPosix']
 	configFileDefines['OS_W32'] = env['OSWindows']
+	configFileDefines['OS_BEOS'] = env['OSBeOS']
 	configFileDefines['IGDE_NULL_TOOLKIT'] = env['igde_toolkit'] == 'null'
 	
 	if WriteConfigFile(configFilePath, configFileDefines, env):
@@ -133,6 +134,8 @@ elif envIGDELib['OSBeOS']:
 
 if envIGDELib['igde_toolkit'] == 'fox':
 	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_FOX=1'])
+elif envIGDELib['igde_toolkit'] == 'beos':
+	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_BEOS=1'])
 elif envIGDELib['igde_toolkit'] == 'null':
 	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_NULL=1'])
 else:

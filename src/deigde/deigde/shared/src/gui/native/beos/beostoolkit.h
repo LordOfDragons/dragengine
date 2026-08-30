@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,40 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _BEOSTOOLKIT_H_
+#define _BEOSTOOLKIT_H_
 
-#include "../../deigde_configuration.h"
+#include "../../../deigde_configuration.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
-
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
-
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
-
-#endif
+// BeOS/Haiku native API includes
+#include <app/Application.h>
+#include <interface/View.h>
+#include <interface/Window.h>
+#include <interface/Button.h>
+#include <interface/CheckBox.h>
+#include <interface/TextControl.h>
+#include <interface/ListView.h>
+#include <interface/MenuBar.h>
+#include <interface/Menu.h>
+#include <interface/MenuItem.h>
+#include <interface/PopUpMenu.h>
+#include <interface/GroupBox.h>
+#include <interface/ScrollBar.h>
+#include <interface/Slider.h>
+#include <interface/StatusBar.h>
+#include <interface/StringView.h>
+#include <interface/TabView.h>
+#include <interface/TextEdit.h>
+#include <interface/ProgressBar.h>
+#include <interface/ColorControl.h>
+#include <interface/Separator.h>
+#include <interface/Box.h>
+#include <interface/Bitmap.h>
+#include <interface/Picture.h>
+#include <interface/Font.h>
+#include <support/String.h>
+#include <support/Looper.h>
+#include <support/Messenger.h>
+#include <support/Message.h>
 
 #endif

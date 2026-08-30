@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIVEBEOSPROGRESSBAR_H_
+#define _IGDENATIVEBEOSPROGRESSBAR_H_
 
-#include "../../deigde_configuration.h"
+#include "beostoolkit.h"
+#include "../../igdeProgressBar.h"
+#include "../../resources/igdeFont.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+class igdeProgressBar;
+class igdeGuiTheme;
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+/**
+ * \brief Native progress bar implementation for BeOS.
+ */
+class igdeNativeBeosProgressBar : public BProgressBar, public igdeProgressBar::cNativeProgressBar{
+private:
+	igdeProgressBar *pOwner;
+	igdeFont::Ref pFont;
+	
+public:
+	igdeNativeBeosProgressBar(igdeProgressBar &owner, BView *parent,
+		const igdeGuiTheme &guitheme);
+	~igdeNativeBeosProgressBar() override;
+	
+	static igdeNativeBeosProgressBar* CreateNativeWidget(igdeProgressBar &owner);
+	void PostCreateNativeWidget() override;
+	void DestroyNativeWidget() override;
+	
+	void Focus() override;
+	void UpdateStyle() override;
+	void UpdateValue() override;
+	void UpdateMaximum() override;
+	void UpdateDescription() override;
+	void UpdateEnabled() override;
+};
 
-#endif
+typedef igdeNativeBeosProgressBar igdeNativeProgressBar;
 
 #endif

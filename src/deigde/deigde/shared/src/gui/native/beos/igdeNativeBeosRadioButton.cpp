@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifdef IGDE_TOOLKIT_BEOS
 
-#include "../../deigde_configuration.h"
+#include "igdeNativeBeosRadioButton.h"
+#include "../../igdeRadioButton.h"
+#include "../../theme/igdeGuiTheme.h"
+#include <dragengine/common/exceptions.h>
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+igdeNativeBeosRadioButton::igdeNativeBeosRadioButton() = default;
+igdeNativeBeosRadioButton::~igdeNativeBeosRadioButton() = default;
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+void *igdeNativeBeosRadioButton::CreateNativeWidget(igdeRadioButton &owner){
+	// Radio button is created as part of a group, currently stubbed
+	// Implementation would require BRadioButton or equivalent from Haiku
+	// DELint-Allow-NewWithoutRef
+	return new igdeNativeBeosRadioButton;
+}
 
-#endif
+void igdeNativeBeosRadioButton::PostCreateNativeWidget(igdeRadioButton &owner, void *native){
+	// Post-creation setup for radio button
+}
+
+void igdeNativeBeosRadioButton::DestroyNativeWidget(igdeRadioButton &owner, void *native){
+	delete (igdeNativeBeosRadioButton*)native;
+}
 
 #endif

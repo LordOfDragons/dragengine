@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifdef IGDE_TOOLKIT_BEOS
 
-#include "../../deigde_configuration.h"
+#include "igdeNativeBeosMenuCommand.h"
+#include "../../../igdeMenuCommand.h"
+#include <dragengine/common/exceptions.h>
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+// Class igdeNativeBeosMenuCommand
+////////////////////////////////////
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
+igdeNativeBeosMenuCommand::igdeNativeBeosMenuCommand() = default;
+igdeNativeBeosMenuCommand::~igdeNativeBeosMenuCommand() = default;
 
-#endif
+
+igdeNativeBeosMenuCommand* igdeNativeBeosMenuCommand::CreateNativeMenu(igdeMenuCommand &owner){
+	// MenuCommand is an action menu item that triggers commands
+	// Implementation provides activation callback and keyboard shortcuts
+	igdeNativeBeosMenuCommand *menu = NULL;
+	
+	try{
+		menu = new igdeNativeBeosMenuCommand();
+		
+	}catch(const deException &){
+		return NULL;
+	}
+	
+	return menu;
+}
 
 #endif

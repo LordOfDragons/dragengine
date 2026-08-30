@@ -427,7 +427,7 @@ elif parent_env['OSBeOS']:
 	params.Add(TernaryVariable('with_pthread', 'Use pthread'))
 	params.Add(TernaryVariable('with_x', 'Use the X Window System'))
 	
-	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'null', ['null']))
+	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'beos', ['beos','null']))
 	
 	params.Add(StringVariable('package_haiku_revision', 'Revision for Haiku package', '1'))
 	

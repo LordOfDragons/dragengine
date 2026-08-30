@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,25 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _IGDENATIVEBEOSCONTAINERSCROLL_H_
+#define _IGDENATIVEBEOSCONTAINERSCROLL_H_
 
-#include "../../deigde_configuration.h"
+class igdeContainerScroll;
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+/**
+ * BeOS native container scroll.
+ */
+class igdeNativeBeosContainerScroll{
+public:
+	igdeNativeBeosContainerScroll();
+	virtual ~igdeNativeBeosContainerScroll();
+	
+	static void *CreateNativeWidget(igdeContainerScroll &owner);
+	static void PostCreateNativeWidget(igdeContainerScroll &owner, void *native);
+	static void DestroyNativeWidget(igdeContainerScroll &owner, void *native);
+};
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
-
-#endif
+typedef igdeNativeBeosContainerScroll igdeNativeContainerScroll;
 
 #endif

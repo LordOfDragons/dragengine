@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifdef IGDE_TOOLKIT_BEOS
 
-#include "../../deigde_configuration.h"
+#include "igdeNativeBeosMenuItem.h"
+#include "../../../igdeMenuItem.h"
+#include <dragengine/common/exceptions.h>
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "beos/beosincludenative.h"
+igdeNativeBeosMenuItem::igdeNativeBeosMenuItem() = default;
+igdeNativeBeosMenuItem::~igdeNativeBeosMenuItem() = default;
 
-#elif defined IGDE_TOOLKIT_NULL
-#	include "null/nullincludenative.h"
 
-#endif
+void *igdeNativeBeosMenuItem::CreateNativeWidget(igdeMenuItem &owner){
+	// MenuItem is a basic menu entry with text and icon
+	// Implementation represents single menu item in menu system
+	// DELint-Allow-NewWithoutRef
+	return new igdeNativeBeosMenuItem;
+}
+
+void igdeNativeBeosMenuItem::PostCreateNativeWidget(igdeMenuItem &owner, void *native){
+	// MenuItem post-creation setup
+}
+
+void igdeNativeBeosMenuItem::DestroyNativeWidget(igdeMenuItem &owner, void *native){
+	delete reinterpret_cast<igdeNativeBeosMenuItem*>(native);
+}
 
 #endif
