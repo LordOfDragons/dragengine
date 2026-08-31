@@ -25,26 +25,54 @@
 #ifndef _IGDENATIVEBEOSMENUCOMMAND_H_
 #define _IGDENATIVEBEOSMENUCOMMAND_H_
 
-#include "../../igdeMenuCommand.h"
+#include <interface/MenuItem.h>
+#include "../../menu/igdeMenuCommand.h"
 
 class igdeMenuCommand;
 
 
 /**
- * BeOS Native command menu item.
+ * \brief BeOS native command menu item.
  */
-class igdeNativeBeosMenuCommand : public igdeMenuCommand::cNativeMenu{
+class igdeNativeBeosMenuCommand : public BMenuItem, public igdeMenuCommand::cNativeMenuCommand{
+protected:
+	igdeMenuCommand *pOwner;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create native menu. */
-	igdeNativeBeosMenuCommand();
+	/** \brief Create native menu item. */
+	igdeNativeBeosMenuCommand(igdeMenuCommand &owner, BMenu *parent);
 	
-	/** \brief Clean up native menu. */
-	virtual ~igdeNativeBeosMenuCommand();
+	/** \brief Clean up native menu item. */
+	~igdeNativeBeosMenuCommand() override;
 	
-	/** \brief Create native menu. */
-	static igdeNativeBeosMenuCommand* CreateNativeMenu(igdeMenuCommand &owner);
+	/** \brief Create native widget. */
+	static igdeNativeBeosMenuCommand* CreateNativeWidget(igdeMenuCommand &owner);
+	
+	/** \brief Post create native widget. */
+	void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	void DestroyNativeWidget();
+	/*@}*/
+	
+	
+	
+	/** \name cNativeMenuCommand interface */
+	/*@{*/
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateHotKey() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
+	/*@}*/
+	
+	
+	
+	/** \name BMenuItem overrides */
+	/*@{*/
+	void Invoked() override;
 	/*@}*/
 };
 

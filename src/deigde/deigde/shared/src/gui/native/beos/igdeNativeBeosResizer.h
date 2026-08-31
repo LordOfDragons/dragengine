@@ -22,73 +22,61 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDENATIVEBEOSNVSOCKET_H_
-#define _IGDENATIVEBEOSNVSOCKET_H_
+#ifndef _IGDENATIVEBEOSRESIZER_H_
+#define _IGDENATIVEBEOSRESIZER_H_
 
 #include <interface/View.h>
 #include <support/SupportDefs.h>
-#include <dragengine/common/string/decString.h>
 
 /**
- * \brief Node editor connection point (socket) visualization.
+ * \brief Resize handle widget for window resizing.
  */
-class igdeNativeBeosNVSocket : public BView{
+class igdeNativeBeosResizer : public BView {
 public:
-	/** \brief Socket type. */
-	enum eSocketType {
-		estInput,
-		estOutput
+	/** \brief Resize direction flags. */
+	enum eResizeDirection {
+		erdNone = 0,
+		erdLeft = 1,
+		erdRight = 2,
+		erdTop = 4,
+		erdBottom = 8,
+		erdTopLeft = erdLeft | erdTop,
+		erdTopRight = erdRight | erdTop,
+		erdBottomLeft = erdLeft | erdBottom,
+		erdBottomRight = erdRight | erdBottom
 	};
 	
 private:
-	decString pLabel;
-	eSocketType pType;
-	bool pConnected;
-	rgb_color pColor;
+	eResizeDirection pResizeDirection;
+	BPoint pLastMousePos;
+	bool pResizing;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create socket. */
-	igdeNativeBeosNVSocket(BRect frame, const char *label, eSocketType type);
+	/** \brief Create resizer. */
+	igdeNativeBeosResizer(BRect frame, eResizeDirection direction = erdBottomRight);
 	
-	/** \brief Clean up socket. */
-	~igdeNativeBeosNVSocket() override;
+	/** \brief Clean up resizer. */
+	~igdeNativeBeosResizer() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Get label. */
-	inline const char *GetLabel() const{ return pLabel.GetString(); }
+	/** \brief Get resize direction. */
+	inline eResizeDirection GetResizeDirection() const{ return pResizeDirection; }
 	
-	/** \brief Set label. */
-	void SetLabel(const char *label);
+	/** \brief Set resize direction. */
+	void SetResizeDirection(eResizeDirection direction);
 	
-	/** \brief Get type. */
-	inline eSocketType GetType() const{ return pType; }
-	
-	/** \brief Set type. */
-	void SetType(eSocketType type);
-	
-	/** \brief Get connected state. */
-	inline bool IsConnected() const{ return pConnected; }
-	
-	/** \brief Set connected state. */
-	void SetConnected(bool connected);
-	
-	/** \brief Get color. */
-	inline rgb_color GetColor() const{ return pColor; }
-	
-	/** \brief Set color. */
-	void SetColor(rgb_color color);
-	
-	/** \brief Get socket center point for connection lines. */
-	BPoint GetSocketCenter() const;
+	/** \brief Get whether currently resizing. */
+	inline bool IsResizing() const{ return pResizing; }
 	
 	/** \brief BView overrides */
 	void Draw(BRect updateRect) override;
 	void MouseDown(BPoint where) override;
 	void MouseUp(BPoint where) override;
+	void MouseMoved(BPoint where, uint32 code, const BMessage *dragMessage) override;
 	/*@}*/
 };
 

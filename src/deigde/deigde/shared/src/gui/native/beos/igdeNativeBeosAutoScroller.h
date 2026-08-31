@@ -22,61 +22,57 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDENATIVEBEOSMENUOPTION_H_
-#define _IGDENATIVEBEOSMENUOPTION_H_
+#ifndef _IGDENATIVEBEOSAUTOSCROLLER_H_
+#define _IGDENATIVEBEOSAUTOSCROLLER_H_
 
-#include <interface/MenuItem.h>
-#include "../../menu/igdeMenuOption.h"
-
-class igdeMenuOption;
-
+#include <interface/View.h>
 
 /**
- * \brief BeOS native radio option menu item.
+ * \brief Auto-scroller helper for drag-and-drop operations.
  */
-class igdeNativeBeosMenuOption : public BMenuItem, public igdeMenuOption::cNativeMenuOption{
-protected:
-	igdeMenuOption *pOwner;
+class igdeNativeBeosAutoScroller{
+private:
+	BView *pView;
+	BPoint pLastMousePos;
+	uint32 pScrollDirection;
+	int32 pScrollSpeed;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create native menu item. */
-	igdeNativeBeosMenuOption(igdeMenuOption &owner, BMenu *parent);
+	/** \brief Create auto-scroller. */
+	explicit igdeNativeBeosAutoScroller(BView *view);
 	
-	/** \brief Clean up native menu item. */
-	~igdeNativeBeosMenuOption() override;
-	
-	/** \brief Create native widget. */
-	static igdeNativeBeosMenuOption* CreateNativeWidget(igdeMenuOption &owner);
-	
-	/** \brief Post create native widget. */
-	void PostCreateNativeWidget();
-	
-	/** \brief Destroy native widget. */
-	void DestroyNativeWidget();
+	/** \brief Clean up auto-scroller. */
+	~igdeNativeBeosAutoScroller();
 	/*@}*/
 	
-	
-	
-	/** \name cNativeMenuOption interface */
+	/** \name Management */
 	/*@{*/
-	void UpdateText() override;
-	void UpdateDescription() override;
-	void UpdateHotKey() override;
-	void UpdateIcon() override;
-	void UpdateEnabled() override;
-	void UpdateSelected() override;
-	/*@}*/
+	/** \brief Get associated view. */
+	inline BView *GetView() const{ return pView; }
 	
+	/** \brief Set target view. */
+	void SetView(BView *view);
 	
+	/** \brief Update scroll position based on mouse movement. */
+	void UpdateScroll(BPoint mousePos, BRect scrollArea);
 	
-	/** \name BMenuItem overrides */
-	/*@{*/
-	void Invoked() override;
+	/** \brief Start auto-scrolling. */
+	void StartAutoScroll();
+	
+	/** \brief Stop auto-scrolling. */
+	void StopAutoScroll();
+	
+	/** \brief Get scroll direction. */
+	inline uint32 GetScrollDirection() const{ return pScrollDirection; }
+	
+	/** \brief Get scroll speed. */
+	inline int32 GetScrollSpeed() const{ return pScrollSpeed; }
+	
+	/** \brief Set scroll speed. */
+	void SetScrollSpeed(int32 speed);
 	/*@}*/
 };
-
-typedef igdeNativeBeosMenuOption igdeNativeMenuOption;
 
 #endif

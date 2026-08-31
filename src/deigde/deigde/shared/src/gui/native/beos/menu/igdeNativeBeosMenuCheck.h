@@ -25,26 +25,55 @@
 #ifndef _IGDENATIVEBEOSMENUCHECK_H_
 #define _IGDENATIVEBEOSMENUCHECK_H_
 
-#include "../../igdeMenuCheck.h"
+#include <interface/MenuItem.h>
+#include "../../menu/igdeMenuCheck.h"
 
 class igdeMenuCheck;
 
 
 /**
- * BeOS Native check menu item.
+ * \brief BeOS native check menu item.
  */
-class igdeNativeBeosMenuCheck : public igdeMenuCheck::cNativeMenu{
+class igdeNativeBeosMenuCheck : public BMenuItem, public igdeMenuCheck::cNativeMenuCheck{
+protected:
+	igdeMenuCheck *pOwner;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create native menu. */
-	igdeNativeBeosMenuCheck();
+	/** \brief Create native menu item. */
+	igdeNativeBeosMenuCheck(igdeMenuCheck &owner, BMenu *parent);
 	
-	/** \brief Clean up native menu. */
-	virtual ~igdeNativeBeosMenuCheck();
+	/** \brief Clean up native menu item. */
+	~igdeNativeBeosMenuCheck() override;
 	
-	/** \brief Create native menu. */
-	static igdeNativeBeosMenuCheck* CreateNativeMenu(igdeMenuCheck &owner);
+	/** \brief Create native widget. */
+	static igdeNativeBeosMenuCheck* CreateNativeWidget(igdeMenuCheck &owner);
+	
+	/** \brief Post create native widget. */
+	void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	void DestroyNativeWidget();
+	/*@}*/
+	
+	
+	
+	/** \name cNativeMenuCheck interface */
+	/*@{*/
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateHotKey() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
+	void UpdateChecked() override;
+	/*@}*/
+	
+	
+	
+	/** \name BMenuItem overrides */
+	/*@{*/
+	void Invoked() override;
 	/*@}*/
 };
 

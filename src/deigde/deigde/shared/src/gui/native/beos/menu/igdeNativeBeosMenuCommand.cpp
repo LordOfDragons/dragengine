@@ -25,30 +25,102 @@
 #ifdef IGDE_TOOLKIT_BEOS
 
 #include "igdeNativeBeosMenuCommand.h"
-#include "../../../igdeMenuCommand.h"
+#include "../../../menu/igdeMenuCommand.h"
+#include "../../../event/igdeAction.h"
+#include <interface/Menu.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/logger/deLogger.h>
+
+static const uint32 kMsgCommand = 'mCmd';
 
 
 // Class igdeNativeBeosMenuCommand
 ////////////////////////////////////
 
-igdeNativeBeosMenuCommand::igdeNativeBeosMenuCommand() = default;
+igdeNativeBeosMenuCommand::igdeNativeBeosMenuCommand(igdeMenuCommand &owner, BMenu *parent) :
+BMenuItem(owner.GetText().GetString(), new BMessage(kMsgCommand)),
+pOwner(&owner)
+{
+	if(parent){
+		parent->AddItem(this);
+	}
+	UpdateEnabled();
+}
+
 igdeNativeBeosMenuCommand::~igdeNativeBeosMenuCommand() = default;
 
 
-igdeNativeBeosMenuCommand* igdeNativeBeosMenuCommand::CreateNativeMenu(igdeMenuCommand &owner){
-	// MenuCommand is an action menu item that triggers commands
-	// Implementation provides activation callback and keyboard shortcuts
-	igdeNativeBeosMenuCommand *menu = NULL;
-	
-	try{
-		menu = new igdeNativeBeosMenuCommand();
-		
-	}catch(const deException &){
-		return NULL;
+
+igdeNativeBeosMenuCommand *igdeNativeBeosMenuCommand::CreateNativeWidget(igdeMenuCommand &owner){
+	if(!owner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return menu;
+	BMenu * const parent = (BMenu*)owner.GetParent()->GetNativeContainer();
+	if(!parent){
+		DETHROW(deeInvalidParam);
+	}
+	
+	return new igdeNativeBeosMenuCommand(owner, parent);
+}
+
+void igdeNativeBeosMenuCommand::PostCreateNativeWidget(){
+}
+
+void igdeNativeBeosMenuCommand::DestroyNativeWidget(){
+	if(Menu()){
+		Menu()->RemoveItem(this);
+	}
+	delete this;
+}
+
+
+
+// cNativeMenuCommand interface
+/////////////////////////////////
+
+void igdeNativeBeosMenuCommand::UpdateText(){
+	SetLabel(pOwner->GetText().GetString());
+}
+
+void igdeNativeBeosMenuCommand::UpdateDescription(){
+}
+
+void igdeNativeBeosMenuCommand::UpdateHotKey(){
+	const igdeHotKey &hotKey = pOwner->GetHotKey();
+	if(hotKey.GetKey() != deInputEvent::ekcUndefined){
+		// Set shortcut character
+		char shortcutChar = 0;
+		if(hotKey.GetKey() >= deInputEvent::ekcA && hotKey.GetKey() <= deInputEvent::ekcZ){
+			shortcutChar = (char)('a' + hotKey.GetKey() - deInputEvent::ekcA);
+		}
+		if(shortcutChar){
+			SetShortcut(shortcutChar, B_COMMAND_KEY);
+		}
+	}
+}
+
+void igdeNativeBeosMenuCommand::UpdateIcon(){
+}
+
+void igdeNativeBeosMenuCommand::UpdateEnabled(){
+	SetEnabled(pOwner->GetEnabled());
+}
+
+
+
+// BMenuItem overrides
+///////////////////////
+
+void igdeNativeBeosMenuCommand::Invoked(){
+	BMenuItem::Invoked();
+	try{
+		if(pOwner && pOwner->GetEnabled()){
+			pOwner->OnAction();
+		}
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE MenuCommand", e);
+	}
 }
 
 #endif

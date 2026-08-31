@@ -25,29 +25,95 @@
 #ifdef IGDE_TOOLKIT_BEOS
 
 #include "igdeNativeBeosMenuCheck.h"
-#include "../../../igdeMenuCheck.h"
+#include "../../../menu/igdeMenuCheck.h"
+#include <interface/Menu.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/logger/deLogger.h>
+
+static const uint32 kMsgCheck = 'mChk';
 
 
 // Class igdeNativeBeosMenuCheck
 /////////////////////////////////
 
-igdeNativeBeosMenuCheck::igdeNativeBeosMenuCheck() = default;
+igdeNativeBeosMenuCheck::igdeNativeBeosMenuCheck(igdeMenuCheck &owner, BMenu *parent) :
+BMenuItem(owner.GetText().GetString(), new BMessage(kMsgCheck)),
+pOwner(&owner)
+{
+	SetMarked(owner.GetChecked());
+	if(parent){
+		parent->AddItem(this);
+	}
+	UpdateEnabled();
+}
+
 igdeNativeBeosMenuCheck::~igdeNativeBeosMenuCheck() = default;
 
-igdeNativeBeosMenuCheck* igdeNativeBeosMenuCheck::CreateNativeMenu(igdeMenuCheck &owner){
-	// MenuCheck is a checkable menu item with on/off state
-	// Implementation shows checked/unchecked indicator and toggle
-	igdeNativeBeosMenuCheck *menu = NULL;
-	
-	try{
-		menu = new igdeNativeBeosMenuCheck();
-		
-	}catch(const deException &){
-		return NULL;
+
+
+igdeNativeBeosMenuCheck *igdeNativeBeosMenuCheck::CreateNativeWidget(igdeMenuCheck &owner){
+	if(!owner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return menu;
+	BMenu * const parent = (BMenu*)owner.GetParent()->GetNativeContainer();
+	if(!parent){
+		DETHROW(deeInvalidParam);
+	}
+	
+	return new igdeNativeBeosMenuCheck(owner, parent);
+}
+
+void igdeNativeBeosMenuCheck::PostCreateNativeWidget(){
+}
+
+void igdeNativeBeosMenuCheck::DestroyNativeWidget(){
+	if(Menu()){
+		Menu()->RemoveItem(this);
+	}
+	delete this;
+}
+
+
+
+// cNativeMenuCheck interface
+//////////////////////////////
+
+void igdeNativeBeosMenuCheck::UpdateText(){
+	SetLabel(pOwner->GetText().GetString());
+}
+
+void igdeNativeBeosMenuCheck::UpdateDescription(){
+}
+
+void igdeNativeBeosMenuCheck::UpdateHotKey(){
+}
+
+void igdeNativeBeosMenuCheck::UpdateIcon(){
+}
+
+void igdeNativeBeosMenuCheck::UpdateEnabled(){
+	SetEnabled(pOwner->GetEnabled());
+}
+
+void igdeNativeBeosMenuCheck::UpdateChecked(){
+	SetMarked(pOwner->GetChecked());
+}
+
+
+
+// BMenuItem overrides
+///////////////////////
+
+void igdeNativeBeosMenuCheck::Invoked(){
+	BMenuItem::Invoked();
+	try{
+		if(pOwner && pOwner->GetEnabled()){
+			pOwner->OnAction();
+		}
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE MenuCheck", e);
+	}
 }
 
 #endif

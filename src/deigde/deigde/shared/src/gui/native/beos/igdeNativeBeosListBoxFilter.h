@@ -25,20 +25,79 @@
 #ifndef _IGDENATIVEBEOSLISTBOXFILTER_H_
 #define _IGDENATIVEBEOSLISTBOXFILTER_H_
 
+#include "beostoolkit.h"
+#include "../../igdeListBoxFilter.h"
+#include "../../resources/igdeFont.h"
+
 class igdeListBoxFilter;
+class igdeGuiTheme;
 
 
 /**
- * \brief BeOS native list box filter.
+ * \brief BeOS native filter list box widget.
  */
-class igdeNativeBeosListBoxFilter{
-public:
-	igdeNativeBeosListBoxFilter();
-	virtual ~igdeNativeBeosListBoxFilter();
+class igdeNativeBeosListBoxFilter : public BView, public igdeListBoxFilter::cNativeListBoxFilter{
+private:
+	igdeListBoxFilter *pOwner;
+	igdeFont::Ref pFont;
+	BListView *pListView;
+	BScrollView *pScroller;
+	BTextControl *pFilterControl;
+	bool pIgnoreSelectionChange;
 	
-	static void *CreateNativeWidget(igdeListBoxFilter &owner);
-	static void PostCreateNativeWidget(igdeListBoxFilter &owner, void *native);
-	static void DestroyNativeWidget(igdeListBoxFilter &owner, void *native);
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create native widget. */
+	igdeNativeBeosListBoxFilter(igdeListBoxFilter &owner, BView *parent,
+		const igdeGuiTheme &guitheme);
+	
+	/** \brief Clean up native widget. */
+	~igdeNativeBeosListBoxFilter() override;
+	
+	/** \brief Create native widget. */
+	static igdeNativeBeosListBoxFilter* CreateNativeWidget(igdeListBoxFilter &owner);
+	
+	/** \brief Post create native widget. */
+	void PostCreateNativeWidget() override;
+	
+	/** \brief Destroy native widget. */
+	void DestroyNativeWidget() override;
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	void BuildList() override;
+	void UpdateItem(int index) override;
+	void UpdateStyles() override;
+	void UpdateSelection() override;
+	void Focus() override;
+	decPoint GetContentPosition() const override;
+	void SetContentPosition(const decPoint &position) override;
+	void MakeItemVisible(int index) override;
+	void InsertItem(int index) override;
+	void RemoveItem(int index) override;
+	void RemoveAllItems() override;
+	void MoveItem(int fromIndex, int toIndex) override;
+	void UpdateEnabled() override;
+	void UpdateRowCount() override;
+	void UpdateDescription() override;
+	void UpdateFilterString() override;
+	/*@}*/
+	
+	
+	
+	/** \name BView overrides */
+	/*@{*/
+	void FrameResized(float width, float height) override;
+	void MessageReceived(BMessage *message) override;
+	/*@}*/
+	
+private:
+	/** \brief Rebuild list applying filter. */
+	void RebuildFilteredList();
 };
 
 typedef igdeNativeBeosListBoxFilter igdeNativeListBoxFilter;

@@ -25,32 +25,75 @@
 #ifndef _IGDENATIBESOSNVNODE_H_
 #define _IGDENATIBESOSNVNODE_H_
 
-#include "../../igdeNVNode.h"
+#include <interface/View.h>
+#include "../../../nodeview/igdeNVNode.h"
+#include "../../../resources/igdeFont.h"
 
 class igdeNVNode;
+class igdeGuiTheme;
 
 
 /**
- * BeOS Native node view node.
+ * \brief BeOS native NodeView node widget.
  */
-class igdeNativeBeosNVNode : public igdeNVNode::cNativeNode{
+class igdeNativeBeosNVNode : public BView, public igdeNVNode::cNativeNVNode{
+private:
+	igdeNVNode *pOwner;
+	igdeFont::Ref pFont;
+	bool pTitleIsDragging;
+	decPoint pTitleDragOffset;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeBeosNVNode();
+	igdeNativeBeosNVNode(igdeNVNode &owner, BView *parent, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeBeosNVNode();
+	~igdeNativeBeosNVNode() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeBeosNVNode* CreateNativeWidget(igdeNVNode &owner);
 	
 	/** \brief Post create native widget. */
-	virtual void PostCreateNativeWidget();
+	void PostCreateNativeWidget() override;
 	
 	/** \brief Destroy native widget. */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner. */
+	inline igdeNVNode &GetOwner() const{ return *pOwner; }
+	
+	
+	
+	void UpdateTitle() override;
+	void UpdateDescription() override;
+	void UpdateEnabled() override;
+	void UpdateActive() override;
+	void UpdateColors() override;
+	void UpdatePosition() override;
+	void FitSizeToContent() override;
+	decPoint GetSize() override;
+	
+	
+	
+	static igdeFont *NVNodeFont(const igdeNVNode &owner, const igdeGuiTheme &guitheme);
+	/*@}*/
+	
+	
+	
+	/** \name BView overrides */
+	/*@{*/
+	void Draw(BRect updateRect) override;
+	void MouseDown(BPoint where) override;
+	void MouseMoved(BPoint where, uint32 code, const BMessage *message) override;
+	void MouseUp(BPoint where) override;
+	void FrameResized(float width, float height) override;
 	/*@}*/
 };
 

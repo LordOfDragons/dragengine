@@ -25,32 +25,87 @@
 #ifndef _IGDENATIBESOSNVSLOT_H_
 #define _IGDENATIBESOSNVSLOT_H_
 
-#include "../../igdeNVSlot.h"
+#include <interface/View.h>
+#include "../../../nodeview/igdeNVSlot.h"
+#include "../../../resources/igdeFont.h"
 
 class igdeNVSlot;
+class igdeGuiTheme;
+class igdeNativeBeosNVSocket;
+class igdeNativeBeosNVBoard;
 
 
 /**
- * BeOS Native node view slot.
+ * \brief BeOS native NodeView slot widget.
  */
-class igdeNativeBeosNVSlot : public igdeNVSlot::cNativeSlot{
+class igdeNativeBeosNVSlot : public BView, public igdeNVSlot::cNativeNVSlot{
+private:
+	igdeNVSlot *pOwner;
+	igdeFont::Ref pFont;
+	igdeNativeBeosNVSocket *pSocket;
+	bool pIsDnd;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeBeosNVSlot();
+	igdeNativeBeosNVSlot(igdeNVSlot &owner, BView *parent, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeBeosNVSlot();
+	~igdeNativeBeosNVSlot() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeBeosNVSlot* CreateNativeWidget(igdeNVSlot &owner);
 	
 	/** \brief Post create native widget. */
-	virtual void PostCreateNativeWidget();
+	void PostCreateNativeWidget() override;
 	
 	/** \brief Destroy native widget. */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner. */
+	inline igdeNVSlot &GetOwner() const{ return *pOwner; }
+	
+	/** \brief Socket widget. */
+	inline igdeNativeBeosNVSocket *GetSocket() const{ return pSocket; }
+	
+	/** \brief Get owner NVBoard native widget or nullptr. */
+	igdeNativeBeosNVBoard *GetNativeBoard() const;
+	
+	
+	
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateEnabled() override;
+	void UpdateColor() override;
+	void UpdateLinkedState() override;
+	
+	decPoint GetCenter() const override;
+	decPoint GetCenterNode() const override;
+	decPoint GetCenterBoard() const override;
+	decPoint GetConnector() const override;
+	decPoint GetConnectorNode() const override;
+	decPoint GetConnectorBoard() const override;
+	
+	
+	
+	static igdeFont *NVSlotFont(const igdeNVSlot &owner, const igdeGuiTheme &guitheme);
+	/*@}*/
+	
+	
+	
+	/** \name BView overrides */
+	/*@{*/
+	void Draw(BRect updateRect) override;
+	void MouseDown(BPoint where) override;
+	void MouseMoved(BPoint where, uint32 code, const BMessage *message) override;
+	void MouseUp(BPoint where) override;
+	BSize PreferredSize() override;
 	/*@}*/
 };
 

@@ -25,32 +25,125 @@
 #ifndef _IGDENATIBEOSNVBOARD_H_
 #define _IGDENATIBEOSNVBOARD_H_
 
-#include "../../igdeNVBoard.h"
+#include <interface/View.h>
+#include "../../../nodeview/igdeNVBoard.h"
+#include "../../../nodeview/igdeNVLink.h"
 
 class igdeNVBoard;
+class igdeNVLink;
+class igdeGuiTheme;
+class igdeNativeBeosNVSlot;
 
 
 /**
- * BeOS Native node view board.
+ * \brief BeOS native NodeView board widget.
  */
-class igdeNativeBeosNVBoard : public igdeNVBoard::cNativeBoard{
+class igdeNativeBeosNVBoard : public BView, public igdeNVBoard::cNativeNVBoard{
+private:
+	igdeNVBoard *pOwner;
+	
+	igdeNativeBeosNVSlot *pCreateLinkSource;
+	igdeNativeBeosNVSlot *pCreateLinkTarget;
+	decPoint pCreateLinkPosition;
+	
+	igdeNVLink::Ref pHoverLink;
+	
+	decPoint pDragBoard;
+	bool pIsDragBoard;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeBeosNVBoard();
+	igdeNativeBeosNVBoard(igdeNVBoard &owner, BView *parent, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeBeosNVBoard();
+	~igdeNativeBeosNVBoard() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeBeosNVBoard* CreateNativeWidget(igdeNVBoard &owner);
 	
 	/** \brief Post create native widget. */
-	virtual void PostCreateNativeWidget();
+	void PostCreateNativeWidget() override;
 	
 	/** \brief Destroy native widget. */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner. */
+	inline igdeNVBoard &GetOwner() const{ return *pOwner; }
+	
+	
+	
+	void UpdateEnabled() override;
+	void UpdateColors() override;
+	void UpdateNodes() override;
+	void UpdateLinks() override;
+	void UpdateOffset() override;
+	decPoint GetSize() override;
+	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const override;
+	const igdeNVLink::Ref &GetHoverLink() const override;
+	
+	
+	
+	/** \brief Begin create link drag. */
+	void BeginCreateLink(igdeNativeBeosNVSlot *source);
+	
+	/** \brief Create link source slot. */
+	inline igdeNativeBeosNVSlot *GetCreateLinkSource() const{ return pCreateLinkSource; }
+	
+	/** \brief Set create link position. */
+	void SetCreateLinkPosition(const decPoint &position);
+	
+	/** \brief Create link target slot. */
+	inline igdeNativeBeosNVSlot *GetCreateLinkTarget() const{ return pCreateLinkTarget; }
+	
+	/** \brief Set create link target. */
+	void SetCreateLinkTarget(igdeNativeBeosNVSlot *target);
+	
+	/** \brief Finish create link. */
+	void FinishCreateLink();
+	
+	/** \brief Set hover link. */
+	void SetHoverLink(igdeNVLink *link);
+	/*@}*/
+	
+	
+	
+	/** \name BView overrides */
+	/*@{*/
+	void Draw(BRect updateRect) override;
+	void MouseDown(BPoint where) override;
+	void MouseMoved(BPoint where, uint32 code, const BMessage *message) override;
+	void MouseUp(BPoint where) override;
+	void FrameResized(float width, float height) override;
+	/*@}*/
+	
+	
+	
+	/** \name Drawing helpers */
+	/*@{*/
+	void DrawLinks() const;
+	void DrawCreateLink() const;
+	
+	void DrawBezier(rgb_color color, const decPoint &p1, const decPoint &p2,
+		const decPoint &p3, const decPoint &p4) const;
+	
+	void DrawBezierLine(const decPoint &p1, const decPoint &p2,
+		const decPoint &p3, const decPoint &p4) const;
+	
+	void InternalDrawBezier(const decVector2 &p1, const decVector2 &p2,
+		const decVector2 &p3, const decVector2 &p4) const;
+	
+	float PointBezierDistance(const decPoint &p, const decPoint &bp1, const decPoint &bp2,
+		const decPoint &bp3, const decPoint &bp4) const;
+	
+	float PointBezierDistance(const decVector2 &bp, const decVector2 &bp1, const decVector2 &bp2,
+		const decVector2 &bp3, const decVector2 &bp4) const;
 	/*@}*/
 };
 

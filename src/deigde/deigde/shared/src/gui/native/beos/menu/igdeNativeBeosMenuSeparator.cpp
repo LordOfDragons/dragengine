@@ -25,19 +25,49 @@
 #ifdef IGDE_TOOLKIT_BEOS
 
 #include "igdeNativeBeosMenuSeparator.h"
-#include "../../../igdeMenuSeparator.h"
+#include "../../../menu/igdeMenuSeparator.h"
+#include <interface/Menu.h>
 #include <dragengine/common/exceptions.h>
 
 
 // Class igdeNativeBeosMenuSeparator
 /////////////////////////////////////
 
-igdeNativeBeosMenuSeparator::igdeNativeBeosMenuSeparator() = default;
+igdeNativeBeosMenuSeparator::igdeNativeBeosMenuSeparator(igdeMenuSeparator &owner, BMenu *parent) :
+BMenuItem("---", nullptr),
+pOwner(&owner)
+{
+	SetEnabled(false);
+	if(parent){
+		parent->AddSeparatorItem();
+	}
+}
+
 igdeNativeBeosMenuSeparator::~igdeNativeBeosMenuSeparator() = default;
 
 
-igdeNativeBeosMenuSeparator* igdeNativeBeosMenuSeparator::CreateNativeMenu(igdeMenuSeparator &owner){
-	return new igdeNativeBeosMenuSeparator();
+
+igdeNativeBeosMenuSeparator *igdeNativeBeosMenuSeparator::CreateNativeWidget(igdeMenuSeparator &owner){
+	if(!owner.GetParent()){
+		DETHROW(deeInvalidParam);
+	}
+	
+	BMenu * const parent = (BMenu*)owner.GetParent()->GetNativeContainer();
+	if(!parent){
+		DETHROW(deeInvalidParam);
+	}
+	
+	return new igdeNativeBeosMenuSeparator(owner, parent);
+}
+
+void igdeNativeBeosMenuSeparator::PostCreateNativeWidget(){
+}
+
+void igdeNativeBeosMenuSeparator::DestroyNativeWidget(){
+	if(Menu()){
+		Menu()->RemoveItem(this);
+	}
+	delete this;
 }
 
 #endif

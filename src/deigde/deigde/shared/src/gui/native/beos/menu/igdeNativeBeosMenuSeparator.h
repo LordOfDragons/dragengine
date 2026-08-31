@@ -25,26 +25,35 @@
 #ifndef _IGDENATIVEBEOSMENSEPARATOR_H_
 #define _IGDENATIVEBEOSMENSEPARATOR_H_
 
-#include "../../igdeMenuSeparator.h"
+#include <interface/MenuItem.h>
 
 class igdeMenuSeparator;
 
 
 /**
- * BeOS Native separator menu item.
+ * \brief BeOS native separator menu item.
  */
-class igdeNativeBeosMenuSeparator : public igdeMenuSeparator::cNativeMenu{
+class igdeNativeBeosMenuSeparator : public BMenuItem{
+private:
+	igdeMenuSeparator *pOwner;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create native menu. */
-	igdeNativeBeosMenuSeparator();
+	/** \brief Create native menu item. */
+	igdeNativeBeosMenuSeparator(igdeMenuSeparator &owner, BMenu *parent);
 	
-	/** \brief Clean up native menu. */
-	virtual ~igdeNativeBeosMenuSeparator();
+	/** \brief Clean up native menu item. */
+	~igdeNativeBeosMenuSeparator() override;
 	
-	/** \brief Create native menu. */
-	static igdeNativeBeosMenuSeparator* CreateNativeMenu(igdeMenuSeparator &owner);
+	/** \brief Create native widget. */
+	static igdeNativeBeosMenuSeparator* CreateNativeWidget(igdeMenuSeparator &owner);
+	
+	/** \brief Post create native widget. */
+	void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	void DestroyNativeWidget();
 	/*@}*/
 };
 

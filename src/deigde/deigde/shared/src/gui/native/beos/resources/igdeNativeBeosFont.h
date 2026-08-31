@@ -27,24 +27,51 @@
 
 #include "../../../resources/igdeFont.h"
 
+#include <dragengine/common/math/decMath.h>
+
 class igdeFont;
+class deFont;
+class BFont;
 
 
 /**
  * BeOS native font resource.
  */
 class igdeNativeBeosFont : public igdeFont::cNativeFont{
+private:
+	igdeFont *pOwner;
+	BFont *pFont;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native font. */
 	igdeNativeBeosFont();
 	
+	/** \brief Create native font with owner. */
+	igdeNativeBeosFont(igdeFont &owner);
+	
 	/** \brief Clean up native font. */
 	virtual ~igdeNativeBeosFont();
 	
 	/** \brief Create native font. */
 	static igdeNativeBeosFont* CreateNativeFont(igdeFont &owner);
+	
+	/** \brief Destroy native font. */
+	void DestroyNativeFont() override;
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Create engine font. */
+	deFont::Ref CreateEngineFont() override;
+	
+	/** \brief Text size. */
+	decPoint TextSize(const char *text) const override;
 	/*@}*/
 };
 

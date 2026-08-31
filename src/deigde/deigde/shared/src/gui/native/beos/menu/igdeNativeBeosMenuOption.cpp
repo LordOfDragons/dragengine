@@ -25,30 +25,95 @@
 #ifdef IGDE_TOOLKIT_BEOS
 
 #include "igdeNativeBeosMenuOption.h"
-#include "../../../igdeMenuOption.h"
+#include "../../../menu/igdeMenuOption.h"
+#include <interface/Menu.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/logger/deLogger.h>
+
+static const uint32 kMsgOption = 'mOpt';
 
 
 // Class igdeNativeBeosMenuOption
 ///////////////////////////////////
 
-igdeNativeBeosMenuOption::igdeNativeBeosMenuOption() = default;
+igdeNativeBeosMenuOption::igdeNativeBeosMenuOption(igdeMenuOption &owner, BMenu *parent) :
+BMenuItem(owner.GetText().GetString(), new BMessage(kMsgOption)),
+pOwner(&owner)
+{
+	SetMarked(owner.GetSelected());
+	if(parent){
+		parent->AddItem(this);
+	}
+	UpdateEnabled();
+}
+
 igdeNativeBeosMenuOption::~igdeNativeBeosMenuOption() = default;
 
 
-igdeNativeBeosMenuOption* igdeNativeBeosMenuOption::CreateNativeMenu(igdeMenuOption &owner){
-	// MenuOption is a radio-button style menu item
-	// Implementation shows selected indicator and mutual exclusion
-	igdeNativeBeosMenuOption *menu = NULL;
-	
-	try{
-		menu = new igdeNativeBeosMenuOption();
-		
-	}catch(const deException &){
-		return NULL;
+
+igdeNativeBeosMenuOption *igdeNativeBeosMenuOption::CreateNativeWidget(igdeMenuOption &owner){
+	if(!owner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return menu;
+	BMenu * const parent = (BMenu*)owner.GetParent()->GetNativeContainer();
+	if(!parent){
+		DETHROW(deeInvalidParam);
+	}
+	
+	return new igdeNativeBeosMenuOption(owner, parent);
+}
+
+void igdeNativeBeosMenuOption::PostCreateNativeWidget(){
+}
+
+void igdeNativeBeosMenuOption::DestroyNativeWidget(){
+	if(Menu()){
+		Menu()->RemoveItem(this);
+	}
+	delete this;
+}
+
+
+
+// cNativeMenuOption interface
+///////////////////////////////
+
+void igdeNativeBeosMenuOption::UpdateText(){
+	SetLabel(pOwner->GetText().GetString());
+}
+
+void igdeNativeBeosMenuOption::UpdateDescription(){
+}
+
+void igdeNativeBeosMenuOption::UpdateHotKey(){
+}
+
+void igdeNativeBeosMenuOption::UpdateIcon(){
+}
+
+void igdeNativeBeosMenuOption::UpdateEnabled(){
+	SetEnabled(pOwner->GetEnabled());
+}
+
+void igdeNativeBeosMenuOption::UpdateSelected(){
+	SetMarked(pOwner->GetSelected());
+}
+
+
+
+// BMenuItem overrides
+///////////////////////
+
+void igdeNativeBeosMenuOption::Invoked(){
+	BMenuItem::Invoked();
+	try{
+		if(pOwner && pOwner->GetEnabled()){
+			pOwner->OnAction();
+		}
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE MenuOption", e);
+	}
 }
 
 #endif

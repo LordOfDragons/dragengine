@@ -57,5 +57,8 @@
 #include <support/Looper.h>
 #include <support/Messenger.h>
 #include <support/Message.h>
+#include <translation/TranslationUtils.h>
+#include <translation/TranslatorRoster.h>
+#include <translation/BitmapStream.h>
 
 #endif

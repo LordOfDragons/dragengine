@@ -25,26 +25,47 @@
 #ifndef _IGDEBEOSICON_H_
 #define _IGDEBEOSICON_H_
 
-#include "../../../resources/igdeIcon.h"
+#include <dragengine/common/math/decMath.h>
 
-class igdeIcon;
+class deImage;
+class decBaseFileReader;
 
 
 /**
  * BeOS native icon resource.
  */
-class igdeNativeBeosIcon : public igdeIcon::cNativeIcon{
+class igdeNativeBeosIcon{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create native icon. */
 	igdeNativeBeosIcon();
-	
-	/** \brief Clean up native icon. */
 	virtual ~igdeNativeBeosIcon();
+	/*@}*/
 	
+	
+	
+	/** \name Static Management */
+	/*@{*/
 	/** \brief Create native icon. */
-	static igdeNativeBeosIcon* CreateNativeIcon(igdeIcon &owner);
+	static void *CreateNativeIcon(deImage &image);
+	
+	/** \brief Create native icon from PNG. */
+	static void *CreateNativeIconPNG(decBaseFileReader &reader);
+	
+	/** \brief Duplicate native icon. */
+	static void *DuplicateNativeIcon(void *native);
+	
+	/** \brief Destroy native icon. */
+	static void DestroyNativeIcon(void *native);
+	
+	/** \brief Get icon size. */
+	static decPoint GetSize(void *native);
+	
+	/** \brief Scale icon. */
+	static void Scale(const decPoint &size, void *native);
+	
+	/** \brief Update icon pixels. */
+	static void UpdatePixels(void *native, deImage &image);
 	/*@}*/
 };
 

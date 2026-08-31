@@ -25,26 +25,34 @@
 #ifndef _IGDENATIVEBEOSMENUCASCADE_H_
 #define _IGDENATIVEBEOSMENUCASCADE_H_
 
-#include "../../igdeMenuCascade.h"
-
 class igdeMenuCascade;
+class igdeWidget;
 
 
 /**
- * BeOS Native cascade menu item.
+ * \brief BeOS native cascade (submenu) menu item.
+ * 
+ * Uses void* pattern for native container support.
  */
-class igdeNativeBeosMenuCascade : public igdeMenuCascade::cNativeMenu{
+class igdeNativeBeosMenuCascade{
 public:
-	/** \name Constructors and Destructors */
+	/** \name Management */
 	/*@{*/
-	/** \brief Create native menu. */
-	igdeNativeBeosMenuCascade();
+	static void* CreateNativeWidget(igdeMenuCascade &owner);
+	static void PostCreateNativeWidget(igdeMenuCascade &owner, void *native);
+	static void DestroyNativeWidget(igdeMenuCascade &owner, void *native);
+	static void* GetNativeContainer(igdeMenuCascade &owner, void *native);
+	static void UpdateTitle(igdeMenuCascade &owner, void *native);
+	static void UpdateDescription(igdeMenuCascade &owner, void *native);
+	static void UpdateHotKey(igdeMenuCascade &owner, void *native);
+	static void UpdateIcon(igdeMenuCascade &owner, void *native);
+	static void UpdateEnabled(igdeMenuCascade &owner, void *native);
 	
-	/** \brief Clean up native menu. */
-	virtual ~igdeNativeBeosMenuCascade();
-	
-	/** \brief Create native menu. */
-	static igdeNativeBeosMenuCascade* CreateNativeMenu(igdeMenuCascade &owner);
+	static void *CreateNativePopup(igdeMenuCascade &owner, igdeWidget &widgetOwner);
+	static void PostCreateNativePopup(igdeMenuCascade &owner, void *native);
+	static void ShowPopupWindow(igdeMenuCascade &owner, igdeWidget &widgetOwner,
+		const decPoint &position);
+	static void DestroyNativePopup(igdeMenuCascade &owner, void *native);
 	/*@}*/
 };
 

@@ -25,30 +25,120 @@
 #ifdef IGDE_TOOLKIT_BEOS
 
 #include "igdeNativeBeosMenuCascade.h"
-#include "../../../igdeMenuCascade.h"
+#include "../../../menu/igdeMenuCascade.h"
+#include "../../../igdeWidget.h"
+#include <interface/Menu.h>
+#include <interface/MenuItem.h>
+#include <interface/PopUpMenu.h>
+#include <interface/Window.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/math/decMath.h>
+
+
+// Helper struct to hold both menu and menu item
+struct sBeosMenuCascadeData{
+	BMenu *menu;
+	BMenuItem *menuItem;
+	
+	sBeosMenuCascadeData() : menu(nullptr), menuItem(nullptr){}
+	~sBeosMenuCascadeData(){
+		// menu is owned by menuItem, menuItem is owned by parent menu
+	}
+};
 
 
 // Class igdeNativeBeosMenuCascade
 ////////////////////////////////////
 
-igdeNativeBeosMenuCascade::igdeNativeBeosMenuCascade() = default;
-igdeNativeBeosMenuCascade::~igdeNativeBeosMenuCascade() = default;
-
-
-igdeNativeBeosMenuCascade* igdeNativeBeosMenuCascade::CreateNativeMenu(igdeMenuCascade &owner){
-	// MenuCascade shows submenu when clicked/hovered
-	// Implementation displays arrow indicator and submenu
-	igdeNativeBeosMenuCascade *menu = NULL;
+void* igdeNativeBeosMenuCascade::CreateNativeWidget(igdeMenuCascade &owner){
+	sBeosMenuCascadeData *data = new sBeosMenuCascadeData;
 	
-	try{
-		menu = new igdeNativeBeosMenuCascade();
-		
-	}catch(const deException &){
-		return NULL;
+	data->menu = new BMenu(owner.GetTitle().GetString());
+	data->menuItem = new BMenuItem(data->menu);
+	
+	if(owner.GetParent()){
+		BMenu * const parentMenu = (BMenu*)owner.GetParent()->GetNativeContainer();
+		if(parentMenu){
+			parentMenu->AddItem(data->menuItem);
+		}
 	}
 	
-	return menu;
+	return data;
+}
+
+void igdeNativeBeosMenuCascade::PostCreateNativeWidget(igdeMenuCascade &, void *){
+}
+
+void igdeNativeBeosMenuCascade::DestroyNativeWidget(igdeMenuCascade &, void *native){
+	sBeosMenuCascadeData * const data = (sBeosMenuCascadeData*)native;
+	if(data){
+		if(data->menuItem && data->menuItem->Menu()){
+			data->menuItem->Menu()->RemoveItem(data->menuItem);
+			delete data->menuItem;
+		}
+		delete data;
+	}
+}
+
+void* igdeNativeBeosMenuCascade::GetNativeContainer(igdeMenuCascade &, void *native){
+	sBeosMenuCascadeData * const data = (sBeosMenuCascadeData*)native;
+	return data ? data->menu : nullptr;
+}
+
+void igdeNativeBeosMenuCascade::UpdateTitle(igdeMenuCascade &owner, void *native){
+	sBeosMenuCascadeData * const data = (sBeosMenuCascadeData*)native;
+	if(data && data->menuItem){
+		data->menuItem->SetLabel(owner.GetTitle().GetString());
+	}
+}
+
+void igdeNativeBeosMenuCascade::UpdateDescription(igdeMenuCascade &, void *){
+}
+
+void igdeNativeBeosMenuCascade::UpdateHotKey(igdeMenuCascade &, void *){
+}
+
+void igdeNativeBeosMenuCascade::UpdateIcon(igdeMenuCascade &, void *){
+}
+
+void igdeNativeBeosMenuCascade::UpdateEnabled(igdeMenuCascade &owner, void *native){
+	sBeosMenuCascadeData * const data = (sBeosMenuCascadeData*)native;
+	if(data && data->menuItem){
+		data->menuItem->SetEnabled(owner.GetEnabled());
+	}
+}
+
+void* igdeNativeBeosMenuCascade::CreateNativePopup(igdeMenuCascade &owner, igdeWidget &){
+	BPopUpMenu * const popup = new BPopUpMenu(owner.GetTitle().GetString(), false, false);
+	return popup;
+}
+
+void igdeNativeBeosMenuCascade::PostCreateNativePopup(igdeMenuCascade &, void *){
+}
+
+void igdeNativeBeosMenuCascade::ShowPopupWindow(igdeMenuCascade &owner, igdeWidget &widgetOwner,
+const decPoint &position){
+	BView * const view = (BView*)widgetOwner.GetNativeWidget();
+	if(!view || !view->Window()){
+		return;
+	}
+	
+	BPoint screenPos((float)position.x, (float)position.y);
+	view->ConvertToScreen(&screenPos);
+	
+	BPopUpMenu * const popup = new BPopUpMenu(owner.GetTitle().GetString(), false, false);
+	
+	const int count = owner.GetChildCount();
+	for(int i = 0; i < count; i++){
+		// Add items from owner's children
+	}
+	
+	popup->Go(screenPos, true, false);
+	delete popup;
+}
+
+void igdeNativeBeosMenuCascade::DestroyNativePopup(igdeMenuCascade &, void *native){
+	delete (BPopUpMenu*)native;
 }
 
 #endif
