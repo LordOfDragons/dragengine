@@ -16,7 +16,7 @@ Install-Files -Path "$OutputDir\launcher\live\LaunchWindows64.exe" -Destination 
 # dependencies
 Write-Host "Live Launcher: Copy VC Runtime to '$TargetDir'"
 
-Copy-Files -SourceDir "$OutputDir\launcher\live" -TargetDir $TargetDir -Pattern "vcruntime*.dll"
+Copy-Files -SourceDir "$OutputDir\launcher\live" -TargetDir $TargetDir -Pattern "*.dll"
 
 
 # debug
