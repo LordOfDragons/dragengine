@@ -1,4 +1,4 @@
-name: Rebuild MSIX
+name: Snapshot Windows
 
 on:
   workflow_dispatch:
@@ -20,19 +20,41 @@ jobs:
     steps:
       - name: Validate version format
         run: |
-          if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
-            echo "Error: Version must be in format X.Y or X.Y.Z"
+          if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$ ]]; then
+            echo "Error: Version must be in format X, X.Y or X.Y.Z"
             exit 1
           fi
   
-  build_windows:
+  generate_buildnumbers:
     needs: [validate_version]
+    runs-on: ubuntu-latest
+    outputs:
+      build_number: ${{ steps.buildnumber.outputs.build_number }}
+    steps:
+      - name: Generate build number
+        id: buildnumber
+        uses: onyxmueller/build-tag-number@v1.0.4
+        with:
+          token: ${{ secrets.PAT_BUILDBOT }}
+          prefix: github
+  
+  build_windows:
+    needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_windows_vs.yml
     with:
       branch: ${{ github.event.inputs.branch }}
       releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}
       artifactArchive: archives-windows
+  
+  build_windows_installer:
+    needs: [build_windows]
+    uses: ./.github/workflows/build_windows_installer.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-windows
+      artifactInstaller: installers-windows
   
   build_msix:
     needs: [build_windows]
