@@ -213,12 +213,13 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\deigde\editors\project\minizip;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wer.lib;$(FoxLibLinkName);%(AdditionalDependencies)</AdditionalDependencies>
       <PdbPath>.</PdbPath>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(FoxLibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\project\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -FoxDir "$(SolutionDir)extern\fox\build\install\lib"</Command>
@@ -242,7 +243,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\deigde\editors\project\minizip;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wer.lib;$(FoxLibLinkName);%(AdditionalDependencies)</AdditionalDependencies>
       <PdbPath>.</PdbPath>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -250,6 +251,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(FoxLibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\project\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -FoxDir "$(SolutionDir)extern\fox\build\install\lib"</Command>
@@ -273,7 +275,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\deigde\editors\project\minizip;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wer.lib;$(FoxLibLinkName);%(AdditionalDependencies)</AdditionalDependencies>
       <PdbPath>.</PdbPath>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -281,6 +283,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(FoxLibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\project\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -FoxDir "$(SolutionDir)extern\fox\build\install\lib"</Command>
