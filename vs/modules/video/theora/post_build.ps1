@@ -8,11 +8,6 @@
 Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 
 
-if (Test-Path "$PSScriptRoot\..\..\..\github_cached_externals") {
-    return
-}
-
-
 # application
 $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
 

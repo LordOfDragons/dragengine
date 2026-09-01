@@ -60,7 +60,6 @@ jobs:
         with:
           path: .git/lfs
           key: lfs-cache-${{ hashFiles('.lfs-objects-id') }}
-          restore-keys: lfs-cache-
 
       - name: Git LFS Pull
         if: ${{ inputs.lfscache }}
@@ -111,9 +110,11 @@ jobs:
         uses: actions/cache@v5
         id: external-cache
         with:
-          path: ./extern
-          key: external-cache-android-${{ inputs.androidArch }}-${{ hashFiles('./extern/**/SConscript', './extern/**/*.tar.*', './extern/**/*.zip') }}
-          restore-keys: external-cache-android-${{ inputs.androidArch }}-
+          path: |
+            ./extern/**/*.tar.*
+            ./extern/**/*.zip
+            ./extern/**/*.sha256sum
+          key: external-cache-android-${{ inputs.androidArch }}-${{ hashFiles('./extern/**/*.tar.*', './extern/**/*.zip', './extern/**/*.sha256sum') }}
       
       # - name: Cache SCons
       #   uses: actions/cache@v5
@@ -122,7 +123,6 @@ jobs:
       #   with:
       #     path: .scons_cache
       #     key: ${{ runner.os }}-scons-cache-android-${{ inputs.androidArch }}-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
-      #     restore-keys: ${{ runner.os }}-scons-cache-android-${{ inputs.androidArch }}-
       
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake

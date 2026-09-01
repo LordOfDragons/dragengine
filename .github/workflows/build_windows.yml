@@ -46,8 +46,7 @@ jobs:
         if: ${{ inputs.lfscache }}
         with:
           path: .git/lfs
-          key: lfs-cache-${{ hashFiles('.lfs-objects-id') }}
-          restore-keys: lfs-cache-
+          key: lfs-windows-cache-${{ hashFiles('.lfs-objects-id') }}
 
       - name: Git LFS Pull
         if: ${{ inputs.lfscache }}

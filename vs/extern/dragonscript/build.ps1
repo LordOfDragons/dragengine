@@ -8,11 +8,6 @@
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 
-if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
-    return
-}
-
-
 $LibraryVersion = "1.5.2"
 $ExpandedDir = "$ProjectDir\build"
 if (Test-Path $ExpandedDir) {
