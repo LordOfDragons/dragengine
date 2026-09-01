@@ -21,7 +21,7 @@ Copy-Files -SourceDir $FoxDir -TargetDir $TargetDir -Pattern "*.dll"
 
 Write-Host "GUI Launcher: Copy VC Runtime to '$TargetDir'"
 
-Copy-Files -SourceDir "$OutputDir\launcher\gui" -TargetDir $TargetDir -Pattern "vcruntime*.dll"
+Copy-Files -SourceDir "$OutputDir\launcher\gui" -TargetDir $TargetDir -Pattern "*.dll"
 
 
 # debug
