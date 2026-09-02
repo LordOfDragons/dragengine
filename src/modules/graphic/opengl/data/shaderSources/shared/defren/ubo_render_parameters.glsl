@@ -237,15 +237,19 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	
 	
 	
-	// vr
+	// vr parameters
+	
 	// x: hud-fov
 	// y: hud-curvature
-	// z: n/a
+	// z: depth transformation clamp
 	// w: n/a
 	vec4 pVRParams;
 	#define pVRHudFov (pVRParams.x)
 	#define pVRHudCurvature (pVRParams.y)
+	#define pVRDepthClamp (pVRParams.z)
 	
+	// depth factors for depth transformation required for depth submission
+	vec4 pVRDepthTransform;
 	
 	
 	// debug

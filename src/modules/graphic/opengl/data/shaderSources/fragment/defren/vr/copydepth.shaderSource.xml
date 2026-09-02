@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F VR Copy Depth</name>
+	<stage>fragment</stage>
+	<source>copydepth.frag.glsl</source>
+</shaderSource>
