@@ -89,12 +89,11 @@ jobs:
 
       - name: Restore LFS Cache
         uses: actions/cache@v5
-        id: lfs-vs-cache
+        id: lfs-windows-cache
         if: ${{ inputs.lfscache }}
         with:
           path: .git/lfs
-          key: lfs-vs-cache-${{ hashFiles('.lfs-objects-id') }}
-          restore-keys: lfs-vs-cache-
+          key: lfs-windows-cache-${{ hashFiles('.lfs-objects-id') }}
 
       - name: Git LFS Pull
         if: ${{ inputs.lfscache }}
@@ -141,11 +140,10 @@ jobs:
         uses: actions/cache@v5
         with:
           path: |
-            ./vs/extern
-            ./vs/github_cached_externals
-          key: ${{ runner.os }}-extern-${{ hashFiles('./vs/*.ps1', './vs/extern/*/*.ps1') }}
-          restore-keys: |
-            ${{ runner.os }}-extern-
+            ./vs/extern/**/*.tar.*
+            ./vs/extern/**/*.zip
+            ./vs/extern/**/*.sha256sum
+          key: ${{ runner.os }}-extern-${{ hashFiles('./vs/extern/*/*.tar.*', './vs/extern/*/*.zip', './vs/extern/*/*.sha256sum') }}
       
       - name: Build
         working-directory: vs
@@ -163,11 +161,6 @@ jobs:
             /p:BuildVersion=$BuilVersion `
             /p:Platform=$Platform `
             dragengine.sln
-          
-          # mark external cache as valid. it doesn't matter if the powershell script incorrectly
-          # runs this line although the build failed as the cache step will not cache anything
-          # if the build failed. the content also doesn't matter. the file only has to exist
-          Set-Content -Path "${{ github.workspace }}/vs/github_cached_externals" -Value "true"
       
       - name: Archive
         run: |

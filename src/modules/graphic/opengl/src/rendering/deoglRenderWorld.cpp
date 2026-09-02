@@ -676,6 +676,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const decMatrix matrixSkyBody(matrixCamera.GetRotationMatrix() * matrixProjection);
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
+	const float imageDistance = plan.GetCameraImageDistance();
+	const float viewDistance = plan.GetCameraViewDistance();
 	const int height = defren.GetHeight();
 	const int width = defren.GetWidth();
 	float envMapLodLevel = 1.0f;
@@ -767,7 +770,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const decVector2 ssrCoverageFactor(-ssrInvCoverageEdgeSize, ssrInvCoverageEdgeSize * 0.5f);
 	const float ssrPowerEdge = config.GetSSRCoveragePowerEdge();
 	const float ssrPowerRayLength = config.GetSSRCoveragePowerRayLength();
-	const float ssrClipReflDirNearDist = plan.GetCameraImageDistance() * 0.9f;
+	const float ssrClipReflDirNearDist = imageDistance * 0.9f;
 	const int ssrRoughnessTapMax = 5; //20;
 	const float ssrRoughnessTapRange = 0.1f;
 	const float ssrRoughnessTapCountScale = (float)ssrRoughnessTapMax / ssrRoughnessTapRange;
@@ -873,9 +876,45 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	// stereo rendering
 	const decMatrix &cameraStereoMatrix = plan.GetCameraStereoMatrix();
 	
-	// vr
+	/* vr
+	for infinite projection matrix:
+		using inverse depth (projection transforms to 0..1):
+			depth = znear / z
+			depth * z = znear
+			z = znear / depth
+			z = factor1 / (depth + factor2):
+				factor1 = znear
+				factor2 = 0.0
+			attention! with factor2=0 and depth=0 (sky or empty) the denominator becomes 0.
+			the best solution is to use zfar as the source of the offset since larger depth
+			values will be clamped anyway. using z=zfar we get this:
+				depthFar = znear / zfar
+		without inverse depth (projection transforms to -1..1 which requires shift to 0..1):
+			depth = ((z - 2.0 * znear) / z) * 0.5 + 0.5
+			depth = ((z * 0.5 - znear) / z) + 0.5
+			depth - 0.5 = (z * 0.5 - znear) / z
+			(depth - 0.5) * z = z * 0.5 - znear
+			(depth - 0.5) * z - z * 0.5 = -znear
+			z * ((depth - 0.5) - 0.5) = -znear
+			z * (depth - 1.0) = -znear
+			z = -znear / (depth - 1.0)
+			z = factor1 / (depth + factor2):
+				factor1 = -znear
+				factor2 = -1.0
+	for regular projection matrix:
+		denominator = 1.0 / (zfar - znear)
+		factorZ = (zfar + znear) * denominator
+		factorW = -2.0 * zfar * znear * denominator
+		depth = (z * factorZ + factorW) / z
+	*/
 	const float vrHudFov = config.GetVRHudFov() * DEG2RAD;
 	const float vrHudCurvature = config.GetVRHudCurvature() * 0.5f;
+	
+	const float vrDepthFactor1 = useInverseDepth ? imageDistance : -imageDistance;
+	const float vrDepthFactor2 = useInverseDepth ? 0.0f : -1.0f;
+	const float vrDepthFactor3 = plan.GetFrustumMatrix().a33;
+	const float vrDepthFactor4 = plan.GetFrustumMatrix().a34;
+	const float vrDepthClamp = useInverseDepth ? imageDistance / viewDistance : 0.0f;
 	
 	// conditions, aka specializations
 	const bool condClipPlane = mask && mask->GetUseClipPlane();
@@ -924,7 +963,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		
 		spb.SetParameterDataFloat(deoglSkinShader::erutBillboardZScale, tanf(plan.GetCameraFov() * 0.5f));
 		
-		spb.SetParameterDataVec2(deoglSkinShader::erutCameraRange, plan.GetCameraImageDistance(), plan.GetCameraViewDistance());
+		spb.SetParameterDataVec2(deoglSkinShader::erutCameraRange, imageDistance, viewDistance);
 		
 		if(plan.GetDisableLights()){
 			spb.SetParameterDataFloat(deoglSkinShader::erutCameraAdaptedIntensity, 1.0f);
@@ -949,10 +988,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			2.0f / (float)width, 2.0f / (float)height,
 			1.0f / (float)width - 1.0f, 1.0f / (float)height - 1.0f);
 		
-		const float znear = plan.GetCameraImageDistance();
-		const float zfar = plan.GetCameraViewDistance();
-		const float fadeRange = (zfar - znear) * 0.001f; // for example 1m on 1km
-		spb.SetParameterDataVec3(deoglSkinShader::erutFadeRange, zfar - fadeRange, zfar, 1.0f / fadeRange);
+		const float fadeRange = (viewDistance - imageDistance) * 0.001f; // for example 1m on 1km
+		spb.SetParameterDataVec3(deoglSkinShader::erutFadeRange,
+			viewDistance - fadeRange, viewDistance, 1.0f / fadeRange);
 		
 		// ssao
 		spb.SetParameterDataVec4(deoglSkinShader::erutSSAOParams1,
@@ -997,12 +1035,17 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataInt(deoglSkinShader::erutGIHighestCascade, giHighestCascade);
 		
 		// tone mapping
-		spb.SetParameterDataVec2(deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapWhiteScale);
-		spb.SetParameterDataVec3(deoglSkinShader::erutToneMapAdaption, toneMapLowInt, toneMapHighInt, toneMapAdaptationTime);
-		spb.SetParameterDataVec3(deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, toneMapBloomIntensity, toneMapBloomBlend);
+		spb.SetParameterDataVec2(deoglSkinShader::erutToneMapSceneKey,
+			toneMapExposure, toneMapWhiteScale);
+		spb.SetParameterDataVec3(deoglSkinShader::erutToneMapAdaption,
+			toneMapLowInt, toneMapHighInt, toneMapAdaptationTime);
+		spb.SetParameterDataVec3(deoglSkinShader::erutToneMapBloom,
+			toneMapBloomStrength, toneMapBloomIntensity, toneMapBloomBlend);
 		
 		// vr
-		spb.SetParameterDataVec4(deoglSkinShader::erutVRParams, vrHudFov, vrHudCurvature, 0.0f, 0.0f);
+		spb.SetParameterDataVec4(deoglSkinShader::erutVRParams, vrHudFov, vrHudCurvature, vrDepthClamp, 0.0f);
+		spb.SetParameterDataVec4(deoglSkinShader::erutVRDepthTransform,
+			vrDepthFactor1, vrDepthFactor2, vrDepthFactor3, vrDepthFactor4);
 		
 		// debug depth transform
 		spb.SetParameterDataVec2(deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift);

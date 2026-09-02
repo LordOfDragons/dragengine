@@ -8,11 +8,6 @@
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 
-if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
-    return
-}
-
-
 $ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
@@ -71,4 +66,28 @@ if ($LASTEXITCODE -ne 0) {
 	throw "MSBuild failed with exit code $LASTEXITCODE"
 }
 
-# we can not copy here the file or MSBuild trashed the files. we have to delay this until the post build phase
+# copy libraries to build directory
+$targetLibDir = "$ExpandedDir\install\lib"
+$libBuildDir = "$ExpandedSrcDir\windows\x64\Release"
+
+if (-not (Test-Path $targetLibDir)) {
+	New-Item -Path $targetLibDir -ItemType Directory | Out-Null
+}
+
+Copy-Item -Path "$libBuildDir\fox-*.dll" -Destination "$targetLibDir" -Force
+Copy-Item -Path "$libBuildDir\fox-*.lib" -Destination "$targetLibDir" -Force
+Copy-Item -Path "$libBuildDir\fox-*.pdb" -Destination "$targetLibDir" -Force
+Copy-Item -Path "$libBuildDir\fox-*.exp" -Destination "$targetLibDir" -Force
+
+# copy the include directory
+$sourceIncludeDir = "$ExpandedSrcDir\include"
+$targetIncludeDir = "$ExpandedDir\install\include\fox-$DllVersion"
+
+if (Test-Path $sourceIncludeDir) {
+	if (Test-Path $targetIncludeDir) {
+		Remove-Item $targetIncludeDir -Force -Recurse
+	}
+	Copy-Item $sourceIncludeDir -Destination $targetIncludeDir -Recurse -Force
+} else {
+	throw "Include directory not found at: $sourceIncludeDir"
+}

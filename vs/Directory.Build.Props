@@ -1,5 +1,9 @@
 <Project>
     <PropertyGroup>
         <BuildVersion>9999</BuildVersion>
-    </PropertyGroup>
+        
+        <FoxLibVersion>1.7</FoxLibVersion>
+        <FoxLibLinkName>fox-$(FoxLibVersion).lib</FoxLibLinkName>
+        <FoxLibDir>$(SolutionDir)extern\fox\build\install\lib</FoxLibDir>
+	</PropertyGroup>
 </Project>
