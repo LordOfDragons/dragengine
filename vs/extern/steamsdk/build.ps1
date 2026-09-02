@@ -8,11 +8,6 @@
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 
-if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
-    return
-}
-
-
 $ExpandedDir = "$ProjectDir\build\steamsdk"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse

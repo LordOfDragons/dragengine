@@ -13,9 +13,40 @@ on:
         required: true
         type: string
         default: 'X.Y{.Z}'
+      withLinux:
+        description: 'Build Linux'
+        required: false
+        type: boolean
+        default: true
+      withLinuxCI:
+        description: 'Build Linux CI'
+        required: false
+        type: boolean
+        default: true
+      withWindows:
+        description: 'Build Windows'
+        required: false
+        type: boolean
+        default: true
+      withAndroid:
+        description: 'Build Android'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
+  validate_version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate version format
+        run: |
+          if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$ ]]; then
+            echo "Error: Version must be in format X, X.Y or X.Y.Z"
+            exit 1
+          fi
+  
   generate_buildnumbers:
+    needs: [validate_version]
     runs-on: ubuntu-latest
     outputs:
       build_number: ${{ steps.buildnumber.outputs.build_number }}
@@ -28,6 +59,7 @@ jobs:
           prefix: github
   
   build_linux:
+    if: ${{ github.event.inputs.withLinux == 'true' }}
     needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_linux.yml
     with:
@@ -40,10 +72,12 @@ jobs:
       sconscache: false
   
   nightly_checks:
+    if: ${{ github.event.inputs.withLinux == 'true' }}
     needs: [build_linux]
     uses: ./.github/workflows/nightly_checks.yml
   
   build_windows:
+    if: ${{ github.event.inputs.withWindows == 'true' }}
     needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_windows_vs.yml
     with:
@@ -53,6 +87,7 @@ jobs:
       artifactArchive: archives-windows
   
   build_windows_installer:
+    if: ${{ github.event.inputs.withWindows == 'true' }}
     needs: [build_windows]
     uses: ./.github/workflows/build_windows_installer.yml
     with:
@@ -62,6 +97,7 @@ jobs:
       artifactInstaller: installers-windows
 
   build_msix:
+    if: ${{ github.event.inputs.withWindows == 'true' }}
     needs: [build_windows]
     uses: ./.github/workflows/build_msix.yml
     with:
@@ -71,6 +107,7 @@ jobs:
       artifactMsix: msix-windows
   
   build_linux_ci:
+    if: ${{ github.event.inputs.withLinuxCI == 'true' }}
     needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_linux_ci.yml
     with:
@@ -82,6 +119,7 @@ jobs:
       sconscache: false
   
   build_android_armv8:
+    if: ${{ github.event.inputs.withAndroid == 'true' }}
     needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_android.yml
     with:
@@ -94,6 +132,7 @@ jobs:
       sconscache: false
   
   build_android_armv7:
+    if: ${{ github.event.inputs.withAndroid == 'true' }}
     needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_android.yml
     with:
@@ -106,6 +145,7 @@ jobs:
       sconscache: false
   
   build_live:
+    if: ${{ github.event.inputs.withLinux == 'true' && github.event.inputs.withWindows == 'true' }}
     needs: [build_linux, build_windows]
     uses: ./.github/workflows/build_live.yml
     with:
@@ -115,6 +155,7 @@ jobs:
       artifactLauncher: archive-livelauncher
     
   build_testing:
+    if: ${{ github.event.inputs.withLinuxCI == 'true' }}
     needs: [build_linux_ci]
     uses: ./.github/workflows/build_testing.yml
     with:
@@ -124,6 +165,7 @@ jobs:
       artifactTesting: archive-testing
     
   testing:
+    if: ${{ github.event.inputs.withLinux == 'true' && github.event.inputs.withLinuxCI == 'true' }}
     needs: [build_linux, build_testing]
     uses: ./.github/workflows/testing.yml
     with:

@@ -7,11 +7,6 @@ param (
 
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
-
-if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
-	return
-}
-
 $LibVersion = "2.1.0"
 
 $ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "build"

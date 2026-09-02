@@ -20,11 +20,10 @@ jobs:
 
       - name: Restore LFS Cache
         uses: actions/cache@v5
-        id: lfs-vs-cache
+        id: lfs-windows-cache
         with:
           path: .git/lfs
-          key: lfs-vs-cache-${{ hashFiles('.lfs-objects-id') }}
-          restore-keys: lfs-vs-cache-
+          key: lfs-windows-cache-${{ hashFiles('.lfs-objects-id') }}
 
       - name: Git LFS Pull
         run: |

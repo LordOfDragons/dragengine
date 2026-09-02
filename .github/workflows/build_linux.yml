@@ -114,7 +114,6 @@ jobs:
         with:
           path: .git/lfs
           key: lfs-cache-${{ hashFiles('.lfs-objects-id') }}
-          restore-keys: lfs-cache-
 
       - name: Git LFS Pull
         if: ${{ inputs.lfscache }}
@@ -150,8 +149,11 @@ jobs:
         uses: actions/cache@v5
         id: external-cache
         with:
-          path: ./extern
-          key: external-cache-linux-${{ hashFiles('./extern/**/SConscript', './extern/**/*.tar.*', './extern/**/*.zip') }}
+          path: |
+            ./extern/**/*.tar.*
+            ./extern/**/*.zip
+            ./extern/**/*.sha256sum
+          key: external-cache-linux-${{ hashFiles('./extern/**/*.tar.*', './extern/**/*.zip', './extern/**/*.sha256sum') }}
       
       # - name: Cache SCons
       #   uses: actions/cache@v5
@@ -160,7 +162,6 @@ jobs:
       #   with:
       #     path: .scons_cache
       #     key: ${{ runner.os }}-scons-cache-linux-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
-      #     restore-keys: ${{ runner.os }}-scons-cache-linux-
       
       - name: Build external
         # Build first all external libraries. Aboids avoid running CodeQL on them.

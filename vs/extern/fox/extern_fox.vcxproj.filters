@@ -16,11 +16,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="build.ps1" />
-    <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="dummy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
