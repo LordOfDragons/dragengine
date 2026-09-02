@@ -123,6 +123,18 @@ pHudVertexCount(0)
 		
 		
 		// submit image
+		/*
+		problem: inverse depth is mapped to GL_DEPTH_COMPONENT16 on quest3 causing shader nan/inf.
+		basically quest3 breaks down if inverse depth with infinite projection matrix is used
+		although openxr specification clearly requires this to be valid. by forcing the submitted
+		depth buffer to be a regular depth buffer with regular projection matrix all kinds of
+		broken vr runtimes can be supported without degrading the result for working ones.
+		for reprojection a fully correct depth buffer is not needed. it is enough to convert the
+		depth buffer from inverse depth using projection matrix to regular depth buffer using
+		regular projection matrix. the shader does a proper conversion. the resolution of 16-bit
+		is limited but for reprojection use only good enough. for the calculation see
+		deoglRenderWorld::PrepareRenderParamBlock().
+		*/
 		pipconf.Reset();
 		pipconf.SetMasks(true, true, true, true, false);
 		pipconf.SetEnableScissorTest(true);
@@ -137,7 +149,7 @@ pHudVertexCount(0)
 		
 		defines = commonDefines;
 		pAsyncGetPipeline(pPipelineSubmitDepth, pipconf,
-			shaderManager.GetSourcesNamed("DefRen Copy Depth"), defines);
+			shaderManager.GetSourcesNamed("VR Copy Depth"), defines);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -319,6 +331,7 @@ void deoglRenderVR::SubmitImages(deoglRenderPlan &plan, deoglVREye &eye, deBaseV
 	if(eye.GetVRViewDepthImages().IsNotEmpty()){
 		index = vrmodule.AcquireEyeDepthImage(eye.GetEye());
 		if(index != -1){
+			/*
 			float znear, zfar;
 			if(renderThread.GetChoices().GetUseInverseDepth()){
 				znear = std::numeric_limits<float>::infinity();
@@ -328,6 +341,9 @@ void deoglRenderVR::SubmitImages(deoglRenderPlan &plan, deoglVREye &eye, deBaseV
 				znear = plan.GetCameraImageDistance();
 				zfar = plan.GetCameraViewDistance();
 			}
+			*/
+			const float znear = plan.GetCameraImageDistance();
+			const float zfar = plan.GetCameraViewDistance();
 			
 			try{
 				pPipelineSubmitDepth->Activate();

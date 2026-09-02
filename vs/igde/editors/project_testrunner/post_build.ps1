@@ -19,7 +19,7 @@ Install-Files -Path $Program -Destination $TargetDir
 
 Write-Host "Project Editor TestRunner: Copy VC Runtime to '$TargetDir'"
 
-Copy-Files -SourceDir $BaseDir -TargetDir $TargetDir -Pattern "vcruntime*.dll"
+Copy-Files -SourceDir $BaseDir -TargetDir $TargetDir -Pattern "*.dll"
 
 
 # dependencies

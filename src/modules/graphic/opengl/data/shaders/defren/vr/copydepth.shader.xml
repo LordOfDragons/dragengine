@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>VR Copy Depth</name>
+	
+	<parameter name="pQuadParams" location='0'/>
+	
+	<sourceCode unit="vertex">V Generic FullScreenQuad</sourceCode>
+	<sourceCode unit='fragment'>F VR Copy Depth</sourceCode>
+</shader>
