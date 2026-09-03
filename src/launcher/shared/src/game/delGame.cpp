@@ -194,7 +194,7 @@ void delGame::VerifyRequirements(){
 	
 	// verify custom profile if present
 	if(pCustomProfile){
-		GetCustomProfile()->Verify(pLauncher);
+		pCustomProfile->Verify(pLauncher);
 	}
 	
 	// check if all file formats are supported
