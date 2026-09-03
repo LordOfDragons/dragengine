@@ -142,7 +142,6 @@ bool deglbLauncher::RunCommandLineGame(){
 				GetGameManager().GetGames().Remove(loadedGame);
 				GetGameManager().GetGames().Add(pCmdLineGame);
 			}
-			pCmdLineGame = loadedGame;
 			
 		}else{
 			pCmdLineGame->LoadConfig();
@@ -155,6 +154,7 @@ bool deglbLauncher::RunCommandLineGame(){
 		try{
 			game = GetGameManager().GetGames().FindWithId({pRunGame, false});
 		}catch(const deException &){
+			// not an UUID
 		}
 		
 		if(!game){
