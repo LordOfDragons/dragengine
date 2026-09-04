@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpBulletShape.h"
 #include "debpGhostObject.h"
 #include "world/debpCollisionWorld.h"
@@ -34,7 +30,7 @@
 #include <dragengine/common/exceptions.h>
 
 #include "BulletCollision/CollisionShapes/btCollisionShape.h"
-#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
 
 
@@ -160,6 +156,7 @@ void debpGhostObject::pCreateGhostObject(){
 		pGhostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		pGhostObject->setCollisionShape(pShape->GetShape());
 		pGhostObject->forceActivationState(0); // ensure the ghost object is in deactivated state
+		// pGhostObject->forceActivationState(ISLAND_SLEEPING);
 		
 		pUpdateTransform();
 		

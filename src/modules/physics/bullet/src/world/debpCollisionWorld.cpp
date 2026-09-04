@@ -695,8 +695,8 @@ struct sContactResultBoolean : btManifoldResult{
 	virtual void addContactPoint(const btVector3 &normalOnBInWorld,
 	const btVector3 &pointInWorld, btScalar depth){
 		hasContact = true;
-			// hackPointInWorld = pointInWorld;
-			// hackDepth = depth;
+		// hackPointInWorld = pointInWorld;
+		// hackDepth = depth;
 	}
 };
 
@@ -797,15 +797,12 @@ btCollisionObject *colObjA, btCollisionObject *colObjB){
 		btCollisionObjectWrapper obB(0, colObjB->getCollisionShape(),
 			colObjB, colObjB->getWorldTransform(), -1, -1);
 		
-		btCollisionAlgorithm * const algorithm = getDispatcher()->findAlgorithm(
-			&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS);
-		
+		auto algorithm = getDispatcher()->findAlgorithm(&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS);
 		if(!algorithm){
 			return false;
 		}
 		
 		sContactResultBoolean result(&obA, &obB);
-		
 		algorithm->processCollision(&obA, &obB, getDispatchInfo(), &result);
 		algorithm->~btCollisionAlgorithm();
 		getDispatcher()->freeCollisionAlgorithm(algorithm);
