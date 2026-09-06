@@ -121,6 +121,15 @@ void deoglRDebugDrawer::UpdateShapes(const deDebugDrawer &debugDrawer){
 	pDirtyVBO = true;
 }
 
+void deoglRDebugDrawer::UpdateShapeParams(const deDebugDrawer &debugDrawer){
+	debugDrawer.GetShapes().VisitIndexed([&](int i, const deDebugDrawerShape &s){
+		deoglDebugDrawerShape &shape = pShapes[i];
+		shape.SetMatrix(decMatrix::CreateWorld(s.GetPosition(), s.GetOrientation(), s.GetScale()));
+		shape.SetEdgeColor(s.GetEdgeColor());
+		shape.SetFillColor(s.GetFillColor());
+	});
+}
+
 
 deoglDebugDrawerShape &deoglRDebugDrawer::GetShapeAt(int index){
 	return pShapes[index];
