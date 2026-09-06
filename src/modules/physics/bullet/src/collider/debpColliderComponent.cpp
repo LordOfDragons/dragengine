@@ -678,7 +678,7 @@ void debpColliderComponent::DetectCustomCollision(float elapsed){
 			decString text("   history=[");
 			world.GetCollisionInfo().VisitIndexed(stuckPreventionIndex - 1, 0, -1,
 				[&](int index, const deCollisionInfo &each){
-					text.AppendFormat("%s%f", index == 0 ? "" : ",", each.GetDistance());
+					text.AppendFormat("%s%f", index == stuckPreventionIndex - 1 ? "" : ",", each.GetDistance());
 				});
 			text.Append("]");
 			bullet.LogWarn(text);

@@ -1069,6 +1069,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// wait behind it and back off a bit since it can not avoid us
 			var ECBehaviorActorMover.Instance otherMover =\
 				ECBehaviorActorMover.getInstanceIn(behavior.getElement())
+			/*
 			if dh != null
 				dh.addValue("otherMover", otherMover != null)
 			end
@@ -1079,6 +1080,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				waitBehindAvoidedByActor(behavior)
 				return
 			end
+			*/
 			
 			// if close to the hit point do contact collision avoid
 			if dh != null
