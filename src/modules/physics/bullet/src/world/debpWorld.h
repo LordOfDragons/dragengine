@@ -60,7 +60,7 @@ class debpWorld : public deBasePhysicsWorld{
 private:
 	dePhysicsBullet &pBullet;
 	deWorld &pWorld;
-	deCollisionInfo::Ref pColInfo;
+	deCollisionInfo::List pColInfo;
 	debpUnstuckCollider *pUnstuckCollider;
 	
 	debpHeightTerrain *pHeightTerrain;
@@ -130,7 +130,8 @@ public:
 	inline deWorld &GetWorld() const{ return pWorld; }
 	
 	/** Shared collision information. */
-	inline const deCollisionInfo::Ref &GetCollisionInfo() const{ return pColInfo; }
+	inline const deCollisionInfo::List &GetCollisionInfo() const{ return pColInfo; }
+	const deCollisionInfo::Ref &GetCollisionInfoAt(int index);
 	
 	/** Unstuck collider. */
 	inline debpUnstuckCollider *GetUnstuckCollider() const{ return pUnstuckCollider; }

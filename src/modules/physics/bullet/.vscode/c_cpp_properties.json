@@ -10,7 +10,8 @@
             "defines": [
                 "MODULE_VERSION=\"9999\"",
                 "MOD_ENTRY_POINT_ATTR=",
-                "WITH_INTERNAL_MODULE="
+                "WITH_INTERNAL_MODULE=",
+                "WITH_DEBUG=1"
             ],
             "cStandard": "c11",
             "cppStandard": "c++20"

@@ -458,7 +458,6 @@ void debpCollisionWorld::CheckDynamicCollisions(btScalar timeStep){
 	}
 	
 	const btScalar velocityThreshold = (btScalar)pWorld.GetDynamicCollisionVelocityThreshold();
-	deCollisionInfo * const colinfo = pWorld.GetCollisionInfo();
 	btDispatcher &dispatcher = *getDispatcher();
 	const int countManifolds = dispatcher.getNumManifolds();
 	int i, j;
@@ -561,6 +560,7 @@ void debpCollisionWorld::CheckDynamicCollisions(btScalar timeStep){
 // 		continue;
 		
 		// these parameters are not cleared and stay the same for both collision response calls
+		const auto colinfo = pWorld.GetCollisionInfoAt(0);
 		colinfo->SetDistance(0.0f); // not supported on dynamic hits
 		colinfo->SetNormal(decVector((float)normal.getX(), (float)normal.getY(), (float)normal.getZ()));
 		colinfo->SetPosition(decVector((float)position.getX(), (float)position.getY(), (float)position.getZ()));

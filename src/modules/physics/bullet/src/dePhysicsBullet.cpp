@@ -181,7 +181,6 @@ dePhysicsBullet::~dePhysicsBullet(){
 
 bool dePhysicsBullet::Init(){
 	pCollisionDetection = new debpCollisionDetection(*this);
-	pColInfo = deCollisionInfo::Ref::New();
 	
 	pConfiguration->LoadConfig();
 	
@@ -194,11 +193,6 @@ bool dePhysicsBullet::Init(){
 void dePhysicsBullet::CleanUp(){
 	if(pConfiguration){
 		pConfiguration->SaveConfig();
-	}
-	
-	if(pColInfo){
-		pColInfo->Clear(); // just to be safe in case somebody still holds a reference
-		pColInfo = nullptr;
 	}
 	
 	if(pCollisionDetection){

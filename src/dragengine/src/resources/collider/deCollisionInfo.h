@@ -28,8 +28,9 @@
 #include "deCollider.h"
 #include "../particle/deParticleEmitterType.h"
 #include "../terrain/heightmap/deHeightTerrain.h"
-#include "../../common/math/decMath.h"
 #include "../../deObject.h"
+#include "../../common/collection/decTList.h"
+#include "../../common/math/decMath.h"
 
 class deHeightTerrainSector;
 
@@ -45,6 +46,9 @@ class DE_DLL_EXPORT deCollisionInfo : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deCollisionInfo>;
+	
+	/** \brief List of references. */
+	using List = decTObjectList<deCollisionInfo>;
 	
 	
 private:
@@ -70,8 +74,16 @@ private:
 	decDVector pPosition;
 	float pImpulse;
 	
+	decDVector pOrgPosition, pOrgDisplacement, pOrgRotation;
+	decQuaternion pOrgOrientation;
+	
+	decDVector pBlockerPosition, pBlockerDisplacement, pBlockerRotation;
+	decQuaternion pBlockerOrientation;
+	
 	bool pStopTesting;
 	
+	List pHistory;
+	bool pStuck;
 	
 	
 public:
@@ -246,12 +258,89 @@ public:
 	
 	
 	
+	/** \brief Original position before the collision. */
+	inline const decDVector &GetOrgPosition() const{ return pOrgPosition; }
+
+	/** \brief Set original position before the collision. */
+	void SetOrgPosition(const decDVector &position);
+
+	/** \brief Original orientation before the collision. */
+	inline const decQuaternion &GetOrgOrientation() const{ return pOrgOrientation; }
+
+	/** \brief Set original orientation before the collision. */
+	void SetOrgOrientation(const decQuaternion &orientation);
+
+	/** \brief Original displacement before the collision. */
+	inline const decDVector &GetOrgDisplacement() const{ return pOrgDisplacement; }
+
+	/** \brief Set original displacement before the collision. */
+	void SetOrgDisplacement(const decDVector &displacement);
+	
+	/** \brief Original rotation before the collision. */
+	inline const decDVector &GetOrgRotation() const{ return pOrgRotation; }
+
+	/** \brief Set original rotation before the collision. */
+	void SetOrgRotation(const decDVector &rotation);
+	
+	
+	
+	/** \brief Blocker position before the collision. */
+	inline const decDVector &GetBlockerPosition() const{ return pBlockerPosition; }
+	
+	/** \brief Set blocker position before the collision. */
+	void SetBlockerPosition(const decDVector &position);
+	
+	/** \brief Blocker orientation before the collision. */
+	inline const decQuaternion &GetBlockerOrientation() const{ return pBlockerOrientation; }
+	
+	/** \brief Set blocker orientation before the collision. */
+	void SetBlockerOrientation(const decQuaternion &orientation);
+	
+	/** \brief Blocker displacement before the collision. */
+	inline const decDVector &GetBlockerDisplacement() const{ return pBlockerDisplacement; }
+	
+	/** \brief Set blocker displacement before the collision. */
+	void SetBlockerDisplacement(const decDVector &displacement);
+	
+	/** \brief Blocker rotation before the collision. */
+	inline const decDVector &GetBlockerRotation() const{ return pBlockerRotation; }
+	
+	/** \brief Set blocker rotation before the collision. */
+	void SetBlockerRotation(const decDVector &rotation);
+	
+	
+	
 	/** \brief Collision detection has to be stopped. */
 	inline bool GetStopTesting() const{ return pStopTesting; }
 	
 	/** \brief Set if collision detection has to be stopped. */
 	void SetStopTesting(bool stopTesting);
 	
+	
+	
+	/**
+	 * \brief Collision history.
+	 * 
+	 * Can contain list of accumulated collisions in the same detection step. Useful to detect
+	 * and prevent stuck situations as well as improving collision response by knowing more than
+	 * just the current collision.
+	 */
+	inline List &GetHistory(){ return pHistory; }
+	inline const List &GetHistory() const{ return pHistory; }
+	
+	/**
+	 * \brief Collision is stuck.
+	 * 
+	 * Flag is set for the last collision response before the collider is considered stuck.
+	 */
+	inline bool GetStuck() const{ return pStuck; }
+
+	/**
+	 * \brief Set if collision is stuck.
+	 * 
+	 * Flag is set for the last collision response before the collider is considered stuck.
+	 */
+	void SetStuck(bool stuck);
 	
 	
 	/** \name Operator */

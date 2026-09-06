@@ -47,7 +47,6 @@ private:
 	debpCommandExecuter *pCommandExecuter;
 	debpParameter::List pParameters;
 	
-	deCollisionInfo::Ref pColInfo;
 	debpCollisionDetection *pCollisionDetection;
 	
 	debpDebug pDebug;
@@ -100,9 +99,6 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the shared collision info. */
-	inline const deCollisionInfo::Ref &GetCollisionInfo() const{ return pColInfo; }
-	
 	/** \brief Collision detection. */
 	inline debpCollisionDetection &GetCollisionDetection() const{ return *pCollisionDetection; }
 	
