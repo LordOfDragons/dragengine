@@ -412,8 +412,10 @@ void deglbPanelGames::pRunGame(delGame *game){
 			runParams.SetGameProfile(profile);
 			
 			decString error;
-			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(),
-			game->GetUseCustomPatch(), error)){
+			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+				pWindowMain->GetLauncher()->GetLogger()->LogError(
+					pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Patch problems:");
+				game->LogProblems();
 				(new BAlert(
 					"Can not run game",
 					error,
@@ -443,6 +445,9 @@ void deglbPanelGames::pRunGame(delGame *game){
 			break;
 			
 		}else if(!profile->GetValid()){
+			pWindowMain->GetLauncher()->GetLogger()->LogError(
+				pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Profile problems:");
+			profile->LogProblems(*pWindowMain->GetLauncher());
 			(new BAlert(
 				"Can not run game",
 				"The Game Profile is not working. Please fix it in Game Properties.",
@@ -450,6 +455,9 @@ void deglbPanelGames::pRunGame(delGame *game){
 			break;
 			
 		}else if(!game->GetAllFormatsSupported()){
+			pWindowMain->GetLauncher()->GetLogger()->LogError(
+				pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. File format problems:");
+			game->LogProblems();
 			(new BAlert(
 				"Can not run game",
 				"One or more File Formats required by the game are not working.",
@@ -457,6 +465,9 @@ void deglbPanelGames::pRunGame(delGame *game){
 			break;
 			
 		}else{
+			pWindowMain->GetLauncher()->GetLogger()->LogError(
+				pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Game problems:");
+			game->LogProblems();
 			(new BAlert(
 				"Can not run game",
 				"Game related properties are incorrect.",
@@ -478,6 +489,9 @@ void deglbPanelGames::pRunGameWith(delGame *game){
 	}
 	
 	if(!game->GetCanRun()){
+		pWindowMain->GetLauncher()->GetLogger()->LogError(
+			pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Game problems:");
+		game->LogProblems();
 		const char *msg = game->GetAllFormatsSupported()
 			? "Game related properties are incorrect."
 			: "One or more File Formats required by the game are not working.";
@@ -513,6 +527,9 @@ void deglbPanelGames::pRunGameWithDone(delGame *game, bool result, const delGame
 	decString error;
 	if(!runParams.FindPatches(*game, game->GetUseLatestPatch(),
 	game->GetUseCustomPatch(), error)){
+		pWindowMain->GetLauncher()->GetLogger()->LogError(
+			pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Patch problems:");
+		game->LogProblems();
 		(new BAlert(
 			"Can not run game",
 			error,
@@ -521,6 +538,9 @@ void deglbPanelGames::pRunGameWithDone(delGame *game, bool result, const delGame
 	}
 	
 	if(runParams.GetGameProfile() && !runParams.GetGameProfile()->GetValid()){
+		pWindowMain->GetLauncher()->GetLogger()->LogError(
+			pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Profile problems:");
+		runParams.GetGameProfile()->LogProblems(*pWindowMain->GetLauncher());
 		(new BAlert(
 			"Can not run game",
 			"The selected profile is not valid.",
