@@ -457,8 +457,14 @@ void deoglLSConfiguration::pLoadConfigOpenGL(deoglConfiguration &configuration, 
 				}else if(strcmp(name, "vrForceFrameRate") == 0){
 					configuration.SetVRForceFrameRate(tag->GetFirstData()->GetData().ToInt());
 					
-			}else if(strcmp(name, "vrSubmitDepth") == 0){
-				configuration.SetVRSubmitDepth(tag->GetFirstData()->GetData().ToInt() != 0);
+				}else if(strcmp(name, "vrSubmitDepth") == 0){
+					configuration.SetVRSubmitDepth(tag->GetFirstData()->GetData().ToInt() != 0);
+					
+				}else{
+					pOgl.LogWarnFormat("opengl.xml %s(%i:%i): Invalid property name %s.",
+						tag->GetName().GetString(), tag->GetLineNumber(),
+						tag->GetPositionNumber(), name);
+				}
 				
 			}else if(tag->GetName() == "disableExtension"){
 				configuration.GetDisableExtensions().Add(tag->GetFirstData()->GetData());
