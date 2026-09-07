@@ -430,6 +430,9 @@ long deglPanelGames::onPUGameRun(FXObject*, FXSelector, void*){
 			
 			decString error;
 			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+				pWindowMain->GetLauncher()->GetLogger()->LogError(
+					pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Patch problems:");
+				game->LogProblems();
 				FXMessageBox::error(this, MBOX_OK, "Can not run game", "%s", error.GetString());
 				return false;
 			}
@@ -457,6 +460,9 @@ long deglPanelGames::onPUGameRun(FXObject*, FXSelector, void*){
 			break;
 			
 		}else if(!profile->GetValid()){
+			pWindowMain->GetLauncher()->GetLogger()->LogError(
+				pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Profile problems:");
+			profile->LogProblems(*pWindowMain->GetLauncher());
 			if(FXMessageBox::question(this, MBOX_YES_NO, "Can not run game",
 			"The Game Profile is not working. Open the Game Properties to fix the problem?") == MBOX_CLICKED_YES){
 				deglDialogGameProperties dialog(pWindowMain, game, pWindowMain);
@@ -480,10 +486,16 @@ long deglPanelGames::onPUGameRun(FXObject*, FXSelector, void*){
 			}
 			
 		}else if(!game->GetAllFormatsSupported()){
+			pWindowMain->GetLauncher()->GetLogger()->LogError(
+				pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. File format problems:");
+			game->LogProblems();
 			FXMessageBox::information(this, MBOX_OK, "Can not run game", "One or more File Formats required by the game are not working.");
 			break;
 			
 		}else{
+			pWindowMain->GetLauncher()->GetLogger()->LogError(
+				pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Game problems:");
+			game->LogProblems();
 			FXMessageBox::information(this, MBOX_OK, "Can not run game", "Game related properties are incorrect.");
 			break;
 		}
@@ -527,6 +539,9 @@ long deglPanelGames::onPUGameRunWith(FXObject*, FXSelector, void*){
 				
 				decString error;
 				if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+					pWindowMain->GetLauncher()->GetLogger()->LogError(
+						pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Patch problems:");
+					game->LogProblems();
 					FXMessageBox::error(this, MBOX_OK, "Can not run game", "%s", error.GetString());
 					return false;
 				}
@@ -554,6 +569,9 @@ long deglPanelGames::onPUGameRunWith(FXObject*, FXSelector, void*){
 					break;
 					
 				}else{
+					pWindowMain->GetLauncher()->GetLogger()->LogError(
+						pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Profile problems:");
+					runParams.GetGameProfile()->LogProblems(*pWindowMain->GetLauncher());
 					FXMessageBox::information(this, MBOX_OK, "Can not run game",
 						"The Game Profile is not working, select a different one or fix the problems");
 				}
@@ -562,11 +580,19 @@ long deglPanelGames::onPUGameRunWith(FXObject*, FXSelector, void*){
 			break;
 			
 		}else if(!game->GetAllFormatsSupported()){
-			FXMessageBox::information(this, MBOX_OK, "Can not run game", "One or more File Formats required by the game are not working.");
+			pWindowMain->GetLauncher()->GetLogger()->LogError(
+				pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. File format problems:");
+			game->LogProblems();
+			FXMessageBox::information(this, MBOX_OK, "Can not run game",
+				"One or more File Formats required by the game are not working.");
 			break;
 			
 		}else{
-			FXMessageBox::information(this, MBOX_OK, "Can not run game", "Game related properties are incorrect.");
+			pWindowMain->GetLauncher()->GetLogger()->LogError(
+				pWindowMain->GetLauncher()->GetLogSource(), "Can not run game. Game problems:");
+			game->LogProblems();
+			FXMessageBox::information(this, MBOX_OK, "Can not run game",
+				"Game related properties are incorrect.");
 			break;
 		}
 	}

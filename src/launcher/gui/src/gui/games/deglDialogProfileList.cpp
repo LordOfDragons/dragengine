@@ -707,8 +707,7 @@ bool deglDialogProfileList::GetSelectedMPModuleName(FXString &name){
 }
 
 void deglDialogProfileList::UpdateMPModuleList(){
-	delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
-	const delEngineModuleList &moduleList = engine.GetModules();
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
 	int m, moduleCount = moduleList.GetCount();
 	FXString text;
 	
@@ -723,7 +722,8 @@ void deglDialogProfileList::UpdateMPModuleList(){
 	
 	sortedModuleNames.Visit([&](const decString &name){
 		const delEngineModule * const module = moduleList.GetNamed(name);
-		text.format("%s\t%s", module->GetName().GetString(), engine.GetModuleTypeText(module->GetType()));
+		text.format("%s\t%s", module->GetName().GetString(),
+			delEngine::GetModuleTypeText(module->GetType()));
 		pListMPModules->appendItem(text);
 	});
 }

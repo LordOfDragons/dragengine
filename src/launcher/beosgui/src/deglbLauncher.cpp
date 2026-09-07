@@ -199,6 +199,8 @@ bool deglbLauncher::RunCommandLineGame(){
 			
 			decString error;
 			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+				GetLogger()->LogError(GetLogSource(), "Can not run game. Profile problems:");
+				profile->LogProblems();
 				BAlert alert("Can not run game", error, "OK");
 				alert.Go();
 				return false;
@@ -236,6 +238,8 @@ bool deglbLauncher::RunCommandLineGame(){
 		}
 		
 	}else if(!game->GetAllFormatsSupported()){
+		GetLogger()->LogError(GetLogSource(), "Can not run game. File format problems:");
+		game->LogProblems();
 		BAlert alert("Can not run game",
 			"One or more File Formats required by the game are not working.\n\n"
 			"Try updating Drag[en]gine to the latest version", "OK");
@@ -243,6 +247,8 @@ bool deglbLauncher::RunCommandLineGame(){
 		return false;
 		
 	}else{
+		GetLogger()->LogError(GetLogSource(), "Can not run game. Game problems:");
+		game->LogProblems();
 		BAlert alert("Can not run game",
 			"Game related properties are incorrect.\n\n"
 			"Try updating Drag[en]gine to the latest version", "OK");

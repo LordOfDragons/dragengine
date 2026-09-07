@@ -326,7 +326,7 @@ void delEngine::PutEngineIntoVFS(delEngineInstance &instance){
 
 
 
-const char *delEngine::GetModuleTypeText(deModuleSystem::eModuleTypes moduleType) const{
+const char *delEngine::GetModuleTypeText(deModuleSystem::eModuleTypes moduleType){
 	switch(moduleType){
 	case deModuleSystem::emtAI:
 		return "AI";

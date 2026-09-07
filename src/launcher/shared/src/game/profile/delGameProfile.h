@@ -32,6 +32,7 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
+#include <dragengine/systems/deModuleSystem.h>
 
 class delLauncher;
 class delEngineInstance;
@@ -284,9 +285,17 @@ public:
 	/** \brief Verify profile. */
 	void Verify(delLauncher &launcher);
 	
+	/** \brief Log problems found during verification. */
+	void LogProblems(delLauncher &launcher, const char *prefix = "") const;
+	
 	/** \brief Verify module. */
 	bool VerifyModule(delLauncher &launcher, const char *moduleName,
-		const char *moduleVersion, int requiredType) const;
+		const char *moduleVersion, deModuleSystem::eModuleTypes requiredType) const;
+	
+	/** \brief Log module problems found during verification. */
+	void LogProblemsModule(delLauncher &launcher, const char *moduleName,
+		const char *moduleVersion, deModuleSystem::eModuleTypes requiredType,
+		const char *prefix = "") const;
 	
 	/**
 	 * \brief Activate profile.
