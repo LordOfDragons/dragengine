@@ -319,10 +319,6 @@ void deoglRenderVR::SubmitImages(deoglRenderPlan &plan, deoglVREye &eye, deBaseV
 		pPipelineSubmitColor->GetShader().SetParameterFloat(0,
 			posScaleU, posScaleV, posOffsetU, posOffsetV);
 		
-		// protect against VR runtime using vulkan interop
-		pglMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT
-			| GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT);
-		
 		RenderFullScreenQuadVAO(plan);
 		
 		vrmodule.ReleaseEyeViewImage(eye.GetEye());
@@ -358,10 +354,6 @@ void deoglRenderVR::SubmitImages(deoglRenderPlan &plan, deoglVREye &eye, deBaseV
 				
 				pPipelineSubmitDepth->GetShader().SetParameterFloat(0,
 					posScaleU, posScaleV, posOffsetU, posOffsetV);
-				
-				// protect against VR runtime using vulkan interop
-				pglMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT
-					| GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT);
 				
 				RenderFullScreenQuadVAO(plan);
 				
