@@ -949,6 +949,9 @@ void debpWorld::pCleanUp(){
 		pHeightTerrain = NULL;
 	}
 	
+	pColInfo.Visit([](deCollisionInfo &each){
+		each.Clear();
+	});
 	if(pUnstuckCollider){
 		delete pUnstuckCollider;
 	}
