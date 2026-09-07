@@ -464,7 +464,10 @@ void deoglVREye::pUpdateEyeViews(deBaseVRModule &vrmodule){
 }
 
 void deoglVREye::pUpdateEyeDepthViews(deBaseVRModule &vrmodule){
-	const int count = vrmodule.GetEyeDepthImages(pEye, 0, nullptr);
+	deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
+	
+	const int count = renderThread.GetConfiguration().GetVRSubmitDepth()
+		? vrmodule.GetEyeDepthImages(pEye, 0, nullptr) : 0;
 	
 	if(count > 0){
 		pVRGetViewsDepthBuffer.SetAll(count, 0);
@@ -490,8 +493,6 @@ void deoglVREye::pUpdateEyeDepthViews(deBaseVRModule &vrmodule){
 	}
 	
 	pVRViewDepthImages.RemoveAll();
-	
-	deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
 	
 	if(count == 0){
 		renderThread.GetLogger().LogInfoFormat("%s: depth images 0", LogPrefix());

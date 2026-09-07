@@ -146,6 +146,7 @@ pVRRenderScale(1.0f),
 pVRForceFrameRate(0),
 pVRHudFov(50.0f),
 pVRHudCurvature(0.0f),
+pVRSubmitDepth(true),
 
 pRenderDocMode(false)
 {
@@ -977,5 +978,14 @@ void deoglConfiguration::SetVRHudCurvature(float curvature){
 	}
 	
 	pVRHudCurvature = curvature;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVRSubmitDepth(bool submit){
+	if(submit == pVRSubmitDepth){
+		return;
+	}
+	
+	pVRSubmitDepth = submit;
 	pDirty = true;
 }
