@@ -279,7 +279,12 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 
 aeMCPLinks::ObjectTypeRef aeMCPLinks::CopyObjectType(const ContextRef &context, const aeLink::List &existingObjects, const ObjectTypeRef &object) const{
 	auto copied = aeLink::Ref::New(*object);
-	copied->mpName.SetValue(Owner(context).uniqueNameLink.Generate(copied->mpName), false);
+	copied->mpName.SetValue(Owner(context).uniqueNameLink.Generate(
+		[&](const decString &name){
+			return existingObjects.NoneMatching([&](const aeLink &existing){
+				return existing.mpName == name;
+			});
+		}, copied->mpName), false);
 	return copied;
 }
 
