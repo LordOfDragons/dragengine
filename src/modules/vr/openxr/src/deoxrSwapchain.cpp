@@ -139,7 +139,7 @@ pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 				
 				if(createInfo.format){
 					oxr.LogInfoFormat("Using Depth Swapchain format %s",
-						session.GetSwapchainFormatNameOpenGL(formats[i], "??"));
+						session.GetSwapchainFormatNameOpenGL(createInfo.format, "??"));
 				}
 				break;
 			}
