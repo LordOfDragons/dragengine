@@ -369,12 +369,22 @@ bool declRunGame::LocateGame(){
 			return false;
 		}
 		
-		pGame = list.GetAt(0); // TODO support multiple games using a choice for for example
+		pGame = list.First(); // TODO support multiple games using a choice for for example
 		
-		// load configuration if the game is not installed. this allows to keep the parameter
-		// changes alive done by the player inside the game
-		if(!gameManager.GetGames().HasWithId(pGame->GetIdentifier())){
+		const delGame::Ref loadedGame(gameManager.GetGames().FindWithId(pGame->GetIdentifier()));
+		if(loadedGame){
+			if(loadedGame->GetDelgaFile() == pGameDefFile){
+				pGame = loadedGame;
+				
+			}else{
+				pGame->LoadConfig();
+				gameManager.GetGames().Remove(loadedGame);
+				gameManager.GetGames().Add(pGame);
+			}
+			
+		}else{
 			pGame->LoadConfig();
+			gameManager.GetGames().Add(pGame);
 		}
 		
 		pGame->VerifyRequirements();
