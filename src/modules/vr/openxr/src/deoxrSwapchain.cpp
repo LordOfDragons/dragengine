@@ -113,6 +113,11 @@ pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 						break;
 					}
 				}
+				
+				if(createInfo.format){
+					oxr.LogInfoFormat("Using Color Swapchain format %s",
+						session.GetSwapchainFormatNameOpenGL(createInfo.format, "??"));
+				}
 				break;
 				
 			case etDepth:
@@ -124,8 +129,6 @@ pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 					case deoxrSession::escfGlDepth24:
 					case deoxrSession::escfGlDepth32F:
 					case deoxrSession::escfGlDepth32Stencil8:
-						oxr.LogInfoFormat("Using Depth Swapchain format %s",
-							session.GetSwapchainFormatNameOpenGL(formats[i], "??"));
 						createInfo.format = formats[i];
 						break;
 						
@@ -133,12 +136,12 @@ pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 						break;
 					}
 				}
+				
+				if(createInfo.format){
+					oxr.LogInfoFormat("Using Depth Swapchain format %s",
+						session.GetSwapchainFormatNameOpenGL(formats[i], "??"));
+				}
 				break;
-			}
-			
-			if(createInfo.format){
-				oxr.LogInfoFormat("Using Color Swapchain format %s",
-					session.GetSwapchainFormatNameOpenGL(createInfo.format, "??"));
 			}
 			break;
 			
