@@ -124,6 +124,8 @@
 	<translation name="Igde.Settings.Title">IGDE-Einstellungen</translation>
 	<translation name="Igde.Settings.Language">Sprache:</translation>
 	<translation name="Igde.Settings.Language.ToolTip">Zu verwendende Sprache</translation>
+	<translation name="Igde.Settings.3DViewFlyMode">3D-Ansicht Flugmodus</translation>
+	<translation name="Igde.Settings.3DViewFlyMode.ToolTip">Flugmodus in 3D-Ansicht verwenden</translation>
 	
 	<!-- Project Settings Dialog -->
 	<translation name="Igde.ProjectSettings.Title">Spiele-Projekteinstellungen</translation>

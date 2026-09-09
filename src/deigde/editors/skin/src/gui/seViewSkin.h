@@ -29,7 +29,7 @@
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/gui/event/igdeCameraInteractionListener.h>
 #include <deigde/undo/igdeUndo.h>
 
 class seWindowMain;
@@ -45,7 +45,7 @@ public:
 private:
 	seWindowMain &pWindowMain;
 	seSkin::Ref pSkin;
-	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeCameraInteractionListener::Ref pCameraInteraction;
 	
 	
 	

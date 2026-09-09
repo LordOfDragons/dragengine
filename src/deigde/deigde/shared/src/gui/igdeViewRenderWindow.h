@@ -62,6 +62,7 @@ public:
 		virtual void DetachRenderWindow() = 0;
 		virtual void GrabInput() = 0;
 		virtual void ReleaseInput() = 0;
+		virtual bool SetMousePointerPosition(const decPoint &position) = 0;
 	};
 	
 	
@@ -69,8 +70,7 @@ private:
 	deRenderWindow::Ref pRenderWindow;
 	deCanvas::Ref pCanvasRenderWorld;
 	deCanvas::Ref pCanvasBackground;
-	bool pEnableRendering;
-	bool pEngineRunning;
+	bool pEnableRendering, pEngineRunning;
 	
 	decTObjectOrderedSet<igdeMouseKeyListener> pListeners;
 	
@@ -178,6 +178,11 @@ public:
 	/** \brief Release mouse and keyboard input. */
 	virtual void ReleaseInput();
 	
+	/**
+	 * \brief Set mouse pointer position if possible.
+	 * \returns True if the mouse pointer position was set or false otherwise.
+	 */
+	bool SetMousePointerPosition(const decPoint &position);
 	
 	
 	/** \brief Add listener. */

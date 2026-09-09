@@ -29,7 +29,7 @@
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/gui/event/igdeCameraInteractionListener.h>
 
 class peeWindowMain;
 
@@ -47,7 +47,7 @@ private:
 	
 	peeEmitter::Ref pEmitter;
 	
-	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeCameraInteractionListener::Ref pCameraInteraction;
 	
 	
 	

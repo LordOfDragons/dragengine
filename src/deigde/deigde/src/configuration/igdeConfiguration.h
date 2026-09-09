@@ -25,6 +25,8 @@
 #ifndef _IGDECONFIGURATION_H_
 #define _IGDECONFIGURATION_H_
 
+#include <deigde/environment/igdeEnvironment.h>
+
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -55,6 +57,8 @@ private:
 	int pMaxRecentProjectEntries;
 	
 	decString pLanguage;
+	bool p3DViewFlyMode;
+	
 	bool pCanSaveConfig;
 	
 	
@@ -62,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create configuration. */
-	igdeConfiguration(igdeWindowMain &windowMain);
+	explicit igdeConfiguration(igdeWindowMain &windowMain);
 	
 	/** Clean up configuration. */
 	~igdeConfiguration();
@@ -128,6 +132,12 @@ public:
 	/** Language. */
 	inline const decString &GetLanguage() const{ return pLanguage; }
 	void SetLanguage(const char *language);
+	
+	/** Use fly mode in 3D view. */
+	inline bool Get3DViewFlyMode() const{ return p3DViewFlyMode; }
+
+	/** Set 3D view fly mode. */
+	void Set3DViewFlyMode(bool enabled);
 	
 	
 	/** Locate path. */

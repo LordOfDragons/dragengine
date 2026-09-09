@@ -31,7 +31,6 @@
 #include "../skin/seSkin.h"
 
 #include <deigde/gui/igdeCamera.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
 
 #include <dragengine/resources/rendering/deRenderWindow.h>
 
@@ -42,12 +41,12 @@
 
 namespace {
 
-class cCameraInteraction : public igdeMouseCameraListener {
+class cCameraInteraction : public igdeCameraInteractionListener{
 	seViewSkin &pView;
 	
 public:
-	using Ref = deTObjectReference<cCameraInteraction>;
-	cCameraInteraction(seViewSkin &view) : pView(view){}
+	cCameraInteraction(seViewSkin &view) :
+		igdeCameraInteractionListener(view.GetEnvironment()), pView(view){}
 	
 public:
 	void OnCameraChanged() override{
@@ -71,9 +70,9 @@ seViewSkin::seViewSkin(seWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain)
 {
-	pCameraInteraction = cCameraInteraction::Ref::New(*this);
+	pCameraInteraction = deTObjectReference<cCameraInteraction>::New(*this);
 	
-	AddListener(pCameraInteraction);
+	pCameraInteraction->AddListeners(*this, windowMain);
 }
 
 seViewSkin::~seViewSkin(){

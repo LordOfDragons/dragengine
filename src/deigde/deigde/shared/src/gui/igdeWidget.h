@@ -39,6 +39,7 @@ class igdeEngineController;
 class igdeGameDefinition;
 class igdeGameProject;
 class igdeWindow;
+class igdeEditorWindow;
 
 class deEngine;
 class deLogger;
@@ -145,6 +146,9 @@ public:
 	
 	/** \brief Parent window. */
 	virtual igdeWindow *GetParentWindow();
+	
+	/** \brief Parent editor window. */
+	virtual igdeEditorWindow *GetParentEditorWindow();
 	
 	
 	/** \brief Translation for entry name or entry name itself if absent. */

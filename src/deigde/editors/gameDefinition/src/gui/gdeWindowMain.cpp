@@ -360,6 +360,8 @@ void gdeWindowMain::OnDeactivate(){
 
 
 void gdeWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	if(!GetActiveModule()){
 		return;
 	}

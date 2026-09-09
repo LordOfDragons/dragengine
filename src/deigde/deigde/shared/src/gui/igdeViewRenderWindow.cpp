@@ -53,9 +53,7 @@ pEngineRunning(false),
 pNativeViewRenderWindow(nullptr){
 }
 
-igdeViewRenderWindow::~igdeViewRenderWindow(){
-}
-
+igdeViewRenderWindow::~igdeViewRenderWindow() = default;
 
 
 // Management
@@ -78,11 +76,9 @@ decPoint igdeViewRenderWindow::GetRenderAreaSize() const{
 }
 
 
-
 void igdeViewRenderWindow::ClearErrorRenderWindow(){
 	// TODO
 }
-
 
 
 void igdeViewRenderWindow::OnAfterEngineStart(){
@@ -110,7 +106,6 @@ void igdeViewRenderWindow::OnFrameUpdate(float){
 		pNativeViewRenderWindow->OnFrameUpdate();
 	}
 }
-
 
 
 void igdeViewRenderWindow::SetRenderWorld(deCamera *camera){
@@ -183,6 +178,9 @@ void igdeViewRenderWindow::ReleaseInput(){
 	}
 }
 
+bool igdeViewRenderWindow::SetMousePointerPosition(const decPoint &position){
+	return pNativeViewRenderWindow && pNativeViewRenderWindow->SetMousePointerPosition(position);
+}
 
 
 void igdeViewRenderWindow::AddListener(igdeMouseKeyListener *listener){

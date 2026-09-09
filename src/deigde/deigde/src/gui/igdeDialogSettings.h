@@ -25,6 +25,7 @@
 #ifndef _IGDEDIALOGSETTINGS_H_
 #define _IGDEDIALOGSETTINGS_H_
 
+#include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
@@ -44,6 +45,7 @@ private:
 	igdeWindowMain &pWindowMain;
 	
 	igdeComboBox::Ref pCBLanguage;
+	igdeCheckBox::Ref pChk3DViewFlyMode;
 	
 	
 public:

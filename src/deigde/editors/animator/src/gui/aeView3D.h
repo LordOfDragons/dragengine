@@ -30,7 +30,7 @@
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/gui/event/igdeCameraInteractionListener.h>
 #include <deigde/undo/igdeUndo.h>
 
 
@@ -52,7 +52,7 @@ private:
 	
 	aeAnimator::Ref pAnimator;
 	
-	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeCameraInteractionListener::Ref pCameraInteraction;
 	igdeMouseKeyListener::Ref pLocomotionInteraction;
 	igdeMouseKeyListener::Ref pWakeboardInteraction;
 	igdeMouseKeyListener::Ref pEditorInteraction;
@@ -108,7 +108,7 @@ public:
 	void CreateCanvas() override;
 	
 	/** Gizmos. */
-	inline aeGizmoManager &GetGizoms(){ return pGizmos; }
+	inline aeGizmoManager &GetGizmos(){ return pGizmos; }
 	/*@}*/
 };
 

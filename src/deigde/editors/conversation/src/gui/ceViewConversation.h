@@ -30,7 +30,7 @@
 #include "../conversation/ceConversation.h"
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/gui/event/igdeCameraInteractionListener.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 
 #include <dragengine/resources/canvas/deCanvasPaint.h>
@@ -57,7 +57,7 @@ private:
 	ceCanvasRuleOfThirdsAid::Ref pRuleOfThirdsAid;
 	deCanvasPaint::Ref pCanvasBackground;
 	
-	igdeMouseCameraListener::Ref pCameraMouseListener;
+	igdeCameraInteractionListener::Ref pCameraMouseListener;
 	igdeMouseKeyListener::Ref pPlaybackListener;
 	
 	

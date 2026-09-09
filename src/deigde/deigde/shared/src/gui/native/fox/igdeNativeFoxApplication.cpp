@@ -24,11 +24,6 @@
 
 #ifdef IGDE_TOOLKIT_FOX
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-
 #include "igdeNativeFoxApplication.h"
 #include "igdeNativeFoxCommonDialogs.h"
 #include "../../igdeApplication.h"
@@ -43,7 +38,14 @@
 
 #ifdef OS_UNIX
 #include <dragengine/app/deOSUnix.h>
-#elif defined OS_W32
+#endif
+
+#if defined OS_UNIX && defined OS_UNIX_WAYLAND
+#include <fcntl.h>
+#include <unistd.h>
+#endif
+
+#if defined OS_W32
 #include <dragengine/app/deOSWindows.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #endif
@@ -53,7 +55,13 @@
 // Event map
 //////////////
 
-FXIMPLEMENT(igdeNativeFoxApplication, FXApp, nullptr, 0)
+FXDEFMAP(igdeNativeFoxApplication) igdeNativeFoxApplicationMap[] = {
+	FXMAPFUNC(SEL_IO_READ, igdeNativeFoxApplication::ID_WAYLAND_HACK_RAW_MOUSE,
+		igdeNativeFoxApplication::OnWaylandHackRawMouse)
+};
+
+FXIMPLEMENT(igdeNativeFoxApplication, FXApp,
+	igdeNativeFoxApplicationMap, ARRAYNUMBER(igdeNativeFoxApplicationMap))
 
 
 
@@ -78,6 +86,10 @@ pDisplayScaleFactor(100){
 }
 
 igdeNativeFoxApplication::~igdeNativeFoxApplication(){
+	#if defined OS_UNIX && defined OS_UNIX_WAYLAND
+	pCleanUpWaylandHack();
+	#endif
+	
 	if(pDeleteNormalFont){
 		delete getNormalFont();
 	}
@@ -215,6 +227,10 @@ void igdeNativeFoxApplication::Initialize(decUnicodeStringList &arguments){
 	//setTooltipPause( num_milliseconds );
 	
 	create();
+	
+	#if defined OS_UNIX && defined OS_UNIX_WAYLAND
+	// pInitWaylandHack();
+	#endif
 }
 
 void igdeNativeFoxApplication::Run(){
@@ -234,6 +250,9 @@ void igdeNativeFoxApplication::Run(){
 			}
 			
 			mainWindow->OnFrameUpdate();
+			#if defined OS_UNIX && defined OS_UNIX_WAYLAND
+			pWaylandHackMouseAccum.SetZero();
+			#endif
 		}
 	}
 }
@@ -314,6 +333,9 @@ void igdeNativeFoxApplication::RunModalWhileShown(igdeWindow &window){
 			igdeMainWindow * const mainWindow = pOwner->GetMainWindow();
 			if(mainWindow){
 				mainWindow->OnFrameUpdate();
+				#if defined OS_UNIX && defined OS_UNIX_WAYLAND
+				pWaylandHackMouseAccum.SetZero();
+				#endif
 			}
 		}
 		native->handle(native, FXSEL(SEL_IGDE_FRAME_UPDATE, 0), nullptr);
@@ -323,5 +345,47 @@ void igdeNativeFoxApplication::RunModalWhileShown(igdeWindow &window){
 int igdeNativeFoxApplication::GetDisplayScaleFactor(){
 	return pDisplayScaleFactor;
 }
+
+igdeNativeFoxApplication &igdeNativeFoxApplication::instanceNative(){
+	auto appCast = dynamic_cast<igdeNativeFoxApplication*>(FXApp::instance());
+	DEASSERT_NOTNULL(appCast)
+	return *appCast;
+}
+
+
+long igdeNativeFoxApplication::OnWaylandHackRawMouse(FXObject *sender, FXSelector sel, void *data){
+	#if defined OS_UNIX && defined OS_UNIX_WAYLAND
+	signed char packet[3];
+	while(read(pWaylandHackFdMouse, packet, sizeof(packet)) == sizeof(packet)){
+		// int button = packet[0];
+		pWaylandHackMouseAccum.x += packet[1];
+		pWaylandHackMouseAccum.y -= packet[2];
+	}
+	#endif
+	return 1;
+}
+
+#if defined OS_UNIX && defined OS_UNIX_WAYLAND
+
+void igdeNativeFoxApplication::pInitWaylandHack(){
+	if(pWaylandHackFdMouse != -1){
+		return;
+	}
+	
+	pWaylandHackFdMouse = open("/dev/input/mice", O_RDONLY | O_NONBLOCK);
+	if(pWaylandHackFdMouse >= 0){
+		addInput(this, ID_WAYLAND_HACK_RAW_MOUSE, pWaylandHackFdMouse, INPUT_READ);
+	}
+}
+
+void igdeNativeFoxApplication::pCleanUpWaylandHack(){
+	if(pWaylandHackFdMouse >= 0){
+		removeInput(pWaylandHackFdMouse, INPUT_READ);
+		close(pWaylandHackFdMouse);
+		pWaylandHackFdMouse = -1;
+	}
+}
+
+#endif
 
 #endif

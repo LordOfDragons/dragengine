@@ -237,6 +237,8 @@ void saeWindowMain::OnDeactivate(){
 
 
 void saeWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	if(!GetActiveModule()){
 		return;
 	}

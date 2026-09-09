@@ -29,7 +29,7 @@
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/gui/event/igdeCameraInteractionListener.h>
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -54,7 +54,7 @@ private:
 	
 	reRig::Ref pRig;
 	
-	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeCameraInteractionListener::Ref pCameraInteraction;
 	igdeMouseDragListener::Ref pSimulationInteraction;
 	igdeMouseDragListener::Ref pSelectInteraction;
 	igdeMouseDragListener::Ref pMoveInteraction;

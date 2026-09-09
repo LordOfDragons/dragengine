@@ -40,7 +40,7 @@ public:
 	using Ref = deTObjectReference<igdeToolBarSeparator>;
 	
 	
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create toolbar separator. */
 	igdeToolBarSeparator(igdeEnvironment &environment);
@@ -60,7 +60,7 @@ protected:
 	
 	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
 	/*@}*/
 	
