@@ -244,6 +244,8 @@ void skyeWindowMain::OnDeactivate(){
 
 
 void skyeWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	if(!GetActiveModule()){
 		return;
 	}

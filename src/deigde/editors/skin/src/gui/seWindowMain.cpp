@@ -338,6 +338,8 @@ void seWindowMain::OnDeactivate(){
 
 
 void seWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	if(!GetActiveModule()){
 		return;
 	}

@@ -44,7 +44,7 @@ public:
 	
 	
 protected:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	igdeNVNodeListener();
@@ -64,7 +64,7 @@ protected:
 	
 	
 public:
-	/** \text Events */
+	/** \brief Events */
 	/*@{*/
 	/** \brief Node has been activated. */
 	virtual void OnActivated(igdeNVNode *node);

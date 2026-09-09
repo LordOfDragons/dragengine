@@ -100,7 +100,10 @@ void igdeEditorWindow::SaveResourceHandlers(){
 }
 #endif
 
-void igdeEditorWindow::OnFrameUpdate(float){
+void igdeEditorWindow::OnFrameUpdate(float elapsed){
+	if(pActiveModule){
+		NotifyFrameUpdate(elapsed);
+	}
 }
 
 void igdeEditorWindow::GetChangedDocuments(decStringList&){
@@ -128,6 +131,26 @@ void igdeEditorWindow::DisplayException(const deException &exception){
 	igdeCommonDialogs::Exception(*this, exception);
 }
 
+igdeEditorWindow *igdeEditorWindow::GetParentEditorWindow(){
+	return this;
+}
+
+
+void igdeEditorWindow::AddFrameUpdateListener(igdeFrameUpdateListener *listener){
+	DEASSERT_NOTNULL(listener)
+	pFrameUpdateListeners.Add(listener);
+}
+
+void igdeEditorWindow::RemoveFrameUpdateListener(igdeFrameUpdateListener *listener){
+	pFrameUpdateListeners.Remove(listener);
+}
+
+void igdeEditorWindow::NotifyFrameUpdate(float elapsed){
+	const auto listeners(pFrameUpdateListeners);
+	listeners.Visit([&](igdeFrameUpdateListener &l){
+		l.OnFrameUpdate(this, elapsed);
+	});
+}
 
 
 // Shared Menus

@@ -49,7 +49,6 @@
 
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
@@ -79,22 +78,22 @@
 
 namespace {
 
-class cCameraInteraction : public igdeMouseCameraListener {
+class cCameraInteraction : public igdeCameraInteractionListener{
 	reView3D &pView;
 	
 public:
-	typedef deTObjectReference<cCameraInteraction> Ref;
-	cCameraInteraction(reView3D &view) : pView(view){}
+	cCameraInteraction(reView3D &view) :
+		igdeCameraInteractionListener(view.GetEnvironment()), pView(view){}
 	
 public:
-	virtual igdeMouseCameraListener::eInteraction ChooseInteraction(){
+	igdeCameraInteractionListener::eInteraction ChooseInteraction() override{
 		if(!pView.GetRig() || pView.GetRig()->GetCamera()->GetAttachToBone()){
 			return eiNone;
 		}
-		return igdeMouseCameraListener::ChooseInteraction();
+		return igdeCameraInteractionListener::ChooseInteraction();
 	}
 	
-	virtual void OnCameraChanged(){
+	void OnCameraChanged() override{
 		if(!pView.GetRig()){
 			return;
 		}
@@ -687,14 +686,14 @@ reView3D::reView3D(reWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain)
 {
-	pCameraInteraction = cCameraInteraction::Ref::New(*this);
+	pCameraInteraction = deTObjectReference<cCameraInteraction>::New(*this);
 	pSimulationInteraction = cSimulationInteraction::Ref::New(*this);
 	pSelectInteraction = cSelectInteraction::Ref::New(*this);
 	pMoveInteraction = cMoveInteraction::Ref::New(*this);
 	pScaleInteraction = cScaleInteraction::Ref::New(*this);
 	pRotateInteraction = cRotateInteraction::Ref::New(*this);
 	
-	AddListener(pCameraInteraction);
+	pCameraInteraction->AddListeners(*this, windowMain);
 	AddListener(pSimulationInteraction);
 	AddListener(pSelectInteraction);
 	AddListener(pMoveInteraction);

@@ -237,7 +237,16 @@ public:
 	virtual void OnMouseEnter();
 	
 	/** \brief The mouse left view. */
-	virtual void OnMousLeave();
+	virtual void OnMouseLeave();
+	
+	/** \brief Camera interaction has begun. */
+	virtual void OnCameraInteractionBegin();
+
+	/** \brief Camera interaction camera changed. */
+	virtual void OnCameraInteractionUpdate();
+
+	/** \brief Camera interaction has ended. */
+	virtual void OnCameraInteractionEnd(bool cancelled);
 	/*@}*/
 };
 

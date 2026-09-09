@@ -67,7 +67,6 @@
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gui/igdeCamera.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/loadsave/igdeLoadAnimator.h>
 #include <deigde/loadsave/igdeLoadParticleEmitter.h>
@@ -114,18 +113,16 @@
 
 namespace {
 
-class cCameraInteraction : public igdeMouseCameraListener{
+class cCameraInteraction : public igdeCameraInteractionListener{
 	gdeViewActiveObject &pView;
 	
 public:
-	typedef deTObjectReference<cCameraInteraction> Ref;
-	
-	cCameraInteraction(gdeViewActiveObject &view) : pView(view){
+	cCameraInteraction(gdeViewActiveObject &view) : igdeCameraInteractionListener(view.GetEnvironment()), pView(view){
 		SetEnabledAll(true);
 	}
 	
 public:
-	virtual void OnCameraChanged(){
+	void OnCameraChanged() override{
 		if(pView.GetGameDefinition()){
 			pView.GetGameDefinition()->NotifyCameraChanged();
 		}
@@ -157,9 +154,9 @@ pShowNavBlockers(false)
 	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDebugDrawer->SetXRay(true);
 	
-	pCameraInteraction = cCameraInteraction::Ref::New(*this);
+	pCameraInteraction = deTObjectReference<cCameraInteraction>::New(*this);
 	
-	AddListener(pCameraInteraction);
+	pCameraInteraction->AddListeners(*this, windowMain);
 }
 
 gdeViewActiveObject::~gdeViewActiveObject(){

@@ -96,6 +96,7 @@ igdeConfiguration::igdeConfiguration(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
 pMaxRecentProjectEntries(10),
 pLanguage(igdeTranslationManager::FallbackLanguage),
+p3DViewFlyMode(false),
 pCanSaveConfig(false)
 {
 #ifdef TEST_SPECIAL
@@ -264,6 +265,10 @@ void igdeConfiguration::SetPathIGDEGameDefs(const char *path){
 
 void igdeConfiguration::SetPathIGDEEditorData(const char *path){
 	pPathIGDEEditorData = path;
+}
+
+void igdeConfiguration::Set3DViewFlyMode(bool enabled){
+	p3DViewFlyMode = enabled;
 }
 
 

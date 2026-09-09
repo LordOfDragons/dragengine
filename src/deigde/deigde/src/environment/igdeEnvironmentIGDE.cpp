@@ -325,6 +325,10 @@ igdeClipboard &igdeEnvironmentIGDE::GetClipboard(){
 	return pWindowMain->GetClipboard();
 }
 
+bool igdeEnvironmentIGDE::Get3DViewFlyMode(){
+	return pWindowMain->GetConfiguration().Get3DViewFlyMode();
+}
+
 
 void igdeEnvironmentIGDE::SetProgressVisible(bool visible){
 	pWindowMain->SetProgressVisible(visible);

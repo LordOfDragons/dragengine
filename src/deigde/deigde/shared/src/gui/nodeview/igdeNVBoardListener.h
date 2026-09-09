@@ -47,7 +47,7 @@ public:
 	
 	
 protected:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	igdeNVBoardListener();
@@ -67,7 +67,7 @@ protected:
 	
 	
 public:
-	/** \text Events */
+	/** \brief Events */
 	/*@{*/
 	/**
 	 * \brief Create context menu for selected item.

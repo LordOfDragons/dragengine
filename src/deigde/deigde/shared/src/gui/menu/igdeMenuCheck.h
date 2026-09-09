@@ -57,7 +57,7 @@ protected:
 	
 	
 public:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
 	igdeMenuCheck(igdeEnvironment &environment);
@@ -80,7 +80,7 @@ protected:
 	
 	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
 	/** \brief Menu entry is checked. */
 	inline bool GetChecked() const{ return pChecked; }

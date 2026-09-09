@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meView3D.h"
 #include "meWindowMain.h"
 #include "meView3DListener.h"
@@ -68,7 +63,7 @@
 
 namespace {
 
-class cEditorInteraction : public igdeMouseKeyListener {
+class cEditorInteraction : public igdeMouseKeyListener{
 	meView3D &pView;
 	
 public:
@@ -166,15 +161,92 @@ public:
 		}
 	}
 	
-	void OnMouseLeave (igdeWidget*) override{
+	void OnMouseLeave(igdeWidget*) override{
 		if(pView.GetEditor()){
-			pView.GetEditor()->OnMousLeave();
+			pView.GetEditor()->OnMouseLeave();
+		}
+	}
+};
+
+class cCameraInteractionListener : public igdeCameraInteractionListener{
+	meView3D &pView;
+	
+public:
+	cCameraInteractionListener(meView3D &view) :
+	igdeCameraInteractionListener(view.GetEnvironment()),
+	pView(view){}
+	
+	void SyncCameraToInteractionCamera(){
+		const auto &cicamera = GetCamera();
+		if(!cicamera){
+			return;
+		}
+		
+		const auto &world = pView.GetWorld();
+		if(!world){
+			return;
+		}
+		
+		const auto &camera = world->GetActiveCamera();
+		if(!camera){
+			return;
+		}
+		
+		cicamera->GetMPPosition() = camera->GetMPPosition();
+		cicamera->GetMPRotation() = camera->GetMPRotation();
+		cicamera->GetMPDistance() = camera->GetMPDistance();
+	}
+	
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
+		SyncCameraToInteractionCamera();
+		igdeCameraInteractionListener::OnButtonPress(widget, button, position, modifiers);
+	}
+	
+	void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override{
+		SyncCameraToInteractionCamera();
+		igdeCameraInteractionListener::OnMouseMoved(widget, position, modifiers);
+	}
+	
+	void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
+		SyncCameraToInteractionCamera();
+		igdeCameraInteractionListener::OnButtonRelease(widget, button, position, modifiers);
+	}
+	
+	void OnKeyPress(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override{
+		SyncCameraToInteractionCamera();
+		igdeCameraInteractionListener::OnKeyPress(widget, keyCode, key);
+	}
+	
+	void OnKeyRelease(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override{
+		SyncCameraToInteractionCamera();
+		igdeCameraInteractionListener::OnKeyRelease(widget, keyCode, key);
+	}
+	
+	void OnFrameUpdate(float elapsed) override{
+		SyncCameraToInteractionCamera();
+		igdeCameraInteractionListener::OnFrameUpdate(elapsed);
+	}
+	
+	void OnBeginInteraction() override{
+		if(pView.GetEditor()){
+			pView.GetEditor()->OnCameraInteractionBegin();
+		}
+	}
+	
+	void OnCameraChanged() override{
+		if(pView.GetEditor()){
+			pView.GetEditor()->OnCameraInteractionUpdate();
+		}
+	}
+	
+	void OnEndInteraction(bool cancelled) override{
+		if(pView.GetEditor()){
+			pView.GetEditor()->OnCameraInteractionEnd(cancelled);
 		}
 	}
 };
 
 }
-
 
 
 // Class meView3D
@@ -186,7 +258,7 @@ public:
 meView3D::meView3D(meWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
-pEditor(nullptr)
+pCameraInteractionListener(deTObjectReference<cCameraInteractionListener>::New(*this))
 {
 	int i;
 	for(i=0; i<30; i++){
@@ -203,6 +275,8 @@ pEditor(nullptr)
 	
 	pListenerEditor = cEditorInteraction::Ref::New(*this);
 	AddListener(pListenerEditor);
+	
+	pCameraInteractionListener->AddListeners(*this, windowMain);
 }
 
 meView3D::~meView3D(){
@@ -404,4 +478,19 @@ void meView3D::ActiveCameraChanged(){
 	}else{
 		SetRenderWorld(nullptr);
 	}
+}
+
+const igdeCamera::Ref &meView3D::GetCameraInteractionCamera() const{
+	return pCameraInteractionListener->GetCamera();
+}
+
+void meView3D::OnAfterEngineStart(){
+	igdeViewRenderWindow::OnAfterEngineStart();
+	pCameraInteractionListener->SetCamera(igdeCamera::Ref::New(
+		pWindowMain.GetEnvironment(), pWindowMain.GetEngineController().GetEngine()));
+}
+
+void meView3D::OnBeforeEngineStop(){
+	pCameraInteractionListener->SetCamera(nullptr);
+	igdeViewRenderWindow::OnBeforeEngineStop();
 }

@@ -43,6 +43,7 @@ public:
 private:
 	meObject::Ref pObject;
 	decDVector pOldPosition, pNewPosition;
+	decVector pOldRotation, pNewRotation;
 	
 public:
 	// constructor, destructor
@@ -56,6 +57,7 @@ public:
 	/*@}*/
 	
 	void SetNewPosition(const decDVector &position);
+	void SetNewRotation(const decVector &rotation);
 	bool HasChanged() const;
 	
 	// undo and redo operations

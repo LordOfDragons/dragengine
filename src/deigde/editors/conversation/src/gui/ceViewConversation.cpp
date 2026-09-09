@@ -44,7 +44,6 @@
 
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gui/igdeCamera.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 
 #include <dragengine/deEngine.h>
@@ -64,12 +63,12 @@
 
 namespace {
 
-class cCameraMouseListener : public igdeMouseCameraListener {
+class cCameraMouseListener : public igdeCameraInteractionListener{
 	ceViewConversation &pView;
 	
 public:
-	using Ref = deTObjectReference<cCameraMouseListener>;
-	cCameraMouseListener(ceViewConversation &view) : pView(view){}
+	cCameraMouseListener(ceViewConversation &view) :
+		igdeCameraInteractionListener(view.GetEnvironment()), pView(view){}
 	
 	void OnCameraChanged() override{
 		if(pView.GetConversation()){
@@ -250,8 +249,8 @@ pWindowMain(windowMain)
 {
 	pListener = ceViewConversationListener::Ref::New(*this);
 	
-	pCameraMouseListener = cCameraMouseListener::Ref::New(*this);
-	AddListener(pCameraMouseListener);
+	pCameraMouseListener = deTObjectReference<cCameraMouseListener>::New(*this);
+	pCameraMouseListener->AddListeners(*this, windowMain);
 	
 	pPlaybackListener = cPlaybackListener::Ref::New(*this);
 	AddListener(pPlaybackListener);

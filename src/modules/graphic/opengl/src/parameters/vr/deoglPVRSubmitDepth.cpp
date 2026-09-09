@@ -40,7 +40,7 @@ deoglParameterBool(ogl)
 {
 	SetName("vrSubmitDepth");
 	SetDescription("Submit depth images to VR headset if supported.");
-	SetCategory(ecBasic);
+	SetCategory(ecAdvanced);
 	SetDisplayName("VR Submit Depth");
 }
 

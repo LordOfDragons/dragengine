@@ -263,5 +263,14 @@ void meViewEditor::OnMouseWheel(int steps, bool shift, bool control){
 void meViewEditor::OnMouseEnter(){
 }
 
-void meViewEditor::OnMousLeave(){
+void meViewEditor::OnMouseLeave(){
+}
+
+void meViewEditor::OnCameraInteractionBegin(){
+}
+
+void meViewEditor::OnCameraInteractionUpdate(){
+}
+
+void meViewEditor::OnCameraInteractionEnd(bool cancelled){
 }

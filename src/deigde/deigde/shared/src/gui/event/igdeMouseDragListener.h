@@ -54,18 +54,15 @@ public:
 	
 	
 private:
-	decPoint pDragOrigin;
-	decPoint pDragPosition;
+	decPoint pDragOrigin, pDragPosition;
 	eDragState pDragState;
-	bool pShiftOrigin;
-	bool pShiftNow;
-	bool pControlOrigin;
-	bool pControlNow;
+	bool pShiftOrigin, pShiftNow;
+	bool pControlOrigin, pControlNow;
 	
 	
 	
 protected:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	igdeMouseDragListener();
@@ -85,7 +82,7 @@ protected:
 	
 	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
 	/** \brief Drag origin position. */
 	inline const decPoint &GetDragOrigin() const{ return pDragOrigin; }
@@ -152,7 +149,7 @@ public:
 	
 	
 	
-	/** \text Dragging events */
+	/** \brief Dragging events */
 	/*@{*/
 	/**
 	 * \brief Dragging begins.
@@ -184,7 +181,7 @@ public:
 	
 	
 	
-	/** \text Events */
+	/** \brief Events */
 	/*@{*/
 	/**
 	 * \brief User pressed down mouse button.

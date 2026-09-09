@@ -87,4 +87,8 @@ void igdeNativeNullRenderView::GrabInput(){
 void igdeNativeNullRenderView::ReleaseInput(){
 }
 
+bool igdeNativeNullRenderView::SetMousePointerPosition(const decPoint&){
+	return false;
+}
+
 #endif

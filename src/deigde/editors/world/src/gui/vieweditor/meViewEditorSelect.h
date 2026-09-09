@@ -111,7 +111,7 @@ public:
 	void OnMouseWheel(int steps, bool shift, bool control) override;
 	
 	/** The mouse left view. */
-	void OnMousLeave() override;
+	void OnMouseLeave() override;
 	/*@}*/
 	
 private:

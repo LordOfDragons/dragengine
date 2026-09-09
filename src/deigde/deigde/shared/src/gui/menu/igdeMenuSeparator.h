@@ -40,7 +40,7 @@ public:
 	using Ref = deTObjectReference<igdeMenuSeparator>;
 	
 	
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
 	igdeMenuSeparator(igdeEnvironment &environment);
@@ -60,7 +60,7 @@ protected:
 	
 	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
 	/*@}*/
 	

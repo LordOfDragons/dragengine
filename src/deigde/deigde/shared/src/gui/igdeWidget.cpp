@@ -143,6 +143,14 @@ igdeWindow *igdeWidget::GetParentWindow(){
 	}
 }
 
+igdeEditorWindow *igdeWidget::GetParentEditorWindow(){
+	if(pParent){
+		return pParent->GetParentEditorWindow();
+		
+	}else{
+		return nullptr;
+	}
+}
 
 
 decUnicodeString igdeWidget::Translate(const decString &entryName) const{

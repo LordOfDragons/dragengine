@@ -340,6 +340,10 @@ public:
 	/** \brief UI Helper for properties panels. */
 	virtual igdeUIHelper &GetUIHelperProperties() = 0;
 	
+	/** \brief Use fly mode in 3D view. */
+	virtual bool Get3DViewFlyMode() = 0;
+	
+	
 	
 	/** \brief Named GuiTheme or default if not found. */
 	virtual igdeGuiTheme *GetGuiThemeNamed(const char *name) = 0;

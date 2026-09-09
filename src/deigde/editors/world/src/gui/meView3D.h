@@ -32,6 +32,7 @@
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
+#include <deigde/gui/event/igdeCameraInteractionListener.h>
 #include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -57,6 +58,7 @@ private:
 	meWorld::Ref pWorld;
 	
 	igdeMouseKeyListener::Ref pListenerEditor;
+	igdeCameraInteractionListener::Ref pCameraInteractionListener;
 	meViewEditor::Ref pEditor;
 	mePreviewCamera::Ref pPreviewCamera;
 	
@@ -117,6 +119,15 @@ public:
 	
 	/** Preview camera or nullptr. */
 	inline const mePreviewCamera::Ref &GetPreviewCamera() const{ return pPreviewCamera; }
+	
+	/** Camera interaction camera or nullptr. */
+	const igdeCamera::Ref &GetCameraInteractionCamera() const;
+	
+	/** \brief Game engine has started. */
+	void OnAfterEngineStart() override;
+	
+	/** \brief Game engine is about to be stopped. */
+	void OnBeforeEngineStop() override;
 	/*@}*/
 };
 
