@@ -73,14 +73,16 @@ igdeDialogSettings::igdeDialogSettings(igdeWindowMain &windowMain) :
 igdeDialog(windowMain.GetEnvironment(), "@Igde.Settings.Title"),
 pWindowMain(windowMain)
 {
-	igdeEnvironment &env = windowMain.GetEnvironment();
-	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainer::Ref content;
+	auto &env = windowMain.GetEnvironment();
+	auto &helper = env.GetUIHelper();
 	
-	content = igdeContainerForm::Ref::New(env);
-	
+	igdeContainer::Ref content(igdeContainerForm::Ref::New(env));
 	helper.ComboBox(content, "@Igde.Settings.Language", "@Igde.Settings.Language.ToolTip", pCBLanguage, {});
 	pCBLanguage->SetDefaultSorter();
+	
+	helper.CheckBox(content, "@Igde.Settings.3DViewFlyMode",
+		"@Igde.Settings.3DViewFlyMode.ToolTip", pChk3DViewFlyMode);
+	pChk3DViewFlyMode->SetChecked(windowMain.GetEnvironment().Get3DViewFlyMode());
 	
 	igdeContainer::Ref buttonBar;
 	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Discard");
@@ -118,6 +120,11 @@ bool igdeDialogSettings::Accept(){
 	
 	pWindowMain.ChangeLanguage(reinterpret_cast<igdeLanguagePack*>(
 		pCBLanguage->GetSelectedItemData())->GetLanguage());
+	
+	const bool flyMode = pChk3DViewFlyMode->GetChecked();
+	if(flyMode != pWindowMain.GetEnvironment().Get3DViewFlyMode()){
+		pWindowMain.GetConfiguration().Set3DViewFlyMode(flyMode);
+	}
 	
 	return igdeDialog::Accept();
 }

@@ -295,6 +295,8 @@ void aeWindowMain::OnDeactivate(){
 }
 
 void aeWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	if(!GetActiveModule()){
 		return;
 	}

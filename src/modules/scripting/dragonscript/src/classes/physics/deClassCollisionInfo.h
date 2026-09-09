@@ -60,7 +60,7 @@ public:
 private:
 	struct sInitData{
 		dsClass *clsCI, *clsVoid, *clsBool, *clsStr, *clsInt, *clsFlt, *clsObj;
-		dsClass *clsVec, *clsDVec, *clsCol, *clsPt3;
+		dsClass *clsVec, *clsDVec, *clsCol, *clsPt3, *clsQuat;
 		dsClass *clsParticleCollisionResponse;
 	};
 #define DEF_NATFUNC(name) \
@@ -103,6 +103,20 @@ private:
 	
 	DEF_NATFUNC(nfGetStopTesting);
 	DEF_NATFUNC(nfSetStopTesting);
+	
+	DEF_NATFUNC(nfOrgPosition);
+	DEF_NATFUNC(nfOrgOrientation);
+	DEF_NATFUNC(nfOrgDisplacement);
+	DEF_NATFUNC(nfOrgRotation);
+	
+	DEF_NATFUNC(nfBlockerPosition);
+	DEF_NATFUNC(nfBlockerOrientation);
+	DEF_NATFUNC(nfBlockerDisplacement);
+	DEF_NATFUNC(nfBlockerRotation);
+	
+	DEF_NATFUNC(nfHistoryGetCount);
+	DEF_NATFUNC(nfHistoryGetAt);
+	DEF_NATFUNC(nfIsStuck);
 	
 	DEF_NATFUNC(nfEquals);
 	DEF_NATFUNC(nfHashCode);

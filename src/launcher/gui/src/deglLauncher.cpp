@@ -109,7 +109,7 @@ bool deglLauncher::RunCommandLineGame(){
 	}
 	
 	// just in case this somehow is called multiple times, which should never happen
-	pCmdLineGame = nullptr;
+	pCmdLineGame.Clear();
 	
 	// locate the game to run. we can not use MatchesPattern() to figure out if this
 	// is a *.delga or *.degame file since this call fails if relative path is used
@@ -169,7 +169,6 @@ bool deglLauncher::RunCommandLineGame(){
 				GetGameManager().GetGames().Remove(loadedGame);
 				GetGameManager().GetGames().Add(pCmdLineGame);
 			}
-			pCmdLineGame = loadedGame;
 			
 		}else{
 			pCmdLineGame->LoadConfig();
@@ -225,6 +224,8 @@ bool deglLauncher::RunCommandLineGame(){
 			
 			decString error;
 			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+				GetLogger()->LogError(GetLogSource(), "Can not run game. Profile problems:");
+				profile->LogProblems(*this);
 				FXMessageBox::error(pWindowMain->getApp(), MBOX_OK, "Can not run game", "%s", error.GetString());
 				return false;
 			}
@@ -263,12 +264,16 @@ bool deglLauncher::RunCommandLineGame(){
 		}
 		
 	}else if(!game->GetAllFormatsSupported()){
+		GetLogger()->LogError(GetLogSource(), "Can not run game. File format problems:");
+		game->LogProblems();
 		FXMessageBox::error(pWindowMain->getApp(), MBOX_OK, "Can not run game",
 			"One or more File Formats required by the game are not working.\n\n"
 			"Try updating Drag[en]gine to the latest version");
 		return false;
 		
 	}else{
+		GetLogger()->LogError(GetLogSource(), "Can not run game. Game problems:");
+		game->LogProblems();
 		FXMessageBox::error(pWindowMain->getApp(), MBOX_OK, "Can not run game",
 			"Game related properties are incorrect.\n\n"
 			"Try updating Drag[en]gine to the latest version");

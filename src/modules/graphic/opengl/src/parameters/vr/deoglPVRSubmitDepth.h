@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,55 +22,35 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDECOLORBOXLISTENER_H_
-#define _IGDECOLORBOXLISTENER_H_
+#ifndef _DEOGLPVRSUBMITDEPTH_H_
+#define _DEOGLPVRSUBMITDEPTH_H_
 
-
-#include <dragengine/deObject.h>
-
-
-class igdeColorBox;
+#include "../deoglParameterBool.h"
 
 
 /**
- * \brief IGDE UI ColorBox Listener.
+ * VR submit depth parameter.
  */
-class DE_DLL_EXPORT igdeColorBoxListener : public deObject{
-
+class deoglPVRSubmitDepth : public deoglParameterBool{
 public:
-	/** \brief Type holding strong reference. */
-	using Ref = deTObjectReference<igdeColorBoxListener>;
-	
-	
-protected:
-	/** \brief Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
-	igdeColorBoxListener();
+	/** Create parameter. */
+	explicit deoglPVRSubmitDepth(deGraphicOpenGl &ogl);
 	
-	
-	
-protected:
-	/**
-	 * \brief Clean up widget.
-	 * \note Subclasses should set their destructor protected too to avoid users
-	 *       accidently deleting a reference counted object through the object
-	 *       pointer. Only FreeReference() is allowed to delete the object.
-	 */
-	~igdeColorBoxListener() override;
+	/** Clean up parameter. */
+	~deoglPVRSubmitDepth() override;
 	/*@}*/
 	
 	
-	
 public:
-	/** \brief Events */
+	/** \name Parameter Value */
 	/*@{*/
-	/**
-	 * \brief ColorBox color changed.
-	 * 
-	 * User changed color by interaction.
-	 */
-	virtual void OnColorChanged(igdeColorBox *colorBox);
+	/** Current value. */
+	bool GetParameterBool() override;
+	
+	/** Set current value. */
+	void SetParameterBool(bool value) override;
 	/*@}*/
 };
 

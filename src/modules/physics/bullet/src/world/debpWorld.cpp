@@ -145,7 +145,6 @@ pProcessingPhysics(false)
 {
 	// init
 	try{
-		pColInfo = deCollisionInfo::Ref::New();
 		pUnstuckCollider = new debpUnstuckCollider(*this);
 		
 		pSharedCollisionFiltering = new debpSharedCollisionFiltering;
@@ -244,6 +243,13 @@ debpWorld::~debpWorld(){
 #endif
 
 
+
+const deCollisionInfo::Ref &debpWorld::GetCollisionInfoAt(int index){
+	while(pColInfo.GetCount() <= index){
+		pColInfo.Add(deCollisionInfo::Ref::New());
+	}
+	return pColInfo[index];
+}
 
 void debpWorld::Update(float elapsed){
 	(void)elapsed;
@@ -943,6 +949,9 @@ void debpWorld::pCleanUp(){
 		pHeightTerrain = NULL;
 	}
 	
+	pColInfo.Visit([](deCollisionInfo &each){
+		each.Clear();
+	});
 	if(pUnstuckCollider){
 		delete pUnstuckCollider;
 	}
@@ -1002,7 +1011,9 @@ DEBUG_PRINT_TIMER("Prepare Detection");
 	// solution would be to use a processed flag or list and re-process colliders
 	// if they get touched during collision detection.
 	if(elapsed > 1e-6f){
-		pColInfo->Clear();
+		pColInfo.Visit([](deCollisionInfo &each){
+			each.Clear();
+		});
 		
 		UpdateOctrees(); // deprecated
 		UpdateDynWorldAABBs();

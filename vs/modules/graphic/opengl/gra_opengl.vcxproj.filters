@@ -783,6 +783,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRSubmitDepth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2718,6 +2721,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRSubmitDepth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitter.h">

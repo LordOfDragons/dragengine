@@ -322,9 +322,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		var ECBehaviorTouchSensor pECBehavior
 		var ECBehaviorCollider.Instance pCollider
 		var TouchSensor pTouchSensor
-		var Array pTrackedElements
-		var Array pTouchingElements
-		var Array pListeners
+		var Array pTrackedElements, pTouchingElements, pListeners
 		var ECComposeBTSM.Instance pBTSMs
 		
 		
@@ -471,6 +469,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		 * returns the player actor. If not found null is returned.
 		 */
 		func BehaviorElement getPlayerTouching()
+			prepareTouchingElements()
 			return pTouchingElements.findCastable(block BehaviorElement each
 				var ECBehaviorPlayerControllable.Instance behavior = \
 					ECBehaviorPlayerControllable.getInstanceIn(each)

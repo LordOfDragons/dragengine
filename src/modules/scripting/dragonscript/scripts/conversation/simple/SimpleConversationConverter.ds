@@ -800,7 +800,7 @@ class SimpleConversationConverter
 		applySpeechPause(state)
 		
 		if duration == -1
-			duration = pFacePoseDuration
+			duration = pLookAtDuration
 			
 		else
 			duration = DEMath.max(duration, 0.0)

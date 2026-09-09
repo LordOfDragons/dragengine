@@ -44,15 +44,13 @@ public:
 	using Ref = deTObjectReference<meViewEditorNavigation>;
 	
 private:
-	float pOldDist;
-	float pOldZoom;
+	float pOldDist, pOldZoom;
 	decQuaternion pOldOrientation;
 	decVector pOldRotation;
 	
 	bool pNavigating;
 	
 	igdeUndo::Ref pUndoCameraMove;
-	igdeUndo::Ref pUndoCameraRotate;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -75,14 +73,14 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	/** The right mouse button has been pressed. Return true if handled. */
-	void OnRightMouseButtonPress(int x, int y, bool shift, bool control) override;
-	/** The right mouse button has been released. Return true if handled. */
-	void OnRightMouseButtonRelease(int x, int y, bool shift, bool control) override;
-	/** The mouse has been moved. Return true if handled. */
-	void OnMouseMove(int x, int y, bool shift, bool control) override;
-	/** The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
-	void OnMouseWheel(int steps, bool shift, bool control) override;
+	/** \brief Begin camera interaction. */
+	void OnCameraInteractionBegin() override;
+	
+	/** \brief Camera interaction camera changed. */
+	void OnCameraInteractionUpdate() override;
+	
+	/** \brief End camera interaction. */
+	void OnCameraInteractionEnd(bool cancelled) override;
 	/*@}*/
 };
 

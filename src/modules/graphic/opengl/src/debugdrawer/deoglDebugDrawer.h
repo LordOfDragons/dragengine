@@ -45,7 +45,7 @@ private:
 	deoglRDebugDrawer::Ref pRDebugDrawer;
 	
 	bool pDirtyDebugDrawer;
-	bool pDirtyShapes;
+	bool pDirtyShapes, pDirtyShapeParams;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -111,9 +111,6 @@ public:
 	/** Shapes have been added or removed. */
 	void ShapeLayoutChanged() override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

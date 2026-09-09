@@ -22,28 +22,36 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMOUSECAMERALISTENER_H_
-#define _IGDEMOUSECAMERALISTENER_H_
+#ifndef _IGDECAMERAINTERACTIONLISTENER_H_
+#define _IGDECAMERAINTERACTIONLISTENER_H_
 
 #include "igdeMouseDragListener.h"
+#include "igdeFrameUpdateListener.h"
 #include "../igdeCamera.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/math/smooth/decSmoothVector.h>
+#include <dragengine/common/math/smooth/decSmoothFloat.h>
 
+class igdeEnvironment;
 class igdeViewRenderWindow;
+class igdeEditorWindow;
 
 
 /**
- * \brief Camera Mouse IGDE UI Mouse/Key Listener.
+ * \brief Camera Interaction Listener events.
  * 
- * Adding this listener to an igdeViewRenderWindow adds support for draging camera with
- * right button. Shift and control modifier keys determine if the interaction is to
- * rotate, pan, view or zoom the camera.
+ * Adding this listener to an igdeViewRenderWindow adds support for manipulate camera using the
+ * chosen interaction mode. For mouse interaction the right button manipulates the camera.
+ * Shift and control modifier keys determine if the interaction is to rotate, pan, view or zoom
+ * the camera. For touch pad interaction manipulation is enabled by control + right button and
+ * disabled using control + right button or escape button. In this mode mouse movement rotates
+ * the camera and WASD pan the camera and QE zoom the camera.
  */
-class DE_DLL_EXPORT igdeMouseCameraListener : public igdeMouseDragListener{
+class DE_DLL_EXPORT igdeCameraInteractionListener : public igdeMouseDragListener{
 public:
 	/** \brief Type holding strong reference. */
-	using Ref = deTObjectReference<igdeMouseCameraListener>;
+	using Ref = deTObjectReference<igdeCameraInteractionListener>;
 	
 	
 	/** \brief Interaction. */
@@ -61,42 +69,73 @@ public:
 		eiMove,
 		
 		/** \brief Increase or decrease camera orbit distance. */
-		eiZoom
+		eiZoom,
+		
+		/** \brief Fly mode. */
+		eiFly
 	};
 	
 	
-	
 private:
+	class MouseDragListener : public igdeMouseDragListener{
+	public:
+		igdeCameraInteractionListener *owner;
+		
+		MouseDragListener(igdeCameraInteractionListener *owner);
+		bool OnDragBegin() override;
+		void OnDragUpdate() override;
+		void OnDragFinish(bool cancelled) override;
+		void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
+		void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override;
+		void OnButtonRelease(igdeWidget *widget, int button,
+			const decPoint &position, int modifiers) override;
+		void OnKeyPress(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
+		void OnKeyRelease(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
+		
+	protected:
+		~MouseDragListener() override;
+	};
+	
+	class FrameUpdateListener : public igdeFrameUpdateListener{
+	public:
+		igdeCameraInteractionListener *owner;
+		
+		FrameUpdateListener(igdeCameraInteractionListener *owner);
+		void OnFrameUpdate(igdeWidget *widget, float elapsed) override;
+		
+	protected:
+		~FrameUpdateListener() override;
+	};
+	
+	
+	igdeEnvironment &pEnvironment;
 	igdeCamera::Ref pCamera;
 	
-	bool pEnableRotate;
-	bool pEnablePan;
-	bool pEnableMove;
-	bool pEnableZoom;
+	bool pEnableRotate, pEnablePan, pEnableMove, pEnableZoom;
 	
-	float pSpeedRotate;
-	float pSpeedPan;
-	float pSpeedMove;
-	float pSpeedZoom;
+	float pSpeedRotate, pSpeedPan, pSpeedMove, pSpeedZoom, pSpeedFly;
 	
 	eInteraction pInteraction;
 	
-	decDVector pMoveOrigin;
-	decDVector pMoveCurrent;
-	decVector pRotateOrigin;
-	decVector pRotateCurrent;
-	float pZoomOrigin;
-	float pZoomCurrent;
+	decDVector pMoveOrigin, pMoveCurrent;
+	decVector pRotateOrigin, pRotateCurrent;
+	float pZoomOrigin, pZoomCurrent;
 	decDMatrix pMoveMatrix;
+	bool pFlyForward, pFlyBackward, pFlyLeft, pFlyRight, pFlyUp, pFlyDown;
+	decSmoothVector pFlyVelocity;
+	decPoint pFlyMouseLastPosition, pFlyMouseCurrentPosition;
+	int pRightMouseButtonPressed;
 	
+	deTObjectReference<MouseDragListener> pMouseDragListener;
+	deTObjectReference<FrameUpdateListener> pFrameUpdateListener;
 	
 	
 public:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	igdeMouseCameraListener(igdeCamera *camera = nullptr);
-	
+	explicit igdeCameraInteractionListener(igdeEnvironment &environment);
+	explicit igdeCameraInteractionListener(igdeEnvironment &environment, igdeCamera *camera);
 	
 	
 protected:
@@ -106,20 +145,21 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	~igdeMouseCameraListener() override;
+	~igdeCameraInteractionListener() override;
 	/*@}*/
 	
 	
-	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
+	/** \brief Environment. */
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	
 	/** \brief Camera or nullptr. */
 	inline const igdeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera or nullptr. */
 	void SetCamera(igdeCamera *camera);
-	
 	
 	
 	/** \brief Enable rotate camera interaction. */
@@ -150,7 +190,6 @@ public:
 	virtual void SetEnabledAll(bool enable);
 	
 	
-	
 	/** \brief Rotation speed in degrees per drag distance pixels. */
 	inline float GetSpeedRotate() const{ return pSpeedRotate; }
 	
@@ -175,6 +214,11 @@ public:
 	/** \brief Set zoom speed in meters per drag distance pixels. */
 	void SetSpeedZoom(float metersPerPixel);
 	
+	/** \brief Fly speed in meters per second. */
+	inline float GetSpeedFly() const{ return pSpeedFly; }
+	
+	/** \brief Set fly speed in meters per second. */
+	void SetSpeedFly(float metersPerSecond);
 	
 	
 	/** \brief Interaction in progress. */
@@ -182,7 +226,6 @@ public:
 	
 	/** \brief Set interaction in progress. */
 	void SetInteraction(eInteraction interaction);
-	
 	
 	
 	/** \brief Pan or move position at start of interaction. */
@@ -226,11 +269,17 @@ public:
 	
 	/** \brief Set matrix for pan and zoom interaction. */
 	void SetMoveMatrix(const decDMatrix &matrix);
+	
+	
+	/** \brief Add listener to widget. */
+	void AddListeners(igdeViewRenderWindow &widget, igdeEditorWindow &window);
+	
+	/** \brief Remove listener from widget. */
+	void RemoveListeners(igdeViewRenderWindow &widget);
 	/*@}*/
 	
 	
-	
-	/** \text Interaction events */
+	/** \brief Interaction events */
 	/*@{*/
 	/**
 	 * \brief Choose what interaction to use using current drag state.
@@ -247,7 +296,6 @@ public:
 	virtual eInteraction ChooseInteraction();
 	
 	
-	
 	/** \brief Rotating camera begins. */
 	virtual bool OnRotateBegin();
 	
@@ -256,7 +304,6 @@ public:
 	
 	/** \brief Rotating ends. */
 	virtual void OnRotateFinish(bool cancelled);
-	
 	
 	
 	/** \brief Panning camera begins. */
@@ -269,7 +316,6 @@ public:
 	virtual void OnPanFinish(bool cancelled);
 	
 	
-	
 	/** \brief Moving camera begins. */
 	virtual bool OnMoveBegin();
 	
@@ -278,7 +324,6 @@ public:
 	
 	/** \brief Moving ends. */
 	virtual void OnMoveFinish(bool cancelled);
-	
 	
 	
 	/** \brief Zooming camera begins. */
@@ -291,6 +336,23 @@ public:
 	virtual void OnZoomFinish(bool cancelled);
 	
 	
+	/** \brief Begin fly mode. */
+	virtual void OnFlyBegin();
+	
+	/** \brief Update fly mode. */
+	virtual void OnFlyUpdate(float elapsed);
+	
+	/** \brief End fly mode. */
+	virtual void OnFlyEnd();
+	
+	
+	/**
+	 * \brief Begin camera interaction.
+	 * 
+	 * Called by On*Begin() methods when camera interaction begins. For use by subclasses to
+	 * react to camera interaction without having to overrite the individual begin methods.
+	 */
+	virtual void OnBeginInteraction();
 	
 	/**
 	 * \brief Camera has been modified.
@@ -300,34 +362,31 @@ public:
 	 * update methods. Default implementation does nothing.
 	 */
 	virtual void OnCameraChanged();
+	
+	/**
+	 * \brief End camera interaction.
+	 * 
+	 * Called by On*Finish() methods when camera interaction ends. For use by subclasses to
+	 * react to camera interaction without having to overrite the individual finish methods.
+	 */
+	virtual void OnEndInteraction(bool cancelled);
 	/*@}*/
 	
 	
 	
-	/** \text Dragging events */
+	/** \brief events */
 	/*@{*/
-	/**
-	 * \brief Dragging begins.
-	 * 
-	 * Calls ChooseInteraction() to figure out what interaction to use.
-	 */
-	bool OnDragBegin() override;
+	virtual bool OnDragBegin();
+	virtual void OnDragUpdate();
+	virtual void OnDragFinish(bool cancelled);
 	
-	/**
-	 * \brief Update dragging.
-	 * 
-	 * Called if state is not edsNone and mouse has been moved. Subclass has to update the
-	 * dragging process.
-	 */
-	void OnDragUpdate() override;
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
+	void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override;
+	void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
+	void OnKeyPress(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
+	void OnKeyRelease(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
 	
-	/**
-	 * \brief Dragging ends.
-	 * 
-	 * Called if state is not edsNone and mouse button used to start draggins has been
-	 * released. Subclass has to finish dragging operation.
-	 */
-	void OnDragFinish(bool cancelled) override;
+	virtual void OnFrameUpdate(float elapsed);
 	/*@}*/
 };
 

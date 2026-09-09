@@ -199,6 +199,7 @@ private:
 	float pVRRenderScale;
 	int pVRForceFrameRate;
 	float pVRHudFov, pVRHudCurvature;
+	bool pVRSubmitDepth;
 	
 	bool pRenderDocMode;
 	
@@ -560,6 +561,9 @@ public:
 	
 	inline float GetVRHudCurvature() const{ return pVRHudCurvature; }
 	void SetVRHudCurvature(float curvature);
+	
+	inline bool GetVRSubmitDepth() const{ return pVRSubmitDepth; }
+	void SetVRSubmitDepth(bool submit);
 	
 	inline bool GetRenderDocMode() const{ return pRenderDocMode; }
 };

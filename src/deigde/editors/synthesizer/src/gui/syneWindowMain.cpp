@@ -358,6 +358,8 @@ void syneWindowMain::OnDeactivate(){
 }
 
 void syneWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	if(!GetActiveModule()){
 		return;
 	}

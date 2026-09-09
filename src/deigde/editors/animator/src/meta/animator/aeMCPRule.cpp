@@ -425,7 +425,12 @@ const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const{
 aeMCPRules::ObjectTypeRef aeMCPRules::CopyObjectType(const ContextRef &context,
 const aeRule::List &existingObjects, const ObjectTypeRef &object) const{
 	auto copied = object->CreateCopy();
-	copied->mpName.SetValue(Owner(context).uniqueNameRule.Generate(copied->mpName), false);
+	copied->mpName.SetValue(Owner(context).uniqueNameRule.Generate(
+		[&](const decString &name){
+			return existingObjects.NoneMatching([&](const aeRule &existing){
+				return existing.mpName == name;
+			});
+		}, copied->mpName), false);
 	return copied;
 }
 

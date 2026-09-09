@@ -28,6 +28,8 @@
 #include "debpColliderAttachment.h"
 #include "debpColliderConstraint.h"
 #include "debpColliderVolume.h"
+#include "debpColliderComponent.h"
+#include "debpColliderRig.h"
 #include "../coldet/unstuck/debpUnstuckCollider.h"
 #include "../coldet/debpSweepCollisionTest.h"
 #include "../coldet/debpCollisionDetection.h"
@@ -55,9 +57,9 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/shape/decShapeSphere.h>
-#include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/debug/deDebugDrawerShape.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
@@ -377,16 +379,14 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 	}
 	
 	debpWorld &world = *GetParentWorld();
-	deCollisionInfo *colinfo = world.GetCollisionInfo();
 	debpCollisionWorld &dynamicsWorld = *world.GetDynamicsWorld();
 	debpClosestConvexResultCallback colliderMoveHits;
 	int stopIfCloseToHitPlane = 0;
 	decVector unstuckVelocity;
 	debpDCollisionBox colBox;
 	
-	const int cspmax = 20;
-	int cheapStuckPrevention = 0;
-	BP_DEBUG_IF(float csphist[cspmax + 1])
+	const int stackPreventionMaxCount = 20;
+	int stuckPreventionIndex = 0;
 	float localElapsed = elapsed;
 	
 	//pUpdateBPShape();
@@ -402,7 +402,7 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 			break;
 		}
 		
-// 		bullet.LogWarnFormat("CHECK %02d: collider=%p lv=(%f,%f,%f)", cheapStuckPrevention, &pColliderVolume,
+// 		bullet.LogWarnFormat("CHECK %02d: collider=%p lv=(%f,%f,%f)", stuckPreventionIndex, &pColliderVolume,
 // 			pColliderVolume.GetLinearVelocity().x, pColliderVolume.GetLinearVelocity().y,
 // 			pColliderVolume.GetLinearVelocity().z );
 		
@@ -430,7 +430,8 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 			break;
 		}
 		
-		colliderMoveHits.GetResult(*colinfo);
+		const auto colinfo = world.GetCollisionInfoAt(stuckPreventionIndex);
+		colliderMoveHits.GetResult(colinfo);
 #if 0
 		if(colinfo->GetCollider()){
 			if(colliderMoveHits.GetHitDistance() == 0.0f){
@@ -484,6 +485,36 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 		}
 		
 		// otherwise continue with collision handling
+		colinfo->SetOrgPosition(pPosition);
+		colinfo->SetOrgDisplacement(pPredictDisp);
+		colinfo->SetOrgRotation(pPredictRot);
+		colinfo->SetOrgOrientation(pOrientation);
+		
+		if(colinfo->GetCollider()){
+			const auto &collider = *static_cast<debpCollider*>(colinfo->GetCollider()->GetPeerPhysics());
+			if(collider.IsVolume()){
+				const auto &colliderVolume = static_cast<const debpColliderVolume&>(collider);
+				colinfo->SetBlockerPosition(colliderVolume.GetPosition());
+				colinfo->SetBlockerOrientation(colliderVolume.GetOrientation());
+				colinfo->SetBlockerDisplacement(colliderVolume.GetPredictedDisplacement());
+				colinfo->SetBlockerRotation(colliderVolume.GetPredictedRotation());
+				
+			}else if(collider.IsComponent()){
+				const auto &colliderComponent = static_cast<const debpColliderComponent&>(collider);
+				colinfo->SetBlockerPosition(colliderComponent.GetPosition());
+				colinfo->SetBlockerOrientation(colliderComponent.GetOrientation());
+				colinfo->SetBlockerDisplacement(colliderComponent.GetPredictedDisplacement());
+				colinfo->SetBlockerRotation(colliderComponent.GetPredictedRotation());
+				
+			}else if(collider.IsRigged()){
+				const auto &colliderRigged = static_cast<const debpColliderRig&>(collider);
+				colinfo->SetBlockerPosition(colliderRigged.GetPosition());
+				colinfo->SetBlockerOrientation(colliderRigged.GetOrientation());
+				colinfo->SetBlockerDisplacement(colliderRigged.GetPredictedDisplacement());
+				// colinfo->SetBlockerRotation(colliderRigged.GetPredictedRotation());
+			}
+		}
+		
 		InterpolatePosition(colliderMoveHits.GetHitDistance());
 		const decDVector positionAtHit(pPosition);
 		
@@ -491,12 +522,19 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 			if(colliderMoveHits.GetHitDistance() < 0.001f){
 				break;
 			}
-			ApplyFakeDynamicResponse(*colinfo);
+			ApplyFakeDynamicResponse(colinfo);
 			
 		}else{
-			deCollider::Ref guard(&pColliderVolume); // avoid collider being removed while in use
+			const deCollider::Ref guard(&pColliderVolume); // avoid collider being removed while in use
 			
 			colinfo->SetDistance(localElapsed * (1.0f - colliderMoveHits.GetHitDistance()));
+			
+			world.GetCollisionInfo().Visit(stuckPreventionIndex - 1, 0, -1,
+				[&](const deCollisionInfo::Ref &each){
+					colinfo->GetHistory().Add(each);
+				});
+			colinfo->SetStuck(stuckPreventionIndex == stackPreventionMaxCount);
+			
 			pColliderVolume.GetPeerScripting()->CollisionResponse(&pColliderVolume, colinfo); // can potentially remove collider
 			
 			// if position is at collision point apply a small shift to avoid re-collision
@@ -552,10 +590,7 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 		
 		localElapsed -= localElapsed * colliderMoveHits.GetHitDistance();
 		
-		BP_DEBUG_IF(csphist[cheapStuckPrevention] = colliderMoveHits.GetHitDistance())
-		cheapStuckPrevention++;
-		
-		if(cheapStuckPrevention == cspmax){
+		if(stuckPreventionIndex == stackPreventionMaxCount){
 			#ifdef WITH_DEBUG
 			dePhysicsBullet &bullet = *GetBullet();
 			const decDVector &position = pColliderVolume.GetPosition();
@@ -574,9 +609,10 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 			bullet.LogWarnFormat("   elapsed=%f localElapsed=%f", elapsed, localElapsed);
 				
 			decString text("   history=[");
-			for(i=0; i<cspmax; i++){
-				text.AppendFormat("%s%f", i==0?"":",", csphist[i]);
-			}
+			world.GetCollisionInfo().VisitIndexed(stuckPreventionIndex - 1, 0, -1,
+				[&](int index, const deCollisionInfo &each){
+					text.AppendFormat("%s%f", index == stuckPreventionIndex - 1 ? "" : ",", each.GetDistance());
+				});
 			text.Append("]");
 			bullet.LogWarn(text);
 			
@@ -646,6 +682,8 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 			pColliderVolume.SetAngularVelocity(decVector());
 			break;
 		}
+		
+		stuckPreventionIndex++;
 	}
 	DEBUG_PRINT_TIMER2("ColliderVolume DetectCustomCollision");
 }

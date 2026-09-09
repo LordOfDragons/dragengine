@@ -28,7 +28,7 @@
 #include "../sky/skyeSky.h"
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/gui/event/igdeCameraInteractionListener.h>
 
 class skyeWindowMain;
 
@@ -46,7 +46,7 @@ private:
 	
 	skyeSky::Ref pSky;
 	
-	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeCameraInteractionListener::Ref pCameraInteraction;
 	
 	
 	

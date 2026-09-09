@@ -28,7 +28,7 @@
 #include "../sanimation/saeSAnimation.h"
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/gui/event/igdeCameraInteractionListener.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/font/deFont.h>
@@ -50,7 +50,7 @@ private:
 	
 	saeSAnimation::Ref pSAnimation;
 	
-	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeCameraInteractionListener::Ref pCameraInteraction;
 	
 	
 	

@@ -1036,6 +1036,14 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		end
 		
 		/**
+		 * \brief Next path point is the goal position.
+		 * \version 1.35
+		 **/
+		func bool isNextPathPointGoal()
+			return pPath != null and pNextPathPoint == pPath.getCount() - 1
+		end
+		
+		/**
 		 * \brief Next path point to move to or \em null if the actor is at the goal.
 		 * 
 		 * If present point is in world space (transformed by relative collider if present).

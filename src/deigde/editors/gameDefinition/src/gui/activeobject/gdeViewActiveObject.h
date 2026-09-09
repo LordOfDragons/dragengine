@@ -45,7 +45,7 @@
 #include "../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/gui/event/igdeCameraInteractionListener.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/component/deComponent.h>
@@ -120,7 +120,7 @@ private:
 	bool pShowEnvMapProbes;
 	bool pShowNavBlockers;
 	
-	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeCameraInteractionListener::Ref pCameraInteraction;
 	
 	
 	

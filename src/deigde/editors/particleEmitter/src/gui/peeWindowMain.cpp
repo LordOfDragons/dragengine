@@ -231,6 +231,8 @@ void peeWindowMain::OnDeactivate(){
 
 
 void peeWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	if(!GetActiveModule()){
 		return;
 	}

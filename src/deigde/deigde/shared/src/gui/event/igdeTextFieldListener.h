@@ -43,7 +43,7 @@ public:
 	
 	
 protected:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	igdeTextFieldListener();
@@ -63,7 +63,7 @@ protected:
 	
 	
 public:
-	/** \text Events */
+	/** \brief Events */
 	/*@{*/
 	/**
 	 * \brief TextField text changed.

@@ -329,9 +329,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\camera\meUCameraMoveObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\camera\meUCameraRotateObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\decal\meUAddDecal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1364,9 +1361,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\camera\meUCameraMoveObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\camera\meUCameraRotateObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\decal\meUAddDecal.h">

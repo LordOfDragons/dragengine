@@ -230,6 +230,8 @@ void feWindowMain::OnDeactivate(){
 
 
 void feWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	if(!GetActiveModule()){
 		return;
 	}

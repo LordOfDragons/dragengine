@@ -57,7 +57,7 @@ private:
 	
 	
 public:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
 	igdeSeparator(igdeEnvironment &environment, eOrientation orientation);
@@ -77,7 +77,7 @@ protected:
 	
 	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
 	/** \brief Orientation. */
 	inline eOrientation GetOrientation() const{ return pOrientation; }

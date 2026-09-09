@@ -58,7 +58,7 @@ protected:
 	
 	
 public:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
 	igdeMenuOption(igdeEnvironment &environment);
@@ -81,7 +81,7 @@ protected:
 	
 	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
 	/** \brief Menu entry is selected. */
 	inline bool GetSelected() const{ return pSelected; }

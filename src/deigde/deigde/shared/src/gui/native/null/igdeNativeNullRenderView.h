@@ -68,6 +68,7 @@ public:
 	void DetachRenderWindow() override;
 	void GrabInput() override;
 	void ReleaseInput() override;
+	bool SetMousePointerPosition(const decPoint &position) override;
 	/*@}*/
 };
 

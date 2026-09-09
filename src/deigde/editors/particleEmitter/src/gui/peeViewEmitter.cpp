@@ -32,7 +32,6 @@
 #include "../emitter/peeEmitter.h"
 
 #include <deigde/gui/igdeCamera.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -48,13 +47,11 @@
 
 namespace {
 
-class cCameraInteraction : public igdeMouseCameraListener {
+class cCameraInteraction : public igdeCameraInteractionListener{
 	peeViewEmitter &pView;
 	
 public:
-	using Ref = deTObjectReference<cCameraInteraction>;
-	
-	cCameraInteraction(peeViewEmitter &view) : pView(view){
+	cCameraInteraction(peeViewEmitter &view) : igdeCameraInteractionListener(view.GetEnvironment()), pView(view){
 		SetEnabledAll(false);
 	}
 	
@@ -80,9 +77,9 @@ peeViewEmitter::peeViewEmitter(peeWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain)
 {
-	pCameraInteraction = cCameraInteraction::Ref::New(*this);
+	pCameraInteraction = deTObjectReference<cCameraInteraction>::New(*this);
 	
-	AddListener(pCameraInteraction);
+	pCameraInteraction->AddListeners(*this, windowMain);
 }
 
 peeViewEmitter::~peeViewEmitter(){

@@ -177,7 +177,12 @@ public:
 	const ObjectTypeRef &object) const override{
 		auto &rule = Owner(context);
 		auto copied = object->CreateCopy();
-		copied->mpName.SetValue(rule.uniqueNameRule.Generate(copied->mpName), false);
+		copied->mpName.SetValue(rule.uniqueNameRule.Generate(
+			[&](const decString &name){
+				return existingObjects.NoneMatching([&](const aeRule &existing){
+					return existing.mpName == name;
+				});
+			}, copied->mpName), false);
 		return copied;
 	}
 };

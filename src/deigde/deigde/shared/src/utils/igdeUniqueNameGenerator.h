@@ -78,6 +78,14 @@ public:
 	
 	/** \brief Get unique name with allowed secondary name. */
 	decString Generate(const decString &name, const decString &allowedName) const;
+	
+	/** \brief Get unique name with. */
+	decString Generate(const std::function<bool(const decString &)> &isUnique,
+		const decString &name) const;
+	
+	/** \brief Get unique name with allowed secondary name. */
+	decString Generate(const std::function<bool(const decString &)> &isUnique,
+		const decString &name, const decString &allowedName) const;
 };
 
 #endif

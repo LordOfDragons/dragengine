@@ -270,6 +270,19 @@ class SimpleConversation
 					end
 				end
 				
+			case SimpleConversationAction.Type.playerChoiceOption
+				text = null
+				if indexTra < countTra
+					action = SimpleConversationAction.new(action)
+					if text != null
+						action2 = translated.getActionAt(indexTra++)
+						if action2.getType() == SimpleConversationAction.Type.speak
+							action.setText(translated.getActionAt(indexTra++).getText())
+						end
+					end
+				end
+				modified.addAction(action)
+				
 			else
 				modified.addAction(action)
 			end

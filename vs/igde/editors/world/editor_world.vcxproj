@@ -383,7 +383,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\meIGDEModule.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\clipboard\meUPasteObject.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\camera\meUCameraMoveObject.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\camera\meUCameraRotateObject.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\decal\meUAddDecal.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\decal\meUAddObjectDecal.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\decal\meUDecalDuplicate.cpp" />
@@ -730,7 +729,6 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\meIGDEModule.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\clipboard\meUPasteObject.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\camera\meUCameraMoveObject.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\camera\meUCameraRotateObject.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\decal\meUAddDecal.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\decal\meUAddObjectDecal.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\gui\decal\meUDecalDuplicate.h" />

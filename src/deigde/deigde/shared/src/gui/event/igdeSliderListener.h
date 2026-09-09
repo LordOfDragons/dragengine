@@ -43,7 +43,7 @@ public:
 	
 	
 protected:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	igdeSliderListener();
@@ -63,7 +63,7 @@ protected:
 	
 	
 public:
-	/** \text Events */
+	/** \brief Events */
 	/*@{*/
 	/**
 	 * \brief Slider value changed and has been accepted by user.

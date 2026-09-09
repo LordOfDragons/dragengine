@@ -458,7 +458,6 @@ void debpCollisionWorld::CheckDynamicCollisions(btScalar timeStep){
 	}
 	
 	const btScalar velocityThreshold = (btScalar)pWorld.GetDynamicCollisionVelocityThreshold();
-	deCollisionInfo * const colinfo = pWorld.GetCollisionInfo();
 	btDispatcher &dispatcher = *getDispatcher();
 	const int countManifolds = dispatcher.getNumManifolds();
 	int i, j;
@@ -561,6 +560,7 @@ void debpCollisionWorld::CheckDynamicCollisions(btScalar timeStep){
 // 		continue;
 		
 		// these parameters are not cleared and stay the same for both collision response calls
+		const auto colinfo = pWorld.GetCollisionInfoAt(0);
 		colinfo->SetDistance(0.0f); // not supported on dynamic hits
 		colinfo->SetNormal(decVector((float)normal.getX(), (float)normal.getY(), (float)normal.getZ()));
 		colinfo->SetPosition(decVector((float)position.getX(), (float)position.getY(), (float)position.getZ()));
@@ -695,8 +695,8 @@ struct sContactResultBoolean : btManifoldResult{
 	virtual void addContactPoint(const btVector3 &normalOnBInWorld,
 	const btVector3 &pointInWorld, btScalar depth){
 		hasContact = true;
-			// hackPointInWorld = pointInWorld;
-			// hackDepth = depth;
+		// hackPointInWorld = pointInWorld;
+		// hackDepth = depth;
 	}
 };
 
@@ -797,15 +797,12 @@ btCollisionObject *colObjA, btCollisionObject *colObjB){
 		btCollisionObjectWrapper obB(0, colObjB->getCollisionShape(),
 			colObjB, colObjB->getWorldTransform(), -1, -1);
 		
-		btCollisionAlgorithm * const algorithm = getDispatcher()->findAlgorithm(
-			&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS);
-		
+		auto algorithm = getDispatcher()->findAlgorithm(&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS);
 		if(!algorithm){
 			return false;
 		}
 		
 		sContactResultBoolean result(&obA, &obB);
-		
 		algorithm->processCollision(&obA, &obB, getDispatchInfo(), &result);
 		algorithm->~btCollisionAlgorithm();
 		getDispatcher()->freeCollisionAlgorithm(algorithm);

@@ -425,8 +425,8 @@ void meViewEditorSelect::OnMouseWheel(int steps, bool shift, bool control){
 	}
 }
 
-void meViewEditorSelect::OnMousLeave(){
-	meViewEditorNavigation::OnMousLeave();
+void meViewEditorSelect::OnMouseLeave(){
+	meViewEditorNavigation::OnMouseLeave();
 	
 	pInfoBubble->Hide();
 }

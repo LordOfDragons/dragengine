@@ -33,6 +33,7 @@ pin Dragengine.Scenery
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.StateMachineSystem
+pin Dragengine.Debugging
 
 
 /**
@@ -291,22 +292,18 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		var ECBehaviorRideOn.Instance pRideOn
 		var ECBehaviorRidable.Instance pRidable
 		
-		var ColliderCollisionTest pCCTAvoidCollision
-		var ColliderCollisionTest pCCTCheckLeft
-		var ColliderCollisionTest pCCTCheckRight
+		var ColliderCollisionTest pCCTAvoidCollision, pCCTCheckLeft, pCCTCheckRight
 		var ElementVisitor pAvoidElement
 		var float pAvoidTimeContactCollision
 		var bool pWaitBehindObstacles
-		var float pCheckOffset
-		var float pRadius
+		var float pCheckOffset, pRadius
 		var bool pEnabled
+		var int pDebugLevel
 		
 		var float pSpeedMultiplier
-		var float pDeviationAngle
-		var float pDeviationTime
+		var float pDeviationAngle, pDeviationTime
 		
-		var float pCheckInterval
-		var float pCheckTimer
+		var float pCheckInterval, pCheckTimer
 		
 		var ElementResolver pElementResolver
 		var ECComposeBTSM.Instance pBTSMs
@@ -571,6 +568,10 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		
 		/** \brief Clear avoiding. */
 		func void clearAvoiding()
+			if pDebugLevel >= 2
+				getElement().log("ECBehaviorAvoidCollision.clearAvoiding: deviationTime={} deviationAngle={} speedMultiplier={}".\
+					format(Array.newWith(pDeviationTime, pDeviationAngle, pSpeedMultiplier)))
+			end
 			var bool notify = pDeviationTime > 0
 			
 			pSpeedMultiplier = 1
@@ -580,6 +581,24 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			if notify and pBTSMs != null
 				pBTSMs.runEvent(pECBehavior.getPrefix(), "stop")
 			end
+		end
+		
+		/**
+		 * \brief Debug level.
+		 * \version 1.35
+		 */
+		func int getDebugLevel()
+			return pDebugLevel
+		end
+		
+		/**
+		 * \brief Debug level.
+		 * \version 1.35
+		 * 
+		 * Use 0 to disable, 1 to log avoidance events, 2 to log everything.
+		 */
+		func void setDebugLevel(int level)
+			pDebugLevel = level
 		end
 		
 		
@@ -689,10 +708,19 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			pCCTCheckRight.setDirection(direction)
 			pCCTCheckRight.setOrigin(checkMatrix * Vector.new(pCheckOffset, 0, 0))
 			pCCTCheckRight.setEnabled(true)
+			
+			if pDebugLevel >= 2
+				getElement().log("ECBehaviorAvoidCollision.armTest: direction={}(len={})".\
+					format(Array.newWith(direction, direction.getLength())))
+			end
 		end
 		
 		/** \brief Disarm collision test. */
 		func void disarmTest()
+			if pDebugLevel >= 2
+				getElement().log("ECBehaviorAvoidCollision.disarmTest")
+			end
+			
 			pCCTAvoidCollision.setEnabled(false)
 			pCCTCheckLeft.setEnabled(false)
 			pCCTCheckRight.setEnabled(false)
@@ -748,7 +776,17 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		
 		/** \brief Start collision tests for the next interval if applicable. */
 		func void startTests(float elapsed)
+			var DebugLogHelper dh
+			if pDebugLevel >= 2
+				dh = DebugLogHelper.new()
+				dh.addValue("hasNoGoal", pActorMover.hasNoGoal())
+				dh.addValue("actorSpeed", pActorMover.getSpeed())
+			end
+			
 			if pActorMover.hasNoGoal() or pActorMover.getSpeed() < 0.01
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "startTests", "low speed")
+				end
 				clearAvoiding()
 				return
 			end
@@ -761,7 +799,13 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// this avoids storing the relative deviation angle and gives us the correct
 			// orientation
 			var DVector nextPathPoint = pActorMover.getWorldNextPathPoint()
+			if dh != null
+				dh.addValue("nextPathPoint", nextPathPoint)
+			end
 			if nextPathPoint == null
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "startTests", "no next path point")
+				end
 				// this should never happen but better safe than sorry
 				clearAvoiding()
 				return
@@ -769,7 +813,15 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			
 			var DVector actorPosition = pActorMover.getLocomotion().getColliderAI().getCollider().getPosition()
 			var DVector targetDirection = nextPathPoint - actorPosition
+			if dh != null
+				dh.addValue("actorPosition", actorPosition)
+				dh.addValue("targetDirection", targetDirection)
+				dh.addValue("targetDirection.length", targetDirection.getLength())
+			end
 			if targetDirection.getLength() < 0.1
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "startTests", "near nextPathPoint")
+				end
 				// we are nearly at the target. no sense in trying to deviate now
 				clearAvoiding()
 				return
@@ -798,11 +850,25 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			
 			directionLen = DEMath.min(directionLen, pActorMover.getDistanceToGoal() \
 				- pActorMover.getGoalDistance() - frameMovementDistance)
+			if dh != null
+				dh.addValue("velocity", velocity)
+				dh.addValue("frameMovementDistance", frameMovementDistance)
+				dh.addValue("direction", direction)
+				dh.addValue("direction.length#2", directionLen)
+				dh.addValue("distanceToGoal", pActorMover.getDistanceToGoal())
+				dh.addValue("goalDistance", pActorMover.getGoalDistance())
+			end
 			if directionLen < 0.1
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "startTests", "short direction")
+				end
 				clearAvoiding()
 				return
 			end
 			
+			if dh != null
+				dh.log(getElement(), "ECBehaviorAvoidCollision", "startTests", "arm test")
+			end
 			armTest(direction * directionLen)
 		end
 		
@@ -827,6 +893,10 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * for all ECBehaviorAvoidedByActor instances present in the element.
 		 */
 		func void avoidBehaviorElement(BehaviorElement element)
+			if pDebugLevel >= 2
+				getElement().log("ECBehaviorAvoidCollision.avoidBehaviorElement: element={}".\
+					format(Array.newWith(element.getClass().getClassname())))
+			end
 			// try to avoid the actor
 			element.forEachInstance(block ECBehaviorAvoidedByActor.Instance each
 				avoidAvoidedByActor(each)
@@ -855,21 +925,41 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * \brief Move around avoided by actor.
 		 */
 		func void moveAroundAvoidedByActor(ECBehaviorAvoidedByActor.Instance behavior)
+			var DebugLogHelper dh
+			if pDebugLevel >= 1
+				dh = DebugLogHelper.new()
+			end
+			
 			// if moving slowly do not avoid collision
 			var float actorSpeed = pActorMover.getSpeed()
+			if dh != null
+				dh.addValue("actorPosition", getElement().getPosition())
+				dh.addValue("actorOrientation", getElement().getOrientation().getEulerAngles())
+				dh.addValue("actorSpeed", actorSpeed)
+			end
 			if actorSpeed < 0.01
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "low actor speed")
+				end
 				return
 			end
 			
-			var Vector norActorVelocity = Matrix.newRotationY(pActorMover.getLocomotion() \
-				.getLocomotion().getMovingOrientation()).getViewVector()
+			var float movingOrientation = pActorMover.getLocomotion().getLocomotion().getMovingOrientation()
+			var Vector norActorVelocity = Matrix.newRotationY(movingOrientation).getViewVector()
 			var Vector actorVelocity = norActorVelocity * actorSpeed
 			
 			// if hit normal is pointing away do not avoid
 			var float hitAngle = DEMath.acos(norActorVelocity * pCCTAvoidCollision.hitNormalWorld(0))
-			if /* pCCTAvoidCollision.hitDistance(0) > 0.01 and */ hitAngle < 100
-// 				BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
-// 					+ getElement().getPosition() + ": return hitAngle=" + hitAngle)
+			if dh != null
+				dh.addValue("movingOrientation", movingOrientation)
+				dh.addValue("actorVelocity", actorVelocity)
+				dh.addValue("actorVelocity.length", actorVelocity.getLength())
+				dh.addValue("hitAngle", hitAngle)
+			end
+			if pCCTAvoidCollision.hitDistance(0) > 0 and hitAngle < 100
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "large hit angle")
+				end
 				return
 			end
 			
@@ -880,9 +970,16 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			var Vector colliderVelocity = collider.getLinearVelocity()
 			var DVector actorPosition = pActorMover.getLocomotion().getColliderAI().getCollider().getPosition()
 			var DVector connection = collider.getPosition() - actorPosition
+			if dh != null
+				dh.addValue("colliderVelocity", colliderVelocity)
+				dh.addValue("colliderVelocity.length", colliderVelocity.getLength())
+				dh.addValue("connection", connection)
+				dh.addValue("connection.length", connection.getLength())
+			end
 			if actorVelocity * connection.toVector() <= 0
-// 				BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
-// 					+ getElement().getPosition() + ": return behind=" + (actorVelocity * connection.toVector()))
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "behind actor")
+				end
 				return
 			end
 			
@@ -891,57 +988,153 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// this check also skips avoiding if collider moves faster than actor:
 			//    speedDiff = actorSpeed - (norActorVelocity * velocity)
 			//    hitDistanceThreshold = speedDiff / actorSpeed
+			if dh != null
+				dh.addValue("hitDistance", pCCTAvoidCollision.getCollisionAt(0).getDistance())
+				dh.addValue("hitDistanceThreshold", (1.0 - (norActorVelocity * colliderVelocity) / actorSpeed))
+			end
 			if pCCTAvoidCollision.getCollisionAt(0).getDistance()\
 			>= 1.0 - (norActorVelocity * colliderVelocity) / actorSpeed
-// 				BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
-// 					+ getElement().getPosition() + ": return relSpeed=("\
-// 					+ pCCTAvoidCollision.getCollisionAt(0).getDistance() + ","\
-// 					+ (1.0 - (norActorVelocity * colliderVelocity) / actorSpeed) + ")")
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "move away")
+				end
 				return
 			end
-			
-			// if close to the hit point do contact collision avoid
-			/*
-			if pCCTAvoidCollision.hitDistance(0) < 0.01
-				contactCollision()
-				return
-			end
-			*/
 			
 			// if element is crossing our path without walking to or away from us wait behind it.
 			// works only if the collider is moving. avoids actors walking around an obstacle
 			// which they can better avoid by just waiting a second or two.
-			var float crossAngle = 0
+			var bool nextPathPointIsGoal = pActorMover.isNextPathPointGoal()
+			if dh != null
+				dh.addValue("nextPathPointIsGoal", nextPathPointIsGoal)
+			end
+			
+			var float crossAngle
 			if colliderVelocity.getLength() > 0.01
 				crossAngle = DEMath.acos(norActorVelocity * colliderVelocity.normalize())
+				if dh != null
+					dh.addValue("crossAngle", crossAngle)
+				end
 // 				if crossAngle > 20 and crossAngle < 160
 				if crossAngle > 60 and crossAngle < 120 // 30 degrees spread around 90 degrees
+					if dh != null
+						dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "crossing")
+					end
 					waitBehindAvoidedByActor(behavior)
-// 					BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
-// 						+ getElement().getPosition() + ": return crossing=" + crossAngle)
 					return
 				end
+				
+			/*
+			// if collider is not moving and it is blocking the next path point, wait behind it
+			elif nextPathPointIsGoal
+				var DVector colliderPosition = collider.getPosition()
+				var float estimatedColliderRadius = (pCCTAvoidCollision.hitPointWorld(0)\
+					- colliderPosition).compSelect(true, false, true).getLength()
+				var float distanceColliderGoal = (colliderPosition - pActorMover.getGoalPosition()).getLength()
+				if dh != null
+					dh.addValue("colliderPosition", colliderPosition)
+					dh.addValue("estimatedColliderRadius", estimatedColliderRadius)
+					dh.addValue("distanceColliderGoal", distanceColliderGoal)
+				end
+				if distanceColliderGoal < estimatedColliderRadius
+					if dh != null
+						dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "goal blocked")
+					end
+					waitBehindAvoidedByActor(behavior)
+					return
+				end
+				*/
 			end
 			
 			// if the other element also supports ECBehaviorAvoidCollision check who should
 			// avoid the other. If the other element is already avoiding apply wait behind
 			// to slow down before continue moving. speed multiplier is negative if the
 			// other actor is backing off a bit to make it easier for use to get around
-			
 			var ECBehaviorAvoidCollision.Instance otherAvoidCollision = \
 				ECBehaviorAvoidCollision.getInstanceIn(behavior.getElement())
-			if otherAvoidCollision != null and otherAvoidCollision.pDeviationTime > 0\
-			and otherAvoidCollision.pSpeedMultiplier > 0
+			if otherAvoidCollision != null
+				if dh != null
+					dh.addValue("otherAvoidCollision.deviationTime", otherAvoidCollision.pDeviationTime)
+					dh.addValue("otherAvoidCollision.speedMultiplier", otherAvoidCollision.pSpeedMultiplier)
+				end
+				if otherAvoidCollision.pDeviationTime > 0 and otherAvoidCollision.pSpeedMultiplier > 0
+					if dh != null
+						dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "other is avoiding")
+					end
+					waitBehindAvoidedByActor(behavior)
+					return
+				end
+			end
+			
+			// if the other actor does not support ECBehaviorActorMover or has no goal set
+			// wait behind it and back off a bit since it can not avoid us
+			var ECBehaviorActorMover.Instance otherMover =\
+				ECBehaviorActorMover.getInstanceIn(behavior.getElement())
+			/*
+			if dh != null
+				dh.addValue("otherMover", otherMover != null)
+			end
+			if otherMover == null or otherMover.hasNoGoal()
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "other no mover/goal")
+				end
 				waitBehindAvoidedByActor(behavior)
-// 				BaseGameApp.getApp().getConsole().addMessage("moveAroundAvoidedByActor "\
-// 					+ getElement().getPosition() + ": return bothAvoid=("\
-// 					+ otherAvoidCollision.pDeviationTime + "," + otherAvoidCollision.pSpeedMultiplier + ")")
+				return
+			end
+			*/
+			
+			// if close to the hit point do contact collision avoid
+			if dh != null
+				dh.addValue("hitDistanceReal", pCCTAvoidCollision.hitDistance(0))
+			end
+			if pCCTAvoidCollision.hitDistance(0) < 0.01
+				// if other actor has an actor mover and has same goal back off if other actor
+				// is closer to his goal than we are to ours
+				if nextPathPointIsGoal
+					if dh != null and otherMover != null
+						dh.addValue("otherMover.nextPathPointIsGoal", otherMover.isNextPathPointGoal())
+					end
+					if otherMover != null and otherMover.isNextPathPointGoal()
+						var DVector goalPosition = pActorMover.getGoalPosition()
+						var DVector otherGoalPosition = otherMover.getGoalPosition()
+						var float goalGoalDistance = (goalPosition - otherGoalPosition).getLength()
+						var float minDistance = connection.getLength()
+						if dh != null
+							dh.addValue("goalPosition", goalPosition)
+							dh.addValue("otherGoalPosition", otherGoalPosition)
+							dh.addValue("goalGoalDistance", goalGoalDistance)
+							dh.addValue("minDistance", minDistance)
+						end
+						if goalGoalDistance < minDistance
+							var float goalDistance = (goalPosition - actorPosition).getLength()
+							var float otherGoalDistance = (otherGoalPosition - collider.getPosition()).getLength()
+							if dh != null
+								dh.addValue("goalDistance", goalDistance)
+								dh.addValue("otherGoalDistance", otherGoalDistance)
+							end
+							if otherGoalDistance < goalDistance
+								pDeviationAngle = movingOrientation + DEMath.random(-30.0, 30.0)
+								pDeviationTime = DEMath.random(0.5, 1.0)
+								pSpeedMultiplier = -1
+								if dh != null
+									dh.addValue("deviationAngle", pDeviationAngle)
+									dh.addValue("deviationTime", pDeviationTime)
+									dh.addValue("speedMultiplier", pSpeedMultiplier)
+									dh.log(getElement(), "ECBehaviorAvoidCollision",\
+										"moveAroundAvoidedByActor", "contact close goals")
+								end
+								return
+							end
+						end
+					end
+				end
+				
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "contact")
+				end
+				// contactCollision()
 				return
 			end
 			
-			
-			// moving orientation
-			var float movingOrientation = pActorMover.getLocomotion().getLocomotion().getMovingOrientation()
 			
 			// find border point pairs for testing. first point has smaller rotation angle in
 			// world space than second point.
@@ -985,6 +1178,19 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				or Collider.equals(pCCTCheckRight.hitCollider(0), colliderAvoid) \
 				or pCCTCheckRight.hitDistance(0) > distanceAvoid
 			
+			if dh != null
+				dh.addValue("avoidDistance", avoidDistance)
+				dh.addValue("radius", pRadius)
+				dh.addValue("leftVector", leftVector)
+				dh.addValue("leftDist", leftDist)
+				dh.addValue("leftAngle", leftAngle)
+				dh.addValue("rightVector", rightVector)
+				dh.addValue("rightDist", rightDist)
+				dh.addValue("rightAngle", rightAngle)
+				dh.addValue("canEvadeLeft", canEvadeLeft)
+				dh.addValue("canEvadeRight", canEvadeRight)
+			end
+			
 			if not canEvadeLeft and not canEvadeRight
 				// NOTE this check can result in problems if the actor ends up in specific locked
 				//      positions where he would be able to get out of it by doing sharp deviating
@@ -992,6 +1198,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				//      situations the actor should be bold and just try deviating. not sure how
 				//      to solve this properly
 				if crossAngle < 90
+					if dh != null
+						dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "wait behind 1")
+					end
 					waitBehindAvoidedByActor(behavior)
 					
 				else
@@ -999,10 +1208,18 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				end
 				
 			else
-				select navSpaceEvadeSide(actorPosition, movingOrientation, \
-				leftAngle, leftDist, rightAngle, rightDist)
+				var int evadeSide = navSpaceEvadeSide(actorPosition, movingOrientation,\
+					leftAngle, leftDist, rightAngle, rightDist)
+				if dh != null
+					dh.addValue("evadeSide", evadeSide)
+				end
+				
+				select evadeSide
 				case -1 // no side possible
 					if crossAngle < 90
+						if dh != null
+							dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "wait behind 2")
+						end
 						waitBehindAvoidedByActor(behavior)
 						
 					else
@@ -1024,6 +1241,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 					useLeftSide = not canEvadeRight
 				end
 			end
+			if dh != null
+				dh.addValue("useLeftSide", useLeftSide)
+			end
 			
 			// calculate the deviation parameters to use
 			var float deviationAngle = useLeftSide if leftAngle else -rightAngle
@@ -1039,6 +1259,13 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// apply deviation
 			pDeviationAngle = movingOrientation + deviationAngle
 			pDeviationTime = DEMath.max(distance / pActorMover.getSpeed(), 1.0)
+			
+			if dh != null
+				dh.addValue("useDistance", distance)
+				dh.addValue("deviationAngle", pDeviationAngle)
+				dh.addValue("deviationTime", pDeviationTime)
+				dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "avoid")
+			end
 			
 			if pBTSMs != null
 				pBTSMs.runEvent(pECBehavior.getPrefix(), "avoid")
@@ -1200,6 +1427,11 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * \warning For use by avoid element visitor only.
 		 */
 		func void waitBehindAvoidedByActor(ECBehaviorAvoidedByActor.Instance behavior)
+			var DebugLogHelper dh
+			if pDebugLevel >= 1
+				dh = DebugLogHelper.new()
+			end
+			
 			// calculate relative velocity along connection between ai and hit collider
 			var Collider collider = bestColliderFor(behavior)
 			var Vector connection = (collider.getPosition() - pActorMover.getLocomotion() \
@@ -1210,30 +1442,53 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			var Vector linearVelocity = Matrix.newRotationY(pActorMover.getLocomotion() \
 				.getLocomotion().getMovingOrientation()).getViewVector() * pActorMover.getSpeed()
 			var float moveSpeed = connection * linearVelocity
+			if dh != null
+				dh.addValue("actorPosition", getElement().getPosition())
+				dh.addValue("actorOrientation", getElement().getOrientation().getEulerAngles())
+				dh.addValue("collider", collider)
+				dh.addValue("connection", connection)
+				dh.addValue("connDistance", connDistance)
+				dh.addValue("linearVelocity", linearVelocity)
+				dh.addValue("moveSpeed", moveSpeed)
+			end
 			if moveSpeed < 0
-// 				BaseGameApp.getApp().getConsole().addMessage("wbaba ms<0: " + Array.newWith(\
-// 					getElement().getID(), moveSpeed))
+				if pDebugLevel >= 1
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "waitBehindAvoidedByActor", "negative speed")
+				end
 				return // moving out of collision
 			end
 			
 			var float colliderSpeed = DEMath.max(connection * collider.getLinearVelocity(), 0.0)
+			if dh != null
+				dh.addValue("colliderSpeed", colliderSpeed)
+			end
 			if moveSpeed <= colliderSpeed
-// 				BaseGameApp.getApp().getConsole().addMessage("wbaba ms<cs: " + Array.newWith(\
-// 					getElement().getID(), moveSpeed, colliderSpeed))
+				if pDebugLevel >= 1
+					if dh != null
+						dh.log(getElement(), "ECBehaviorAvoidCollision", "waitBehindAvoidedByActor", "moveSpeed <= colliderSpeed")
+					end
+				end
 				return // same speed or slower
 			end
 			
 			var float angle = DEMath.acos(moveSpeed / pActorMover.getSpeed())
+			if dh != null
+				dh.addValue("angle", angle)
+			end
 			if angle > 85
-// 				BaseGameApp.getApp().getConsole().addMessage("wbaba a>85: " + Array.newWith(\
-// 					getElement().getID(), moveSpeed, colliderSpeed, angle))
+				if pDebugLevel >= 1
+					if dh != null
+						dh.log(getElement(), "ECBehaviorAvoidCollision", "waitBehindAvoidedByActor", "large angle")
+					end
+				end
 				return // actor is just shrugging along obtacle
 			end
 			
 			// if behind obstacle and bumping into it back off for a short time
+			if dh != null
+				dh.addValue("hitDistance", pCCTAvoidCollision.hitDistance(0))
+			end
 			if pCCTAvoidCollision.hitDistance(0) < 0.01
-// 				BaseGameApp.getApp().getConsole().addMessage("wbaba bump: " + Array.newWith(\
-// 					moveSpeed, colliderSpeed, angle, pCCTAvoidCollision.hitDistance(0)))
 				var bool doBackOff = true
 				
 				// if the avoided obstacle has avoid collision behavior too check if it is
@@ -1245,12 +1500,25 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 					doBackOff = false
 				end
 				
+				if dh != null
+					dh.addValue("otherAvoidCollision", otherAvoidCollision != null)
+					if otherAvoidCollision != null
+						dh.addValue("otherAvoidCollision.deviationTime", otherAvoidCollision.pDeviationTime)
+						dh.addValue("otherAvoidCollision.speedMultiplier", otherAvoidCollision.pSpeedMultiplier)
+					end
+					dh.addValue("doBackOff", doBackOff)
+				end
 				if doBackOff
-					pDeviationAngle = pActorMover.getLocomotion().getLocomotion()\
-						.getMovingOrientation() + DEMath.random(-30.0, 30.0)
+					pDeviationAngle = DEMath.atan2(-linearVelocity.getX(), linearVelocity.getZ())
 					pDeviationTime = DEMath.random(0.25, 0.5)
 					pSpeedMultiplier = -0.5
 					
+					if pDebugLevel >= 1
+						dh.addValue("deviationAngle", pDeviationAngle)
+						dh.addValue("deviationTime", pDeviationTime)
+						dh.addValue("speedMultiplier", pSpeedMultiplier)
+						dh.log(getElement(), "ECBehaviorAvoidCollision", "waitBehindAvoidedByActor", "back off")
+					end
 					if pBTSMs != null
 						pBTSMs.runEvent(pECBehavior.getPrefix(), "avoid")
 					end
@@ -1268,10 +1536,14 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			
 			pSpeedMultiplier = DEMath.linearStep(connDistance, \
 				minDistance, maxDistance, colliderSpeed / moverSpeed, 1.0)
-// 			BaseGameApp.getApp().getConsole().addMessage("wbaba avoid: " + Array.newWith(\
-// 				getElement().getID(), moveSpeed, colliderSpeed, angle, \
-// 				pCCTAvoidCollision.hitDistance(0)) + Array.newWith(moverSpeed, \
-// 				minDistance, maxDistance, pSpeedMultiplier, behavior.getElement().getID()))
+			
+			if pDebugLevel >= 1
+				dh.addValue("moverSpeed", moverSpeed)
+				dh.addValue("minDistance", minDistance)
+				dh.addValue("maxDistance", maxDistance)
+				dh.addValue("speedMultiplier", pSpeedMultiplier)
+				dh.log(getElement(), "ECBehaviorAvoidCollision", "waitBehindAvoidedByActor", "wait behind")
+			end
 		end
 		
 		/**

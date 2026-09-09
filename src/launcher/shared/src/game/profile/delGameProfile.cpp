@@ -193,25 +193,58 @@ void delGameProfile::Verify(delLauncher &launcher){
 	pValid &= VerifyModule(launcher, pModuleVR, pModuleVRVersion, deModuleSystem::emtVR);
 }
 
+void delGameProfile::LogProblems(delLauncher &launcher, const char *prefix) const{
+	LogProblemsModule(launcher, pModuleGraphic, pModuleGraphicVersion, deModuleSystem::emtGraphic, prefix);
+	LogProblemsModule(launcher, pModuleInput, pModuleInputVersion, deModuleSystem::emtInput, prefix);
+	LogProblemsModule(launcher, pModulePhysics, pModulePhysicsVersion, deModuleSystem::emtPhysics, prefix);
+	LogProblemsModule(launcher, pModuleAnimator, pModuleAnimatorVersion, deModuleSystem::emtAnimator, prefix);
+	LogProblemsModule(launcher, pModuleAI, pModuleAIVersion, deModuleSystem::emtAI, prefix);
+	LogProblemsModule(launcher, pModuleCrashRecovery, pModuleCrashRecoveryVersion, deModuleSystem::emtCrashRecovery, prefix);
+	LogProblemsModule(launcher, pModuleAudio, pModuleAudioVersion, deModuleSystem::emtAudio, prefix);
+	LogProblemsModule(launcher, pModuleSynthesizer, pModuleSynthesizerVersion, deModuleSystem::emtSynthesizer, prefix);
+	LogProblemsModule(launcher, pModuleNetwork, pModuleNetworkVersion, deModuleSystem::emtNetwork, prefix);
+	LogProblemsModule(launcher, pModuleVR, pModuleVRVersion, deModuleSystem::emtVR, prefix);
+}
+
 bool delGameProfile::VerifyModule(delLauncher &launcher, const char *moduleName,
-const char *moduleVersion, int requiredType) const{
+const char *moduleVersion, deModuleSystem::eModuleTypes requiredType) const{
 	const delEngineModuleList &moduleList = launcher.GetEngine().GetModules();
-	delEngineModule *module;
+	const delEngineModule *module;
 	
 	if(strlen(moduleVersion) == 0){
-		module = moduleList.GetNamed (moduleName);
+		module = moduleList.GetNamed(moduleName);
 		
 	}else{
-		module = moduleList.GetNamed (moduleName, moduleVersion);
+		module = moduleList.GetNamed(moduleName, moduleVersion);
 	}
 	
-	if(!module
-	|| module->GetType() != requiredType
-	|| module->GetStatus() != delEngineModule::emsReady){
+	if(!module || module->GetType() != requiredType || module->GetStatus() != delEngineModule::emsReady){
 		return false;
 	}
 	
 	return true;
+}
+
+void delGameProfile::LogProblemsModule(delLauncher &launcher, const char *moduleName,
+const char *moduleVersion, deModuleSystem::eModuleTypes requiredType, const char *prefix) const{
+	const auto &moduleList = launcher.GetEngine().GetModules();
+	const delEngineModule *module;
+	
+	if(strlen(moduleVersion) == 0){
+		module = moduleList.GetNamed(moduleName);
+		
+	}else{
+		module = moduleList.GetNamed(moduleName, moduleVersion);
+	}
+	
+	if(module && module->GetType() == requiredType && module->GetStatus() == delEngineModule::emsReady){
+		return;
+	}
+	
+	launcher.GetLogger()->LogErrorFormat(launcher.GetLogSource(),
+		"%sProfile '%s': %s module '%s' [%s] not available", prefix,
+		pName.GetString(), delEngine::GetModuleTypeText(requiredType),
+		moduleName, strlen(moduleVersion) == 0 ? "" : moduleVersion);
 }
 
 void delGameProfile::Activate(delLauncher &launcher, delEngineInstance &engineInstance) const{

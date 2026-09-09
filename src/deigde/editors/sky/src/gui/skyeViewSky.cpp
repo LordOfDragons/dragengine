@@ -32,7 +32,6 @@
 #include "../sky/skyeSky.h"
 
 #include <deigde/gui/igdeCamera.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -48,12 +47,11 @@
 
 namespace {
 
-class cCameraInteraction : public igdeMouseCameraListener {
+class cCameraInteraction : public igdeCameraInteractionListener{
 	skyeViewSky &pView;
 	
 public:
-	using Ref = deTObjectReference<cCameraInteraction>;
-	cCameraInteraction(skyeViewSky &view) : pView(view){
+	cCameraInteraction(skyeViewSky &view) : igdeCameraInteractionListener(view.GetEnvironment()), pView(view){
 		SetEnabledAll(false);
 		SetEnableRotate(true);
 	}
@@ -79,9 +77,9 @@ skyeViewSky::skyeViewSky(skyeWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain)
 {
-	pCameraInteraction = cCameraInteraction::Ref::New(*this);
+	pCameraInteraction = deTObjectReference<cCameraInteraction>::New(*this);
 	
-	AddListener(pCameraInteraction);
+	pCameraInteraction->AddListeners(*this, windowMain);
 }
 
 skyeViewSky::~skyeViewSky(){

@@ -34,7 +34,6 @@
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gui/igdeCamera.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -49,21 +48,21 @@
 
 namespace {
 
-class cCameraInteraction : public igdeMouseCameraListener {
+class cCameraInteraction : public igdeCameraInteractionListener{
 	saeViewSAnimation &pView;
 	
 public:
-	typedef deTObjectReference<cCameraInteraction> Ref;
-	cCameraInteraction(saeViewSAnimation &view) : pView(view){}
+	cCameraInteraction(saeViewSAnimation &view) :
+		igdeCameraInteractionListener(view.GetEnvironment()), pView(view){}
 	
-	virtual igdeMouseCameraListener::eInteraction ChooseInteraction(){
+	igdeCameraInteractionListener::eInteraction ChooseInteraction() override{
 		if(!pView.GetSAnimation()){
 			return eiNone;
 		}
-		return igdeMouseCameraListener::ChooseInteraction();
+		return igdeCameraInteractionListener::ChooseInteraction();
 	}
 	
-	virtual void OnCameraChanged(){
+	void OnCameraChanged() override{
 		if(pView.GetSAnimation()){
 			pView.GetSAnimation()->NotifyCameraChanged();
 		}
@@ -86,9 +85,9 @@ pWindowMain(windowMain)
 {
 	pFontStats = windowMain.GetEngine()->GetFontManager()->LoadFont("/igde/fonts/sans_10.defont", "/");
 	
-	pCameraInteraction = cCameraInteraction::Ref::New(*this);
+	pCameraInteraction = deTObjectReference<cCameraInteraction>::New(*this);
 	
-	AddListener(pCameraInteraction);
+	pCameraInteraction->AddListeners(*this, windowMain);
 }
 
 saeViewSAnimation::~saeViewSAnimation(){

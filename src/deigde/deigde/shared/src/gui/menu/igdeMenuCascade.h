@@ -53,7 +53,7 @@ private:
 	
 	
 public:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
 	igdeMenuCascade(igdeEnvironment &environment);
@@ -92,7 +92,7 @@ protected:
 	
 	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
 	/** \brief Text shown in the menu entry. */
 	inline const decString &GetText() const{ return pText; }

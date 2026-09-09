@@ -124,7 +124,12 @@ public:
 aeAttachment::Ref aeMCPAttachments::CopyObjectType(const ContextRef &context,
 const SetType &existingObjects, const ObjectTypeRef &object) const{
 	auto copied = aeAttachment::Ref::New(*object);
-	copied->mpName.SetValue(Owner(context).uniqueNameAttachment.Generate(copied->mpName), false);
+	copied->mpName.SetValue(Owner(context).uniqueNameAttachment.Generate(
+		[&](const decString &name){
+			return existingObjects.NoneMatching([&](const aeAttachment &existing){
+				return existing.mpName == name;
+			});
+		}, copied->mpName), false);
 	return copied;
 }
 

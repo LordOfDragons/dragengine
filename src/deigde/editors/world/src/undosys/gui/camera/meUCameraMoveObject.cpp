@@ -40,6 +40,7 @@ meUCameraMoveObject::meUCameraMoveObject(meObject *object){
 	DEASSERT_NOTNULL(object)
 	
 	pNewPosition = pOldPosition = object->GetPosition();
+	pNewRotation = pOldRotation = object->GetRotation();
 	SetShortInfo("@World.UCameraMoveObject.MoveCameraObject");
 	
 	pObject = object;
@@ -57,16 +58,22 @@ void meUCameraMoveObject::SetNewPosition(const decDVector &position){
 	pNewPosition = position;
 }
 
+void meUCameraMoveObject::SetNewRotation(const decVector &rotation){
+	pNewRotation = rotation;
+}
+
 bool meUCameraMoveObject::HasChanged() const{
-	return !pNewPosition.IsEqualTo(pOldPosition);
+	return !pNewPosition.IsEqualTo(pOldPosition) || !pNewRotation.IsEqualTo(pOldRotation);
 }
 
 void meUCameraMoveObject::Undo(){
 	pObject->SetPosition(pOldPosition);
+	pObject->SetRotation(pOldRotation);
 	pObject->GetWorld()->NotifyObjectGeometryChanged(pObject);
 }
 
 void meUCameraMoveObject::Redo(){
 	pObject->SetPosition(pNewPosition);
+	pObject->SetRotation(pNewRotation);
 	pObject->GetWorld()->NotifyObjectGeometryChanged(pObject);
 }

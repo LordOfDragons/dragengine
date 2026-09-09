@@ -46,6 +46,10 @@ protected:
 	igdeNativeFoxApplication();
 	
 public:
+	enum{
+		ID_WAYLAND_HACK_RAW_MOUSE = FXApp::ID_LAST
+	};
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create application. */
@@ -100,6 +104,8 @@ public:
 	 * Value of 100 represents scaling of 100%. Value step size is 25.
 	 */
 	int GetDisplayScaleFactor();
+	
+	static igdeNativeFoxApplication &instanceNative();
 	/*@}*/
 	
 	
@@ -112,6 +118,18 @@ public:
 	
 	
 	
+	/** \name Events. */
+	/*@{*/
+	/** Wayland hack raw mouse event. */
+	long OnWaylandHackRawMouse(FXObject *sender, FXSelector sel, void *data);
+	
+	#if defined OS_UNIX && defined OS_UNIX_WAYLAND
+	inline const decPoint &GetWaylandHackMouseAccum() const{ return pWaylandHackMouseAccum; }
+	#endif
+	/*@}*/
+	
+	
+	
 private:
 	igdeApplication *pOwner;
 	FXToolTip *pToolTip;
@@ -120,6 +138,13 @@ private:
 	int pFoxArgCount;
 	int pDisplayScaleFactor;
 	igdeFont::sConfiguration pAppFontConfig;
+	
+	#if defined OS_UNIX && defined OS_UNIX_WAYLAND
+	int pWaylandHackFdMouse = -1;
+	decPoint pWaylandHackMouseAccum;
+	void pInitWaylandHack();
+	void pCleanUpWaylandHack();
+	#endif
 };
 
 using igdeNativeApplication = igdeNativeFoxApplication;

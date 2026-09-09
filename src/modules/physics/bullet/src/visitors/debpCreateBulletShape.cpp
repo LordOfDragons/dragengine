@@ -71,8 +71,6 @@ btScalar mass, btVector3 &inertia) const{
 ////////////////////////////
 
 debpCreateBulletShape::debpCreateBulletShape() :
-
-
 pCcdThreshold(0.001f),
 pCcdRadius(0.001f),
 pScale(1.0f, 1.0f, 1.0f),
@@ -506,8 +504,23 @@ void debpCreateBulletShape::VisitShapeCapsule(decShapeCapsule &capsule){
 		capsuleShape->setUserPointer(userPointer);
 		
 		bulletShapeCapsule = debpBulletShape::Ref::New(capsuleShape);
-		
+	
 	}else{
+		const btVector3 positions[2]{{0.0f, halfHeight, 0.0f}, {0.0f, -halfHeight, 0.0f}};
+		const btScalar radi[2]{topRadius, topRadius};
+		
+		auto capsuleShape = new btMultiSphereShape(positions, &radi[0], 2);
+		if(pNoMargin){
+			capsuleShape->setMargin(BT_ZERO);
+		}
+		capsuleShape->setUserPointer(userPointer);
+		
+		bulletShapeCapsule = debpBulletShape::Ref::New(capsuleShape);
+		
+		#if 0
+		// btCapsuleShape is so buggy it hurts. for rigid body collisions it work but when used for
+		// touch sensors it breaks down causing false positives. for this reason btCapsuleShape is
+		// disabled falling back to btMultiSphereShape which works for both and is similarly fast
 		auto capsuleShape = new btCapsuleShape(topRadius, halfHeight * 2.0f);
 		if(pNoMargin){
 			capsuleShape->setMargin(BT_ZERO);
@@ -515,6 +528,7 @@ void debpCreateBulletShape::VisitShapeCapsule(decShapeCapsule &capsule){
 		capsuleShape->setUserPointer(userPointer);
 		
 		bulletShapeCapsule = debpBulletShape::Ref::New(capsuleShape);
+		#endif
 	}
 	
 	if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
@@ -758,24 +772,25 @@ const btCollisionShape &shape, const char *prefix) const
 	switch(shape.getShapeType()){
 	case SPHERE_SHAPE_PROXYTYPE:{
 		const btSphereShape &sphere = (btSphereShape&)shape;
-		bullet.LogInfoFormat("%ssphere r=%f ls=(%f,%f,%f)", prefix, sphere.getRadius(),
-			sphere.getLocalScaling().x(), sphere.getLocalScaling().y(), sphere.getLocalScaling().z());
+		bullet.LogInfoFormat("%ssphere r=%f ls=(%f,%f,%f) m=%f", prefix, sphere.getRadius(),
+			sphere.getLocalScaling().x(), sphere.getLocalScaling().y(),
+			sphere.getLocalScaling().z(), sphere.getMargin());
 		}break;
 		
 	case BOX_SHAPE_PROXYTYPE:{
 		const btBoxShape &box = (btBoxShape&)shape;
-		bullet.LogInfoFormat("%sbox he=(%f,%f,%f) ls=(%f,%f,%f)", prefix,
+		bullet.LogInfoFormat("%sbox he=(%f,%f,%f) ls=(%f,%f,%f) m=%f", prefix,
 			box.getHalfExtentsWithoutMargin().x(), box.getHalfExtentsWithoutMargin().y(),
 			box.getHalfExtentsWithoutMargin().z(), box.getLocalScaling().x(),
-			box.getLocalScaling().y(), box.getLocalScaling().z());
+			box.getLocalScaling().y(), box.getLocalScaling().z(), box.getMargin());
 		}break;
 		
 	case COMPOUND_SHAPE_PROXYTYPE:{
 		const btCompoundShape &compound = (btCompoundShape&)shape;
-		bullet.LogInfoFormat("%scompound ls=(%f,%f,%f)", prefix, compound.getLocalScaling().x(),
-			compound.getLocalScaling().y(), compound.getLocalScaling().z());
+		bullet.LogInfoFormat("%scompound ls=(%f,%f,%f) m=%f", prefix, compound.getLocalScaling().x(),
+			compound.getLocalScaling().y(), compound.getLocalScaling().z(), compound.getMargin());
 		const decString childPrefix(decString(prefix) + "- ");
-		const decString childPrefix2(decString(prefix) + "    ");
+		const decString childPrefix2(decString(prefix) + "  ");
 		const int count = compound.getNumChildShapes();
 		int i;
 		for(i=0; i<count; i++){
@@ -789,8 +804,50 @@ const btCollisionShape &shape, const char *prefix) const
 		}
 		}break;
 		
+	case CONVEX_HULL_SHAPE_PROXYTYPE:{
+		const btConvexHullShape &hull = (btConvexHullShape&)shape;
+		bullet.LogInfoFormat("%shull n=%d ls=(%f,%f,%f) m=%f", prefix, hull.getNumVertices(),
+			hull.getLocalScaling().x(),hull.getLocalScaling().y(), hull.getLocalScaling().z(), hull.getMargin());
+		const int count = hull.getNumVertices();
+		int i;
+		for(i=0; i<count; i++){
+			const btVector3 &p = hull.getUnscaledPoints()[i];
+			bullet.LogInfoFormat("%s- p=(%f,%f,%f)", prefix, p.x(), p.y(), p.z());
+		}
+		}break;
+		
+	case CYLINDER_SHAPE_PROXYTYPE:{
+		const btCylinderShape &cylinder = (btCylinderShape&)shape;
+		bullet.LogInfoFormat("%scylinder he=(%f,%f,%f) ls=(%f,%f,%f) m=%f", prefix,
+			cylinder.getHalfExtentsWithoutMargin().x(), cylinder.getHalfExtentsWithoutMargin().y(),
+			cylinder.getHalfExtentsWithoutMargin().z(), cylinder.getLocalScaling().x(),
+			cylinder.getLocalScaling().y(), cylinder.getLocalScaling().z(), cylinder.getMargin());
+		}break;
+		
+	case CAPSULE_SHAPE_PROXYTYPE:{
+		const btCapsuleShape &capsule = (btCapsuleShape&)shape;
+		bullet.LogInfoFormat("%scapsule r=%f he=%f ls=(%f,%f,%f) m=%f", prefix, capsule.getRadius(),
+			capsule.getHalfHeight(), capsule.getLocalScaling().x(),
+			capsule.getLocalScaling().y(), capsule.getLocalScaling().z(), capsule.getMargin());
+		}break;
+		
+	case MULTI_SPHERE_SHAPE_PROXYTYPE:{
+		const btMultiSphereShape &multiSphere = (btMultiSphereShape&)shape;
+		bullet.LogInfoFormat("%smulti-sphere n=%d ls=(%f,%f,%f) m=%f", prefix,
+			multiSphere.getSphereCount(), multiSphere.getLocalScaling().x(),
+			multiSphere.getLocalScaling().y(), multiSphere.getLocalScaling().z(),
+			multiSphere.getMargin());
+		const int count = multiSphere.getSphereCount();
+		int i;
+		for(i=0; i<count; i++){
+			const btVector3 &p = multiSphere.getSpherePosition(i);
+			const btScalar r = multiSphere.getSphereRadius(i);
+			bullet.LogInfoFormat("%s- p=(%f,%f,%f) r=%f", prefix, p.x(), p.y(), p.z(), r);
+		}
+		}break;
+		
 	default:
-		bullet.LogInfoFormat("%sshape ls=(%f,%f,%f)", prefix, shape.getLocalScaling().x(),
-			shape.getLocalScaling().y(), shape.getLocalScaling().z());
+		bullet.LogInfoFormat("%sshape ls=(%f,%f,%f) m=%f", prefix, shape.getLocalScaling().x(),
+			shape.getLocalScaling().y(), shape.getLocalScaling().z(), shape.getMargin());
 	}
 }

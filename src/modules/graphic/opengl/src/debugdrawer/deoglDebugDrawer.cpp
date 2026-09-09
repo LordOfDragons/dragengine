@@ -46,22 +46,13 @@
 deoglDebugDrawer::deoglDebugDrawer(deGraphicOpenGl &ogl, const deDebugDrawer &debugDrawer) :
 pOgl(ogl),
 pDebugDrawer(debugDrawer),
-
+pRDebugDrawer(deoglRDebugDrawer::Ref::New(ogl.GetRenderThread())),
 pDirtyDebugDrawer(true),
-pDirtyShapes(true)
-{
-	try{
-		pRDebugDrawer = deoglRDebugDrawer::Ref::New(ogl.GetRenderThread());
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+pDirtyShapes(true),
+pDirtyShapeParams(true){
 }
 
-deoglDebugDrawer::~deoglDebugDrawer(){
-	pCleanUp();
-}
+deoglDebugDrawer::~deoglDebugDrawer() = default;
 
 
 
@@ -80,6 +71,12 @@ void deoglDebugDrawer::SyncToRender(){
 	if(pDirtyShapes){
 		pRDebugDrawer->UpdateShapes(pDebugDrawer);
 		pDirtyShapes = false;
+		pDirtyShapeParams = false;
+	}
+	
+	if(pDirtyShapeParams){
+		pRDebugDrawer->UpdateShapeParams(pDebugDrawer);
+		pDirtyShapeParams = false;
 	}
 }
 
@@ -111,11 +108,11 @@ void deoglDebugDrawer::XRayChanged(){
 
 
 void deoglDebugDrawer::ShapeColorChanged(){
-	pDirtyShapes = true;
+	pDirtyShapeParams = true;
 }
 
 void deoglDebugDrawer::ShapeGeometryChanged(){
-	pDirtyShapes = true;
+	pDirtyShapeParams = true;
 }
 
 void deoglDebugDrawer::ShapeContentChanged(){
@@ -124,12 +121,4 @@ void deoglDebugDrawer::ShapeContentChanged(){
 
 void deoglDebugDrawer::ShapeLayoutChanged(){
 	pDirtyShapes = true;
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deoglDebugDrawer::pCleanUp(){
 }

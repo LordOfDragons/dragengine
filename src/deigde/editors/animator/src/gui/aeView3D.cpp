@@ -35,7 +35,6 @@
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
@@ -57,15 +56,15 @@
 
 namespace {
 
-class cCameraInteraction : public igdeMouseCameraListener {
+class cCameraInteraction : public igdeCameraInteractionListener{
 	aeView3D &pView;
 	
 public:
-	typedef deTObjectReference<cCameraInteraction> Ref;
-	cCameraInteraction(aeView3D &view) : pView(view){}
+	cCameraInteraction(aeView3D &view) :
+		igdeCameraInteractionListener(view.GetEnvironment()), pView(view){}
 	
 public:
-	virtual igdeMouseCameraListener::eInteraction ChooseInteraction(){
+	igdeCameraInteractionListener::eInteraction ChooseInteraction() override{
 		const aeAnimator * const animator = pView.GetAnimator();
 		if(animator){
 			if(animator->GetCamera()->mpAttachToBone
@@ -74,10 +73,10 @@ public:
 				return eiNone;
 			}
 		}
-		return igdeMouseCameraListener::ChooseInteraction();
+		return igdeCameraInteractionListener::ChooseInteraction();
 	}
 	
-	virtual void OnCameraChanged(){
+	void OnCameraChanged() override{
 		if(!pView.GetAnimator()){
 			return;
 		}
@@ -273,8 +272,8 @@ public:
 			return;
 		}
 		
-		pView.GetGizoms().OnButtonPress(pView, *animator->GetCamera(), button, position, modifiers);
-		if(pView.GetGizoms().HasEditingGizmo()){
+		pView.GetGizmos().OnButtonPress(pView, *animator->GetCamera(), button, position, modifiers);
+		if(pView.GetGizmos().HasEditingGizmo()){
 			return;
 		}
 		
@@ -319,8 +318,8 @@ public:
 			return;
 		}
 		
-		pView.GetGizoms().OnButtonRelease(pView, *animator->GetCamera(), button, position, modifiers);
-		if(pView.GetGizoms().HasEditingGizmo()){
+		pView.GetGizmos().OnButtonRelease(pView, *animator->GetCamera(), button, position, modifiers);
+		if(pView.GetGizmos().HasEditingGizmo()){
 			return;
 		}
 		
@@ -342,8 +341,8 @@ public:
 			return;
 		}
 		
-		pView.GetGizoms().OnMouseMoved(pView, *animator->GetCamera(), position, modifiers);
-		if(pView.GetGizoms().HasEditingGizmo()){
+		pView.GetGizmos().OnMouseMoved(pView, *animator->GetCamera(), position, modifiers);
+		if(pView.GetGizmos().HasEditingGizmo()){
 			return;
 		}
 	}
@@ -354,7 +353,7 @@ public:
 			return;
 		}
 		
-		pView.GetGizoms().OnMouseWheeled(pView, *animator->GetCamera(), position, change, modifiers);
+		pView.GetGizmos().OnMouseWheeled(pView, *animator->GetCamera(), position, change, modifiers);
 	}
 	
 	void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int key) override{
@@ -363,7 +362,7 @@ public:
 			return;
 		}
 		
-		pView.GetGizoms().OnKeyPress(keyCode, key);
+		pView.GetGizmos().OnKeyPress(keyCode, key);
 	}
 	
 	void OnKeyRelease(igdeWidget*, deInputEvent::eKeyCodes keyCode, int key) override{
@@ -372,7 +371,7 @@ public:
 			return;
 		}
 		
-		pView.GetGizoms().OnKeyRelease(keyCode, key);
+		pView.GetGizmos().OnKeyRelease(keyCode, key);
 	}
 };
 
@@ -390,12 +389,12 @@ aeView3D::aeView3D(aeWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain)
 {
-	pCameraInteraction = cCameraInteraction::Ref::New(*this);
+	pCameraInteraction = deTObjectReference<cCameraInteraction>::New(*this);
 	pLocomotionInteraction = cLocomotionInteraction::Ref::New(*this);
 	pWakeboardInteraction = cWakeboardInteraction::Ref::New(*this);
 	pEditorInteraction = cEditorInteraction::Ref::New(*this);
 	
-	AddListener(pCameraInteraction);
+	pCameraInteraction->AddListeners(*this, windowMain);
 	AddListener(pLocomotionInteraction);
 	AddListener(pWakeboardInteraction);
 	AddListener(pEditorInteraction);
