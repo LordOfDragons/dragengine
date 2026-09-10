@@ -955,6 +955,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				dh.addValue("actorVelocity", actorVelocity)
 				dh.addValue("actorVelocity.length", actorVelocity.getLength())
 				dh.addValue("hitAngle", hitAngle)
+				dh.addValue("realHitDistance", pCCTAvoidCollision.hitDistance(0))
 			end
 			if pCCTAvoidCollision.hitDistance(0) > 0 and hitAngle < 100
 				if dh != null
@@ -1004,8 +1005,14 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// works only if the collider is moving. avoids actors walking around an obstacle
 			// which they can better avoid by just waiting a second or two.
 			var bool nextPathPointIsGoal = pActorMover.isNextPathPointGoal()
+			var float distanceToGoal = pActorMover.getDistanceToGoal()
+			var float thresholdDistanceToGoal = pRadius * 4
 			if dh != null
+				dh.addValue("goalPosition", pActorMover.getGoalPosition())
+				dh.addValue("nextPathPoint", pActorMover.getNextPathPoint())
 				dh.addValue("nextPathPointIsGoal", nextPathPointIsGoal)
+				dh.addValue("distanceToGoal", distanceToGoal)
+				dh.addValue("thresholdDistanceToGoal", thresholdDistanceToGoal)
 			end
 			
 			var float crossAngle
@@ -1051,10 +1058,14 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// other actor is backing off a bit to make it easier for use to get around
 			var ECBehaviorAvoidCollision.Instance otherAvoidCollision = \
 				ECBehaviorAvoidCollision.getInstanceIn(behavior.getElement())
+			var float otherThresholdDistanceToGoal = thresholdDistanceToGoal
 			if otherAvoidCollision != null
+				otherThresholdDistanceToGoal = otherAvoidCollision.pRadius * 4
 				if dh != null
 					dh.addValue("otherAvoidCollision.deviationTime", otherAvoidCollision.pDeviationTime)
 					dh.addValue("otherAvoidCollision.speedMultiplier", otherAvoidCollision.pSpeedMultiplier)
+					dh.addValue("otherAvoidCollision.radius", otherAvoidCollision.pRadius)
+					dh.addValue("otherAvoidCollision.thresholdDistanceToGoal", otherThresholdDistanceToGoal)
 				end
 				if otherAvoidCollision.pDeviationTime > 0 and otherAvoidCollision.pSpeedMultiplier > 0
 					if dh != null
@@ -1065,10 +1076,30 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				end
 			end
 			
-			// if the other actor does not support ECBehaviorActorMover or has no goal set
-			// wait behind it and back off a bit since it can not avoid us
+			// if next path point is goal, other actor supports ECBehaviorActorMover and other
+			// actor has no goal set, wait behind it
 			var ECBehaviorActorMover.Instance otherMover =\
 				ECBehaviorActorMover.getInstanceIn(behavior.getElement())
+			var bool otherNextPathPointIsGoal
+			var float otherDistanceToGoal
+			if otherMover != null
+				otherNextPathPointIsGoal = otherMover.isNextPathPointGoal()
+				otherDistanceToGoal = otherMover.getDistanceToGoal()
+				if dh != null
+					dh.addValue("otherMover.goalPosition", otherMover.getGoalPosition())
+					dh.addValue("otherMover.nextPathPoint", otherMover.getNextPathPoint())
+					dh.addValue("otherMover.nextPathPointIsGoal", otherNextPathPointIsGoal)
+					dh.addValue("otherMover.distanceToGoal", otherDistanceToGoal)
+				end
+			end
+			if nextPathPointIsGoal and distanceToGoal < thresholdDistanceToGoal\
+			and otherMover != null and otherMover.hasNoGoal()
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "other no goal blocked")
+				end
+				waitBehindAvoidedByActor(behavior)
+				return
+			end
 			/*
 			if dh != null
 				dh.addValue("otherMover", otherMover != null)
@@ -1089,11 +1120,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			if pCCTAvoidCollision.hitDistance(0) < 0.01
 				// if other actor has an actor mover and has same goal back off if other actor
 				// is closer to his goal than we are to ours
-				if nextPathPointIsGoal
-					if dh != null and otherMover != null
-						dh.addValue("otherMover.nextPathPointIsGoal", otherMover.isNextPathPointGoal())
-					end
-					if otherMover != null and otherMover.isNextPathPointGoal()
+				if nextPathPointIsGoal and distanceToGoal < thresholdDistanceToGoal
+					if otherMover != null and otherNextPathPointIsGoal\
+					and otherDistanceToGoal < otherThresholdDistanceToGoal
 						var DVector goalPosition = pActorMover.getGoalPosition()
 						var DVector otherGoalPosition = otherMover.getGoalPosition()
 						var float goalGoalDistance = (goalPosition - otherGoalPosition).getLength()
@@ -1105,13 +1134,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 							dh.addValue("minDistance", minDistance)
 						end
 						if goalGoalDistance < minDistance
-							var float goalDistance = (goalPosition - actorPosition).getLength()
-							var float otherGoalDistance = (otherGoalPosition - collider.getPosition()).getLength()
-							if dh != null
-								dh.addValue("goalDistance", goalDistance)
-								dh.addValue("otherGoalDistance", otherGoalDistance)
-							end
-							if otherGoalDistance < goalDistance
+							if otherDistanceToGoal < distanceToGoal
 								pDeviationAngle = movingOrientation + DEMath.random(-30.0, 30.0)
 								pDeviationTime = DEMath.random(0.5, 1.0)
 								pSpeedMultiplier = -1
