@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,46 +22,46 @@
  * SOFTWARE.
  */
 
-#ifndef _MEUCAMERAROTATEOBJECT_H_
-#define _MEUCAMERAROTATEOBJECT_H_
+#ifndef _IGDEFRAMEUPDATELISTENER_H_
+#define _IGDEFRAMEUPDATELISTENER_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include <dragengine/deObject.h>
 
-#include <dragengine/common/math/decMath.h>
-
-#include "../../../world/object/meObject.h"
-
+class igdeWidget;
 
 
 /**
- * Undo action for camera rotating an object.
+ * \brief IGDE UI Frame Update Listener.
  */
-class meUCameraRotateObject : public igdeUndo{
+class DE_DLL_EXPORT igdeFrameUpdateListener : public deObject{
 public:
-	using Ref = deTObjectReference<meUCameraRotateObject>;
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeFrameUpdateListener>;
 	
-	
-private:
-	meObject::Ref pObject;
-	decVector pOldRotation, pNewRotation;
-	
-public:
-	// constructor, destructor
-	meUCameraRotateObject(meObject *object);
 	
 protected:
-	/** \brief Clean up undo. */
-	~meUCameraRotateObject() override;
+	/** \brief Constructors and Destructors */
+	/*@{*/
+	/** \brief Create listener. */
+	igdeFrameUpdateListener();
 	
-public:
+	
+protected:
+	/** \brief Clean up listener. */
+	~igdeFrameUpdateListener() override;
 	/*@}*/
 	
-	void SetNewRotation(const decVector &rotation);
-	bool HasChanged() const;
 	
-	// undo and redo operations
-	void Undo() override;
-	void Redo() override;
+public:
+	/** \brief Events */
+	/*@{*/
+	/**
+	 * \brief Frame update.
+	 * 
+	 * \param[in] elapsed Elapsed time in seconds since last frame update.
+	 */
+	virtual void OnFrameUpdate(igdeWidget *widget, float elapsed);
+	/*@}*/
 };
 
 #endif

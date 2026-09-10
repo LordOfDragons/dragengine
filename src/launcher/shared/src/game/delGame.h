@@ -283,6 +283,9 @@ public:
 	/** \brief Verify all requirements are fullfilled storing results. */
 	void VerifyRequirements();
 	
+	/** \brief Log problems found during verification. */
+	void LogProblems();
+	
 	/** \brief All file formats are supported. */
 	inline bool GetAllFormatsSupported() const{ return pAllFormatsSupported; }
 	

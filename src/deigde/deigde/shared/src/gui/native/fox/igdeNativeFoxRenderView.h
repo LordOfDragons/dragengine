@@ -54,15 +54,11 @@ protected:
 	
 private:
 	igdeViewRenderWindow *pOwner;
-	bool pCanAttachRenderWindow;
-	bool pRenderWindowAttached;
-	bool pCanRender;
-	bool pErrorRenderWindow;
+	bool pCanAttachRenderWindow, pRenderWindowAttached, pCanRender, pErrorRenderWindow;
 	
 #ifdef OS_W32
 	LONG_PTR pOrgWindowProc;
 #endif
-	
 	
 	
 public:
@@ -123,6 +119,7 @@ public:
 	
 	void GrabInput() override;
 	void ReleaseInput() override;
+	bool SetMousePointerPosition(const decPoint &position) override;
 	/*@}*/
 	
 	

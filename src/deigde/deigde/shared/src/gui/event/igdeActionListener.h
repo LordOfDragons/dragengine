@@ -39,7 +39,7 @@ class igdeAction;
  */
 class DE_DLL_EXPORT igdeActionListener{
 protected:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	igdeActionListener();
@@ -51,7 +51,7 @@ protected:
 	
 	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
 	/** \brief Action parameters changed. */
 	virtual void OnParameterChanged(igdeAction *action) = 0;

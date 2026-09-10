@@ -24,23 +24,22 @@
 
 #ifdef IGDE_TOOLKIT_FOX
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-
 #include "igdeNativeFoxRenderView.h"
 #include "../../igdeContainer.h"
 #include "../../igdeViewRenderWindow.h"
 #include "../../../engine/igdeEngineController.h"
 #include "../../../environment/igdeEnvironment.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 
+#ifdef OS_UNIX
+#include <dragengine/app/deOSUnix.h>
+#endif
 #ifdef OS_W32
 #include <dragengine/app/deOSWindows.h>
 #endif
@@ -468,15 +467,60 @@ void igdeNativeFoxRenderView::DrawErrorRendering(FXDCWindow &dc){
 }
 
 void igdeNativeFoxRenderView::GrabInput(){
+	/*#ifdef OS_UNIX
+	setDefaultCursor(getApp()->getDefaultCursor(FXDefaultCursor::DEF_BLANK_CURSOR));
+	#endif*/
+	
 	grab();
 	grabKeyboard();
+	
+	/*#ifdef OS_UNIX
+	auto dpy = reinterpret_cast<Display*>(getApp()->getDisplay());
+	auto win = reinterpret_cast<Window>(id());
+	
+	XGrabPointer(dpy, win, True, PointerMotionMask | ButtonPressMask | ButtonReleaseMask,
+		GrabModeAsync, GrabModeAsync, win, None, CurrentTime);
+	XFlush(dpy);
+	#endif*/
 }
 
 void igdeNativeFoxRenderView::ReleaseInput(){
+	/*#ifdef OS_UNIX
+	auto dpy = reinterpret_cast<Display*>(getApp()->getDisplay());
+	XUngrabPointer(dpy, CurrentTime);
+	XFlush(dpy);
+	#endif*/
+	
 	ungrabKeyboard();
 	ungrab();
+	
+	/*#ifdef OS_UNIX
+	setDefaultCursor(getApp()->getDefaultCursor(FXDefaultCursor::DEF_ARROW_CURSOR));
+	#endif*/
 }
 
+bool igdeNativeFoxRenderView::SetMousePointerPosition(const decPoint &position){
+#if defined OS_UNIX && defined OS_UNIX_WAYLAND
+	if(pOwner){
+		const auto ec = pOwner->GetEnvironment().GetEngineController();
+		if(ec){
+			const auto e = ec->GetEngine();
+			if(e && e->GetOS()->CastToOSUnix()->GetWaylandDisplay()){
+				// setDefaultCursor(getApp()->getDefaultCursor(FXDefaultCursor::DEF_BLANK_CURSOR));
+				// showCursor(false);
+				// getApp()->flush();
+				// const bool result = setCursorPosition(position.x, position.y);
+				// showCursor(true);
+				// getApp()->flush();
+				// return result;
+				return false; // wayland does not allow to set the mouse pointer position
+			}
+		}
+	}
+#endif
+	
+	return setCursorPosition(position.x, position.y);
+}
 
 
 // Events

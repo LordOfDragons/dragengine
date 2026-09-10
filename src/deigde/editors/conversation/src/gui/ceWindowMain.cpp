@@ -395,6 +395,8 @@ void ceWindowMain::OnDeactivate(){
 }
 
 void ceWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	if(!GetActiveModule()){
 		return;
 	}

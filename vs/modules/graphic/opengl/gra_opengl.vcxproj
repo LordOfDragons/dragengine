@@ -683,6 +683,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudCurvature.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudFov.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRSubmitDepth.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstance.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstanceType.cpp" />
@@ -1330,6 +1331,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudCurvature.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRHudFov.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRSubmitDepth.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstance.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstanceType.h" />

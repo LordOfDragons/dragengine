@@ -249,6 +249,8 @@ void reWindowMain::OnDeactivate(){
 }
 
 void reWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	if(!GetActiveModule()){
 		return;
 	}

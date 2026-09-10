@@ -45,7 +45,7 @@ public:
 	
 	
 protected:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	igdeTreeListListener();
@@ -65,7 +65,7 @@ protected:
 	
 	
 public:
-	/** \text Events */
+	/** \brief Events */
 	/*@{*/
 	/** \brief TreeList selection changed. */
 	virtual void OnSelectionChanged(igdeTreeList *treeList);

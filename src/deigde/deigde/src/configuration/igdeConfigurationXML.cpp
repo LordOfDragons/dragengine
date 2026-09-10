@@ -106,6 +106,9 @@ void igdeConfigurationXML::pReadConfig(const decXmlElementTag &root, igdeConfigu
 		}else if(tag->GetName() == "language"){
 			config.SetLanguage(GetCDataString(*tag));
 			
+		}else if(tag->GetName() == "view3DFlyMode"){
+			config.Set3DViewFlyMode(GetCDataBool(*tag));
+			
 		}else if(tag->GetName() == "maxRecentProjectEntries"){
 			config.SetMaxRecentProjectEntries(GetCDataInt(*tag));
 			
@@ -171,6 +174,7 @@ void igdeConfigurationXML::pWriteConfig(decXmlWriter &writer, const igdeConfigur
 	pWriteWindowMain(writer, config.GetWindowMain());
 	
 	writer.WriteDataTagString("language", config.GetLanguage());
+	writer.WriteDataTagBool("view3DFlyMode", config.Get3DViewFlyMode());
 	
 	writer.WriteDataTagInt("maxRecentProjectEntries", config.GetMaxRecentProjectEntries());
 	const decStringList &recentProjectList = config.GetRecentProjectList();

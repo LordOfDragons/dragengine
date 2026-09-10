@@ -54,7 +54,7 @@ private:
 	
 	
 public:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
 	igdeActionContextMenu(const char *text, igdeIcon *icon, const char *description);
@@ -84,7 +84,7 @@ protected:
 	
 	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
 	/** \brief Widget to show context menu below or nullptr if not present. */
 	inline const igdeWidget::WeakRef &GetWidget() const{ return pWidget; }

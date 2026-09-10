@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,56 +22,21 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDECOLORBOXLISTENER_H_
-#define _IGDECOLORBOXLISTENER_H_
+#include "igdeFrameUpdateListener.h"
 
 
-#include <dragengine/deObject.h>
+// Class igdeFrameUpdateListener
+//////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+igdeFrameUpdateListener::igdeFrameUpdateListener() = default;
+igdeFrameUpdateListener::~igdeFrameUpdateListener() = default;
 
 
-class igdeColorBox;
+// Events
+///////////
 
-
-/**
- * \brief IGDE UI ColorBox Listener.
- */
-class DE_DLL_EXPORT igdeColorBoxListener : public deObject{
-
-public:
-	/** \brief Type holding strong reference. */
-	using Ref = deTObjectReference<igdeColorBoxListener>;
-	
-	
-protected:
-	/** \brief Constructors and Destructors */
-	/*@{*/
-	/** \brief Create listener. */
-	igdeColorBoxListener();
-	
-	
-	
-protected:
-	/**
-	 * \brief Clean up widget.
-	 * \note Subclasses should set their destructor protected too to avoid users
-	 *       accidently deleting a reference counted object through the object
-	 *       pointer. Only FreeReference() is allowed to delete the object.
-	 */
-	~igdeColorBoxListener() override;
-	/*@}*/
-	
-	
-	
-public:
-	/** \brief Events */
-	/*@{*/
-	/**
-	 * \brief ColorBox color changed.
-	 * 
-	 * User changed color by interaction.
-	 */
-	virtual void OnColorChanged(igdeColorBox *colorBox);
-	/*@}*/
-};
-
-#endif
+void igdeFrameUpdateListener::OnFrameUpdate(igdeWidget*, float){
+}

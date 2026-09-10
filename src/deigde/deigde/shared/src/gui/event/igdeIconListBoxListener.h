@@ -44,7 +44,7 @@ public:
 	
 	
 protected:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	igdeIconListBoxListener();
@@ -64,7 +64,7 @@ protected:
 	
 	
 public:
-	/** \text Events */
+	/** \brief Events */
 	/*@{*/
 	/** \brief IconListBox selection changed. */
 	virtual void OnSelectionChanged(igdeIconListBox *listBox);

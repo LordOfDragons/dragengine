@@ -434,12 +434,16 @@ void deglbWindowMain::RunDelga(const char *filename){
 	
 	if(!game->GetCanRun()){
 		if(!game->GetAllFormatsSupported()){
+			pLauncher->GetLogger()->LogError(pLauncher->GetLogSource(), "Can not run game. File format problems:");
+			game->LogProblems();
 			BAlert alert("Can not run game",
 				"One or more File Formats required by the game are not working.\n\n"
 				"Try updating Drag[en]gine to the latest version", "OK");
 			alert.Go();
 			
 		}else{
+			pLauncher->GetLogger()->LogError(pLauncher->GetLogSource(), "Can not run game. Game problems:");
+			game->LogProblems();
 			BAlert alert("Can not run game",
 				"Game related properties are incorrect.\n\n"
 				"Try updating Drag[en]gine to the latest version", "OK");
@@ -450,6 +454,8 @@ void deglbWindowMain::RunDelga(const char *filename){
 
 	delGameProfile *profile = game->GetProfileToUse();
 	if(!profile->GetValid()){
+		pLauncher->GetLogger()->LogError(pLauncher->GetLogSource(), "Can not run game. Profile problems:");
+		profile->LogProblems();
 		BAlert alert("Can not run game", "Game profile is not valid.", "OK");
 		alert.Go();
 		return;
@@ -460,6 +466,8 @@ void deglbWindowMain::RunDelga(const char *filename){
 	
 	decString error;
 	if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+		pLauncher->GetLogger()->LogError(pLauncher->GetLogSource(), "Can not run game. Patch problems:");
+		game->LogProblems();
 		BAlert alert("Can not run game", error, "OK");
 		alert.Go();
 		return;

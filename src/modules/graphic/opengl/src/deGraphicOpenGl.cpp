@@ -107,6 +107,7 @@
 #include "parameters/vr/deoglPVRForceFrameRate.h"
 #include "parameters/vr/deoglPVRHudFov.h"
 #include "parameters/vr/deoglPVRHudCurvature.h"
+#include "parameters/vr/deoglPVRSubmitDepth.h"
 
 #include "particle/deoglParticleEmitter.h"
 #include "particle/deoglParticleEmitterInstance.h"
@@ -789,6 +790,7 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.Add(deTUniqueReference<deoglPVRForceFrameRate>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPVRHudFov>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPVRHudCurvature>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPVRSubmitDepth>::New(*this));
 	
 	pParameters.Add(deTUniqueReference<deoglPEnableHDRMonitor>::New(*this));
 	

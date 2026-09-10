@@ -387,11 +387,15 @@ void deglWindowMain::RunDelga(const char *filename){
 	
 	if(!game->GetCanRun()){
 		if(!game->GetAllFormatsSupported()){
+			pLauncher->GetLogger()->LogError(pLauncher->GetLogSource(), "Can not run game. File format problems:");
+			game->LogProblems();
 			FXMessageBox::error(this, MBOX_OK, "Can not run game",
 				"One or more File Formats required by the game are not working.\n\n"
 				"Try updating Drag[en]gine to the latest version");
 			
 		}else{
+			pLauncher->GetLogger()->LogError(pLauncher->GetLogSource(), "Can not run game. Game problems:");
+			game->LogProblems();
 			FXMessageBox::error(this, MBOX_OK, "Can not run game",
 				"Game related properties are incorrect.\n\n"
 				"Try updating Drag[en]gine to the latest version");
@@ -401,6 +405,8 @@ void deglWindowMain::RunDelga(const char *filename){
 	
 	delGameProfile *profile = game->GetProfileToUse();
 	if(!profile->GetValid()){
+		pLauncher->GetLogger()->LogError(pLauncher->GetLogSource(), "Can not run game. Profile problems:");
+		profile->LogProblems(*pLauncher);
 		FXMessageBox::error(this, MBOX_OK, "Can not run game", "Game profile is not valid.");
 		return;
 	}
@@ -410,6 +416,8 @@ void deglWindowMain::RunDelga(const char *filename){
 	
 	decString error;
 	if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+		pLauncher->GetLogger()->LogError(pLauncher->GetLogSource(), "Can not run game. Path problems:");
+		game->LogProblems();
 		FXMessageBox::error(this, MBOX_OK, "Can not run game", "%s", error.GetString());
 		return;
 	}

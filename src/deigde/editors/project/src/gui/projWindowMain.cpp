@@ -273,6 +273,8 @@ void projWindowMain::SaveProjectLocal(){
 
 
 void projWindowMain::OnFrameUpdate(float elapsed){
+	igdeEditorWindow::OnFrameUpdate(elapsed);
+	
 	pPanelTestRun->Update(elapsed);
 }
 

@@ -54,7 +54,7 @@ private:
 	
 	
 public:
-	/** \text Constructors and Destructors */
+	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create tree item sorter. */
 	igdeTreeItemSorter(bool ascending = true);
@@ -74,7 +74,7 @@ protected:
 	
 	
 public:
-	/** \text Management */
+	/** \brief Management */
 	/*@{*/
 	/** \brief Sort ascending. */
 	inline bool GetAscending() const{ return pAscending; }

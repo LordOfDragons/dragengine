@@ -27,6 +27,7 @@
 
 #include "igdeStepableTask.h"
 #include "layout/igdeContainerBox.h"
+#include "event/igdeFrameUpdateListener.h"
 #include "../utils/igdeRecentFiles.h"
 #include "../meta/igdeMetaContext.h"
 
@@ -63,6 +64,8 @@ private:
 	UpdateActionsList pUpdateActions;
 	igdeRecentFiles pRecentFiles;
 	igdeMetaContext::Data::Ref pMetaContexts;
+	
+	decTObjectOrderedSet<igdeFrameUpdateListener> pFrameUpdateListeners;
 	
 	
 public:
@@ -183,6 +186,19 @@ public:
 	
 	/** \brief Display exception error in a message dialog. */
 	void DisplayException(const deException &exception);
+	
+	/** \brief Parent editor window. */
+	igdeEditorWindow *GetParentEditorWindow() override;
+	
+	
+	/** \brief Add frame update listener. */
+	void AddFrameUpdateListener(igdeFrameUpdateListener *listener);
+	
+	/** \brief Remove frame update listener. */
+	void RemoveFrameUpdateListener(igdeFrameUpdateListener *listener);
+	
+	/** \brief Notify listeners frame update. */
+	virtual void NotifyFrameUpdate(float deltaTime);
 	/*@}*/
 	
 	

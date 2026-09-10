@@ -49,7 +49,7 @@ class igdeWindow;
 /**
  * \brief IGDE UI Application.
  */
-class DE_DLL_EXPORT igdeApplication{	
+class DE_DLL_EXPORT igdeApplication{
 private:
 	void pSharedRun(decUnicodeStringList &arguments);
 	

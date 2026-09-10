@@ -194,7 +194,7 @@ void delGame::VerifyRequirements(){
 	
 	// verify custom profile if present
 	if(pCustomProfile){
-		GetCustomProfile()->Verify(pLauncher);
+		pCustomProfile->Verify(pLauncher);
 	}
 	
 	// check if all file formats are supported
@@ -248,6 +248,41 @@ void delGame::VerifyRequirements(){
 	
 	// determine if the game can run
 	pCanRun = pAllFormatsSupported && pScriptModuleFound;
+}
+
+void delGame::LogProblems(){
+	if(pCanRun){
+		return;
+	}
+	
+	const decString &logSource = pLauncher.GetLogSource();
+	decString logPrefix(decString::Formatted("Game '{}': ", pIdentifier.ToHexString(false)));
+	deLogger &logger = pLauncher.GetLogger();
+	
+	pFileFormats.Visit([&](const delFileFormat &format){
+		if(format.GetSupported()){
+			return;
+		}
+		
+		logger.LogErrorFormat(logSource, "%sFile format '%s' (%s) has no ready module",
+			logPrefix.GetString(), format.GetPattern().GetString(),
+			delEngine::GetModuleTypeText(format.GetType()));
+	});
+	
+	if(!pScriptModuleFound){
+		logger.LogErrorFormat(logSource,
+			"%sScript module '%s' %s is not found or not ready",
+			logPrefix.GetString(), pScriptModule.GetString(),
+			pScriptModuleVersion.IsEmpty() ? "" : pScriptModuleVersion.GetString());
+	}
+	
+	if(pCustomProfile){
+		pCustomProfile->LogProblems(pLauncher, logPrefix + "Custom ");
+	}
+	
+	if(pActiveProfile){
+		pActiveProfile->LogProblems(pLauncher, logPrefix + "Active ");
+	}
 }
 
 void delGame::SetAllFormatsSupported(bool supported){

@@ -145,6 +145,9 @@ public:
 	/** \brief UI Helper for properties panels. */
 	igdeUIHelper &GetUIHelperProperties() override;
 	
+	/** \brief Use fly mode in 3D view. */
+	bool Get3DViewFlyMode() override;
+	
 	
 	
 	/** \brief Named GuiTheme or default if not found. */

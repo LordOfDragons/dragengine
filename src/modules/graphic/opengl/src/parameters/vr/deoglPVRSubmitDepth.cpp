@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,53 +22,38 @@
  * SOFTWARE.
  */
 
-#include "meUCameraRotateObject.h"
-#include "../../../world/meCamera.h"
-#include "../../../world/meWorld.h"
-#include "../../../world/object/meObject.h"
-#include "../../../worldedit.h"
+#include "deoglPVRSubmitDepth.h"
+#include "../../deGraphicOpenGl.h"
+#include "../../configuration/deoglConfiguration.h"
 
 #include <dragengine/common/exceptions.h>
 
 
-// Class meUCameraRotateObject
-////////////////////////////////
+// Class deoglPVRSubmitDepth
+//////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-meUCameraRotateObject::meUCameraRotateObject(meObject *object){
-	DEASSERT_NOTNULL(object)
-	
-	pOldRotation = object->GetRotation();
-	pNewRotation = pOldRotation;
-	SetShortInfo("@World.UCameraRotateObject.RotateCameraObject");
-	
-	pObject = object;
+deoglPVRSubmitDepth::deoglPVRSubmitDepth(deGraphicOpenGl &ogl) :
+deoglParameterBool(ogl)
+{
+	SetName("vrSubmitDepth");
+	SetDescription("Submit depth images to VR headset if supported.");
+	SetCategory(ecAdvanced);
+	SetDisplayName("VR Submit Depth");
 }
 
-meUCameraRotateObject::~meUCameraRotateObject(){
+deoglPVRSubmitDepth::~deoglPVRSubmitDepth() = default;
+
+
+// Parameter Value
+////////////////////
+
+bool deoglPVRSubmitDepth::GetParameterBool(){
+	return pOgl.GetConfiguration().GetVRSubmitDepth();
 }
 
-
-
-// Undo and Redo operations
-/////////////////////////////
-
-void meUCameraRotateObject::SetNewRotation(const decVector &rotation){
-	pNewRotation = rotation;
-}
-
-bool meUCameraRotateObject::HasChanged() const{
-	return !pNewRotation.IsEqualTo(pOldRotation);
-}
-
-void meUCameraRotateObject::Undo(){
-	pObject->SetRotation(pOldRotation);
-	pObject->GetWorld()->NotifyObjectGeometryChanged(pObject);
-}
-
-void meUCameraRotateObject::Redo(){
-	pObject->SetRotation(pNewRotation);
-	pObject->GetWorld()->NotifyObjectGeometryChanged(pObject);
+void deoglPVRSubmitDepth::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetVRSubmitDepth(value);
 }

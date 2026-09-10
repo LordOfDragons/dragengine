@@ -145,7 +145,7 @@ public:
 	void PutEngineIntoVFS(delEngineInstance &instance);
 	
 	/** \brief Text for module type. */
-	const char *GetModuleTypeText(deModuleSystem::eModuleTypes moduleType) const;
+	static const char *GetModuleTypeText(deModuleSystem::eModuleTypes moduleType);
 	
 	
 	
