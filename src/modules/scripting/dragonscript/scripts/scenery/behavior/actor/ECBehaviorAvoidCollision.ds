@@ -842,6 +842,12 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// using getMovingDirectionVector() requires using setLocalDirection() on CCT
 			var float directionLen = direction.getLength()
 			direction = direction / directionLen
+			if dh != null
+				dh.addValue("velocity", velocity)
+				dh.addValue("frameMovementDistance", frameMovementDistance)
+				dh.addValue("direction", direction)
+				dh.addValue("direction.length", directionLen)
+			end
 			
 			if pActorMover.hasNextPathPoint()
 				directionLen = DEMath.min(directionLen, \
@@ -851,13 +857,11 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			directionLen = DEMath.min(directionLen, pActorMover.getDistanceToGoal() \
 				- pActorMover.getGoalDistance() - frameMovementDistance)
 			if dh != null
-				dh.addValue("velocity", velocity)
-				dh.addValue("frameMovementDistance", frameMovementDistance)
-				dh.addValue("direction", direction)
 				dh.addValue("direction.length#2", directionLen)
 				dh.addValue("distanceToGoal", pActorMover.getDistanceToGoal())
 				dh.addValue("goalDistance", pActorMover.getGoalDistance())
 			end
+			/*
 			if directionLen < 0.1
 				if dh != null
 					dh.log(getElement(), "ECBehaviorAvoidCollision", "startTests", "short direction")
@@ -865,6 +869,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				clearAvoiding()
 				return
 			end
+			*/
+			directionLen = DEMath.max(directionLen, 0.1)
 			
 			if dh != null
 				dh.log(getElement(), "ECBehaviorAvoidCollision", "startTests", "arm test")
