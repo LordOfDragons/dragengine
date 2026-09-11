@@ -118,12 +118,24 @@ bool igdeDialogSettings::Accept(){
 		return false;
 	}
 	
-	pWindowMain.ChangeLanguage(reinterpret_cast<igdeLanguagePack*>(
-		pCBLanguage->GetSelectedItemData())->GetLanguage());
+	bool changed = false;
+	
+	auto language = reinterpret_cast<igdeLanguagePack*>(pCBLanguage->GetSelectedItemData())->GetLanguage();
+	if(language != pWindowMain.GetConfiguration().GetLanguage()){
+		pWindowMain.GetConfiguration().SetLanguage(language);
+		changed = true;
+	}
 	
 	const bool flyMode = pChk3DViewFlyMode->GetChecked();
 	if(flyMode != pWindowMain.GetEnvironment().Get3DViewFlyMode()){
 		pWindowMain.GetConfiguration().Set3DViewFlyMode(flyMode);
+		changed = true;
+	}
+	
+	if(changed){
+		pWindowMain.GetEnvironmentListeners().Visit([&](igdeEnvironmentListener &l){
+			l.OnConfigurationChanged();
+		});
 	}
 	
 	return igdeDialog::Accept();

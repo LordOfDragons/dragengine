@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meViewEditorSelect.h"
 #include "../meView3D.h"
 #include "../meWindowMain.h"
@@ -79,18 +74,7 @@ pCLBubbleInfo(nullptr)
 	pCanvasSelect->SetVisible(false);
 	view.AddCanvas(pCanvasSelect);
 	
-	pInfoBubble = meInfoBubble::Ref::New(view);
-	
-	igdeFont::sConfiguration fc;
-	view.GetEnvironment().GetApplicationFont(fc);
-	pFont = view.GetEnvironment().GetSharedFont(fc);
-	
-	pInfoBubbleText = view.GetEngine()->GetCanvasManager()->CreateCanvasText();
-	pInfoBubbleText->SetFont(pFont->GetEngineFont());
-	pInfoBubbleText->SetFontSize((float)pFont->GetEngineFont()->GetLineHeight());
-	pInfoBubbleText->SetColor(decColor(1.0f, 1.0f, 1.0f));
-	pInfoBubbleText->SetOrder(0.0f);
-	pInfoBubble->GetCanvasContent()->AddCanvas(pInfoBubbleText);
+	pInfoBubble = igdeInfoBubble::Ref::New(view);
 	
 	try{
 		pCLSelect = new meCLSelect(view.GetWorld());
@@ -593,29 +577,16 @@ void meViewEditorSelect::pUpdateInfoBubble(int x, int y, bool singleElement){
 		}
 	}
 	
-	pInfoBubbleText->SetText(visitor.GetText());
-	const decPoint textSize(pInfoBubbleText->GetFont()->TextSize(pInfoBubbleText->GetText()));
+	pInfoBubble->SetText(visitor.GetText());
 	
-	pInfoBubbleText->SetSize(textSize);
-	pInfoBubble->GetCanvasContent()->SetSize(textSize);
+	decPoint position;
+	igdeInfoBubble::Placement placement;
+	pInfoBubble->PositionAroundMouse(decPoint(x, y), position, placement);
 	
-	decPoint position = decPoint(x + 32, y);
-	meInfoBubble::ePlacement placement = meInfoBubble::epTopRight;
-	
-	if(position.x + textSize.x + 6 > size.x){
-		position.x = x - 32;
-		placement = meInfoBubble::epTopLeft;
-	}
-	
-	if(position.y - textSize.y - 6 < 0){
-		position.y = y + 64;
-		placement = placement == meInfoBubble::epTopRight
-			? meInfoBubble::epBottomRight : meInfoBubble::epBottomLeft;
-	}
-	
-	if(placement == meInfoBubble::epBottomLeft || placement == meInfoBubble::epBottomRight){
+	if(placement == igdeInfoBubble::Placement::bottomLeft
+	|| placement == igdeInfoBubble::Placement::bottomRight){
 		visitor.ReverseText();
-		pInfoBubbleText->SetText(visitor.GetText());
+		pInfoBubble->SetText(visitor.GetText());
 	}
 	
 	pInfoBubble->ShowAt(position, placement);

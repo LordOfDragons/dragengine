@@ -250,7 +250,7 @@ pWindowMain(windowMain)
 	pListener = ceViewConversationListener::Ref::New(*this);
 	
 	pCameraMouseListener = deTObjectReference<cCameraMouseListener>::New(*this);
-	pCameraMouseListener->AddListeners(*this, windowMain);
+	pCameraMouseListener->AddListeners(*this);
 	
 	pPlaybackListener = cPlaybackListener::Ref::New(*this);
 	AddListener(pPlaybackListener);

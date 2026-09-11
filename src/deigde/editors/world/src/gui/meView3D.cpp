@@ -276,7 +276,7 @@ pCameraInteractionListener(deTObjectReference<cCameraInteractionListener>::New(*
 	pListenerEditor = cEditorInteraction::Ref::New(*this);
 	AddListener(pListenerEditor);
 	
-	pCameraInteractionListener->AddListeners(*this, windowMain);
+	pCameraInteractionListener->AddListeners(*this);
 }
 
 meView3D::~meView3D(){

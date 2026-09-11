@@ -156,7 +156,7 @@ pShowNavBlockers(false)
 	
 	pCameraInteraction = deTObjectReference<cCameraInteraction>::New(*this);
 	
-	pCameraInteraction->AddListeners(*this, windowMain);
+	pCameraInteraction->AddListeners(*this);
 }
 
 gdeViewActiveObject::~gdeViewActiveObject(){

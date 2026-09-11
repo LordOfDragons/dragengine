@@ -770,6 +770,10 @@ void igdeWindowMain::SetGameProject(igdeGameProject *project){
 		}
 	});
 	
+	pEnvironmentListeners.Visit([&](igdeEnvironmentListener &l){
+		l.OnGameProjectChanged();
+	});
+	
 	// update window title
 	const decPath path(decPath::CreatePathNative(project->GetFilePath()));
 	decString title;
@@ -1153,6 +1157,10 @@ void igdeWindowMain::OnBeforeEngineStart(){
 			md.GetModule()->OnBeforeEngineStart();
 		}
 	});
+	
+	pEnvironmentListeners.Visit([&](igdeEnvironmentListener &l){
+		l.OnBeforeEngineStart();
+	});
 }
 
 void igdeWindowMain::OnAfterEngineStart(){
@@ -1185,9 +1193,17 @@ void igdeWindowMain::OnAfterEngineStart(){
 	
 	// reset timer
 	pTimer->Reset();
+	
+	pEnvironmentListeners.Visit([&](igdeEnvironmentListener &l){
+		l.OnAfterEngineStart();
+	});
 }
 
 void igdeWindowMain::OnBeforeEngineStop(){
+	pEnvironmentListeners.Visit([&](igdeEnvironmentListener &l){
+		l.OnBeforeEngineStop();
+	});
+	
 	pGDPreviewManager->OnBeforeEngineStop();
 	
 	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
@@ -1198,6 +1214,10 @@ void igdeWindowMain::OnBeforeEngineStop(){
 }
 
 void igdeWindowMain::OnAfterEngineStop(){
+	pEnvironmentListeners.Visit([&](igdeEnvironmentListener &l){
+		l.OnAfterEngineStop();
+	});
+	
 	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
 		if(md.IsModuleRunning()){
 			md.GetModule()->OnAfterEngineStop();
@@ -1355,6 +1375,10 @@ void igdeWindowMain::OnProjectGameDefinitionChanged(){
 	}
 	
 	pActionGameReloadXMLElementClasses->Update();
+	
+	pEnvironmentListeners.Visit([&](igdeEnvironmentListener &l){
+		l.OnProjectGameDefinitionChanged();
+	});
 }
 
 void igdeWindowMain::ArmUpdateTimer(){
@@ -1382,6 +1406,10 @@ void igdeWindowMain::UpdateFrame(){
 		}
 		
 		module->OnFrameUpdate(elapsed);
+	});
+	
+	pEnvironmentListeners.Visit([&](igdeEnvironmentListener &l){
+		l.OnFrameUpdate(elapsed);
 	});
 	
 	// update logging window
