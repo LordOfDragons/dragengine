@@ -394,7 +394,7 @@ pWindowMain(windowMain)
 	pWakeboardInteraction = cWakeboardInteraction::Ref::New(*this);
 	pEditorInteraction = cEditorInteraction::Ref::New(*this);
 	
-	pCameraInteraction->AddListeners(*this, windowMain);
+	pCameraInteraction->AddListeners(*this);
 	AddListener(pLocomotionInteraction);
 	AddListener(pWakeboardInteraction);
 	AddListener(pEditorInteraction);

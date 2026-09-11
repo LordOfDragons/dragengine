@@ -26,8 +26,8 @@
 #define _MEVIEWEDITORSELECT_H_
 
 #include "meViewEditorNavigation.h"
-#include "../meInfoBubble.h"
 
+#include <deigde/gui/igdeInfoBubble.h>
 #include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/resources/collider/deCollider.h>
@@ -51,9 +51,7 @@ private:
 	
 	deCanvasPaint::Ref pCanvasSelect;
 	
-	meInfoBubble::Ref pInfoBubble;
-	deCanvasText::Ref pInfoBubbleText;
-	igdeFont::Ref pFont;
+	igdeInfoBubble::Ref pInfoBubble;
 	
 	decPoint pLastMousePosition;
 	

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,73 +22,60 @@
  * SOFTWARE.
  */
 
-#ifndef _MEINFOBUBBLE_H_
-#define _MEINFOBUBBLE_H_
+#ifndef _IGDEENVIRONMENTLISTENER_H_
+#define _IGDEENVIRONMENTLISTENER_H_
 
-#include <dragengine/resources/canvas/deCanvasView.h>
-#include <dragengine/resources/canvas/deCanvasPaint.h>
-
-class meView3D;
-class igdeWidget;
+#include <dragengine/deObject.h>
 
 
 /**
- * Information bubble.
+ * \brief Environment listener.
  */
-class meInfoBubble : public deObject{
+class igdeEnvironmentListener : public deObject{
 public:
-	using Ref = deTObjectReference<meInfoBubble>;
-	
-	
-	enum ePlacement{
-		epTopLeft,
-		epTopRight,
-		epBottomLeft,
-		epBottomRight
-	};
-	
-	
-	
-private:
-	meView3D &pView;
-	
-	deCanvasView::Ref pCanvasBubble;
-	deCanvasView::Ref pCanvasContent;
-	deCanvasPaint::Ref pCanvasBorder;
-	
+	/** \brief Strong reference. */
+	using Ref = deTObjectReference<igdeEnvironmentListener>;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create information bubble. */
-	meInfoBubble(meView3D &view);
+	
+	/** \brief Create listener. */
+	igdeEnvironmentListener();
 	
 protected:
-	/** \brief Clean up information bubble. */
-	~meInfoBubble() override;
+	/** \brief Clean up listener. */
+	~igdeEnvironmentListener() override;
 	/*@}*/
-	
 	
 	
 public:
-	/** \name Management */
+	/** \name Events */
 	/*@{*/
-	/** \brief Content view. */
-	inline const deCanvasView::Ref &GetCanvasContent() const{ return pCanvasContent; }
+	/** \brief Game engine is about to be started. */
+	virtual void OnBeforeEngineStart();
 	
-	/** \brief Show bubble at mouse position. */
-	void ShowAt(const decPoint &position, ePlacement placement);
+	/** \brief Game engine has been started. */
+	virtual void OnAfterEngineStart();
 	
-	/** \brief Hide bubble. */
-	void Hide();
-	/*@}*/
+	/** \brief Game engine is about to be stopped. */
+	virtual void OnBeforeEngineStop();
 	
+	/** \brief Game engine has been stopped. */
+	virtual void OnAfterEngineStop();
 	
+	/** \brief Game like frame update. */
+	virtual void OnFrameUpdate(float elapsed);
 	
-private:
-	void pResize();
-	decPoint pPlace(const decPoint &position, ePlacement placement);
+	/** \brief Configuration changed. */
+	virtual void OnConfigurationChanged();
+	
+	/** \brief Game project has changed. */
+	virtual void OnGameProjectChanged();
+	
+	/** \brief Project game definition changed. */
+	virtual void OnProjectGameDefinitionChanged();
 };
 
 #endif

@@ -24,9 +24,9 @@
 
 #include "igdeCameraInteractionListener.h"
 #include "../igdeCamera.h"
-#include "../igdeEditorWindow.h"
 #include "../igdeViewRenderWindow.h"
 #include "../../environment/igdeEnvironment.h"
+#include "../../localization/igdeTranslationManager.h"
 
 
 // Class igdeCameraInteractionListener::MouseDragListener
@@ -76,6 +76,13 @@ igdeWidget *widget, int button, const decPoint &position, int modifiers){
 	}
 }
 
+void igdeCameraInteractionListener::MouseDragListener::OnMouseWheeled(
+igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers){
+	if(owner){
+		owner->OnMouseWheeled(widget, position, change, modifiers);
+	}
+}
+
 void igdeCameraInteractionListener::MouseDragListener::OnKeyPress(
 	igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key){
 	if(owner){
@@ -91,17 +98,17 @@ void igdeCameraInteractionListener::MouseDragListener::OnKeyRelease(
 }
 
 
-// Class igdeCameraInteractionListener::FrameUpdateListener
+// Class igdeCameraInteractionListener::EnvironmentListener
 /////////////////////////////////////////////////////////////
 
-igdeCameraInteractionListener::FrameUpdateListener::FrameUpdateListener(
+igdeCameraInteractionListener::EnvironmentListener::EnvironmentListener(
 	igdeCameraInteractionListener *aowner) :
 owner(aowner){
 }
 
-igdeCameraInteractionListener::FrameUpdateListener::~FrameUpdateListener() = default;
+igdeCameraInteractionListener::EnvironmentListener::~EnvironmentListener() = default;
 
-void igdeCameraInteractionListener::FrameUpdateListener::OnFrameUpdate(igdeWidget*, float elapsed){
+void igdeCameraInteractionListener::EnvironmentListener::OnFrameUpdate(float elapsed){
 	if(owner){
 		owner->OnFrameUpdate(elapsed);
 	}
@@ -125,6 +132,7 @@ pSpeedPan(1.0f / 50.0f),
 pSpeedMove(1.0f / 50.0f),
 pSpeedZoom(0.5f / 50.0f),
 pSpeedFly(3.0f),
+pFlySpeedModifier(0),
 pInteraction(eiNone),
 pZoomOrigin(0.0f),
 pZoomCurrent(0.0f),
@@ -136,7 +144,7 @@ pFlyUp(false),
 pFlyDown(false),
 pRightMouseButtonPressed(false),
 pMouseDragListener(deTObjectReference<MouseDragListener>::New(this)),
-pFrameUpdateListener(deTObjectReference<FrameUpdateListener>::New(this))
+pEnvironmentListener(deTObjectReference<EnvironmentListener>::New(this))
 {
 	pFlyVelocity.SetAdjustRange(pSpeedFly);
 	pFlyVelocity.SetAdjustTime(0.5f);
@@ -153,8 +161,8 @@ igdeCameraInteractionListener::~igdeCameraInteractionListener(){
 	if(pMouseDragListener){
 		pMouseDragListener->owner = nullptr;
 	}
-	if(pFrameUpdateListener){
-		pFrameUpdateListener->owner = nullptr;
+	if(pEnvironmentListener){
+		pEnvironmentListener->owner = nullptr;
 	}
 }
 
@@ -213,7 +221,25 @@ void igdeCameraInteractionListener::SetSpeedZoom(float metersPerPixel){
 
 void igdeCameraInteractionListener::SetSpeedFly(float metersPerSecond){
 	pSpeedFly = decMath::max(metersPerSecond, 0.0f);
-	pFlyVelocity.SetAdjustRange(pSpeedFly);
+	pFlyVelocity.SetAdjustRange(GetSpeedFlyModified());
+}
+
+void igdeCameraInteractionListener::SetSpeedFlyModifier(int multiplier){
+	multiplier = decMath::clamp(multiplier, -20, 25);
+	if(multiplier == pFlySpeedModifier){
+		return;
+	}
+	
+	pFlySpeedModifier = multiplier;
+	pFlyVelocity.SetAdjustRange(GetSpeedFlyModified());
+	
+	pViewRenderWindow->GetToastBubble()->ShowToast(decString::Formatted(
+		pEnvironment.GetTranslationManager().Translate("Igde.ViewRenderWindow.Toast.FlyModeSpeed").ToUTF8(),
+		pFlySpeedModifier));
+}
+
+float igdeCameraInteractionListener::GetSpeedFlyModified() const{
+	return pSpeedFly * powf(1.25f, (float)pFlySpeedModifier);
 }
 
 
@@ -251,18 +277,22 @@ void igdeCameraInteractionListener::SetMoveMatrix(const decDMatrix &matrix){
 }
 
 
-void igdeCameraInteractionListener::AddListeners(igdeViewRenderWindow &widget, igdeEditorWindow &window){
+void igdeCameraInteractionListener::AddListeners(igdeViewRenderWindow &widget){
+	DEASSERT_NULL(pViewRenderWindow);
+	
+	pViewRenderWindow = &widget;
+	
 	widget.AddListener(pMouseDragListener);
-	window.AddFrameUpdateListener(pFrameUpdateListener);
+	pEnvironment.AddListener(pEnvironmentListener);
 }
 
 void igdeCameraInteractionListener::RemoveListeners(igdeViewRenderWindow &widget){
+	DEASSERT_NOTNULL(pViewRenderWindow);
+	
+	pEnvironment.RemoveListener(pEnvironmentListener);
 	widget.RemoveListener(pMouseDragListener);
 	
-	auto window = widget.GetParentEditorWindow();
-	if(window){
-		window->RemoveFrameUpdateListener(pFrameUpdateListener);
-	}
+	pViewRenderWindow.Clear();
 }
 
 
@@ -431,6 +461,9 @@ void igdeCameraInteractionListener::OnFlyBegin(){
 	pFlyVelocity.SetValue({});
 	pFlyMouseLastPosition.SetZero();
 	pFlyMouseCurrentPosition.SetZero();
+	
+	pViewRenderWindow->GetToastBubble()->ShowToast("@Igde.ViewRenderWindow.Toast.FlyModeEnabled");
+	
 	OnBeginInteraction();
 }
 
@@ -439,24 +472,25 @@ void igdeCameraInteractionListener::OnFlyUpdate(float elapsed){
 		return;
 	}
 	
+	const float speed = GetSpeedFlyModified();
 	decDVector velocity;
 	if(pFlyForward){
-		velocity += decDVector(0.0, 0.0, pSpeedFly);
+		velocity += decDVector(0.0, 0.0, speed);
 	}
 	if(pFlyBackward){
-		velocity += decDVector(0.0, 0.0, -pSpeedFly);
+		velocity += decDVector(0.0, 0.0, -speed);
 	}
 	if(pFlyLeft){
-		velocity += decDVector(-pSpeedFly, 0.0, 0.0);
+		velocity += decDVector(-speed, 0.0, 0.0);
 	}
 	if(pFlyRight){
-		velocity += decDVector(pSpeedFly, 0.0, 0.0);
+		velocity += decDVector(speed, 0.0, 0.0);
 	}
 	if(pFlyUp){
-		velocity += decDVector(0.0, pSpeedFly, 0.0);
+		velocity += decDVector(0.0, speed, 0.0);
 	}
 	if(pFlyDown){
-		velocity += decDVector(0.0, -pSpeedFly, 0.0);
+		velocity += decDVector(0.0, -speed, 0.0);
 	}
 	
 	pFlyVelocity.SetGoal(velocity);
@@ -484,6 +518,14 @@ void igdeCameraInteractionListener::OnFlyUpdate(float elapsed){
 }
 
 void igdeCameraInteractionListener::OnFlyEnd(){
+	pFlyForward = pFlyBackward = pFlyLeft = pFlyRight = pFlyUp = pFlyDown = false;
+	pFlyVelocity.SetGoal({});
+	pFlyVelocity.SetValue({});
+	pFlyMouseLastPosition.SetZero();
+	pFlyMouseCurrentPosition.SetZero();
+	
+	pViewRenderWindow->GetToastBubble()->ShowToast("@Igde.ViewRenderWindow.Toast.FlyModeDisabled");
+	
 	OnEndInteraction(false);
 }
 
@@ -591,15 +633,17 @@ int modifiers){
 	if(pInteraction == eiFly){
 		pFlyMouseCurrentPosition = position;
 		
-		const auto vrw = igdeWidget::Ref(widget).DynamicCast<igdeViewRenderWindow>();
-		const auto size(vrw->GetRenderAreaSize());
-		const decPoint newPosition(
-			((position.x % size.x) + size.x) % size.x,
-			((position.y % size.y) + size.y) % size.y);
-		
-		if(newPosition != position && vrw->SetMousePointerPosition(newPosition)){
-			pFlyMouseLastPosition += newPosition - position;
-			pFlyMouseCurrentPosition = newPosition;
+		auto const vrw = pViewRenderWindow.Pointer();
+		if(vrw){
+			const auto size(vrw->GetRenderAreaSize());
+			const decPoint newPosition(
+				((position.x % size.x) + size.x) % size.x,
+				((position.y % size.y) + size.y) % size.y);
+			
+			if(newPosition != position && vrw->SetMousePointerPosition(newPosition)){
+				pFlyMouseLastPosition += newPosition - position;
+				pFlyMouseCurrentPosition = newPosition;
+			}
 		}
 	}
 	
@@ -614,14 +658,20 @@ int button, const decPoint &position, int modifiers){
 			if(button == deInputEvent::embcRight){
 				OnFlyEnd();
 				pInteraction = eiNone;
-				igdeWidget::Ref(widget).DynamicCast<igdeViewRenderWindow>()->ReleaseInput();
+				auto const vrw = pViewRenderWindow.Pointer();
+				if(vrw){
+					vrw->ReleaseInput();
+				}
 			}
 			break;
 			
 		case eiNone:
 			pInteraction = ChooseInteraction();
 			if(pInteraction == eiFly){
-				igdeWidget::Ref(widget).DynamicCast<igdeViewRenderWindow>()->GrabInput();
+				auto const vrw = pViewRenderWindow.Pointer();
+				if(vrw){
+					vrw->GrabInput();
+				}
 				OnFlyBegin();
 				pFlyMouseCurrentPosition = pFlyMouseLastPosition = position;
 			}
@@ -637,6 +687,20 @@ int button, const decPoint &position, int modifiers){
 	}
 	
 	igdeMouseDragListener::OnButtonRelease(widget, button, position, modifiers);
+}
+
+void igdeCameraInteractionListener::OnMouseWheeled(igdeWidget *widget,
+const decPoint &position, const decPoint &change, int modifiers){
+	if(pInteraction != eiFly){
+		return;
+	}
+	
+	if(change.y > 0){
+		SetSpeedFlyModifier(pFlySpeedModifier + 1);
+		
+	}else if(change.y < 0){
+		SetSpeedFlyModifier(pFlySpeedModifier - 1);
+	}
 }
 
 void igdeCameraInteractionListener::OnKeyPress(igdeWidget *widget,
@@ -705,6 +769,16 @@ deInputEvent::eKeyCodes keyCode, int key){
 	case deInputEvent::ekcShift:
 		pFlyDown = false;
 		break;
+		
+	case deInputEvent::ekcEscape:
+		{
+		OnFlyEnd();
+		pInteraction = eiNone;
+		auto const vrw = pViewRenderWindow.Pointer();
+		if(vrw){
+			vrw->ReleaseInput();
+		}
+		}break;
 		
 	default:
 		break;

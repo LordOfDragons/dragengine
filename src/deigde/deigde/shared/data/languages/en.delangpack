@@ -321,6 +321,11 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.ViewCurveBezier.Interpolation.Bezier">Bezier Interpolation</translation>
 	<translation name="Igde.ViewCurveBezier.Interpolation.Bezier.ToolTip">Set curve to bezier interpolation</translation>
 	
+	<!-- View render window -->
+	<translation name="Igde.ViewRenderWindow.Toast.FlyModeEnabled">Fly mode: Enabled</translation>
+	<translation name="Igde.ViewRenderWindow.Toast.FlyModeDisabled">Fly mode: Disabled</translation>
+	<translation name="Igde.ViewRenderWindow.Toast.FlyModeSpeed">Fly mode: Speed {0}</translation>
+	
 	<!-- Dialog Texture Property List -->
 	<translation name="Igde.DialogTexturePropertyList.Title">Texture Property List</translation>
 	<translation name="Igde.DialogTexturePropertyList.Properties.ToolTip">Textue Property</translation>

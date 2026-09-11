@@ -320,6 +320,11 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.ViewCurveBezier.Interpolation.Bezier">Bezier-Interpolation</translation>
 	<translation name="Igde.ViewCurveBezier.Interpolation.Bezier.ToolTip">Kurve auf Bézier-Interpolation einstellen</translation>
 	
+	<!-- View render window -->
+	<translation name="Igde.ViewRenderWindow.Toast.FlyModeEnabled">Flugmodus: Aktiviert</translation>
+	<translation name="Igde.ViewRenderWindow.Toast.FlyModeDisabled">Flugmodus: Deaktiviert</translation>
+	<translation name="Igde.ViewRenderWindow.Toast.FlyModeSpeed">Flugmodus: Geschwindigkeit {0}</translation>
+	
 	<!-- Dialog Texture Property List -->
 	<translation name="Igde.DialogTexturePropertyList.Title">Liste der Textureigenschaften</translation>
 	<translation name="Igde.DialogTexturePropertyList.Properties.ToolTip">Textur-Eigenschaft</translation>

@@ -302,6 +302,13 @@ public:
 	
 	/** \brief Open URL. */
 	void OpenUrl(const char *url) override;
+	
+	
+	/** \brief Add listener. */
+	void AddListener(igdeEnvironmentListener *listener) override;
+	
+	/** \brief Remove listener. */
+	void RemoveListener(igdeEnvironmentListener *listener) override;
 	/*@}*/
 };
 

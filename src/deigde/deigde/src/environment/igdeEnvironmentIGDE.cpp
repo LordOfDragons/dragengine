@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "igdeEnvironmentIGDE.h"
 #include "../configuration/igdeConfiguration.h"
 #include "../engine/igdeSMCollider.h"
@@ -474,6 +471,14 @@ void igdeEnvironmentIGDE::OpenUrl(const char *url){
 		exit(0);
 	}
 	#endif
+}
+
+void igdeEnvironmentIGDE::AddListener(igdeEnvironmentListener *listener){
+	pWindowMain->GetEnvironmentListeners().Add(listener);
+}
+
+void igdeEnvironmentIGDE::RemoveListener(igdeEnvironmentListener *listener){
+	pWindowMain->GetEnvironmentListeners().Remove(listener);
 }
 
 /*@}*/

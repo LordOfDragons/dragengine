@@ -49,6 +49,7 @@ class igdeResourceLoaderListener;
 class igdeEditorModule;
 class igdeTranslationManager;
 class igdeClipboard;
+class igdeEnvironmentListener;
 
 class deBaseScriptingCollider;
 class deBaseScriptingPropField;
@@ -228,7 +229,6 @@ public:
 		/** \brief Gizmo move. */
 		esrGizmoMove
 	};
-	
 	
 	
 protected:
@@ -501,6 +501,13 @@ public:
 	
 	/** \brief Open URL. */
 	virtual void OpenUrl(const char *url) = 0;
+	
+	
+	/** \brief Add listener. */
+	virtual void AddListener(igdeEnvironmentListener *listener) = 0;
+	
+	/** \brief Remove listener. */
+	virtual void RemoveListener(igdeEnvironmentListener *listener) = 0;
 	/*@}*/
 };
 
