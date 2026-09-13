@@ -308,6 +308,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeTextureProperty.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeXMLLoadTexturePropertyList.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\environment\igdeEnvironment.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\environment\igdeEnvironmentListener.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\billboard\igdeGDCBillboard.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCCTexture.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponent.cpp" />
@@ -427,6 +428,8 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeEditorWindow.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeGroupBox.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeIconListBox.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeInfoBubble.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeInfoBubbleToast.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeLabel.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBox.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBoxFilter.cpp" />
@@ -766,6 +769,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeTextureProperty.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeXMLLoadTexturePropertyList.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\environment\igdeEnvironment.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\environment\igdeEnvironmentListener.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\billboard\igdeGDCBillboard.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCCTexture.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponent.h" />
@@ -885,6 +889,8 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeEditorWindow.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeGroupBox.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeIconListBox.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeInfoBubble.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeInfoBubbleToast.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeLabel.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBox.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBoxFilter.h" />

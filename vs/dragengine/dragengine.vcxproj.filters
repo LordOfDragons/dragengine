@@ -1802,6 +1802,9 @@
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decTListeners.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTOrderedSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
