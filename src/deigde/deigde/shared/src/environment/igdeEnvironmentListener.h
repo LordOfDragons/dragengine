@@ -31,7 +31,7 @@
 /**
  * \brief Environment listener.
  */
-class igdeEnvironmentListener : public deObject{
+class DE_DLL_EXPORT igdeEnvironmentListener : public deObject{
 public:
 	/** \brief Strong reference. */
 	using Ref = deTObjectReference<igdeEnvironmentListener>;

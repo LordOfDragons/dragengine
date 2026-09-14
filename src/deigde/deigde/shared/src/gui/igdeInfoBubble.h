@@ -38,7 +38,7 @@ class igdeViewRenderWindow;
 /**
  * \brief Information bubble.
  */
-class igdeInfoBubble : public deObject{
+class DE_DLL_EXPORT igdeInfoBubble : public deObject{
 public:
 	/** \brief Strong reference. */
 	using Ref = deTObjectReference<igdeInfoBubble>;

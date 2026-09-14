@@ -32,7 +32,7 @@
 /**
  * \brief Toast information bubble.
  */
-class igdeInfoBubbleToast : public igdeInfoBubble{
+class DE_DLL_EXPORT igdeInfoBubbleToast : public igdeInfoBubble{
 public:
 	/** \brief Strong reference. */
 	using Ref = deTObjectReference<igdeInfoBubbleToast>;
