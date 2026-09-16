@@ -136,6 +136,9 @@ class LoadParticleEmitter extends BaseXmlLoader
 			elif tagName.equals( "limits" )
 				controller.setRange( element.getAttributeFloatNamed( "lower" ), \
 					element.getAttributeFloatNamed( "upper" ) )
+				
+			elif tagName.equals("value")
+				controller.setValue(element.getFirstCDataFloat())
 			end
 		end )
 	end

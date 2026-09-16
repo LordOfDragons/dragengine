@@ -48,6 +48,8 @@
 	<translation name="ParticleEmitter.WPController.Clamp.ToolTip">Legt fest, ob der Wert des Controllers auf den angegebenen Bereich begrenzt wird.</translation>
 	<translation name="ParticleEmitter.WPController.Frozen">Einfrieren</translation>
 	<translation name="ParticleEmitter.WPController.Frozen.ToolTip">Verhindert, dass der Controller den aktuellen Wert ändert.</translation>
+	<translation name="ParticleEmitter.WPController.DefaultValue">Standardwert:</translation>
+	<translation name="ParticleEmitter.WPController.DefaultValue.ToolTip">Standardwert des Controllers</translation>
 	<translation name="ParticleEmitter.WPController.Action.Add">Hinzufügen</translation>
 	<translation name="ParticleEmitter.WPController.Action.Add.ToolTip">Fügt einen Controller am Ende der Liste hinzu.</translation>
 	<translation name="ParticleEmitter.WPController.Action.Remove">Entfernen</translation>
@@ -197,7 +199,8 @@
 	<translation name="ParticleEmitter.Undo.Controller.SetUpper">Controller: Maximumwert festlegen</translation>
 	<translation name="ParticleEmitter.Undo.Controller.ToggleClamp">Controller: Beschränken umschalten</translation>
 	<translation name="ParticleEmitter.Undo.Controller.ToggleFrozen">Controller: Eingefroren umschalten</translation>
-	<translation name="ParticleEmitter.Undo.Controller.ToggleLinkToTime">Controller: Verknüpfung mit Zeit umschalten</translation>
+	<translation name="ParticleEmitter.Undo.Controller.ToggleLinkToTime">Controller: Verknuepfung mit Zeit umschalten</translation>
+	<translation name="ParticleEmitter.Undo.Controller.SetDefaultValue">Controller: Standardwert festlegen</translation>
 	
 	<!-- Undo Actions: Emitter -->
 	<translation name="ParticleEmitter.Undo.Emitter.SetBurstLifetime">Lebensdauer festlegen</translation>

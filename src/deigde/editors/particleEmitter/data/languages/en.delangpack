@@ -48,6 +48,8 @@
 	<translation name="ParticleEmitter.WPController.Clamp.ToolTip">Determines if the value of the controller is clamped to the given range.</translation>
 	<translation name="ParticleEmitter.WPController.Frozen">Freeze Controller value</translation>
 	<translation name="ParticleEmitter.WPController.Frozen.ToolTip">Prevents the controller from changing the current value.</translation>
+	<translation name="ParticleEmitter.WPController.DefaultValue">Default Value:</translation>
+	<translation name="ParticleEmitter.WPController.DefaultValue.ToolTip">Default value of controller</translation>
 	<translation name="ParticleEmitter.WPController.Action.Add">Add</translation>
 	<translation name="ParticleEmitter.WPController.Action.Add.ToolTip">Add a controller to the end of the list.</translation>
 	<translation name="ParticleEmitter.WPController.Action.Remove">Remove</translation>
@@ -198,6 +200,7 @@
 	<translation name="ParticleEmitter.Undo.Controller.ToggleClamp">Toggle Controller Clamp</translation>
 	<translation name="ParticleEmitter.Undo.Controller.ToggleFrozen">Toggle Controller Frozen</translation>
 	<translation name="ParticleEmitter.Undo.Controller.ToggleLinkToTime">Toggle Controller Link To Time</translation>
+	<translation name="ParticleEmitter.Undo.Controller.SetDefaultValue">Set Controller Default Value</translation>
 	
 	<!-- Undo Actions: Emitter -->
 	<translation name="ParticleEmitter.Undo.Emitter.SetBurstLifetime">Set Emitter Burst Lifetime</translation>

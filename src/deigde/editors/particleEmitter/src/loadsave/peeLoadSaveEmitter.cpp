@@ -214,6 +214,10 @@ void peeLoadSaveEmitter::pWriteController(decXmlWriter &writer, const peeControl
 	writer.WriteAttributeFloat("upper", controller.GetUpper());
 	writer.WriteOpeningTagEnd(true);
 	
+	if(fabsf(controller.GetDefaultValue()) > FLOAT_SAFE_EPSILON){
+		writer.WriteDataTagFloat("value", controller.GetDefaultValue());
+	}
+	
 	writer.WriteDataTagBool("frozen", controller.GetFrozen());
 	writer.WriteDataTagBool("clamp", controller.GetClamp());
 	writer.WriteDataTagBool("linkToTime", controller.GetLinkToTime());
@@ -420,6 +424,10 @@ void peeLoadSaveEmitter::pReadController(const decXmlElementTag &root, peeEmitte
 			
 			}else if(strcmp(tag->GetName(), "linkToTime") == 0){
 				controller->SetLinkToTime(GetCDataBool(*tag));
+				
+			}else if(strcmp(tag->GetName(), "value") == 0){
+				controller->SetDefaultValue(GetCDataFloat(*tag));
+				controller->SetValue(controller->GetDefaultValue());
 				
 			}else{
 				LogWarnUnknownTag(root, *tag);

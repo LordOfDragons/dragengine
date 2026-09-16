@@ -54,11 +54,8 @@ public:
 	
 private:
 	decString pName;
-	float pLower;
-	float pUpper;
-	float pValue;
-	bool pClamp;
-	bool pFrozen;
+	float pLower, pUpper, pValue;
+	bool pClamp, pFrozen;
 	
 	
 	
@@ -67,6 +64,9 @@ public:
 	/*@{*/
 	/** \brief Create controller with range 0 to 1 and the value 0. */
 	explicit deParticleEmitterController(const char *name = "Controller");
+	
+	/** \brief Create copy of controller. */
+	deParticleEmitterController(const deParticleEmitterController &controller);
 	
 protected:
 	/**
@@ -117,6 +117,7 @@ public:
 	
 	/** \brief Set if values passed the range are clamped or wrapped around. */
 	void SetClamp(bool clamp);
+	/*@}*/
 	
 	
 	
@@ -124,7 +125,6 @@ public:
 	/*@{*/
 	/** \brief Copy controller parameters. */
 	deParticleEmitterController &operator=(const deParticleEmitterController &controller);
-	/*@}*/
 	/*@}*/
 	
 	
