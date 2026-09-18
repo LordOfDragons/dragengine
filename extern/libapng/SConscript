@@ -80,6 +80,7 @@ def libapngBuild( target, source, env ):
 	
 	cmdline = [ './configure --prefix="{}"'.format( buildDir.abspath ) ]
 	cmdline.append( '--enable-silent-rules' )
+	cmdline.append('--with-libpng-prefix=a')
 	if buildStaticLinking:
 		cmdline.append( '--enable-shared=no' )
 		cmdline.append( '--enable-static=yes' )

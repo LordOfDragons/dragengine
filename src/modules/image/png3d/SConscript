@@ -13,15 +13,9 @@ parent_report[ 'build PNG-3D Image Module' ] = ('yes (internal)' if internalModu
 if not buildModule:
 	Return()
 
-# if this module is compiled as internal module we can not use regular libpng.
-# this is because the APNG video module uses the libapng which is libpng with
-# animation support. this would cause two version of libpng to be linked in at
-# the same time. it is fully fine to use libapng instead of libpng in this case
-externLibPng = 'lib_libapng' if internalModule else 'lib_libpng'
-
 libs = []
 appendLibrary(envModule, parent_targets[ 'dragengine' ], libs, internalModule=internalModule)
-appendLibrary(envModule, parent_targets[externLibPng], libs, internalModule=internalModule)
+appendLibrary(envModule, parent_targets['lib_libpng'], libs, internalModule=internalModule)
 
 envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
@@ -55,7 +49,7 @@ if internalModule:
 	install.extend(targetBuild)
 	
 	parent_targets['dragengine']['add internal module'](
-		envModule, library, [externLibPng], 'depng3DRegisterInternalModule')
+		envModule, library, ['lib_libpng'], 'depng3DRegisterInternalModule')
 	
 else:
 	objects = [ envModule.SharedObject( s ) for s in sources ]
