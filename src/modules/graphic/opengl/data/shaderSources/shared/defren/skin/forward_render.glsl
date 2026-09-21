@@ -160,10 +160,10 @@ vec3 frLighting(const in sFRLight light, const in sFRFragment fragment){
 			}
 			
 			shapos1.q = shapos1.p;
-			shapos1.p = arrayIndexSolid1;
+			shapos1.p = float(arrayIndexSolid1);
 			
 			shapos2 = shapos1;
-			shapos2.p = arrayIndexSolid2;
+			shapos2.p = float(arrayIndexSolid2);
 		}
 	}
 	
