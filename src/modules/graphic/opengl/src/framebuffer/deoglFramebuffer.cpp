@@ -385,6 +385,29 @@ deoglArrayTexture *texture, int layer, int level){
 	}
 }
 
+void deoglFramebuffer::AttachColorArrayCubeMapLayerFace(
+int index, deoglArrayCubeMap *texture, int face){
+	AttachColorArrayCubeMapLayerFaceLevel(index, texture, face, 0);
+}
+
+void deoglFramebuffer::AttachColorArrayCubeMapLayerFaceLevel(
+int index, deoglArrayCubeMap *texture, int face, int level){
+	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || !texture){
+		DETHROW(deeInvalidParam);
+	}
+	
+	const GLuint image = texture->GetTexture();
+	
+	if(pAttColor[index].DoesNotMatch(image, eatArrayCubeMapLayerFace, level, face)){
+		DetachColorImage(index);
+		
+		OGL_CHECK(pRenderThread, pglFramebufferTextureLayer(GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0 + index, image, level, face));
+		
+		pAttColor[index].Set(image, eatArrayCubeMapLayerFace, level, face);
+	}
+}
+
 void deoglFramebuffer::AttachColorTextureLevel(int index, GLuint texture, int level){
 	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT){
 		DETHROW(deeInvalidParam);
