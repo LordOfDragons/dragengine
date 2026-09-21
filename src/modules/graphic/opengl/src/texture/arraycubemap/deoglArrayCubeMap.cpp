@@ -424,9 +424,9 @@ void deoglArrayCubeMap::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer)
 		
 		for(i=0; i<pLayerCount * 6; i++){
 			if(pFormat->GetIsDepth()){
-				fbo->AttachDepthArrayCubeMapLayerFaceLevel(this, i, level);
+				fbo->AttachDepthArrayCubeMapLayerFaceLevel((deoglArrayCubeMap*)this, i, level);
 			}else{
-				fbo->AttachColorArrayCubeMapLayerFaceLevel(0, this, i, level);
+				fbo->AttachColorArrayCubeMapLayerFaceLevel(0, (deoglArrayCubeMap*)this, i, level);
 			}
 			
 			OGL_CHECK(pRenderThread, glReadPixels(0, 0, size, size, pixelBuffer.GetGLPixelFormat(),
