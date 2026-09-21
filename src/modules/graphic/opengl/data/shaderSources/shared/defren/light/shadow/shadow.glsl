@@ -162,7 +162,7 @@ in vec4 tc, const in vec2 tcnoise, const in mat2x3 tcnoiseMatrix){
 	if(NoiseTap){
 		tc.stp += tcnoiseMatrix * sampleShadowNoise(tcnoise);
 	}
-	return texture(texsm, tc, layer);
+	return texture(texsm, tc, float(layer));
 }
 
 float sampleShadowCubeArray(in ARG_SAMP_HIGHP samplerCubeArrayShadow texsm, const in int layer,
@@ -172,7 +172,7 @@ const in mat2x3 tcnoiseMatrix){
 	if(NoiseTap){
 		tc.stp += tcnoiseMatrix * sampleShadowNoise(tcnoise, vec2(tcnoiseOffset));
 	}
-	return texture(texsm, tc, layer);
+	return texture(texsm, tc, float(layer));
 }
 
 float evalShadowCubeArray(in ARG_SAMP_HIGHP samplerCubeArrayShadow texsm, const int layer,
