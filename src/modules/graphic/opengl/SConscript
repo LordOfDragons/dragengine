@@ -263,6 +263,9 @@ def transpileOpenGLSpirV(env):
 		elif source[0].get_path().endswith('.geom.glsl'):
 			#parts.append('-P"#extension GL_ARB_gpu_shader5 : require"')
 			pass
+		elif source[0].get_path().endswith('.frag.glsl'):
+			if env['platform_android'] != 'no':
+				parts.append('-P"#extension GL_EXT_texture_cube_map_array : require"')
 		
 		parts.append('-DWITH_SPIRV_OPENGL=1')
 		parts.append('-DARG_CONST=const')
