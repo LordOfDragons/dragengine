@@ -68,9 +68,11 @@ pCapabilities(capabilities)
 		pUseTex2DFormats[i] = nullptr;
 		pUseTexCubeFormats[i] = nullptr;
 		pUseArrTexFormats[i] = nullptr;
+		pUseArrTexCubeFormats[i] = nullptr;
 		pUseFBOTex2DFormats[i] = nullptr;
 		pUseFBOTexCubeFormats[i] = nullptr;
 		pUseFBOArrTexFormats[i] = nullptr;
+		pUseFBOArrTexCubeFormats[i] = nullptr;
 	}
 }
 
@@ -95,12 +97,20 @@ eUseTextureFormats type) const{
 	return pUseTexCubeFormats[type];
 }
 
-const deoglCapsTextureFormat* deoglCapsFmtSupport::GetUseArrayTexFormatFor(
+const deoglCapsTextureFormat *deoglCapsFmtSupport::GetUseArrayTexFormatFor(
 eUseTextureFormats type) const{
 	if(type < 0 || type >= UseTextureFormatCount){
 		DETHROW(deeInvalidParam);
 	}
 	return pUseArrTexFormats[type];
+}
+
+const deoglCapsTextureFormat *deoglCapsFmtSupport::GetUseArrayTexCubeFormatFor(
+eUseTextureFormats type) const{
+	if(type < 0 || type >= UseTextureFormatCount){
+		DETHROW(deeInvalidParam);
+	}
+	return pUseArrTexCubeFormats[type];
 }
 
 const deoglCapsTextureFormat *deoglCapsFmtSupport::GetUseFBOTex2DFormatFor(
@@ -127,6 +137,14 @@ eUseTextureFormats type) const{
 	return pUseFBOArrTexFormats[type];
 }
 
+const deoglCapsTextureFormat *deoglCapsFmtSupport::GetUseFBOArrayTexCubeFormatFor(
+eUseTextureFormats type) const{
+	if(type < 0 || type >= UseTextureFormatCount){
+		DETHROW(deeInvalidParam);
+	}
+	return pUseFBOArrTexCubeFormats[type];
+}
+
 
 
 const deoglCapsTextureFormat &deoglCapsFmtSupport::RequireUseTex2DFormatFor(
@@ -147,6 +165,12 @@ eUseTextureFormats type) const{
 		(const deoglCapsTextureFormat **)&pUseArrTexFormats, pFoundArrTexFormats);
 }
 
+const deoglCapsTextureFormat &deoglCapsFmtSupport::RequireUseArrayTexCubeFormatFor(
+eUseTextureFormats type) const{
+	return pRequireFormat("ArrTexCube", type,
+		(const deoglCapsTextureFormat **)&pUseArrTexCubeFormats, pFoundArrTexCubeFormats);
+}
+
 const deoglCapsTextureFormat &deoglCapsFmtSupport::RequireUseFBOTex2DFormatFor(
 eUseTextureFormats type) const{
 	return pRequireFormat("FBOTex2D", type,
@@ -165,6 +189,12 @@ eUseTextureFormats type) const{
 		(const deoglCapsTextureFormat **)&pUseFBOArrTexFormats, pFoundFBOArrTexFormats);
 }
 
+const deoglCapsTextureFormat &deoglCapsFmtSupport::RequireUseFBOArrayTexCubeFormatFor(
+eUseTextureFormats type) const{
+	return pRequireFormat("FBOArrTexCube", type,
+		(const deoglCapsTextureFormat **)&pUseFBOArrTexCubeFormats, pFoundFBOArrTexCubeFormats);
+}
+
 
 const char *deoglCapsFmtSupport::GetTextureFormatName(eUseTextureFormats type) const{
 	return vTextureFormatNames[type];
@@ -173,7 +203,8 @@ const char *deoglCapsFmtSupport::GetTextureFormatName(eUseTextureFormats type) c
 
 
 void deoglCapsFmtSupport::DetectFormats(GLuint fbo){
-	OGL_IF_CHECK(deoglRenderThread &renderThread = pCapabilities.GetRenderThread();)
+	auto &renderThread = pCapabilities.GetRenderThread();
+	const bool hasArrayCubeMap = renderThread.GetExtensions().GetHasArrayCubeMap();
 	
 	OGL_CHECK(renderThread, pglBindFramebuffer(GL_FRAMEBUFFER, fbo));
 	
@@ -181,11 +212,17 @@ void deoglCapsFmtSupport::DetectFormats(GLuint fbo){
 	pDetectTex2DFormats();
 	pDetectTexCubeFormats();
 	pDetectArrayTexFormats();
+	if(hasArrayCubeMap){
+		pDetectArrayTexCubeFormats();
+	}
 	
 	// test 2d-texture and cube-texture as color/depth/stencil targets
 	pDetectFBOTex2DFormats(fbo);
 	pDetectFBOTexCubeFormats(fbo);
 	pDetectFBOArrayTexFormats(fbo);
+	if(hasArrayCubeMap){
+		pDetectFBOArrayTexCubeFormats(fbo);
+	}
 	
 	#ifdef OS_ANDROID
 	/*
@@ -233,6 +270,10 @@ decString deoglCapsFmtSupport::SupportedFormatsArrayTex() const{
 	return pSupportedFormats(pFoundArrTexFormats);
 }
 
+decString deoglCapsFmtSupport::SupportedFormatsArrayTexCube() const{
+	return pSupportedFormats(pFoundArrTexCubeFormats);
+}
+
 decString deoglCapsFmtSupport::SupportedFormatsFBOTex2D() const{
 	return pSupportedFormats(pFoundFBOTex2DFormats);
 }
@@ -243,6 +284,10 @@ decString deoglCapsFmtSupport::SupportedFormatsFBOTexCube() const{
 
 decString deoglCapsFmtSupport::SupportedFormatsFBOArrayTex() const{
 	return pSupportedFormats(pFoundFBOArrTexFormats);
+}
+
+decString deoglCapsFmtSupport::SupportedFormatsFBOArrayTexCube() const{
+	return pSupportedFormats(pFoundFBOArrTexCubeFormats);
 }
 
 
@@ -390,6 +435,56 @@ void deoglCapsFmtSupport::pDetectArrayTexFormats(){
 			for(i=0; i<pFoundArrTexFormats.GetCount(); i++){
 				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
 					pFoundArrTexFormats.GetAt(i).GetName().GetString());
+			}
+			
+			DETHROW(deeInvalidParam);
+		}
+	}
+}
+
+void deoglCapsFmtSupport::pDetectArrayTexCubeFormats(){
+	int f, p;
+	
+	// test all formats
+	for(f=0; f<ETTF_COUNT; f++){
+		pTestArrayTexCubeFormat(vTestTextureFormats[f].format, vTestTextureFormats[f].pixelFormat,
+			vTestTextureFormats[f].pixelType, vTestTextureFormats[f].bitsPerPixel,
+			vTestTextureFormats[f].flags, vTestTextureFormats[f].name);
+	}
+	
+	// find a format to use for the list of possible types
+	for(p=0; p<TEST_PROGRAM_COUNT; p++){
+		if(!pUseArrTexCubeFormats[vTestProgram[p].target]){
+			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
+			pFoundArrTexCubeFormats.Find(pUseArrTexCubeFormats[vTestProgram[p].target], [&](const deoglCapsTextureFormat &fmt){
+				return fmt.GetFormat() == searchFormat;
+			});
+		}
+	}
+	
+	for(p=0; p<TEST_FALLBACK_COUNT; p++){
+		if(!pUseArrTexCubeFormats[vTestFallback[p].target]){
+			pUseArrTexCubeFormats[vTestFallback[p].target] =
+				pUseArrTexCubeFormats[vTestFallback[p].fallbackTarget];
+		}
+	}
+	
+	// verify that all required formats are found
+	const int required[15] = {eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
+		eutfDepth, eutfDepth_Stencil, eutfDepth16};
+	
+	for(p=0; p<15; p++){
+		if(!pUseArrTexCubeFormats[required[p]]){
+			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
+				"Required format %s not found for Cube-Array-Textures!",
+				vTextureFormatNames[required[p]]);
+			
+			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
+			int i;
+			for(i=0; i<pFoundArrTexCubeFormats.GetCount(); i++){
+				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
+					pFoundArrTexCubeFormats.GetAt(i).GetName().GetString());
 			}
 			
 			DETHROW(deeInvalidParam);
@@ -548,6 +643,59 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats(GLuint fbo){
 	#endif
 }
 
+void deoglCapsFmtSupport::pDetectFBOArrayTexCubeFormats(GLuint fbo){
+	int f, p;
+	
+	// test all formats
+	for(f=0; f<ETTF_COUNT; f++){
+		pTestFBOArrayTexCubeFormat(fbo, vTestTextureFormats[f].format,
+			vTestTextureFormats[f].pixelFormat, vTestTextureFormats[f].pixelType,
+			vTestTextureFormats[f].bitsPerPixel, vTestTextureFormats[f].flags,
+			vTestTextureFormats[f].name, vTestTextureFormats[f].what);
+	}
+	
+	// find a format to use for the list of possible types
+	for(p=0; p<TEST_PROGRAM_COUNT; p++){
+		if(!pUseFBOArrTexCubeFormats[vTestProgram[p].target]){
+			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
+			pFoundFBOArrTexCubeFormats.Find(pUseFBOArrTexCubeFormats[vTestProgram[p].target], [&](const deoglCapsTextureFormat &fmt){
+				return fmt.GetFormat() == searchFormat;
+			});
+		}
+	}
+	
+	for(p=0; p<TEST_FALLBACK_COUNT; p++){
+		if(!pUseFBOArrTexCubeFormats[vTestFallback[p].target]){
+			pUseFBOArrTexCubeFormats[vTestFallback[p].target] =
+				pUseFBOArrTexCubeFormats[vTestFallback[p].fallbackTarget];
+		}
+	}
+	
+	// verify that all required formats are found
+	#ifndef OS_ANDROID
+	const int required[15] = {eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
+		eutfDepth, eutfDepth_Stencil, eutfDepth16};
+	
+	for(p=0; p<15; p++){
+		if(!pUseFBOArrTexCubeFormats[required[p]]){
+			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
+				"Required format %s not found for FBO Cube-Array-Textures!",
+				vTextureFormatNames[required[p]]);
+			
+			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
+			int i;
+			for(i=0; i<pFoundFBOArrTexCubeFormats.GetCount(); i++){
+				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
+					pFoundFBOArrTexCubeFormats.GetAt(i).GetName().GetString());
+			}
+			
+			DETHROW(deeInvalidParam);
+		}
+	}
+	#endif
+}
+
 
 
 bool deoglCapsFmtSupport::pTestTex2DFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
@@ -694,6 +842,57 @@ int bitsPerPixel, int flags, const char *name){
 	
 	if(errorCode == GL_NO_ERROR){
 		pFoundArrTexFormats.Add(deoglCapsTextureFormat(format, pixelFormat, pixelType, bitsPerPixel,
+			HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags), HAS_FLAG_STENCIL(flags),
+			HAS_FLAG_COMPRESSED(flags), name));
+	}
+	
+	return errorCode == GL_NO_ERROR;
+}
+
+bool deoglCapsFmtSupport::pTestArrayTexCubeFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
+int bitsPerPixel, int flags, const char *name){
+	OGL_IF_CHECK(deoglRenderThread &renderThread = pCapabilities.GetRenderThread();)
+	
+	// HACK: Bug in Ati driver 8.54.3 ( these formats cause driver to crash if probed )
+	if(!ENABLE_COMPRESS_LATC1){
+		if(format == GL_COMPRESSED_LUMINANCE_LATC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1) return false;
+	}
+	if(!ENABLE_COMPRESS_LATC2){
+		if(format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2) return false;
+	}
+	if(!ENABLE_COMPRESS_RGTC1){
+		if(format == GL_COMPRESSED_RED_RGTC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_RGTC1) return false;
+	}
+	if(!ENABLE_COMPRESS_RGTC2){
+		if(format == GL_COMPRESSED_RED_GREEN_RGTC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2) return false;
+	}
+	// ENDHACK
+	
+	GLuint texture = 0;
+	int errorCode;
+	
+	OGL_CHECK(renderThread, glGenTextures(1, &texture));
+	
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP_ARRAY, texture));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
+	
+	pglTexImage3D(GL_TEXTURE_CUBE_MAP_ARRAY, 0, format, 8, 8, 24, 0, pixelFormat, pixelType, nullptr);
+	errorCode = glGetError();
+	
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP_ARRAY, 0));
+	
+	OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
+	
+	if(errorCode == GL_NO_ERROR){
+		pFoundArrTexCubeFormats.Add(deoglCapsTextureFormat(format, pixelFormat, pixelType, bitsPerPixel,
 			HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags), HAS_FLAG_STENCIL(flags),
 			HAS_FLAG_COMPRESSED(flags), name));
 	}
@@ -999,6 +1198,108 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
 		pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, 0, 0, 0);
 		
 		OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
+		OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
+	}
+	
+	return errorCode == GL_NO_ERROR;
+}
+
+bool deoglCapsFmtSupport::pTestFBOArrayTexCubeFormat(GLuint fbo, GLint format, GLenum pixelFormat,
+GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
+	OGL_IF_CHECK(deoglRenderThread &renderThread = pCapabilities.GetRenderThread();)
+	
+	// HACK: Bug in Ati driver 8.54.3 ( these formats cause driver to crash if probed )
+	if(!ENABLE_COMPRESS_LATC1){
+		if(format == GL_COMPRESSED_LUMINANCE_LATC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1) return false;
+	}
+	if(!ENABLE_COMPRESS_LATC2){
+		if(format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2) return false;
+	}
+	if(!ENABLE_COMPRESS_RGTC1){
+		if(format == GL_COMPRESSED_RED_RGTC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_RGTC1) return false;
+	}
+	if(!ENABLE_COMPRESS_RGTC2){
+		if(format == GL_COMPRESSED_RED_GREEN_RGTC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2) return false;
+	}
+	// ENDHACK
+	
+	GLuint texture = 0;
+	int errorCode;
+	
+	OGL_CHECK(renderThread, glGenTextures(1, &texture));
+	
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP_ARRAY, texture));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
+	
+	pglTexImage3D(GL_TEXTURE_CUBE_MAP_ARRAY, 0, format, 8, 8, 24, 0, pixelFormat, pixelType, nullptr);
+	errorCode = glGetError();
+	
+	if(errorCode == GL_NO_ERROR){
+		if(what == etwColor){
+			pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0, 0);
+			errorCode = glGetError();
+			
+			const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
+			
+		}else if(what == etwDepth){
+			pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0, 0);
+			errorCode = glGetError();
+			
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
+			
+		}else if(what == etwStencil){
+			pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, texture, 0, 0);
+			errorCode = glGetError();
+			
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
+			
+		}else{ // etwDepthStencil
+			pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0, 0);
+			errorCode = glGetError();
+			if(errorCode == GL_NO_ERROR){
+				pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, texture, 0, 0);
+				errorCode = glGetError();
+			}
+			
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
+		}
+		
+		if(errorCode == GL_NO_ERROR){
+			errorCode = pglCheckFramebufferStatus(GL_FRAMEBUFFER);
+			if(errorCode == GL_FRAMEBUFFER_COMPLETE){
+				errorCode = GL_NO_ERROR;
+				pFoundFBOArrTexCubeFormats.Add(deoglCapsTextureFormat(format, pixelFormat, pixelType, bitsPerPixel,
+					HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags),
+					HAS_FLAG_STENCIL(flags), HAS_FLAG_COMPRESSED(flags), name));
+			}
+		}
+		
+		pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0, 0, 0);
+		if(pCapabilities.ATLUnbind().GetResult() == 1){
+			//pglFramebufferTexture( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0 ); // GL_INVALID_OPERATION on nvidia
+			
+		}else{
+			pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0, 0); // GL_INVALID_OPERATION on ati
+		}
+		pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, 0, 0, 0);
+		
+		OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP_ARRAY, 0));
 		OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 	}
 	

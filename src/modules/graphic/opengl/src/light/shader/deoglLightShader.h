@@ -223,8 +223,14 @@ public:
 	/** Create instance parameter shader parameter block. */
 	deoglSPBlockUBO::Ref CreateSPBInstParam() const;
 	
+	/** Set instance parameter shader parameter block parameter. */
+	static void SetSPBParameterInstParam(deoglSPBParameter &parameter, int arraySize);
+	
 	/** Create light parameter shader parameter block. */
 	deoglSPBlockUBO::Ref CreateSPBLightParam() const;
+	
+	/** Set light parameter shader parameter block parameter. */
+	static void SetSPBParameterLightParam(deoglSPBParameter &parameter, int arraySize);
 	
 	/** Create light occlusion query parameter shader parameter block. */
 	static deoglSPBlockUBO::Ref CreateSPBOccQueryParam(deoglRenderThread &renderThread);

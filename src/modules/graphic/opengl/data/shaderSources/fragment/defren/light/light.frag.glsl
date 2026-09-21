@@ -254,6 +254,7 @@ const bool EnableOccTracing = false;
 ///////////////////
 
 #include "shared/defren/light/shadow/shadow.glsl"
+#include "shared/defren/light/shadow/shadowScreenSpace.glsl"
 
 
 const float defaultShadowThickness = 100.0; // just something large enough
@@ -747,11 +748,8 @@ void main(void){
 				}
 			}
 			
-			if(!GIRay){
-				
-				if(shadow > epsilon && dotval > 0.0){
-					shadow *= screenSpaceShadow(texDepth, texNormal, position, lightDir);
-				}
+			if(!GIRay && shadow > epsilon && dotval > 0.0){
+				shadow *= screenSpaceShadow(texDepth, position, lightDir);
 			}
 			
 			if(AmbientLighting){

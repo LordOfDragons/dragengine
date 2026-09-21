@@ -48,6 +48,9 @@ layout(location=6) out vec4 outMaterialColor; // color.r, color.g, color.b, n/a
 #define outMaterialReducedReflectivity outMaterialReflectivity
 #define outMaterialReducedColor outMaterialRoughness
 
+// pCondLowFillRate && (OutputMode == OutputModeMaterial || OutputMode == OutputModeMaterialReduced)
+#define outMaterialLfrColor outMaterialDiffuse
+
 // OutputMode == OutputModeLuminance
 #define outLuminanceLuminance outMaterialDiffuse.rgb // luminance, n/a, n/a
 #define outLuminanceNormal outMaterialNormal.rgb // normal.x, normal.y, normal.z
@@ -78,6 +81,7 @@ const vec3 lumiFactors = vec3(0.2125, 0.7154, 0.0721);
 #include "shared/defren/skin/relief_mapping.glsl"
 #include "shared/defren/skin/environment_room.glsl"
 #include "shared/defren/skin/nonpbr_metalness.glsl"
+#include "shared/defren/skin/forward_render.glsl"
 
 
 // Main Function
@@ -336,7 +340,7 @@ void main(void){
 	
 	
 	// color, ambient occlusion and masked solidity
-	vec4 writeColor;
+	vec4 writeColor, writeDiffuse;
 	
 	if(OutputMode != OutputModeLuminance){
 		if(!WithEmissivity){
@@ -371,16 +375,18 @@ void main(void){
 		
 		
 		if(AnyOutputModeMaterial){
-			vec4 writeDiffuse = color;
+			writeDiffuse = color;
 			if(SolidityMultiplier){
 				writeDiffuse.a *= getColorSolidityMultiplier(vSPBIndex);
 			}
 			
-			if(OutputMode == OutputModeMaterial){
-				outMaterialDiffuse = writeDiffuse;
-				
-			}else if(OutputMode == OutputModeMaterialReduced){
-				outMaterialReducedDiffuse = writeDiffuse;
+			if(!pCondLowFillRate){
+				if(OutputMode == OutputModeMaterial){
+					outMaterialDiffuse = writeDiffuse;
+					
+				}else if(OutputMode == OutputModeMaterialReduced){
+					outMaterialReducedDiffuse = writeDiffuse;
+				}
 			}
 		}
 		
@@ -436,11 +442,13 @@ void main(void){
 				}
 			}
 			
-			if(OutputMode == OutputModeMaterial){
-				outMaterialNormal = writeNormal;
-				
-			}else if(OutputMode == OutputModeMaterialReduced){
-				outMaterialReducedNormal = writeNormal;
+			if(!pCondLowFillRate){
+				if(OutputMode == OutputModeMaterial){
+					outMaterialNormal = writeNormal;
+					
+				}else if(OutputMode == OutputModeMaterialReduced){
+					outMaterialReducedNormal = writeNormal;
+				}
 			}
 		}
 	}
@@ -589,20 +597,22 @@ void main(void){
 			}
 		}
 		
-		if(OutputMode == OutputModeMaterial){
-			outMaterialReflectivity = writeReflectivity;
-			outMaterialRoughness = writeRoughness;
-			outMaterialAOSolidity = writeAOSolidity;
-			
-		}else if(OutputMode == OutputModeMaterialReduced){
-			outMaterialReducedReflectivity = writeReflectivity;
+		if(!pCondLowFillRate){
+			if(OutputMode == OutputModeMaterial){
+				outMaterialReflectivity = writeReflectivity;
+				outMaterialRoughness = writeRoughness;
+				outMaterialAOSolidity = writeAOSolidity;
+				
+			}else if(OutputMode == OutputModeMaterialReduced){
+				outMaterialReducedReflectivity = writeReflectivity;
+			}
 		}
 	}
 	
 	
 	
 	// absorption and sub-surf scattering
-	if(AnyOutputModeMaterial){
+	if(AnyOutputModeMaterial && !pCondLowFillRate){
 		if(WithOutline){
 			outMaterialSubSurface = vec4(0.0, 0.0, 0.0, color.a);
 			
@@ -670,8 +680,21 @@ void main(void){
 	}
 	*/
 	
-	
-	if(OutputMode == OutputModeMaterial){
+	if(pCondLowFillRate && (OutputMode == OutputModeMaterial || OutputMode == OutputModeMaterialReduced)){
+		if(writeDiffuse.a > 0.0){
+			sFRFragment fragment;
+			fragment.position = vPosition;
+			fragment.diffuse = writeDiffuse;
+			fragment.normal = normal.xyz;
+			fragment.reflectivity = reflectivity;
+			fragment.roughness = roughness;
+			fragment.ao = ao;
+			fragment.ambientColor = pAmbient.rgb;
+			writeColor.rgb += frLighting(fragment);
+		}
+		outMaterialLfrColor = writeColor;
+		
+	}else if(OutputMode == OutputModeMaterial){
 		outMaterialColor = writeColor;
 		
 	}else if(OutputMode == OutputModeMaterialReduced){

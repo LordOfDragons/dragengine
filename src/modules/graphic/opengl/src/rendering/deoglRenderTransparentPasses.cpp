@@ -350,17 +350,19 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 			// render the transparent layer
 			RenderTransparentGeometryPass(plan, mask, xray);
 			
-			if(!mask){
-				renderThread.GetRenderers().GetReflection().CopyMaterial(plan, false);
+			if(!plan.GetLowFillRate()){
+				if(!mask){
+					renderThread.GetRenderers().GetReflection().CopyMaterial(plan, false);
+				}
+				
+				if(!plan.GetDisableLights()){
+					renderThread.GetRenderers().GetLight().RenderLights(plan, false, mask, xray);
+					DebugTimer1Sample(plan, *renworld.GetDebugInfo().infoTransparentLights, true);
+				}
+				
+				renderThread.GetRenderers().GetReflection().RenderScreenSpace(plan);
+				DebugTimer1Sample(plan, *renworld.GetDebugInfo().infoTransparentSSR, true);
 			}
-			
-			if(!plan.GetDisableLights()){
-				renderThread.GetRenderers().GetLight().RenderLights(plan, false, mask, xray);
-				DebugTimer1Sample(plan, *renworld.GetDebugInfo().infoTransparentLights, true);
-			}
-			
-			renderThread.GetRenderers().GetReflection().RenderScreenSpace(plan);
-			DebugTimer1Sample(plan, *renworld.GetDebugInfo().infoTransparentSSR, true);
 		}
 		
 		// required so the following volumetric pass knows if there had been transparent layers
@@ -524,31 +526,36 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	// render geometry pass to depth1 using EQUAL with stencil mask and temporary with last layer
 	// color. no depth and stencil written. color, normal and specularity written for light pass
 	deoglDebugTraceGroup debugTraceGeometry(renderThread, "Geometry");
-	pPipelineClearBuffers->Activate();
-	defren.ActivateFBOMaterialColor();
-	
-	state.StencilMask(0);
-	
-	const GLfloat clearDiffuse[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-	const GLfloat clearNormal[4] = {0.5f, 0.5f, 1.0f, 0.0f};
-	const GLfloat clearReflectivity[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-	
-	if(renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8){
-		const GLfloat clearRoughness[4] = {1.0f, 0.0f, 0.0f, 0.0f};
-		const GLfloat clearAOSolidity[4] = {1.0f, 1.0f, 0.0f, 0.0f};
-		const GLfloat clearSubSurface[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+	if(!plan.GetLowFillRate()){
+		pPipelineClearBuffers->Activate();
+		defren.ActivateFBOMaterialColor();
 		
-		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, &clearDiffuse[0]));
-		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 1, &clearNormal[0]));
-		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 2, &clearReflectivity[0]));
-		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 3, &clearRoughness[0]));
-		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 4, &clearAOSolidity[0]));
-		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 5, &clearSubSurface[0]));
+		state.StencilMask(0);
+		
+		const GLfloat clearDiffuse[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+		const GLfloat clearNormal[4] = {0.5f, 0.5f, 1.0f, 0.0f};
+		const GLfloat clearReflectivity[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+		
+		if(renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8){
+			const GLfloat clearRoughness[4] = {1.0f, 0.0f, 0.0f, 0.0f};
+			const GLfloat clearAOSolidity[4] = {1.0f, 1.0f, 0.0f, 0.0f};
+			const GLfloat clearSubSurface[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+			
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, &clearDiffuse[0]));
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 1, &clearNormal[0]));
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 2, &clearReflectivity[0]));
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 3, &clearRoughness[0]));
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 4, &clearAOSolidity[0]));
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 5, &clearSubSurface[0]));
+			
+		}else{
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, &clearDiffuse[0]));
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 1, &clearNormal[0]));
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 2, &clearReflectivity[0]));
+		}
 		
 	}else{
-		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, &clearDiffuse[0]));
-		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 1, &clearNormal[0]));
-		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 2, &clearReflectivity[0]));
+		defren.ActivateFBOColor(true, false);
 	}
 	
 	state.StencilOp(GL_KEEP, GL_KEEP, GL_KEEP);

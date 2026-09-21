@@ -167,6 +167,7 @@ private:
 	int pShadowCubeSize;
 	int pShadowSkySize;
 	float pDominance;
+	bool pLowFillRate;
 	
 	decTList<deoglRenderPlanEnvMap> pEnvMaps;
 	int pEnvMapCount;
@@ -211,6 +212,7 @@ private:
 	decMatrix pOcclusionTestMatrixStereo;
 	deoglGIState *pGIState;
 	deoglRenderPlanCompute::Ref pCompute;
+	bool pFRLightsValid;
 	
 	deoglRenderPlanTasks::Ref pTasks;
 	
@@ -266,6 +268,9 @@ public:
 	
 	/** Dominance. */
 	inline float GetDominance() const{ return pDominance; }
+	
+	/** Low fill rate. */
+	inline bool GetLowFillRate() const{ return pLowFillRate; }
 	
 	
 	
@@ -708,6 +713,11 @@ public:
 	/** Compute. */
 	inline const deoglRenderPlanCompute::Ref &GetCompute() const{ return pCompute; }
 	
+	/** FR lights valid flag. */
+	inline bool GetFRLightsValid() const{ return pFRLightsValid; }
+	
+	/** Set FR lights valid flag. */
+	void SetFRLightsValid(bool valid);
 	
 	
 	/** Tasks. */
@@ -758,6 +768,9 @@ public:
 	
 	/** Remove all plan lights. */
 	void RemoveAllLights();
+	
+	/** Plan lights for visiting. */
+	inline const decTUniqueList<deoglRenderPlanLight> &GetLights() const{ return pLights; }
 	/*@}*/
 	
 	
@@ -775,6 +788,9 @@ public:
 	
 	/** Sky lights start building render tasks. */
 	void SkyLightsStartBuildRT();
+	
+	/** Plan sky lights for direct visiting. */
+	inline const decTUniqueList<deoglRenderPlanSkyLight> &GetSkyLights() const{ return pSkyLights; }
 	/*@}*/
 	
 	
@@ -795,6 +811,9 @@ public:
 	
 	/** Set sky background color. */
 	void SetSkyBgColor(const decColor &color);
+	
+	/** Sky instances for direct visiting. */
+	inline const decTList<deoglRSkyInstance*> &GetSkyInstances() const{ return pSkyInstances; }
 	/*@}*/
 	
 	
@@ -812,6 +831,9 @@ public:
 	
 	/** Remove all masked plans. */
 	void RemoveAllMaskedPlans();
+	
+	/** Masked plans for direct visiting. */
+	inline const decTUniqueList<deoglRenderPlanMasked> &GetMaskedPlans() const{ return pMaskedPlans; }
 	/*@}*/
 	
 	

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,72 +22,36 @@
  * SOFTWARE.
  */
 
-#include "deoglSPBMapBuffer.h"
-#include "deoglShaderParameterBlock.h"
+#include "deoglPLowFillRate.h"
+#include "../../deGraphicOpenGl.h"
+#include "../../configuration/deoglConfiguration.h"
+
+#include <dragengine/common/exceptions.h>
 
 
-// Class deoglSPBMapBuffer
+// Class deoglPLowFillRate
 ////////////////////////////
 
-// Constructor, destructor
-////////////////////////////
-
-deoglSPBMapBuffer::deoglSPBMapBuffer(deoglShaderParameterBlock &block) :
-pBlock(block),
-pElement(0),
-pCount(block.GetElementCount()),
-pMapped(false),
-pDelayUpload(false)
-{
-	Map();
+deoglPLowFillRate::deoglPLowFillRate(deGraphicOpenGl &ogl) : deoglParameterBool(ogl){
+	SetName("lowFillRate");
+	SetDescription(
+		"Use low fill rate render mode for use with fill-rate limited GPUs."
+		" When enabled limits count of lights affecting geometry."
+		" This parameter can be combined with other fill-rate reducing parameters."
+		" like ssaoEnable, ssrEnable or renderDownScale.");
+	SetCategory(ecBasic);
 }
 
-deoglSPBMapBuffer::deoglSPBMapBuffer(deoglShaderParameterBlock &block, int element) :
-pBlock(block),
-pElement(element),
-pCount(1),
-pMapped(false),
-pDelayUpload(false)
-{
-	Map();
-}
-
-deoglSPBMapBuffer::deoglSPBMapBuffer(deoglShaderParameterBlock &block, int element, int count) :
-pBlock(block),
-pElement(element),
-pCount(count),
-pMapped(false),
-pDelayUpload(false)
-{
-	Map();
-}
-
-deoglSPBMapBuffer::~deoglSPBMapBuffer(){
-	Unmap();
-}
+deoglPLowFillRate::~deoglPLowFillRate() = default;
 
 
 // Management
 ///////////////
 
-void deoglSPBMapBuffer::Map(){
-	if(pMapped){
-		return;
-	}
-	
-	pBlock.MapBuffer(pElement, pCount);
-	pMapped = true;
+bool deoglPLowFillRate::GetParameterBool(){
+	return pOgl.GetConfiguration().GetLowFillRate();
 }
 
-void deoglSPBMapBuffer::Unmap(){
-	if(!pMapped){
-		return;
-	}
-	
-	pBlock.UnmapBuffer(pDelayUpload);
-	pMapped = false;
-}
-
-void deoglSPBMapBuffer::SetDelayUpload(bool delay){
-	pDelayUpload = delay;
+void deoglPLowFillRate::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetLowFillRate(value);
 }

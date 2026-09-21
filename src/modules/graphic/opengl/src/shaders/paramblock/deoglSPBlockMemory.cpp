@@ -98,7 +98,7 @@ void deoglSPBlockMemory::MapBuffer (int element, int count){
 	pSetMapped(pBuffer.GetArrayPointer(), element, count);
 }
 
-void deoglSPBlockMemory::UnmapBuffer(){
+void deoglSPBlockMemory::UnmapBuffer(bool){
 	if(!IsBufferMapped()){
 		DETHROW(deeInvalidParam);
 	}

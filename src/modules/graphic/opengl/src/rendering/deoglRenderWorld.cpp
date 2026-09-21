@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglRenderDevMode.h"
 #include "deoglRenderGeometry.h"
 #include "deoglRenderGeometryPass.h"
@@ -64,6 +60,7 @@
 #include "../renderthread/deoglRTRenderers.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../shadow/deoglFRShadowManager.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../shaders/deoglShaderCompiled.h"
@@ -73,6 +70,7 @@
 #include "../shaders/deoglShaderSources.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../shaders/paramblock/deoglSPBAccessor.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../sky/deoglRSky.h"
 #include "../sky/deoglRSkyInstance.h"
@@ -405,9 +403,11 @@ DEBUG_RESET_TIMER
 		DebugTimer2Sample(plan, *pDebugInfo.infoSolidGeometry, true);
 	}
 	
-	DBG_ENTER("RenderDepthMinMaxMipMap")
-	renderers.GetReflection().RenderDepthMinMaxMipMap(plan);
-	DBG_EXIT("RenderDepthMinMaxMipMap")
+	if(!plan.GetLowFillRate()){
+		DBG_ENTER("RenderDepthMinMaxMipMap")
+		renderers.GetReflection().RenderDepthMinMaxMipMap(plan);
+		DBG_EXIT("RenderDepthMinMaxMipMap")
+	}
 	
 	if(deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmOwnPassReflection){
 		// NOTE actually this requires updated GI probes but this happens below during RenderLights().
@@ -417,9 +417,11 @@ DEBUG_RESET_TIMER
 		renderers.GetReflection().RenderGIEnvMaps(plan);
 		DBG_EXIT("RenderGIEnvMaps")
 		
-		DBG_ENTER("RenderReflections")
-		renderers.GetReflection().RenderReflections(plan);
-		DBG_EXIT("RenderReflections")
+		if(!plan.GetLowFillRate()){
+			DBG_ENTER("RenderReflections")
+			renderers.GetReflection().RenderReflections(plan);
+			DBG_EXIT("RenderReflections")
+		}
 	}
 	if(debugMainPass){
 		DebugTimer2Sample(plan, *pDebugInfo.infoReflection, true);
@@ -444,17 +446,19 @@ DEBUG_RESET_TIMER
 			DebugTimer2Sample(plan, *pDebugInfo.infoLuminancePrepare, true);
 		}
 		
-		if(!mask){
-			DBG_ENTER("EnvMapCopyMaterials")
-			renderers.GetReflection().CopyMaterial(plan, true);
-			DBG_EXIT("EnvMapCopyMaterials")
-		}
-		
-		DBG_ENTER("RenderLights")
-		renderers.GetLight().RenderLights(plan, true, mask, false);
-		DBG_EXIT("RenderLights")
-		if(debugMainPass){
-			DebugTimer2Sample(plan, *pDebugInfo.infoSolidGeometryLights, true);
+		if(!plan.GetLowFillRate()){
+			if(!mask){
+				DBG_ENTER("EnvMapCopyMaterials")
+				renderers.GetReflection().CopyMaterial(plan, true);
+				DBG_EXIT("EnvMapCopyMaterials")
+			}
+			
+			DBG_ENTER("RenderLights")
+			renderers.GetLight().RenderLights(plan, true, mask, false);
+			DBG_EXIT("RenderLights")
+			if(debugMainPass){
+				DebugTimer2Sample(plan, *pDebugInfo.infoSolidGeometryLights, true);
+			}
 		}
 	}
 	
@@ -464,9 +468,11 @@ DEBUG_RESET_TIMER
 		DBG_EXIT("RenderGIEnvMaps")
 	}
 	
-	DBG_ENTER("RenderReflectionScreenSpace")
-	renderers.GetReflection().RenderScreenSpace(plan);
-	DBG_EXIT("RenderReflectionScreenSpace")
+	if(!plan.GetLowFillRate()){
+		DBG_ENTER("RenderReflectionScreenSpace")
+		renderers.GetReflection().RenderScreenSpace(plan);
+		DBG_EXIT("RenderReflectionScreenSpace")
+	}
 	if(debugMainPass){
 		DebugTimer2Sample(plan, *pDebugInfo.infoSSR, true);
 	}
@@ -521,12 +527,14 @@ DEBUG_RESET_TIMER
 		}
 		
 		// reflections
-		renderers.GetReflection().RenderDepthMinMaxMipMap(plan);
-		
-		if(deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmOwnPassReflection){
-			renderers.GetReflection().RenderReflections(plan);
-			if(debugMainPass){
-				DebugTimer2Sample(plan, *pDebugInfo.infoReflection, true);
+		if(!plan.GetLowFillRate()){
+			renderers.GetReflection().RenderDepthMinMaxMipMap(plan);
+			
+			if(deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmOwnPassReflection){
+				renderers.GetReflection().RenderReflections(plan);
+				if(debugMainPass){
+					DebugTimer2Sample(plan, *pDebugInfo.infoReflection, true);
+				}
 			}
 		}
 		
@@ -546,7 +554,9 @@ DEBUG_RESET_TIMER
 				renderers.GetToneMap().LuminancePrepare(plan);
 				DebugTimer2Sample(plan, *pDebugInfo.infoLuminancePrepare, true);
 				
-				renderers.GetReflection().CopyMaterial(plan, true);
+				if(!plan.GetLowFillRate()){
+					renderers.GetReflection().CopyMaterial(plan, true);
+				}
 			}
 			
 			renderers.GetLight().RenderLights(plan, true, mask, true);
@@ -556,9 +566,11 @@ DEBUG_RESET_TIMER
 		}
 		
 		// reflections
-		renderers.GetReflection().RenderScreenSpace(plan);
-		if(debugMainPass){
-			DebugTimer2Sample(plan, *pDebugInfo.infoSSR, true);
+		if(!plan.GetLowFillRate()){
+			renderers.GetReflection().RenderScreenSpace(plan);
+			if(debugMainPass){
+				DebugTimer2Sample(plan, *pDebugInfo.infoSSR, true);
+			}
 		}
 		
 		// transparency
@@ -764,6 +776,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const float sssssTapRadiusLimit = 0.5f; // 50% of screen size
 	const float sssssTapRadiusFactor = (float)plan.GetProjectionMatrix().a11 * 0.5f;
 	const float sssssTapDropRadiusThreshold = sssssLargestPixelSize * 1.5f; // 1 pixel radius (1.44 at square boundary)
+	const bool sssssEnable = config.GetSSSSSEnable();
 	
 	// ssr
 	const float ssrInvCoverageEdgeSize = 1.0f / config.GetSSRCoverageEdgeSize();
@@ -918,6 +931,10 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	
 	// conditions, aka specializations
 	const bool condClipPlane = mask && mask->GetUseClipPlane();
+	const bool condLowFillRate = plan.GetLowFillRate();
+	
+	// forward rendering
+	const deoglFRShadowManager &frShadowManager = renderThread.GetFRShadowManager();
 	
 	// fill parameter blocks
 	pRenderPB = (deoglSPBlockUBO*)pRenderPBSingleUse->Next();
@@ -927,149 +944,158 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	for(i=0; i<1; i++){
 		deoglSPBlockUBO &spb = *spbBlocks[i];
 		const deoglSPBMapBuffer mapped(spb);
+		deoglSPBAccessor a(spb);
 		
-		spb.SetParameterDataVec4(deoglSkinShader::erutAmbient, ambient, 1.0f);
-		spb.SetParameterDataMat3x3(deoglSkinShader::erutMatrixEnvMap, matrixEnvMap);
+		a.SetVec4(deoglSkinShader::erutAmbient, ambient, 1.0f);
+		a.SetMat3x3(deoglSkinShader::erutMatrixEnvMap, matrixEnvMap);
 		
-		spb.SetParameterDataArrayMat4x3(deoglSkinShader::erutMatrixV, 0, matrixCamera);
-		spb.SetParameterDataArrayMat4x4(deoglSkinShader::erutMatrixP, 0, matrixProjection);
-		spb.SetParameterDataArrayMat4x4(deoglSkinShader::erutMatrixVP, 0, matrixCamera * matrixProjection);
-		spb.SetParameterDataArrayMat3x3(deoglSkinShader::erutMatrixVn, 0, matrixCamera.GetRotationMatrix().Invert());
-		spb.SetParameterDataArrayMat4x4(deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody);
-		spb.SetParameterDataArrayVec4(deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition());
-		spb.SetParameterDataArrayVec2(deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2());
+		a.SetArrayMat4x3(deoglSkinShader::erutMatrixV, 0, matrixCamera);
+		a.SetArrayMat4x4(deoglSkinShader::erutMatrixP, 0, matrixProjection);
+		a.SetArrayMat4x4(deoglSkinShader::erutMatrixVP, 0, matrixCamera * matrixProjection);
+		a.SetArrayMat3x3(deoglSkinShader::erutMatrixVn, 0, matrixCamera.GetRotationMatrix().Invert());
+		a.SetArrayMat4x4(deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody);
+		a.SetArrayVec4(deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition());
+		a.SetArrayVec2(deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2());
 		
-		spb.SetParameterDataFloat(deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel);
-		spb.SetParameterDataFloat(deoglSkinShader::erutNorRoughCorrStrength, config.GetNormalRoughnessCorrectionStrength());
+		a.SetFloat(deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel);
+		a.SetFloat(deoglSkinShader::erutNorRoughCorrStrength,
+			config.GetNormalRoughnessCorrectionStrength());
 		
-		spb.SetParameterDataBool(deoglSkinShader::erutSkinDoesReflections, !config.GetSSREnable());
-		spb.SetParameterDataBool(deoglSkinShader::erutFlipCulling, plan.GetFlipCulling());
-		spb.SetParameterDataFloat(deoglSkinShader::erutClearDepthValue, renderThread.GetChoices().GetClearDepthValueRegular());
+		a.SetBool(deoglSkinShader::erutSkinDoesReflections, !config.GetSSREnable());
+		a.SetBool(deoglSkinShader::erutFlipCulling, plan.GetFlipCulling());
+		a.SetFloat(deoglSkinShader::erutClearDepthValue,
+			renderThread.GetChoices().GetClearDepthValueRegular());
 		
 		defren.SetShaderViewport(spb, deoglSkinShader::erutViewport, true);
-		spb.SetParameterDataIVec4(deoglSkinShader::erutViewportImage, 0, 0, width - 1, height - 1);
-		spb.SetParameterDataArrayVec4(deoglSkinShader::erutClipPlane, 0, clipPlaneNormal, clipPlaneDistance);
-		spb.SetParameterDataArrayVec4(deoglSkinShader::erutClipPlane, 1, clipPlaneNormalStereo, clipPlaneDistanceStereo);
-		spb.SetParameterDataVec4(deoglSkinShader::erutScreenSpace,
-			defren.GetScalingU(), defren.GetScalingV(), defren.GetPixelSizeU(), defren.GetPixelSizeV());
-		spb.SetParameterDataVec4(deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f);
+		a.SetIVec4(deoglSkinShader::erutViewportImage, 0, 0, width - 1, height - 1);
+		a.SetArrayVec4(deoglSkinShader::erutClipPlane, 0, clipPlaneNormal, clipPlaneDistance);
+		a.SetArrayVec4(deoglSkinShader::erutClipPlane, 1, clipPlaneNormalStereo, clipPlaneDistanceStereo);
+		a.SetVec4(deoglSkinShader::erutScreenSpace, defren.GetScalingU(), defren.GetScalingV(),
+			defren.GetPixelSizeU(), defren.GetPixelSizeV());
+		a.SetVec4(deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f);
 		
-		spb.SetParameterDataVec2(deoglSkinShader::erutRenderSize, (float)width, (float)height);
-		spb.SetParameterDataUVec2(deoglSkinShader::erutRenderSizeCompute, width, height);
+		a.SetVec2(deoglSkinShader::erutRenderSize, (float)width, (float)height);
+		a.SetUVec2(deoglSkinShader::erutRenderSizeCompute, width, height);
 		
-		spb.SetParameterDataVec4(deoglSkinShader::erutMipMapParams, mipMapPixelSizeU, mipMapPixelSizeV, (float)mipmapMaxLevel, mipMapMaxScale);
+		a.SetVec4(deoglSkinShader::erutMipMapParams, mipMapPixelSizeU, mipMapPixelSizeV,
+			(float)mipmapMaxLevel, mipMapMaxScale);
 		
-		spb.SetParameterDataVec3(deoglSkinShader::erutParticleLightHack, particleLight);
+		a.SetVec3(deoglSkinShader::erutParticleLightHack, particleLight);
 		
-		spb.SetParameterDataFloat(deoglSkinShader::erutBillboardZScale, tanf(plan.GetCameraFov() * 0.5f));
+		a.SetFloat(deoglSkinShader::erutBillboardZScale, tanf(plan.GetCameraFov() * 0.5f));
 		
-		spb.SetParameterDataVec2(deoglSkinShader::erutCameraRange, imageDistance, viewDistance);
+		a.SetVec2(deoglSkinShader::erutCameraRange, imageDistance, viewDistance);
 		
 		if(plan.GetDisableLights()){
-			spb.SetParameterDataFloat(deoglSkinShader::erutCameraAdaptedIntensity, 1.0f);
+			a.SetFloat(deoglSkinShader::erutCameraAdaptedIntensity, 1.0f);
 			
 		}else if(plan.GetCamera()){
-			spb.SetParameterDataFloat(deoglSkinShader::erutCameraAdaptedIntensity,
+			a.SetFloat(deoglSkinShader::erutCameraAdaptedIntensity,
 				plan.GetCamera()->GetLastAverageLuminance() / config.GetHDRRSceneKey());
 			
 		}else{
-			spb.SetParameterDataFloat(deoglSkinShader::erutCameraAdaptedIntensity,
-				plan.GetCameraAdaptedIntensity());
+			a.SetFloat(deoglSkinShader::erutCameraAdaptedIntensity, plan.GetCameraAdaptedIntensity());
 		}
 		
-		spb.SetParameterDataVec2(deoglSkinShader::erutDepthSampleOffset, plan.GetDepthSampleOffset());
-		spb.SetParameterDataVec4(deoglSkinShader::erutFSTexCoordToScreenCoord,
+		a.SetVec2(deoglSkinShader::erutDepthSampleOffset, plan.GetDepthSampleOffset());
+		a.SetVec4(deoglSkinShader::erutFSTexCoordToScreenCoord,
 			2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f);
 		defren.SetShaderParamFSQuad(spb, deoglSkinShader::erutFSScreenCoordToTexCoord);
-		spb.SetParameterDataVec4(deoglSkinShader::erutFSFragCoordToTexCoord,
+		a.SetVec4(deoglSkinShader::erutFSFragCoordToTexCoord,
 			defren.GetScalingU() / (float)width, defren.GetScalingV() / (float)height,
 			0.5f / (float)width, 0.5f / (float)height);
-		spb.SetParameterDataVec4(deoglSkinShader::erutFSFragCoordToScreenCoord,
+		a.SetVec4(deoglSkinShader::erutFSFragCoordToScreenCoord,
 			2.0f / (float)width, 2.0f / (float)height,
 			1.0f / (float)width - 1.0f, 1.0f / (float)height - 1.0f);
 		
 		const float fadeRange = (viewDistance - imageDistance) * 0.001f; // for example 1m on 1km
-		spb.SetParameterDataVec3(deoglSkinShader::erutFadeRange,
+		a.SetVec3(deoglSkinShader::erutFadeRange,
 			viewDistance - fadeRange, viewDistance, 1.0f / fadeRange);
 		
 		// ssao
-		spb.SetParameterDataVec4(deoglSkinShader::erutSSAOParams1,
-			ssaoSelfOcclusion, ssaoEpsilon, ssaoScale, ssaoRandomAngleConstant);
-		spb.SetParameterDataVec4(deoglSkinShader::erutSSAOParams2,
-			ssaoTapCount, ssaoRadius, ssaoInfluenceRadius, ssaoRadiusLimit);
-		spb.SetParameterDataVec3(deoglSkinShader::erutSSAOParams3,
-			ssaoRadiusFactor, ssaoMipMapBase, ssaoMipMapMaxLevel);
+		a.SetVec4(deoglSkinShader::erutSSAOParams1, ssaoSelfOcclusion, ssaoEpsilon,
+			ssaoScale, ssaoRandomAngleConstant);
+		a.SetVec4(deoglSkinShader::erutSSAOParams2, ssaoTapCount, ssaoRadius,
+			ssaoInfluenceRadius, ssaoRadiusLimit);
+		a.SetVec3(deoglSkinShader::erutSSAOParams3, ssaoRadiusFactor, ssaoMipMapBase,
+			ssaoMipMapMaxLevel);
 		
 		// sssss
-		spb.SetParameterDataVec4(deoglSkinShader::erutSSSSSParams1, sssssDropSubSurfaceThreshold,
+		a.SetVec4(deoglSkinShader::erutSSSSSParams1, sssssDropSubSurfaceThreshold,
 			sssssTapRadiusFactor, sssssTapRadiusLimit, sssssTapDropRadiusThreshold);
-		spb.SetParameterDataIVec2(deoglSkinShader::erutSSSSSParams2, sssssTapCount, sssssTurnCount);
+		a.SetIVec3(deoglSkinShader::erutSSSSSParams2, sssssTapCount, sssssTurnCount,
+			sssssEnable ? 1 : 0);
 		
 		// ssr
-		spb.SetParameterDataVec4(deoglSkinShader::erutSSRParams1,
-			ssrCoverageFactor.x, ssrCoverageFactor.y, ssrPowerEdge, ssrPowerRayLength);
-		spb.SetParameterDataVec4(deoglSkinShader::erutSSRParams2, ssrClipReflDirNearDist,
+		a.SetVec4(deoglSkinShader::erutSSRParams1, ssrCoverageFactor.x, ssrCoverageFactor.y,
+			ssrPowerEdge, ssrPowerRayLength);
+		a.SetVec4(deoglSkinShader::erutSSRParams2, ssrClipReflDirNearDist,
 			ssrRoughnessTapCountScale, ssrRoughnessToPixelRadius, 0.0f);
-		spb.SetParameterDataIVec4(deoglSkinShader::erutSSRParams3,
-			ssrStepCount, 0.0f, 0.0f, ssrRoughnessTapMax);
+		a.SetIVec4(deoglSkinShader::erutSSRParams3, ssrStepCount, 0.0f, 0.0f, ssrRoughnessTapMax);
 		
 		// lighting
-		spb.SetParameterDataVec2(deoglSkinShader::erutAOSelfShadow, config.GetAOSelfShadowEnable() ? 0.1f : 1.0f,
+		a.SetVec2(deoglSkinShader::erutAOSelfShadow, config.GetAOSelfShadowEnable() ? 0.1f : 1.0f,
 			1.0f / (DEG2RAD * config.GetAOSelfShadowSmoothAngle()));
 		
-		spb.SetParameterDataVec2(deoglSkinShader::erutLumFragCoordScale,
+		a.SetVec2(deoglSkinShader::erutLumFragCoordScale,
 			(float)width / (float)defren.GetTextureLuminance()->GetWidth(),
 			(float)height / (float)defren.GetTextureLuminance()->GetHeight());
 		
 		// screen space shadow casting
-		spb.SetParameterDataVec4(deoglSkinShader::erutSSShadowParams1,
-			ssscMaxLengthBase, ssscMaxLengthScalePerMeter,
-			ssscThicknessBase, ssscThicknessScalePerMeter);
+		a.SetVec4(deoglSkinShader::erutSSShadowParams1, ssscMaxLengthBase,
+			ssscMaxLengthScalePerMeter, ssscThicknessBase, ssscThicknessScalePerMeter);
 		
-		spb.SetParameterDataVec4(deoglSkinShader::erutSSShadowParams2,
-			(float)ssscStepCount, ssscBorderBlendRange, 0.0f, 0.0f);
+		a.SetVec4(deoglSkinShader::erutSSShadowParams2, (float)ssscStepCount,
+			ssscBorderBlendRange, 0.0f, 0.0f);
 		
 		// global illumination
-		spb.SetParameterDataMat4x3(deoglSkinShader::erutGIRayMatrix, giMatrix);
-		spb.SetParameterDataMat3x3(deoglSkinShader::erutGIRayMatrixNormal, giMatrixNormal);
-		spb.SetParameterDataInt(deoglSkinShader::erutGIHighestCascade, giHighestCascade);
+		a.SetMat4x3(deoglSkinShader::erutGIRayMatrix, giMatrix);
+		a.SetMat3x3(deoglSkinShader::erutGIRayMatrixNormal, giMatrixNormal);
+		a.SetInt(deoglSkinShader::erutGIHighestCascade, giHighestCascade);
 		
 		// tone mapping
-		spb.SetParameterDataVec2(deoglSkinShader::erutToneMapSceneKey,
-			toneMapExposure, toneMapWhiteScale);
-		spb.SetParameterDataVec3(deoglSkinShader::erutToneMapAdaption,
-			toneMapLowInt, toneMapHighInt, toneMapAdaptationTime);
-		spb.SetParameterDataVec3(deoglSkinShader::erutToneMapBloom,
-			toneMapBloomStrength, toneMapBloomIntensity, toneMapBloomBlend);
+		a.SetVec2(deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapWhiteScale);
+		a.SetVec3(deoglSkinShader::erutToneMapAdaption, toneMapLowInt, toneMapHighInt,
+			toneMapAdaptationTime);
+		a.SetVec3(deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, toneMapBloomIntensity,
+			toneMapBloomBlend);
 		
 		// vr
-		spb.SetParameterDataVec4(deoglSkinShader::erutVRParams, vrHudFov, vrHudCurvature, vrDepthClamp, 0.0f);
-		spb.SetParameterDataVec4(deoglSkinShader::erutVRDepthTransform,
-			vrDepthFactor1, vrDepthFactor2, vrDepthFactor3, vrDepthFactor4);
+		a.SetVec4(deoglSkinShader::erutVRParams, vrHudFov, vrHudCurvature, vrDepthClamp, 0.0f);
+		a.SetVec4(deoglSkinShader::erutVRDepthTransform, vrDepthFactor1, vrDepthFactor2,
+			vrDepthFactor3, vrDepthFactor4);
 		
 		// debug depth transform
-		spb.SetParameterDataVec2(deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift);
+		a.SetVec2(deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift);
 		
 		// specializations
-		spb.SetParameterDataBVec4(deoglSkinShader::erutConditions1, condClipPlane, false, false, false);
+		a.SetBVec4(deoglSkinShader::erutConditions1, condClipPlane, condLowFillRate, false, false);
+		
+		// forward rendering
+		if(condLowFillRate && plan.GetFRLightsValid()){
+			a.SetInt(deoglSkinShader::erutFRLightCount, frShadowManager.GetLightCount());
+			
+		}else{
+			a.SetInt(deoglSkinShader::erutFRLightCount, 0);
+		}
 		
 		// stereo rendering
 		if(plan.GetRenderStereo()){
-			const decDMatrix matrixCameraStereo(matrixCamera * cameraStereoMatrix);
-			const decDMatrix &matrixProjectionStereo = plan.GetProjectionMatrixStereo();
-			const decMatrix matrixSkyBodyStereo(matrixCameraStereo.GetRotationMatrix() * matrixProjectionStereo);
+			const decDMatrix matCamSt(matrixCamera * cameraStereoMatrix);
+			const decDMatrix &matProjSt = plan.GetProjectionMatrixStereo();
+			const decMatrix matSkyBodySt(matCamSt.GetRotationMatrix() * matProjSt);
 			
-			spb.SetParameterDataArrayMat4x3(deoglSkinShader::erutMatrixV, 1, matrixCameraStereo);
-			spb.SetParameterDataArrayMat4x4(deoglSkinShader::erutMatrixP, 1, matrixProjectionStereo);
-			spb.SetParameterDataArrayMat4x4(deoglSkinShader::erutMatrixVP, 1, matrixCameraStereo * matrixProjectionStereo);
-			spb.SetParameterDataArrayMat3x3(deoglSkinShader::erutMatrixVn, 1, matrixCameraStereo.GetRotationMatrix().Invert());
-			spb.SetParameterDataArrayMat4x4(deoglSkinShader::erutMatrixSkyBody, 1, matrixSkyBodyStereo);
-			spb.SetParameterDataArrayVec4(deoglSkinShader::erutDepthToPosition, 1, plan.GetDepthToPositionStereo());
-			spb.SetParameterDataArrayVec2(deoglSkinShader::erutDepthToPosition2, 1, plan.GetDepthToPositionStereo2());
-			spb.SetParameterDataMat4x3(deoglSkinShader::erutCameraStereoMatrix, cameraStereoMatrix);
+			a.SetArrayMat4x3(deoglSkinShader::erutMatrixV, 1, matCamSt);
+			a.SetArrayMat4x4(deoglSkinShader::erutMatrixP, 1, matProjSt);
+			a.SetArrayMat4x4(deoglSkinShader::erutMatrixVP, 1, matCamSt * matProjSt);
+			a.SetArrayMat3x3(deoglSkinShader::erutMatrixVn, 1, matCamSt.GetRotationMatrix().Invert());
+			a.SetArrayMat4x4(deoglSkinShader::erutMatrixSkyBody, 1, matSkyBodySt);
+			a.SetArrayVec4(deoglSkinShader::erutDepthToPosition, 1, plan.GetDepthToPositionStereo());
+			a.SetArrayVec2(deoglSkinShader::erutDepthToPosition2, 1, plan.GetDepthToPositionStereo2());
+			a.SetMat4x3(deoglSkinShader::erutCameraStereoMatrix, cameraStereoMatrix);
 			
 		}else{
-			spb.SetParameterDataMat4x3(deoglSkinShader::erutCameraStereoMatrix, decMatrix());
+			a.SetMat4x3(deoglSkinShader::erutCameraStereoMatrix, decMatrix());
 		}
 	}
 DBG_EXIT("PrepareRenderParamBlock")

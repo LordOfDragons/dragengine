@@ -201,6 +201,8 @@ private:
 	float pVRHudFov, pVRHudCurvature;
 	bool pVRSubmitDepth;
 	
+	bool pLowFillRate;
+	
 	bool pRenderDocMode;
 	
 	
@@ -564,6 +566,12 @@ public:
 	
 	inline bool GetVRSubmitDepth() const{ return pVRSubmitDepth; }
 	void SetVRSubmitDepth(bool submit);
+	
+	/** Use low fill rate rendering for weak GPUs. */
+	inline bool GetLowFillRate() const{ return pLowFillRate; }
+	
+	/** Set use low fill rate rendering for weak GPUs. */
+	void SetLowFillRate(bool enable);
 	
 	inline bool GetRenderDocMode() const{ return pRenderDocMode; }
 };

@@ -69,6 +69,15 @@ public:
 		/** XRay depth. */
 		estXRayDepth,
 		
+		/** Forward rendering sky shadow maps. */
+		estFRShadowSky,
+		
+		/** Forward rendering spot light shadow maps. */
+		estFRShadowSpot,
+		
+		/** Forward rendering point light shadow maps. */
+		estFRShadowPoint,
+		
 		/** Constant to add to opengl texture names for hashing. */
 		EST_BASE_GLNAME
 	};

@@ -863,6 +863,12 @@ void deoglRenderLight::CopyDepth1ToDepth3(deoglRenderPlan &plan){
 	*/
 }
 
+void deoglRenderLight::RenderForward(deoglRenderPlan &plan){
+	pRenderLightSky->RenderForward(plan);
+	pRenderLightSpot->RenderForward(plan);
+	pRenderLightPoint->RenderForward(plan);
+}
+
 
 
 void deoglRenderLight::ResetDebugInfo(){

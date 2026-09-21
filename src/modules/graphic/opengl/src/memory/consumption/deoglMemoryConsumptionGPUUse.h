@@ -46,6 +46,11 @@ public:
 	
 	/** Clean up vbo memory consumption. */
 	~deoglMemoryConsumptionGPUUse();
+	
+	deoglMemoryConsumptionGPUUse(const deoglMemoryConsumptionGPUUse &) = delete;
+	deoglMemoryConsumptionGPUUse(deoglMemoryConsumptionGPUUse &&) = delete;
+	deoglMemoryConsumptionGPUUse &operator=(const deoglMemoryConsumptionGPUUse &) = delete;
+	deoglMemoryConsumptionGPUUse &operator=(deoglMemoryConsumptionGPUUse &&) = delete;
 	/*@}*/
 	
 	

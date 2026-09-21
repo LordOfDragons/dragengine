@@ -68,13 +68,17 @@ const in vec2 tcnoise, const in ivec2 tcnoiseOffset, const in vec2 tcnoiseScale)
 */
 #define inl_sampleShadowMap(a,b,c,d,e,f) texture(a, b + vec3(c,0.0) + (NoiseTap ? vec3(inl_sampleShadowNoise_offset2(d,e,f),0.0) : vec3(0.0)))
 
-float evalShadowMap(in ARG_SAMP_HIGHP sampler2DShadow texsm, const in vec3 params, const in vec3 position){
+float evalShadowMap(in ARG_SAMP_HIGHP sampler2DShadow texsm, const in vec3 params, const in vec3 position, const in int pcfMode){
 	#define ES2DTC vec3
 	#define ES2D(tc) vec3(tc)
 	#define SSM sampleShadowMap
 	#define SSM2(a,b,c,d,e,f) inl_sampleShadowMap(a,b,c,d,e,f)
 	#include "shared/defren/light/shadow/shadow_impl_map.glsl"
 	return shadow;
+}
+
+float evalShadowMap(in ARG_SAMP_HIGHP sampler2DShadow texsm, const in vec3 params, const in vec3 position){
+	return evalShadowMap(texsm, params, position, PcfMode);
 }
 
 
@@ -103,13 +107,18 @@ const in ivec2 tcnoiseOffset, const in vec2 tcnoiseScale){
 #define inl_sampleShadowMapArray(a,b,c,d,e,f) texture(a, b + vec4(c,0.0,0.0) + (NoiseTap ? vec4(inl_sampleShadowNoise_offset2(d,e,f),0.0,0.0) : vec4(0.0)))
 
 float evalShadowMapArray(in ARG_SAMP_HIGHP sampler2DArrayShadow texsm,
-const in vec3 params, const in vec4 position){
+const in vec3 params, const in vec4 position, const in int pcfMode){
 	#define ES2DTC vec4
 	#define ES2D(tc) tc
 	#define SSM sampleShadowMapArray
 	#define SSM2(a,b,c,d,e,f) inl_sampleShadowMapArray(a,b,c,d,e,f)
 	#include "shared/defren/light/shadow/shadow_impl_map.glsl"
 	return shadow;
+}
+
+float evalShadowMapArray(in ARG_SAMP_HIGHP sampler2DArrayShadow texsm,
+const in vec3 params, const in vec4 position){
+	return evalShadowMapArray(texsm, params, position, PcfMode);
 }
 
 
@@ -135,10 +144,48 @@ const in mat2x3 tcnoiseMatrix){
 }
 
 float evalShadowCube(in ARG_SAMP_HIGHP samplerCubeShadow texsm,
-const in vec3 params, const in vec4 position){
-	#define SSM sampleShadowCube
+const in vec3 params, const in vec4 position, const in int pcfMode){
+	#define SSM1 sampleShadowCube
+	#define SSM2 sampleShadowCube
 	#include "shared/defren/light/shadow/shadow_impl_cube.glsl"
 	return shadow;
+}
+
+float evalShadowCube(in ARG_SAMP_HIGHP samplerCubeShadow texsm,
+const in vec3 params, const in vec4 position){
+	return evalShadowCube(texsm, params, position, PcfMode);
+}
+
+
+float sampleShadowCubeArray(in ARG_SAMP_HIGHP samplerCubeArrayShadow texsm, const in int layer,
+in vec4 tc, const in vec2 tcnoise, const in mat2x3 tcnoiseMatrix){
+	if(NoiseTap){
+		tc.stp += tcnoiseMatrix * sampleShadowNoise(tcnoise);
+	}
+	return texture(texsm, tc, layer);
+}
+
+float sampleShadowCubeArray(in ARG_SAMP_HIGHP samplerCubeArrayShadow texsm, const in int layer,
+in vec4 tc, const in vec3 tcoffset, const in vec2 tcnoise, const in ivec2 tcnoiseOffset,
+const in mat2x3 tcnoiseMatrix){
+	tc.stp += tcoffset;
+	if(NoiseTap){
+		tc.stp += tcnoiseMatrix * sampleShadowNoise(tcnoise, vec2(tcnoiseOffset));
+	}
+	return texture(texsm, tc, layer);
+}
+
+float evalShadowCubeArray(in ARG_SAMP_HIGHP samplerCubeArrayShadow texsm, const int layer,
+const in vec3 params, const in vec4 position, const in int pcfMode){
+	#define SSM1(a,b,c,d) sampleShadowCubeArray(a, layer, b, c, d)
+	#define SSM2(a,b,c,d,e,f) sampleShadowCubeArray(a, layer, b, c, d, e, f)
+	#include "shared/defren/light/shadow/shadow_impl_cube.glsl"
+	return shadow;
+}
+
+float evalShadowCubeArray(in ARG_SAMP_HIGHP samplerCubeArrayShadow texsm, const int layer,
+const in vec3 params, const in vec4 position){
+	return evalShadowCubeArray(texsm, layer, params, position, PcfMode);
 }
 
 
@@ -173,76 +220,10 @@ const in vec4 position, const in vec2 depthTransform){
 	return max(thickness, 0.0);
 }
 
-
-
-// screen space shadows
-/////////////////////////
-
-float screenSpaceShadow(ARG_SAMP_HIGHP sampler2DArray samplerDepth,
-ARG_SAMP_HIGHP sampler2DArray samplerNormal, const in vec3 position, const in vec3 lightDir){
-	float maxLength = pSSShadowMaxLengthBase + position.z * pSSShadowMaxLengthScalePerMeter;
-	float thickness = pSSShadowThicknessBase + position.z * pSSShadowThicknessScalePerMeter;
-	int stepCount = int(pSSShadowStepCount);
-	
-	float stepSize = maxLength / float(stepCount);
-	vec3 rayDir = lightDir * stepSize;
-	vec3 rayPosition = position;
-	
-	ivec2 tcFrag = ivec2(gl_FragCoord.xy);
-	ivec3 tcTest = ivec3(tcFrag, vLayer);
-	
-	vec3 screenCoord = vec3(0.0, 0.0, vLayer);
-	vec3 testPosition;
-	
-	ivec2 sizeNoise = textureSize(texShadowNoise, 0);
-	vec4 noiseValue = texelFetch(texShadowNoise, tcFrag % sizeNoise, 0);
-	
-	// randomly shift the ray start position. this hides banding of the discrete step size with noise
-	rayPosition += rayDir * vec3(noiseValue.x);
-	
-	for(int i=0; i<stepCount; i++){
-		rayPosition += rayDir;
-		
-		// transform ray position into screen coordinates. if false is returned the ray left the
-		// screen and any further testing can be skipped
-		if(!positionToScreen(rayPosition, vLayer, screenCoord.xy)){
-			break;
-		}
-		
-		// skip if the integer texture coordinates are the same as the original fragment.
-		// this happens if the light direction combined with small step size does not move
-		// the pixel to sample enough. this avoids fragments testing themselves and considering
-		// themselves as blockers which would cause fragments to end up in shadow that should not
-		tcTest.xy = ivec2((screenCoord.xy + vec2(1.0)) / vec2(2.0) * pRenderSize);
-		if(tcTest.xy == tcFrag){
-			continue;
-		}
-		
-		float depth = sampleDepth(samplerDepth, tcTest);
-		testPosition = depthToPosition(depth, screenCoord.xy, vLayer);
-		
-		float diff = rayPosition.z - testPosition.z;
-		if(InverseDepth){
-			diff = -diff;
-		}
-		
-		// consider in shadow only if the ray position is behind the test position and the
-		// ray most probably does not pass behind the blocker. the thickness here is a guess.
-		// a better solution would be to stored while rendering the estimated thickness of
-		// the geometry. then rays passing behind the blocker could be better detected
-		if(diff <= 0.001/*0.0*/ || diff >= thickness){
-			continue;
-		}
-		
-		// fade the shadow towards the end of the ray
-		float shadow = pow(length(rayPosition - position) / maxLength, 2.0);
-		
-		// fade the shadow towards the screen border
-		vec2 scblend = min((vec2(1.0) - abs(screenCoord.xy)) / vec2(pSSShadowBorderBlendRange), vec2(1.0));
-		shadow = mix(1.0, shadow, scblend.x * scblend.y);
-		
-		return shadow;
-	}
-	
-	return 1.0;
+float shadowCubeArrayThickness(in ARG_SAMP_HIGHP samplerCubeArray texsm,
+const in vec4 position, const int layer, const in vec2 depthTransform){
+	float thickness = texture(texsm, vec4(position.xyz, layer)).r;
+	thickness = thickness * depthTransform.x + depthTransform.y;
+	thickness = position.q - thickness;
+	return max(thickness, 0.0);
 }

@@ -194,53 +194,9 @@ int deoglShaderParameterBlock::GetAlignmentRequirements() const{
 void deoglShaderParameterBlock::MapToStd140(){
 	DEASSERT_FALSE(pMapped)
 	
-	int alignment, stride, adjust, chunkOffset = 0;
-	int componentCount, vectorCount, elementStride = 0;
+	int elementStride = pMapToStd140(nullptr) * 4;
 	
-	pParameters.Visit([&](deoglSPBParameter &parameter){
-		if(parameter.GetVectorCount() == 1 || pRowMajor){
-			componentCount = parameter.GetComponentCount();
-			vectorCount = parameter.GetVectorCount();
-			
-		}else{
-			componentCount = parameter.GetVectorCount();
-			vectorCount = parameter.GetComponentCount();
-		}
-		
-		stride = componentCount;
-		alignment = stride;
-		if(stride == 3){ // 3-component requires 4-component alignment
-			alignment = 4;
-		}
-		if(vectorCount > 1){ // matrices require 4-component alignment
-			alignment = 4;
-			stride = 4;
-		}
-		if(parameter.GetArrayCount() > 1){ // arrays require 4-component alignment
-			alignment = 4;
-			stride = 4;
-		}
-		
-		adjust = (alignment - (chunkOffset % alignment)) % alignment;
-		elementStride += adjust * 4;
-		chunkOffset += adjust;
-		
-		if(chunkOffset + stride > 4){
-			elementStride += (4 - chunkOffset) * 4;
-			chunkOffset = 0;
-		}
-		
-		parameter.SetOffset(elementStride);
-		parameter.SetStride(stride * 4);
-		parameter.SetArrayStride(parameter.GetStride() * vectorCount);
-		parameter.SetDataSize(parameter.GetArrayStride() * parameter.GetArrayCount());
-		
-		chunkOffset += stride;
-		elementStride += parameter.GetDataSize();
-	});
-	
-	// element stride is aligned like arrays to 16-byte boundary
-	alignment = decMath::max(16, GetAlignmentRequirements());
+	const int alignment = decMath::max(16, GetAlignmentRequirements());
 	pOffsetPadding = (alignment - (elementStride % alignment)) % alignment;
 	pSetElementStride(elementStride + pOffsetPadding);
 }
@@ -253,7 +209,7 @@ bool deoglShaderParameterBlock::IsBufferMapped() const{
 
 void deoglShaderParameterBlock::EnsureBuffer(){
 	MapBuffer();
-	UnmapBuffer();
+	UnmapBuffer(false);
 }
 
 void deoglShaderParameterBlock::Clear(){
@@ -1303,4 +1259,52 @@ GLfloat **data, int arrayIndex) const{
 	data[1] = (GLfloat*)(mapped + parameter.GetStride());
 	data[2] = (GLfloat*)(mapped + parameter.GetStride() * 2);
 	data[3] = (GLfloat*)(mapped + parameter.GetStride() * 3);
+}
+
+
+int deoglShaderParameterBlock::pMapToStd140(deoglSPBParameter *parameter) const{
+	int offset = 0;
+	
+	(parameter ? parameter->GetMembers() : pParameters).Visit([&](deoglSPBParameter &each){
+		int componentCount, vectorCount;
+		if(each.GetVectorCount() == 1 || pRowMajor){
+			componentCount = each.GetComponentCount();
+			vectorCount = each.GetVectorCount();
+			
+		}else{
+			componentCount = each.GetVectorCount();
+			vectorCount = each.GetComponentCount();
+		}
+		
+		int stride = componentCount;
+		int alignment = stride;
+		if(each.GetValueType() == deoglSPBParameter::evtStruct){
+			alignment = 4;
+			stride = (pMapToStd140(&each) + 3) / 4 * 4;
+			
+		}else{
+			if(stride == 3){ // 3-component requires 4-component alignment
+				alignment = 4;
+			}
+			if(vectorCount > 1){ // matrices require 4-component alignment
+				alignment = 4;
+				stride = 4;
+			}
+			if(each.GetArrayCount() > 1){ // arrays require 4-component alignment
+				alignment = 4;
+				stride = 4;
+			}
+		}
+		
+		offset = (offset + alignment - 1) / alignment * alignment;
+		
+		each.SetOffset(offset * 4);
+		each.SetStride(stride * 4);
+		each.SetArrayStride(each.GetStride() * vectorCount);
+		each.SetDataSize(each.GetArrayStride() * each.GetArrayCount());
+		
+		offset += each.GetDataSize() / 4;
+	});
+	
+	return offset;
 }

@@ -5,7 +5,7 @@
 	vec3 no1, no2;
 	float shadow;
 	
-	if(PcfMode == PcfMode9Tap || PcfMode == PcfMode4Tap || PcfMode == PcfModeVarTap){
+	if(pcfMode == PcfMode9Tap || pcfMode == PcfMode4Tap || pcfMode == PcfModeVarTap){
 		float nolen = pdist * params.z;
 		
 		vec3 aposition = abs(position.xyz);
@@ -30,7 +30,7 @@
 		noiseMatrix = mat2x3(no1, no2);
 	}
 	
-	if(PcfMode == PcfModeVarTap){
+	if(pcfMode == PcfModeVarTap){
 		vec2 shascale = params.xy * vec2(clamp(pdist * 5.0, 0.5, 5.0));
 		vec4 tc = position;
 		vec3 offy;
@@ -46,50 +46,51 @@
 			
 			for(x=-2; x<2; x++){
 				tc.xyz = offy + no1 * vec3(x);
-				shadow += SSM(texsm, tc, tcnoise, noiseMatrix);
+				shadow += SSM1(texsm, tc, tcnoise, noiseMatrix);
 			}
 		}
 		
 		shadow /= 25.0;
 		
-	}else if(PcfMode == PcfMode9Tap){
-		shadow = SSM(texsm, position, tcnoise, noiseMatrix);
+	}else if(pcfMode == PcfMode9Tap){
+		shadow = SSM1(texsm, position, tcnoise, noiseMatrix);
 		
-	}else if(PcfMode == PcfMode4Tap){
+	}else if(pcfMode == PcfMode4Tap){
 		shadow = 0.0;
 		
-	}else{ // PcfMode == PcfMode1Tap
-		shadow = SSM(texsm, position, tcnoise, noiseMatrix);
+	}else{ // pcfMode == PcfMode1Tap
+		shadow = SSM1(texsm, position, tcnoise, noiseMatrix);
 	}
 	
 	vec4 pcfscale;
-	if(PcfMode == PcfMode4Tap || PcfMode == PcfMode9Tap){
-		if(PcfMode == PcfMode4Tap){
+	if(pcfMode == PcfMode4Tap || pcfMode == PcfMode9Tap){
+		if(pcfMode == PcfMode4Tap){
 			pcfscale = pcf4TapTCScale; // (u/2,v/2) (u/2,-v/2) (-u/2,v/2) (-u/2,-v/2)
 			
 		}else{
 			pcfscale = pcf9TapTCScale; // (u,v) (u,-v) (-u,v) (-u,-v)
 		}
 		
-		shadow += SSM(texsm, position, noiseMatrix * pcfscale.xy, tcnoise, ivec2(1,1), noiseMatrix);
-		shadow += SSM(texsm, position, noiseMatrix * pcfscale.xw, tcnoise, ivec2(1,-1), noiseMatrix);
-		shadow += SSM(texsm, position, noiseMatrix * pcfscale.zy, tcnoise, ivec2(-1,1), noiseMatrix);
-		shadow += SSM(texsm, position, noiseMatrix * pcfscale.zw, tcnoise, ivec2(-1,-1), noiseMatrix);
+		shadow += SSM2(texsm, position, noiseMatrix * pcfscale.xy, tcnoise, ivec2(1,1), noiseMatrix);
+		shadow += SSM2(texsm, position, noiseMatrix * pcfscale.xw, tcnoise, ivec2(1,-1), noiseMatrix);
+		shadow += SSM2(texsm, position, noiseMatrix * pcfscale.zy, tcnoise, ivec2(-1,1), noiseMatrix);
+		shadow += SSM2(texsm, position, noiseMatrix * pcfscale.zw, tcnoise, ivec2(-1,-1), noiseMatrix);
 	}
 	
-	if(PcfMode == PcfMode9Tap){
+	if(pcfMode == PcfMode9Tap){
 		// (u, 0) (-u, 0) (0, v) (0, -v)
-		shadow += SSM(texsm, position, noiseMatrix * pcf9TapTCScale2.xw, tcnoise, ivec2(1,0), noiseMatrix);
-		shadow += SSM(texsm, position, noiseMatrix * -pcf9TapTCScale2.xw, tcnoise, ivec2(-1,0), noiseMatrix);
-		shadow += SSM(texsm, position, noiseMatrix * pcf9TapTCScale2.zy, tcnoise, ivec2(0,1), noiseMatrix);
-		shadow += SSM(texsm, position, noiseMatrix * -pcf9TapTCScale2.zy, tcnoise, ivec2(0,-1), noiseMatrix);
+		shadow += SSM2(texsm, position, noiseMatrix * pcf9TapTCScale2.xw, tcnoise, ivec2(1,0), noiseMatrix);
+		shadow += SSM2(texsm, position, noiseMatrix * -pcf9TapTCScale2.xw, tcnoise, ivec2(-1,0), noiseMatrix);
+		shadow += SSM2(texsm, position, noiseMatrix * pcf9TapTCScale2.zy, tcnoise, ivec2(0,1), noiseMatrix);
+		shadow += SSM2(texsm, position, noiseMatrix * -pcf9TapTCScale2.zy, tcnoise, ivec2(0,-1), noiseMatrix);
 	}
 	
-	if(PcfMode == PcfMode4Tap){
+	if(pcfMode == PcfMode4Tap){
 		shadow *= pcf4TapWeight;
 		
-	}else if(PcfMode == PcfMode9Tap){
+	}else if(pcfMode == PcfMode9Tap){
 		shadow *= pcf9TapWeight;
 	}
 	
-	#undef SSM
+	#undef SSM1
+	#undef SSM2

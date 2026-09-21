@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,55 +22,28 @@
  * SOFTWARE.
  */
 
-#include "deoglSharedSPBElementMapBuffer.h"
-#include "deoglSharedSPBElement.h"
-#include "../deoglShaderParameterBlock.h"
+#ifndef _DEOGLPLOWFILLRATE_H_
+#define _DEOGLPLOWFILLRATE_H_
+
+#include "../deoglParameterBool.h"
 
 
-// Class deoglSharedSPBElementMapBuffer
-/////////////////////////////////////////
-
-// Constructor, destructor
-////////////////////////////
-
-deoglSharedSPBElementMapBuffer::deoglSharedSPBElementMapBuffer(deoglSharedSPBElement &element) :
-pElement(element),
-pBlock(nullptr),
-pDelayUpload(false)
-{
-	Map();
-}
-
-deoglSharedSPBElementMapBuffer::~deoglSharedSPBElementMapBuffer(){
-	Unmap();
-}
-
-
-// Management
-///////////////
-
-void deoglSharedSPBElementMapBuffer::Map(){
-	if(pBlock){
-		return;
-	}
+/**
+ * Module parameter use low fill rate rendering.
+ */
+class deoglPLowFillRate : public deoglParameterBool{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	deoglPLowFillRate(deGraphicOpenGl &ogl);
+	~deoglPLowFillRate() override;
+	/*@}*/
 	
-	pBlock = &pElement.MapBuffer();
-}
+	/** \name Management */
+	/*@{*/
+	bool GetParameterBool() override;
+	void SetParameterBool(bool value) override;
+	/*@}*/
+};
 
-deoglShaderParameterBlock &deoglSharedSPBElementMapBuffer::GetBlockRef() const{
-	DEASSERT_NOTNULL(pBlock);
-	return *pBlock;
-}
-
-void deoglSharedSPBElementMapBuffer::Unmap(){
-	if(!pBlock){
-		return;
-	}
-	
-	pBlock->UnmapBuffer(pDelayUpload);
-	pBlock = nullptr;
-}
-
-void deoglSharedSPBElementMapBuffer::SetDelayUpload(bool delayUpload){
-	pDelayUpload = delayUpload;
-}
+#endif

@@ -3,6 +3,8 @@
 	<uniformBlock name='RenderParameters' binding='0'/>
 */
 
+#include "shared/defren/skin/ssbo_forward_lights.glsl"
+
 UBOLAYOUT_BIND(0) uniform RenderParameters{
 	vec4 pAmbient;
 	mat4x3 pMatrixV[6];
@@ -163,7 +165,15 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	
 	// sssss
 	vec4 pSSSSSParams1; // dropSubSurfaceThreshold, tapRadiusFactor, tapRadiusLimit, tapDropRadiusThreshold
-	ivec2 pSSSSSParams2; // tapCount, turnCount
+	#define pSSSSSDropSubSurfaceThreshold (pSSSSSParams1.x)
+	#define pSSSSSTapRadiusFactor (pSSSSSParams1.y)
+	#define pSSSSSTapRadiusLimit (pSSSSSParams1.z)
+	#define pSSSSSTapDropRadiusThreshold (pSSSSSParams1.w)
+	
+	ivec3 pSSSSSParams2; // tapCount, turnCount, enabled
+	#define pSSSSSTapCount (pSSSSSParams2.x)
+	#define pSSSSSTurnCount (pSSSSSParams2.y)
+	#define pSSSSSEnabled (pSSSSSParams2.z == 1)
 	
 	
 	
@@ -266,12 +276,20 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	// render conditions, aka specializations
 	
 	// x: use clip plane
-	// y: -
+	// y: use low fill rate rendering
 	// z: -
 	// w: -
 	bvec4 pConditions1;
 	#define pCondClipPlane (pConditions1.x)
+	#define pCondLowFillRate (pConditions1.y)
+	
+	
+	
+	// forward rendering
+	int pFRLightCount;
+	sFRLight pFRLights[frMaxLights];
 };
+
 
 // helper functions
 vec2 fsquadScreenCoordToTexCoord(in vec2 screenCoord){

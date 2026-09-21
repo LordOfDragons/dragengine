@@ -328,6 +328,8 @@ void deoglRCamera::PrepareForRender(){
 	for(i=0; i<effectCount; i++){
 		pEffects.GetAt(i)->PrepareForRender();
 	}
+	
+	pPlan->SetUseGIState(pEnableGI && !pPlan->GetLowFillRate());
 }
 
 

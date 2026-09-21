@@ -18,6 +18,7 @@ const bool PositionNoTransform = WithGeometryShader || WithTessellationShader;
 struct sTransformTransfer{
 	mat4x3 matRSMV;
 	mat3 bbMat;
+	vec3 viewPosition;
 };
 
 void transformPosition(out vec3 position, in int spbIndex, out sTransformTransfer transformTransfer){
@@ -166,5 +167,12 @@ void transformPosition(out vec3 position, in int spbIndex, out sTransformTransfe
 		}else{
 			gl_Position = pMatrixVP[inLayer] * vec4(position, 1);
 		}
+	}
+	
+	if(PositionNoTransform){
+		transformTransfer.viewPosition = position;
+		
+	}else{
+		transformTransfer.viewPosition = pMatrixV[inLayer] * vec4(position, 1);
 	}
 }

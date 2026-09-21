@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglRenderPlan.h"
 #include "deoglRenderPlanLight.h"
 #include "../../collidelist/deoglCollideListLight.h"
@@ -67,16 +64,19 @@ pGIShadowSizeDynamic(0),
 pUseShadow(false),
 pUseShadowTemporary(false),
 pUseAmbient(false),
-pRefilterShadows(false){
+pRefilterShadows(false),
+pFRSlot(-1){
 }
 
-deoglRenderPlanLight::~deoglRenderPlanLight(){
-}
-
+deoglRenderPlanLight::~deoglRenderPlanLight() = default;
 
 
 // Management
 ///////////////
+
+void deoglRenderPlanLight::SetFRSlot(int slot){
+	pFRSlot = slot;
+}
 
 void deoglRenderPlanLight::SetLight(deoglCollideListLight *light){
 	pLight = light;

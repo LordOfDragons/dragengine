@@ -36,7 +36,7 @@ class deoglSharedSPBElementMapBuffer{
 private:
 	deoglSharedSPBElement &pElement;
 	deoglShaderParameterBlock *pBlock;
-	
+	bool pDelayUpload;
 	
 	
 public:
@@ -70,6 +70,9 @@ public:
 	
 	/** Unmap block if mapped. */
 	void Unmap();
+	
+	/** Set delay upload. */
+	void SetDelayUpload(bool delayUpload);
 	/*@}*/
 };
 

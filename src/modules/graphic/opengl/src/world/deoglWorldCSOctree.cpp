@@ -153,12 +153,12 @@ void deoglWorldCSOctree::EndWriting(){
 	if(pPtrElement){
 		pNextElement = 0;
 		pPtrElement = nullptr;
-		pSSBOElements->UnmapBuffer();
+		pSSBOElements->UnmapBuffer(false);
 	}
 	if(pPtrNode){
 		pNextNode = 0;
 		pPtrNode = nullptr;
-		pSSBONodes->UnmapBuffer();
+		pSSBONodes->UnmapBuffer(false);
 	}
 }
 

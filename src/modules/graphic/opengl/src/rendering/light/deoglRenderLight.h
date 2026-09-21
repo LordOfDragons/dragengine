@@ -175,6 +175,9 @@ public:
 	/** Copy first depth to third depth. */
 	void CopyDepth1ToDepth3(deoglRenderPlan &plan);
 	
+	/** Forward rendering. */
+	void RenderForward(deoglRenderPlan &plan);
+	
 	
 	
 	/** Reset debug information. */

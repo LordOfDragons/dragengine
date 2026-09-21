@@ -102,7 +102,7 @@ public:
 	void MapBuffer(int element, int count) override;
 	
 	/** Has no effect. */
-	void UnmapBuffer() override;
+	void UnmapBuffer(bool delayUpload) override;
 	
 	/** Create copy of shader parameter block. */
 	deoglShaderParameterBlock::Ref Copy() const override;

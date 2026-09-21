@@ -118,7 +118,7 @@ public:
 	void MapBuffer(int element, int count) override;
 	
 	/** Unmap buffer uploading data to GPU. */
-	void UnmapBuffer() override;
+	void UnmapBuffer(bool delayUpload) override;
 	
 	/** Write buffer. Can be nullptr. */
 	inline char *GetWriteBuffer(){ return pWriteBuffer.GetArrayPointer(); }

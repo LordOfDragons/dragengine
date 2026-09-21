@@ -557,7 +557,7 @@ void deoglRenderTask::pUpdateSPBInstances(){
 							
 							if(instance.GetSIIndexInstanceSPB() != paramBlock){
 								if(paramBlock){
-									paramBlock->UnmapBuffer();
+									paramBlock->UnmapBuffer(false);
 									paramBlock = nullptr;
 								}
 								
@@ -572,12 +572,12 @@ void deoglRenderTask::pUpdateSPBInstances(){
 			});
 			
 			if(paramBlock){
-				paramBlock->UnmapBuffer();
+				paramBlock->UnmapBuffer(false);
 			}
 			
 		}catch(const deException &){
 			if(paramBlock){
-				paramBlock->UnmapBuffer();
+				paramBlock->UnmapBuffer(false);
 			}
 			throw;
 		}

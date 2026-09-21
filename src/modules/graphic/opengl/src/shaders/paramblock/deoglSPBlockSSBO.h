@@ -193,7 +193,7 @@ public:
 	void MapBuffer(int element, int count) override;
 	
 	/** Unmap buffer uploading data to GPU. */
-	void UnmapBuffer() override;
+	void UnmapBuffer(bool delayUpload) override;
 	
 	/** Ensure buffer exists. */
 	void EnsureBuffer() override;

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglRenderLight.h"
 #include "deoglRenderLightSky.h"
 #include "deoglRenderGI.h"
@@ -83,10 +79,12 @@
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../../shaders/paramblock/deoglSPBAccessor.h"
 #include "../../shadow/deoglSCSolid.h"
 #include "../../shadow/deoglSCTransparent.h"
 #include "../../shadow/deoglShadowCaster.h"
 #include "../../shadow/deoglShadowMapper.h"
+#include "../../shadow/deoglFRShadowManager.h"
 #include "../../shapes/deoglShape.h"
 #include "../../shapes/deoglShapeManager.h"
 #include "../../skin/channel/deoglSkinChannel.h"
@@ -1186,6 +1184,13 @@ deoglComputeRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragmen
 
 void deoglRenderLightSky::UpdateLightParamBlock(const deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan){
+	const deoglSPBMapBuffer mapped(paramBlock);
+	deoglSPBAccessor accessor(paramBlock);
+	UpdateLightParamBlock(lightShader, accessor, plan);
+}
+
+void deoglRenderLightSky::UpdateLightParamBlock(const deoglLightShader &lightShader,
+deoglSPBAccessor &accessor, deoglRenderPlanSkyLight &plan){
 	int target;
 	
 	// get light properties
@@ -1200,21 +1205,20 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan){
 	lightColor = TransformColor(plan.GetPlan().GetWorld()->GetLightColorMatrix(), lightColor);
 	
 	// set values
-	const deoglSPBMapBuffer mapped(paramBlock);
 	const bool hasGIState = plan.GetPlan().GetRenderGIState() != nullptr;
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightColor);
 	if(target != -1){
-		paramBlock.SetParameterDataVec3(target, lightColor * lightIntensity);
+		accessor.SetVec3(target, lightColor * lightIntensity);
 	}
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightColorAmbient);
 	if(target != -1){
 		if(hasGIState || plan.GetPlan().GetNoAmbientLight()){
-			paramBlock.SetParameterDataVec3(target, 0.0f, 0.0f, 0.0f);
+			accessor.SetVec3(target, 0.0f, 0.0f, 0.0f);
 			
 		}else{
-			paramBlock.SetParameterDataVec3(target, lightColor * ambientIntensity);
+			accessor.SetVec3(target, lightColor * ambientIntensity);
 			// this happens usually only for env-maps. better be dark than wrong lit
 			//paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
 		}
@@ -1223,10 +1227,10 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan){
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightColorAmbientGI);
 	if(target != -1){
 		if(plan.GetPlan().GetNoAmbientLight()){
-			paramBlock.SetParameterDataVec3(target, 0.0f, 0.0f, 0.0f);
+			accessor.SetVec3(target, 0.0f, 0.0f, 0.0f);
 			
 		}else{
-			paramBlock.SetParameterDataVec3(target, lightColor * ambientIntensity);
+			accessor.SetVec3(target, lightColor * ambientIntensity);
 		}
 	}
 	
@@ -1248,12 +1252,19 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan){
 	//      
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightAmbientRatio);
 	if(target != -1){
-		paramBlock.SetParameterDataFloat(target, 0.0f);
+		accessor.SetFloat(target, 0.0f);
 	}
 }
 
 void deoglRenderLightSky::UpdateInstanceParamBlock(const deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount){
+	const deoglSPBMapBuffer mapped(paramBlock);
+	deoglSPBAccessor accessor(paramBlock);
+	UpdateInstanceParamBlock(lightShader, accessor, plan, shadowMapSize, passCount);
+}
+
+void deoglRenderLightSky::UpdateInstanceParamBlock(const deoglLightShader &lightShader,
+deoglSPBAccessor &accessor, deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount){
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	const deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
 	float pixelSize, noiseScale;
@@ -1339,46 +1350,44 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		giMatrixShadow = plan.GetGIShadowLayer().matrix;
 	}
 	
-	const deoglSPBMapBuffer mapped(paramBlock);
-	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutLightView);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayVec3(target, 0, matrixLV.TransformView().Normalized());
-		paramBlock.SetParameterDataArrayVec3(target, 1, matrixLVStereo.TransformView().Normalized());
+		accessor.SetArrayVec3(target, 0, matrixLV.TransformView().Normalized());
+		accessor.SetArrayVec3(target, 1, matrixLVStereo.TransformView().Normalized());
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadowMatrix1);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayMat4x4(target, 0, matrixShadow[0]);
-		paramBlock.SetParameterDataArrayMat4x4(target, 1, matrixShadowStereo[0]);
+		accessor.SetArrayMat4x4(target, 0, matrixShadow[0]);
+		accessor.SetArrayMat4x4(target, 1, matrixShadowStereo[0]);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadowMatrix2);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayMat4x4(target, 0, matrixShadow[1]);
-		paramBlock.SetParameterDataArrayMat4x4(target, 1, matrixShadowStereo[1]);
+		accessor.SetArrayMat4x4(target, 0, matrixShadow[1]);
+		accessor.SetArrayMat4x4(target, 1, matrixShadowStereo[1]);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadowMatrix3);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayMat4x4(target, 0, matrixShadow[2]);
-		paramBlock.SetParameterDataArrayMat4x4(target, 1, matrixShadowStereo[2]);
+		accessor.SetArrayMat4x4(target, 0, matrixShadow[2]);
+		accessor.SetArrayMat4x4(target, 1, matrixShadowStereo[2]);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadowMatrix4);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayMat4x4(target, 0, matrixShadow[3]);
-		paramBlock.SetParameterDataArrayMat4x4(target, 1, matrixShadowStereo[3]);
+		accessor.SetArrayMat4x4(target, 0, matrixShadow[3]);
+		accessor.SetArrayMat4x4(target, 1, matrixShadowStereo[3]);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutLightParams);
 	if(target != -1){
-		paramBlock.SetParameterDataVec4(target, 0.0f, 0.0f, 0.0f, 0.0f);
+		accessor.SetVec4(target, 0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutLayerBorder);
 	if(target != -1){
-		paramBlock.SetParameterDataVec4(target, layerBorder[0], layerBorder[1],
+		accessor.SetVec4(target, layerBorder[0], layerBorder[1],
 			layerBorder[2], layerBorder[3]);
 	}
 	
@@ -1387,23 +1396,23 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		pixelSize = 1.0f / (float)shadowMapSize;
 		noiseScale = config.GetShadowCubePCFSize() / (float)shadowMapSize;
 		
-		paramBlock.SetParameterDataVec3(target, pixelSize, pixelSize, noiseScale);
+		accessor.SetVec3(target, pixelSize, pixelSize, noiseScale);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadowDepthTransform);
 	if(target != -1){
-		paramBlock.SetParameterDataVec4(target, 1.0f, 0.0f, 1.0f / scaleZ[0], 1.0f / scaleZ[1]);
+		accessor.SetVec4(target, 1.0f, 0.0f, 1.0f / scaleZ[0], 1.0f / scaleZ[1]);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadowDepthTransform2);
 	if(target != -1){
-		paramBlock.SetParameterDataVec4(target, 1.0f, 0.0f, 1.0f / scaleZ[2], 1.0f / scaleZ[3]);
+		accessor.SetVec4(target, 1.0f, 0.0f, 1.0f / scaleZ[2], 1.0f / scaleZ[3]);
 	}
 	
 	// global illumination
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutGIShadowMatrix);
 	if(target != -1){
-		paramBlock.SetParameterDataMat4x4(target, giMatrixShadow);
+		accessor.SetMat4x4(target, giMatrixShadow);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutGIShadowParams);
@@ -1412,10 +1421,153 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		pixelSize = 1.0f / (float)giShadowMapSize;
 		noiseScale = config.GetShadowCubePCFSize() / (float)giShadowMapSize;
 		
-		paramBlock.SetParameterDataVec3(target, pixelSize, pixelSize, noiseScale);
+		accessor.SetVec3(target, pixelSize, pixelSize, noiseScale);
 	}
 }
 
+void deoglRenderLightSky::RenderForward(deoglRenderPlan &plan){
+	plan.SkyLightsStartBuildRT();
+	
+	if(plan.GetSkyLightCount() == 0){
+		return;
+	}
+	
+	const deoglDebugTraceGroup debugTrace(GetRenderThread(), "LightSky.RenderForward");
+	DebugTimersReset(plan, false);
+	
+	RestoreFBO(plan);
+	
+	plan.GetSkyLights().Visit(0, plan.GetSkyLightCount(), [&](deoglRenderPlanSkyLight &planSkyLight){
+		RenderForward(planSkyLight);
+	});
+	
+	DebugTimer1Sample(plan, *pDebugInfoSolid, true);
+}
+
+void deoglRenderLightSky::RenderForward(deoglRenderPlanSkyLight &plan){
+	if(!plan.GetUseLight()){
+		return;
+	}
+	
+	auto &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace(renderThread, "LightSky.RenderForward2");
+	auto &tsmgr = renderThread.GetTexture().GetStages();
+	auto giState = plan.GetPlan().GetUpdateGIState();
+	auto &skyLayer = *plan.GetLayer();
+	
+	const bool useShadow = plan.GetUseShadow();
+	int shadowMapSize = plan.GetPlan().GetShadowSkySize();
+	int passCount = plan.GetShadowLayerCount();
+	
+	if(useShadow || giState){
+		RenderShadows(plan, true, nullptr);
+		RestoreFBO(plan.GetPlan());
+		DebugTimer2SampleCount(plan.GetPlan(), *pDebugInfoSolidShadow, 1, true);
+	}
+	
+	// set light parameters
+	int pipelineModifiers = 0;
+	if(plan.GetPlan().GetRenderStereo()){
+		pipelineModifiers |= deoglLightPipelines::emStereo;
+	}
+	
+	const deoglLightPipeline *pipeline = nullptr;
+	if(useShadow){
+		pipeline = &skyLayer.GetPipelines().GetWithRef(deoglLightPipelines::etSolid1, pipelineModifiers);
+		
+	}else if(skyLayer.GetHasLightDirect()){
+		pipeline = &skyLayer.GetPipelines().GetWithRef(deoglLightPipelines::etNoShadow, pipelineModifiers);
+		
+	}else{
+		pipeline = &skyLayer.GetPipelines().GetWithRef(deoglLightPipelines::etAmbient, pipelineModifiers);
+	}
+	
+	const deoglLightShader &lightShader = pipeline->GetShader();
+	if(plan.GetFRSlot() != -1){
+		auto &spb = renderThread.GetRenderers().GetWorld().GetRenderPB();
+		deoglSPBMapBuffer mapped(spb);
+		mapped.SetDelayUpload(true);
+		
+		deoglSPBAccessor accessorPb(spb);
+		auto accessorLight = accessorPb.GetStructAt(deoglSkinShader::erutFRLights, plan.GetFRSlot());
+		
+		accessorLight.SetInt(deoglFRShadowManager::eflpType, (int)deoglLightShaderConfig::elmSky);
+		accessorLight.SetInt(deoglFRShadowManager::eflpArrayIndex, -1);
+		accessorLight.SetInt(deoglFRShadowManager::eflpPcfMode, (int)deoglLightShaderConfig::estmPcf9);
+		accessorLight.SetBVec2(deoglFRShadowManager::eflpHasTextureShadow, useShadow, false);
+		
+		auto accessorLigParam = accessorLight.GetStructAt(deoglFRShadowManager::eflpLight);
+		UpdateLightParamBlock(lightShader, accessorLigParam, plan);
+		
+		auto accessorInstParam = accessorLight.GetStructAt(deoglFRShadowManager::eflpInstance);
+		UpdateInstanceParamBlock(lightShader, accessorInstParam, plan, shadowMapSize, passCount);
+	}
+	
+	// GI rays
+	if(giState){
+		auto slgc = plan.GetLayer()->GetGICascade(giState->GetSkyShadowCascade());
+		auto scsolid = slgc ? &slgc->GetShadowCaster().GetSolid() : nullptr;
+		
+		RestoreFBOGITraceRays(*giState);
+		
+		auto texture1 = renderThread.GetDefaultTextures().GetShadowMap();
+		auto texture2 = texture1;
+		pipeline = nullptr;
+		
+		if(scsolid){
+			if(scsolid->GetStaticMap()){
+				texture1 = scsolid->GetStaticMap();
+				
+				if(scsolid->GetDynamicMap()){
+					texture2 = scsolid->GetDynamicMap();
+					pipeline = skyLayer.GetPipelines().GetWith(deoglLightPipelines::etGIRaySolid2, 0);
+					
+				}else{
+					pipeline = skyLayer.GetPipelines().GetWith(deoglLightPipelines::etGIRaySolid1, 0);
+				}
+				
+			}else if(scsolid->GetDynamicMap()){
+				texture1 = scsolid->GetDynamicMap();
+				pipeline = skyLayer.GetPipelines().GetWith(deoglLightPipelines::etGIRaySolid1, 0);
+				
+			}else{
+				pipeline = skyLayer.GetPipelines().GetWith(deoglLightPipelines::etGIRayNoShadow, 0);
+			}
+		}
+		
+		if(pipeline){
+			pipeline->GetPipeline()->Activate();
+			
+			deoglSPBlockUBO &spbInstance = skyLayer.GetInstanceParameterBlock();
+			deoglSPBlockUBO &spbLight = skyLayer.GetLightParameterBlock();
+			UpdateLightParamBlock(lightShader, spbLight, plan);
+			UpdateInstanceParamBlock(lightShader, spbInstance, plan, shadowMapSize, passCount);
+			// WARNING always non-stereo!
+			renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+			
+			spbLight.Activate();
+			spbInstance.Activate();
+			
+			const deoglLightShader &lightShaderGI = pipeline->GetShader();
+			int target = lightShaderGI.GetTextureTarget(deoglLightShader::ettShadow1SolidDepth);
+			if(target != -1){
+				tsmgr.EnableTexture(target, *texture1, GetSamplerShadowClampLinear());
+			}
+			
+			target = lightShaderGI.GetTextureTarget(deoglLightShader::ettShadow2SolidDepth);
+			if(target != -1){
+				tsmgr.EnableTexture(target, *texture2, GetSamplerShadowClampLinear());
+			}
+			
+			target = lightShaderGI.GetTextureTarget(deoglLightShader::ettNoise);
+			if(target != -1){
+				tsmgr.EnableTexture(target, *renderThread.GetDefaultTextures().GetNoise(), GetSamplerRepeatNearest());
+			}
+			
+			RenderFullScreenQuadVAO();
+		}
+	}
+}
 
 
 void deoglRenderLightSky::ResetDebugInfo(){

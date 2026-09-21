@@ -42,6 +42,7 @@ public:
 	deoglMemoryConsumptionTexture texture3D;
 	deoglMemoryConsumptionTexture textureArray;
 	deoglMemoryConsumptionTexture textureCube;
+	deoglMemoryConsumptionTexture textureArrayCube;
 	
 	deoglMemoryConsumptionTexture texture2DRenderable;
 	deoglMemoryConsumptionTexture texture3DRenderable;

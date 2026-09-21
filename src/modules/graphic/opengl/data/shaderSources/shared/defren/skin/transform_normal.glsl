@@ -9,7 +9,7 @@
 // are also calculated and written.
 const bool NormalNoTransform = WithGeometryShader || WithTessellationShader;
 
-void transformNormal(in int spbIndex, out sTransformTransfer transformTransfer){
+void transformNormal(const in int spbIndex, const in sTransformTransfer transformTransfer){
 	if(GeometryMode == GeometryModePropFieldImposter){
 		vNormal = normalize(mat3(transformTransfer.matRSMV) * -transformTransfer.bbMat[2]);
 		vTangent = normalize(mat3(transformTransfer.matRSMV) * transformTransfer.bbMat[0]);

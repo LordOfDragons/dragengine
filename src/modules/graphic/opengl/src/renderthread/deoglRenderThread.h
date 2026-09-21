@@ -39,6 +39,7 @@
 	#include <devkDevice.h>
 #endif	
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decTimeHistory.h>
@@ -59,6 +60,7 @@ class deoglOcclusionQueryManager;
 class deoglRRenderWindow;
 class deoglRCaptureCanvas;
 class deoglShadowMapper;
+class deoglFRShadowManager;
 class deoglTriangleSorter;
 class deoglPersistentRenderTaskPool;
 class deoglRenderTaskSharedPool;
@@ -145,6 +147,7 @@ private:
 	deoglOcclusionQueryManager *pOccQueryMgr;
 	deoglGI *pGI;
 	deoglShadowMapper *pShadowMapper;
+	deTUniqueReference<deoglFRShadowManager> pFRShadowManager;
 	deoglTriangleSorter *pTriangleSorter;
 	deoglPersistentRenderTaskPool *pPersistentRenderTaskPool;
 	deoglRenderTaskSharedPool *pRenderTaskSharedPool;
@@ -365,6 +368,9 @@ public:
 	
 	/** Shadow mapper. */
 	inline deoglShadowMapper &GetShadowMapper() const{ return *pShadowMapper; }
+	
+	/** Forward rendering shadow manager. */
+	inline const deTUniqueReference<deoglFRShadowManager> &GetFRShadowManager() const{ return pFRShadowManager; }
 	
 	/** Deferred rendering. */
 	inline deoglDeferredRendering &GetDeferredRendering() const{ return *pDeferredRendering; }

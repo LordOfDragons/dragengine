@@ -36,7 +36,7 @@ private:
 	deoglShaderParameterBlock &pBlock;
 	const int pElement;
 	const int pCount;
-	bool pMapped;
+	bool pMapped, pDelayUpload;
 	
 	
 	
@@ -65,6 +65,9 @@ public:
 	
 	/** Unmap block if mapped. */
 	void Unmap();
+	
+	/** Set delay update on unmap. */
+	void SetDelayUpload(bool delay);
 	/*@}*/
 };
 

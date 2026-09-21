@@ -460,6 +460,9 @@ void deoglLSConfiguration::pLoadConfigOpenGL(deoglConfiguration &configuration, 
 				}else if(strcmp(name, "vrSubmitDepth") == 0){
 					configuration.SetVRSubmitDepth(tag->GetFirstData()->GetData().ToInt() != 0);
 					
+				}else if(strcmp(name, "lowFillRate") == 0){
+					configuration.SetLowFillRate(tag->GetFirstData()->GetData().ToInt() != 0);
+					
 				}else{
 					pOgl.LogWarnFormat("opengl.xml %s(%i:%i): Invalid property name %s.",
 						tag->GetName().GetString(), tag->GetLineNumber(),

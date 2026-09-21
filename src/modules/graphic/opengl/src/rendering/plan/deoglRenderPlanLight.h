@@ -60,6 +60,7 @@ private:
 	bool pUseShadowTemporary;
 	bool pUseAmbient;
 	bool pRefilterShadows;
+	int pFRSlot;
 	
 	
 	
@@ -67,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render plan light. */
-	deoglRenderPlanLight(deoglRenderPlan &plan);
+	explicit deoglRenderPlanLight(deoglRenderPlan &plan);
 	
 	/** Clean up render plan light. */
 	~deoglRenderPlanLight();
@@ -123,6 +124,10 @@ public:
 	inline bool GetUseShadowTemporary() const{ return pUseShadowTemporary; }
 	inline bool GetUseAmbient() const{ return pUseAmbient; }
 	inline bool GetRefilterShadows() const{ return pRefilterShadows; }
+	
+	/** Forward render slot. */
+	inline int GetFRSlot() const{ return pFRSlot; }
+	void SetFRSlot(int slot);
 	/*@}*/
 	
 	

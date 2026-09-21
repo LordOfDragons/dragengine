@@ -28,6 +28,7 @@
 #include "deoglRImage.h"
 #include "deoglTextureStageManager.h"
 #include "arraytexture/deoglArrayTexture.h"
+#include "arraycubemap/deoglArrayCubeMap.h"
 #include "cubemap/deoglCubeMap.h"
 #include "texsamplerconfig/deoglTexSamplerConfig.h"
 #include "texture2d/deoglTexture.h"
@@ -122,6 +123,10 @@ void deoglTextureStageManager::EnableBareCubeMap(int stage, const deoglCubeMap &
 	BindTexture(stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP);
 }
 
+void deoglTextureStageManager::EnableBareArrayCubeMap(int stage, const deoglArrayCubeMap &arrayCubeMap){
+	BindTexture(stage, arrayCubeMap.GetTexture(), GL_TEXTURE_CUBE_MAP_ARRAY);
+}
+
 void deoglTextureStageManager::EnableBareTBO(int stage, GLuint tbo){
 	BindTexture(stage, tbo, GL_TEXTURE_BUFFER);
 }
@@ -144,6 +149,11 @@ deoglCubeMap::eFaces face, deoglTexSamplerConfig &samplerConfig){
 void deoglTextureStageManager::EnableArrayTexture(int stage, const deoglArrayTexture &texture,
 deoglTexSamplerConfig &samplerConfig){
 	BindTexture(stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY, samplerConfig.GetSamplerObject());
+}
+
+void deoglTextureStageManager::EnableArrayCubeMap(int stage, const deoglArrayCubeMap &arrayCubeMap,
+deoglTexSamplerConfig &samplerConfig){
+	BindTexture(stage, arrayCubeMap.GetTexture(), GL_TEXTURE_CUBE_MAP_ARRAY, samplerConfig.GetSamplerObject());
 }
 
 void deoglTextureStageManager::EnableTBO(int stage, GLuint tbo, deoglTexSamplerConfig &samplerConfig){

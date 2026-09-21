@@ -22,13 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "deoglTexUnitConfig.h"
 #include "../deoglRImage.h"
 #include "../deoglTextureStageManager.h"
 #include "../arraytexture/deoglArrayTexture.h"
+#include "../arraytexture/deoglRenderableDepthArrayTexture.h"
 #include "../cubemap/deoglCubeMap.h"
 #include "../texture2d/deoglTexture.h"
 #include "../../envmap/deoglEnvironmentMap.h"
@@ -39,6 +37,9 @@
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
 #include "../../rendering/deoglRenderReflection.h"
+#include "../../rendering/light/deoglRenderLight.h"
+#include "../../rendering/light/deoglRenderLightSky.h"
+#include "../../shadow/deoglFRShadowManager.h"
 #include "../../skin/deoglSkinTexture.h"
 #include "../../skin/channel/deoglSkinChannel.h"
 #include "../../skin/combinedTexture/deoglCombinedTexture.h"
@@ -194,6 +195,25 @@ void deoglTexUnitConfig::Apply(deoglRenderThread &renderThread, int stage) const
 						*pSampler );
 				}
 			}
+			}break;
+			
+		case deoglTexUnitConfig::estFRShadowSky:{
+			auto rentex = renderThread.GetRenderers().GetLight().GetRenderLightSky().GetSolidShadowMap();
+			auto texture = rentex ? rentex->GetArrayTexture() : nullptr;
+			tsmgr.EnableArrayTexture(stage, texture ? *texture :
+				*renderThread.GetDefaultTextures().GetShadowArrayMap(), *pSampler);
+			}break;
+			
+		case deoglTexUnitConfig::estFRShadowSpot:{
+			const auto &texture = renderThread.GetFRShadowManager()->GetSpotShadowArray();
+			tsmgr.EnableArrayTexture(stage, texture ? *texture :
+				*renderThread.GetDefaultTextures().GetShadowArrayMap(), *pSampler);
+			}break;
+			
+		case deoglTexUnitConfig::estFRShadowPoint:{
+			const auto &texture = renderThread.GetFRShadowManager()->GetPointShadowArray();
+			tsmgr.EnableArrayCubeMap(stage, texture ? *texture :
+				*renderThread.GetDefaultTextures().GetShadowArrayCube(), *pSampler);
 			}break;
 			
 		default:
