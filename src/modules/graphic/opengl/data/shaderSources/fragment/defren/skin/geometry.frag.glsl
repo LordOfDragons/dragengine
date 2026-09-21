@@ -681,7 +681,7 @@ void main(void){
 	*/
 	
 	if(pCondLowFillRate && (OutputMode == OutputModeMaterial || OutputMode == OutputModeMaterialReduced)){
-		if(writeDiffuse.a > 0.0){
+		if(writeDiffuse.a > 0.0 && !pCondDisableLights){
 			sFRFragment fragment;
 			fragment.position = vPosition;
 			fragment.diffuse = writeDiffuse;

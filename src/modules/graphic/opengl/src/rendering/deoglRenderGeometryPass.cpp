@@ -203,7 +203,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglRenderPlanTasks &tasks = plan.GetTasks();
 	tasks.WaitFinishBuildingTasksGeometry();
 	
-	if(plan.GetLowFillRate()){
+	if(plan.GetLowFillRate() && !plan.GetDisableLights()){
 		renderThread.GetRenderers().GetLight().RenderForward(plan);
 		plan.SetFRLightsValid(true);
 		

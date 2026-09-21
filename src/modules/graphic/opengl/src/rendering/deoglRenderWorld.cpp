@@ -932,6 +932,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	// conditions, aka specializations
 	const bool condClipPlane = mask && mask->GetUseClipPlane();
 	const bool condLowFillRate = plan.GetLowFillRate();
+	const bool condDisableLights = plan.GetDisableLights();
 	
 	// forward rendering
 	const deoglFRShadowManager &frShadowManager = renderThread.GetFRShadowManager();
@@ -1069,7 +1070,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		a.SetVec2(deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift);
 		
 		// specializations
-		a.SetBVec4(deoglSkinShader::erutConditions1, condClipPlane, condLowFillRate, false, false);
+		a.SetBVec4(deoglSkinShader::erutConditions1, condClipPlane, condLowFillRate,
+			condDisableLights, false);
 		
 		// forward rendering
 		if(condLowFillRate && plan.GetFRLightsValid()){

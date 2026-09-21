@@ -515,13 +515,12 @@ void deoglRenderLight::RenderLights(deoglRenderPlan &plan, bool solid, const deo
 
 void deoglRenderLight::RenderAO(deoglRenderPlan &plan, bool solid){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace(renderThread, solid ? "Light.RenderAO(Solid)" : "Light.RenderAO(Transparent)");
 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	
 	if(!config.GetSSAOEnable() || plan.GetDisableLights()){
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace(renderThread, solid ? "Light.RenderAO(Solid)" : "Light.RenderAO(Transparent)");
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();

@@ -277,11 +277,12 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	
 	// x: use clip plane
 	// y: use low fill rate rendering
-	// z: -
+	// z: disable lights
 	// w: -
 	bvec4 pConditions1;
 	#define pCondClipPlane (pConditions1.x)
 	#define pCondLowFillRate (pConditions1.y)
+	#define pCondDisableLights (pConditions1.z)
 	
 	
 	
