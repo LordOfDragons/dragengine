@@ -308,7 +308,7 @@ vec3 frLighting(const in sFRLight light, const in sFRFragment fragment){
 	//ao = min(ao, ssao);
 	
 	// specular term
-	float ap = 426.0 * (1.0 - fragment.roughness.r) / (90.0 * fragment.roughness.r * fragment.roughness.r + fragment.roughness.r + 0.001) + 1.0;
+	float ap = 426.0 * (1.0 - fragment.roughness) / (90.0 * fragment.roughness * fragment.roughness + fragment.roughness + 0.001) + 1.0;
 	vec3 halfDir = normalize(lightDir - normalize(fragment.position));
 	float specNormTerm = (ap + 2.0) / 8.0;
 	float specPowTerm = pow(clamp(dot(normal, halfDir), 0.0, 0.99), ap);
