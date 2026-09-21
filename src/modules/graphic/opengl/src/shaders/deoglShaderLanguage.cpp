@@ -209,6 +209,11 @@ pCompilingTaskCount(0)
 		&& GLSL_EXT_CHECK(ext.GetGLVersion(), evgl4p2, evgl4p6)){
 			pGLSLExtensions.Add("GL_ARB_shader_atomic_counters");
 		}
+		
+	}else{
+		if(ext.GetHasExtension(deoglExtensions::ext_EXT_texture_cube_map_array)){
+			pGLSLExtensions.Add("GL_EXT_texture_cube_map_array");
+		}
 	}
 	
 	try{
