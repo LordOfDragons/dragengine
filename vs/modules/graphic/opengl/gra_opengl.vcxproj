@@ -644,6 +644,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPDefRenSizeLimit.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPFrameRateLimit.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPHDRRMaximumIntensity.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPLowFillRate.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPRenderDownScale.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPTranspLayerLimit.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPEnableHDRMonitor.cpp" />
@@ -828,6 +829,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSourceLocation.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSources.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBAccessor.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBuffer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBufferRead.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBParameter.cpp" />
@@ -846,6 +848,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBListUBO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBRTIGroup.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBRTIGroupList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglFRShadowManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCAmbient.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCSolid.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCTransparent.cpp" />
@@ -961,6 +964,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglRHeightTerrain.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglTerrainHeightImage.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglTerrainMaskImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraycubemap\deoglArrayCubeMap.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglArrayTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableColorArrayTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableColorArrayTextureManager.cpp" />
@@ -1292,6 +1296,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPDefRenSizeLimit.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPFrameRateLimit.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPHDRRMaximumIntensity.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPLowFillRate.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPRenderDownScale.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPTranspLayerLimit.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPEnableHDRMonitor.h" />
@@ -1479,6 +1484,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSourceLocation.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSources.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBAccessor.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBuffer.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBufferRead.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBParameter.h" />
@@ -1497,6 +1503,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBListUBO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBRTIGroup.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBRTIGroupList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglFRShadowManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCAmbient.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCSolid.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCTransparent.h" />
@@ -1612,6 +1619,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglRHeightTerrain.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglTerrainHeightImage.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglTerrainMaskImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraycubemap\deoglArrayCubeMap.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglArrayTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableColorArrayTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableColorArrayTextureManager.h" />

@@ -32,6 +32,7 @@ class deoglArrayTexture;
 class deoglCubeMap;
 class deoglRenderThread;
 class deoglTexture;
+class deoglArrayCubeMap;
 
 class deErrorTracePoint;
 
@@ -59,7 +60,9 @@ private:
 		eatCubeMapPosZ,
 		eatCubeMapNegZ,
 		eatArrayTexture,
-		eatArrayTextureLayer
+		eatArrayTextureLayer,
+		eatArrayCubeMap,
+		eatArrayCubeMapLayerFace,
 	};
 	
 	struct sAttachement{
@@ -223,6 +226,10 @@ public:
 	void AttachDepthArrayTextureLayer(deoglArrayTexture *texture, int layer);
 	/** Attach a depth array texture layer level. */
 	void AttachDepthArrayTextureLayerLevel(deoglArrayTexture *texture, int layer, int level);
+	/** Attach a depth cube map array texture layer. */
+	void AttachDepthArrayCubeMapLayerFace(deoglArrayCubeMap *texture, int layer);
+	/** Attach a depth cube map array texture layer level. */
+	void AttachDepthArrayCubeMapLayerFaceLevel(deoglArrayCubeMap *texture, int layer, int level);
 	/** Detach depth image if attached. */
 	void DetachDepthImage();
 	

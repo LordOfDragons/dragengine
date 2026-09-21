@@ -32,6 +32,7 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTDebug.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
+#include "../texture/arraycubemap/deoglArrayCubeMap.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/texture2d/deoglTexture.h"
 
@@ -628,6 +629,26 @@ void deoglFramebuffer::AttachDepthArrayTextureLayerLevel(deoglArrayTexture *text
 		OGL_CHECK(pRenderThread, pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, image, level, layer));
 		
 		pAttDepth.Set(image, eatArrayTextureLayer, level, layer);
+	}
+}
+
+void deoglFramebuffer::AttachDepthArrayCubeMapLayerFace(deoglArrayCubeMap *texture, int layer){
+	AttachDepthArrayCubeMapLayerFaceLevel(texture, layer, 0);
+}
+
+void deoglFramebuffer::AttachDepthArrayCubeMapLayerFaceLevel(deoglArrayCubeMap *texture, int layer, int level){
+	if(pPrimary || !texture){
+		DETHROW(deeInvalidParam);
+	}
+	
+	const GLuint image = texture->GetTexture();
+	
+	if(pAttDepth.DoesNotMatch(image, eatArrayCubeMapLayerFace, level, layer)){
+		DetachDepthImage();
+		
+		OGL_CHECK(pRenderThread, pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, image, level, layer));
+		
+		pAttDepth.Set(image, eatArrayCubeMapLayerFace, level, layer);
 	}
 }
 
