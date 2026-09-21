@@ -411,6 +411,7 @@ void deglbWindowMain::RunDelga(const char *filename){
 	
 	delGame::Ref game = list.First();
 	
+	auto delgaFile(game->GetDelgaFile());
 	delGame::Ref loadedGame(pLauncher->GetGameManager().GetGames().FindWithId(game->GetIdentifier()));
 	if(loadedGame){
 		if(loadedGame->GetDelgaFile() == path){
@@ -418,6 +419,7 @@ void deglbWindowMain::RunDelga(const char *filename){
 			
 		}else{
 			game->LoadConfig();
+			game->SetDelgaFile(delgaFile);
 			pLauncher->GetGameManager().GetGames().Remove(loadedGame);
 			pLauncher->GetGameManager().GetGames().Add(game);
 			pPanelGames->UpdateGameList();
@@ -426,6 +428,7 @@ void deglbWindowMain::RunDelga(const char *filename){
 		
 	}else{
 		game->LoadConfig();
+		game->SetDelgaFile(delgaFile);
 		pLauncher->GetGameManager().GetGames().Add(game);
 		pPanelGames->UpdateGameList();
 	}
