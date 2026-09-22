@@ -265,6 +265,30 @@ class ParameterTree
 	end
 	
 	/**
+	 * \brief Value of parameter as Array or default value if absent.
+	 * \version 1.35
+	 * 
+	 * Similar to \ref getArrayAt() but supports non-array values. If the value is Array it is
+	 * returned. If not a new Array is created with value as single element. This is useful if
+	 * a value which is used across many parameters as single value to contain now a list of
+	 * values without needing to change all parameters. This is also useful to keep parameter
+	 * tree files compact using single value tags while still allowing to upgrade to arrays
+	 * when the need arises.
+	 */
+	func Array getAsArrayAt(String path, Array default)
+		var Object value = pParameters.getAt(path, null)
+		if value == null
+			return default
+			
+		elif value castable Array
+			return value cast Array
+			
+		else
+			return Array.newWith(value)
+		end
+	end
+	
+	/**
 	 * \brief Set value of parameter.
 	 * 
 	 * If the parameter tree is not saved all kind of objects can be stored in the parameter tree.
