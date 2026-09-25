@@ -173,6 +173,20 @@ void meCLSelect::StoreRectSelect(){
 	}
 }
 
+void meCLSelect::RemoveHitListDuplicates(){
+	pTempHitList.RemoveAll();
+	
+	pHitList.VisitIndexed([&](int i, const meCLHitListEntry::Ref &a){
+		if(!pTempHitList.HasMatching([&](const meCLHitListEntry &b){
+			return a->IsSame(b);
+		})){
+			pTempHitList.Add(a);
+		}
+	});
+	
+	pHitList = std::move(pTempHitList);
+}
+
 void meCLSelect::Prepare(){
 	pHitList.RemoveAll();
 }

@@ -318,6 +318,7 @@ void meViewEditorSelect::OnLeftMouseButtonRelease(int x, int y, bool shift, bool
 			RayTestCollision(pCLSelect, pCLSelect->GetRayOrigin(), pCLSelect->GetRayDirection(),
 				decCollisionFilter(collisionCategory, collisionFilter));
 			
+			pCLSelect->RemoveHitListDuplicates();
 			meCLHitListEntry::List &hitList = pCLSelect->GetHitList();
 			if(hitList.IsNotEmpty()){
 				hitList.SortAscending();
@@ -541,6 +542,7 @@ void meViewEditorSelect::pUpdateInfoBubble(int x, int y, bool singleElement){
 	RayTestCollision(pCLBubbleInfo, rayPosition, rayDirection,
 		decCollisionFilter(collisionCategory, collisionFilter));
 	
+	pCLBubbleInfo->RemoveHitListDuplicates();
 	meCLHitListEntry::List &collected = pCLBubbleInfo->GetHitList();
 	if(collected.IsEmpty()){
 		pInfoBubble->Hide();
@@ -555,16 +557,10 @@ void meViewEditorSelect::pUpdateInfoBubble(int x, int y, bool singleElement){
 	visitor.rayDistance = (float)guiparams.GetRectSelDistance();
 	
 	if(singleElement){
-		visitor.operator()(collected.First());
+		visitor(collected.First());
 		
 	}else{
 		const int limit = 5;
-		collected.RemoveIf([&](meCLHitListEntry &a){
-			return collected.HasMatching([&](const meCLHitListEntry &b){
-				return &a != &b && a.IsSame(b);
-			});
-		});
-		
 		if(collected.GetCount() <= limit){
 			collected.Visit(visitor);
 			
