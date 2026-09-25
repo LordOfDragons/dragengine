@@ -2144,7 +2144,7 @@ void igdeWindowMain::pCreateActions(){
 void igdeWindowMain::pCreateSharedModelCollisionRig(){
 	class igdeWindowMain_SharedModelCollisionRigBuilder : public deRigBuilder{
 	public:
-		virtual void BuildRig(deRig *rig){
+		void BuildRig(deRig *rig) override{
 			rig->SetModelCollision(true);
 		}
 	} builder;

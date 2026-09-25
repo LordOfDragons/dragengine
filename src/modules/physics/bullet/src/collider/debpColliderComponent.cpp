@@ -2426,7 +2426,7 @@ void debpColliderComponent::pUpdateBones(){
 	pTestMode = etmNone;
 	
 	if(modelCollision){
-		if(model && model->GetCanDeform() && rig){
+		if(model && model->GetCanDeform() && rig && boneCount > 0){
 			model->PrepareBoneShapes(1.0f, 0.45f);
 			
 			if(model->GetBoneShapes().IsNotEmpty()){
