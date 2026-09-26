@@ -596,7 +596,19 @@ class CommandsBAAMovement
 	
 	
 	/** \brief Add commands to command manager. */
-	public static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
+	static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
+		addMovementCommands(commands, tracker)
+		addCrouchCommands(commands, tracker)
+		addRunCommands(commands, tracker)
+	end
+	
+	/**
+	 * \brief Add movement commands to command manager.
+	 * \version 1.35
+	 * 
+	 * Adds Move*, Look*, AnalogMove* and AnalogLook*.
+	 */
+	static func void addMovementCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
 		commands.add(MoveForward.new(tracker))
 		commands.add(MoveBackward.new(tracker))
 		commands.add(MoveLeft.new(tracker))
@@ -611,9 +623,26 @@ class CommandsBAAMovement
 		commands.add(AnalogMoveLR.new(tracker))
 		commands.add(AnalogLookLR.new(tracker))
 		commands.add(AnalogLookUD.new(tracker))
-		
+	end
+	
+	/**
+	 * \brief Add crouch commands to command manager.
+	 * \version 1.35
+	 * 
+	 * Adds Crouch and ToggleCrouch.
+	 */
+	static func void addCrouchCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
 		commands.add(Crouch.new(tracker))
 		commands.add(ToggleCrouch.new(tracker))
+	end
+	
+	/**
+	 * \brief Add run commands to command manager.
+	 * \version 1.35
+	 * 
+	 * Adds Run and ToggleRun.
+	 */
+	static func void addRunCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
 		commands.add(Run.new(tracker))
 		commands.add(ToggleRun.new(tracker))
 	end
@@ -621,7 +650,7 @@ class CommandsBAAMovement
 	
 	
 	/** \brief Input scheme to use for adding default bindings. */
-	public enum InputScheme
+	enum InputScheme
 		/** \brief DYXC. */
 		dyxc
 		
@@ -652,7 +681,7 @@ class CommandsBAAMovement
 	 * - "crouch"
 	 * - "run"
 	 */
-	public static func void addDefaultBindings(DefaultBindingHelper helper, InputScheme scheme)
+	static func void addDefaultBindings(DefaultBindingHelper helper, InputScheme scheme)
 		select scheme
 		case InputScheme.dyxc
 			if helper.hasMouse()
@@ -696,13 +725,18 @@ class CommandsBAAMovement
 		
 		if helper.hasGamepad()
 			if helper.gamepadBindStick(0, "analogMoveLR", "analogMoveFB")
-				helper.gamepadBindStick(1, "analogLookLR", "analogLookUD")
+				helper.bindButton(helper.getGamepad(), InputDeviceButtonType.stick, 0, "toggleRun")
+				if helper.gamepadBindStick(1, "analogLookLR", "analogLookUD")
+					helper.bindButton(helper.getGamepad(), InputDeviceButtonType.stick, 1, "toggleCrouch")
+				end
 				
 			else
 				helper.bindAxis(helper.getGamepad(), 0, "analogMoveLR")
 				helper.bindAxis(helper.getGamepad(), 1, "analogMoveFB")
 				helper.bindAxis(helper.getGamepad(), 2, "analogLookLR")
 				helper.bindAxis(helper.getGamepad(), 3, "analogLookUD")
+				helper.bindAxis(helper.getGamepad(), 4, "toggleRun")
+				helper.bindAxis(helper.getGamepad(), 5, "toggleCrouch")
 			end
 		end
 		

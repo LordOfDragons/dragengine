@@ -1396,15 +1396,31 @@ class BaseGameApp extends Game
 	 * - CommandToggleConsole named "toggleConsole"
 	 */
 	protected func void createAndAddCommands()
+		createAndAddCoreCommands()
+		CommandsBAAMovement.addCommands(pCommandManager, pPlayerControlledActor)
+		CommandsBAAInteract.addCommands(pCommandManager, pPlayerControlledActor)
+	end
+	
+	/**
+	 * \brief Create core commands and add them to command list.
+	 * 
+	 * Can be used when overriding \ref createAndAddCommands() to add custom commands without
+	 * needing to remove movement or interaction commands.
+	 * 
+	 * Creates and adds these commands:
+	 * - CommandQuitGame named "quit"
+	 * - CommandScreenshot named "screenshot"
+	 * 
+	 * If WindowConsole is present this command is also added:
+	 * - CommandToggleConsole named "toggleConsole"
+	 */
+	protected func void createAndAddCoreCommands()
 		pCommandManager.add(CommandQuitGame.new())
 		pCommandManager.add(CommandScreenshot.new(pScreenshotCreator))
 		
 		if pWindowConsole != null
 			pCommandManager.add(CommandToggleConsole.new(pWindowConsole))
 		end
-		
-		CommandsBAAMovement.addCommands(pCommandManager, pPlayerControlledActor)
-		CommandsBAAInteract.addCommands(pCommandManager, pPlayerControlledActor)
 	end
 	
 	/**
@@ -1570,6 +1586,26 @@ class BaseGameApp extends Game
 	 * \endcode
 	 */
 	func DefaultBindingHelper defaultBindings()
+		var DefaultBindingHelper helper = coreDefaultBindings()
+		CommandsBAAMovement.addDefaultBindings(helper, CommandsBAAMovement.InputScheme.wasd)
+		CommandsBAAInteract.addDefaultBindings(helper)
+		return helper
+	end
+	
+	/**
+	 * \brief Create core default bindings.
+	 * 
+	 * Can be used when overriding \ref defaultBindings() to add custom bindings without
+	 * unwanted bindings lingering around.
+	 * 
+	 * Creates instance of DefaultBindingHelper with these bindings:
+	 * - "quit" mapped to key "Escape" and "Q"
+	 * - "screenshot" mapped to key "F10"
+	 * 
+	 * If WindowConsole is present these additional bindings are added:
+	 * - "toggleConsole" mapped to "F1"
+	 */
+	func DefaultBindingHelper coreDefaultBindings()
 		var DefaultBindingHelper helper = DefaultBindingHelper.new()
 		
 		if helper.hasKeyboard()
@@ -1586,9 +1622,6 @@ class BaseGameApp extends Game
 				helper.keyboardBindKeyCode(InputEventKey.f1, "toggleConsole")
 			end
 		end
-		
-		CommandsBAAMovement.addDefaultBindings(helper, CommandsBAAMovement.InputScheme.wasd)
-		CommandsBAAInteract.addDefaultBindings(helper)
 		
 		return helper
 	end
