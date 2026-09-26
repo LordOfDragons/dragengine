@@ -81,14 +81,16 @@ mpTargetVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipula
 	
 	mpMinRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMinimumRotation(mpMinRotation.GetEulerAnglesRadians());
+			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMinimumRotation(
+				mpMinRotation.GetEulerAnglesRadians());
 		}
 		NotifyRuleChanged();
 	};
 	
 	mpMaxRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMaximumRotation(mpMaxRotation.GetEulerAnglesRadians());
+			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMaximumRotation(
+				mpMaxRotation.GetEulerAnglesRadians());
 		}
 		NotifyRuleChanged();
 	};
