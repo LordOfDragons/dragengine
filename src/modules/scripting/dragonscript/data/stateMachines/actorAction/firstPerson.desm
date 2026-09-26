@@ -398,6 +398,7 @@
 		<transition event='playerReleasesControl'>
 			<import>shared.init.inputLocomotion</import>
 		</transition>
+		
 		<!--
 		Think on frame update for player controlled actor only.
 		

@@ -793,6 +793,8 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	 * "move.walk": LocomotionAttribute.displacement
 	 * "move.run": LocomotionAttribute.displacement
 	 * "move.velocity": LocomotionAttribute.relativeMovingSpeed
+	 * "move.speed": LocomotionAttribute.movingSpeed
+	 * "move.direction": LocomotionAttribute.movingDirection
 	 * "tilt.vertical": LocomotionAttribute.tiltVertical
 	 * "tilt.horizontal": LocomotionAttribute.tiltHorizontal
 	 * "tilt.offset": LocomotionAttribute.tiltOffset
@@ -809,6 +811,8 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		pControllerMappings.setAt("move.walk", LocomotionAttribute.displacement)
 		pControllerMappings.setAt("move.run", LocomotionAttribute.displacement)
 		pControllerMappings.setAt("move.velocity", LocomotionAttribute.relativeMovingSpeed)
+		pControllerMappings.setAt("move.speed", LocomotionAttribute.movingSpeed)
+		pControllerMappings.setAt("move.direction", LocomotionAttribute.movingDirection)
 		pControllerMappings.setAt("tilt.vertical", LocomotionAttribute.tiltVertical)
 		pControllerMappings.setAt("tilt.horizontal", LocomotionAttribute.tiltHorizontal)
 		pControllerMappings.setAt("tilt.offset", LocomotionAttribute.tiltOffset)
