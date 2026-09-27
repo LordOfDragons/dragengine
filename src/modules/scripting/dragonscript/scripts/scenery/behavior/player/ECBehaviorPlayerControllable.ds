@@ -422,6 +422,22 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 			pTracker.setActor(this)
 		end
 		
+		/**
+		 * \brief Take control of actor and set tracker.
+		 * \version 1.35
+		 * 
+		 * Useful for local multiplayer scenarios where multiple \ref Tracker instances exist
+		 * in the game application class.
+		 */
+		func void takeControl(Tracker tracker)
+			if tracker == null
+				throw ENullPointer.new("tracker")
+			end
+			
+			pTracker = tracker
+			pTracker.setActor(this)
+		end
+		
 		/** \brief Active player actor. */
 		func Instance getPlayerControlled()
 			return pTracker.getActor()
