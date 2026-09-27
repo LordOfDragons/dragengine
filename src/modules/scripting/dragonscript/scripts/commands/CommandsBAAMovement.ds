@@ -725,18 +725,15 @@ class CommandsBAAMovement
 		
 		if helper.hasGamepad()
 			if helper.gamepadBindStick(0, "analogMoveLR", "analogMoveFB")
-				helper.bindButton(helper.getGamepad(), InputDeviceButtonType.stick, 0, "toggleRun")
-				if helper.gamepadBindStick(1, "analogLookLR", "analogLookUD")
-					helper.bindButton(helper.getGamepad(), InputDeviceButtonType.stick, 1, "toggleCrouch")
-				end
+				helper.bindButton(helper.getGamepad(), InputDeviceButtonType.stick, 0, "toggleCrouch")
+				helper.gamepadBindStick(1, "analogLookLR", "analogLookUD")
 				
 			else
 				helper.bindAxis(helper.getGamepad(), 0, "analogMoveLR")
 				helper.bindAxis(helper.getGamepad(), 1, "analogMoveFB")
 				helper.bindAxis(helper.getGamepad(), 2, "analogLookLR")
 				helper.bindAxis(helper.getGamepad(), 3, "analogLookUD")
-				helper.bindAxis(helper.getGamepad(), 4, "toggleRun")
-				helper.bindAxis(helper.getGamepad(), 5, "toggleCrouch")
+				helper.bindAxis(helper.getGamepad(), 4, "toggleCrouch")
 			end
 		end
 		
