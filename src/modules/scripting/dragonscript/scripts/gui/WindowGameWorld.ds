@@ -169,11 +169,8 @@ class WindowGameWorld extends Window
 	var Microphone pMicrophone
 	var CameraDirector pCameraDirector
 	var WorldRenderer pWorldRenderer
-	var bool pUpdateGameWorld
-	var bool pUpdateCameraDirector
-	var bool pActivateMicrophone
-	var Panel pPanelBorder
-	var Panel pPanelStack
+	var bool pUpdateGameWorld, pUpdateCameraDirector, pActivateMicrophone
+	var Panel pPanelBorder, pPanelStack, pPanelWorldRenderer
 	
 	
 	
@@ -203,6 +200,7 @@ class WindowGameWorld extends Window
 		
 		pPanelBorder = Panel.new(BorderLayout.new())
 		pPanelStack = Panel.new(StackLayout.new())
+		pPanelWorldRenderer = Panel.new(StackLayout.new())
 		pWorldRenderer = WorldRenderer.new()
 		
 		setDesignerSelector("WindowGameWorld")
@@ -223,6 +221,7 @@ class WindowGameWorld extends Window
 		setCameraDirector(null)
 		
 		pWorldRenderer = null
+		pPanelWorldRenderer = null
 		pPanelStack = null
 		pPanelBorder = null
 		pMicrophone = null
@@ -325,7 +324,7 @@ class WindowGameWorld extends Window
 	end
 	
 	/**
-	 * \brief Panel with BorderLayout containing world render content.
+	 * \brief Panel with BorderLayout containing UI content.
 	 * \version 1.12
 	 * 
 	 * Allows to add UI widgets at the borders of the window to create the UI layouts typically
@@ -338,7 +337,7 @@ class WindowGameWorld extends Window
 	end
 	
 	/**
-	 * \brief Panel with StackLayout containing world render.
+	 * \brief Panel with StackLayout containing all window content.
 	 * \version 1.12
 	 * 
 	 * Allows to add stack widgets over the world renderer itself. These widgets have the same
@@ -348,6 +347,17 @@ class WindowGameWorld extends Window
 	 */
 	func Panel getPanelStack()
 		return pPanelStack
+	end
+	
+	/**
+	 * \brief Panel with StackLayout containing the world renderer itself.
+	 * \version 1.35
+	 * 
+	 * Allows adding additional world renderers and changing layout, for example for split
+	 * screen setups.
+	 */
+	func Panel getPanelWorldRenderer()
+		return pPanelWorldRenderer
 	end
 	
 	/** \brief Game camera. */
@@ -444,7 +454,7 @@ class WindowGameWorld extends Window
 	func Vector backProject(Point position)
 		return pWorldRenderer.backProject(position)
 	end
-
+	
 	
 	/**
 	 * \brief Back project position into 3d world.
@@ -509,7 +519,8 @@ class WindowGameWorld extends Window
 	protected func void createContent()
 		runWhileBlockingLayout(block
 			setLayout(StackLayout.new())
-			pPanelStack.addWidget(pWorldRenderer)
+			pPanelWorldRenderer.addWidget(pWorldRenderer)
+			pPanelStack.addWidget(pPanelWorldRenderer)
 			pPanelBorder.addWidget(pPanelStack, BorderLayout.Area.content)
 			addWidget(pPanelBorder)
 		end)
