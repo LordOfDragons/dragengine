@@ -242,22 +242,22 @@ class CommandsBAAInteract
 			helper.mouseBindLMR("primaryAction", null, "secondaryAction")
 		end
 		
-		if helper.hasGamepad()
-			if helper.gamepadBindTrigger(1, "primaryAction")
-				helper.gamepadBindTrigger(0, "secondaryAction")
+		helper.getGamepads().forEach(block InputDevice each
+			if helper.gamepadBindTrigger(each, 1, "primaryAction")
+				helper.gamepadBindTrigger(each, 0, "secondaryAction")
 				
 			else
-				helper.gamepadBindTrigger(0, "primaryAction")
+				helper.gamepadBindTrigger(each, 0, "primaryAction")
 			end
 			
-			if helper.gamepadBindButton(0, InputDeviceButtonType.action, "primaryAction")
-				helper.gamepadBindButton(1, InputDeviceButtonType.action, "secondaryAction")
+			if helper.gamepadBindButton(each, 0, InputDeviceButtonType.action, "primaryAction")
+				helper.gamepadBindButton(each, 1, InputDeviceButtonType.action, "secondaryAction")
 				
 			else
-				helper.gamepadBindButton(0, "primaryAction")
-				helper.gamepadBindButton(1, "secondaryAction")
+				helper.gamepadBindButton(each, 0, "primaryAction")
+				helper.gamepadBindButton(each, 1, "secondaryAction")
 			end
-		end
+		end)
 		
 		if helper.hasVRHand(true)
 			helper.vrHandBindButton(true, InputDeviceButtonType.trigger, 0, "primaryAction")

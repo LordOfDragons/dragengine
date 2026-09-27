@@ -896,19 +896,19 @@ class CommandsBAAMovement
 			throw EInvalidParam.new()
 		end
 		
-		if helper.hasGamepad()
-			if helper.gamepadBindStick(0, "analogMoveLR", "analogMoveFB")
-				helper.bindButton(helper.getGamepad(), InputDeviceButtonType.stick, 0, "toggleCrouch")
-				helper.gamepadBindStick(1, "analogLookLR", "analogLookUD")
+		helper.getGamepads().forEach(block InputDevice each
+			if helper.gamepadBindStick(each, 0, "analogMoveLR", "analogMoveFB")
+				helper.gamepadBindButton(each, 0, InputDeviceButtonType.stick, "toggleCrouch")
+				helper.gamepadBindStick(each, 1, "analogLookLR", "analogLookUD")
 				
 			else
-				helper.bindAxis(helper.getGamepad(), 0, "analogMoveLR")
-				helper.bindAxis(helper.getGamepad(), 1, "analogMoveFB")
-				helper.bindAxis(helper.getGamepad(), 2, "analogLookLR")
-				helper.bindAxis(helper.getGamepad(), 3, "analogLookUD")
-				helper.bindAxis(helper.getGamepad(), 4, "toggleCrouch")
+				helper.gamepadBindAxis(each, 0, "analogMoveLR")
+				helper.gamepadBindAxis(each, 1, "analogMoveFB")
+				helper.gamepadBindAxis(each, 2, "analogLookLR")
+				helper.gamepadBindAxis(each, 3, "analogLookUD")
+				helper.gamepadBindAxis(each, 4, "toggleCrouch")
 			end
-		end
+		end)
 		
 		if helper.hasVRHand(true)
 			helper.vrHandBindStick(true, InputDeviceAxisType.stick, 0, "analogLookLR", "")
