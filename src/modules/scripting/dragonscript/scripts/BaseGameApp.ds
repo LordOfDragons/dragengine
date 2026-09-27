@@ -1128,14 +1128,21 @@ class BaseGameApp extends Game
 	 */
 	protected func void initLanguages()
 		var String path = pConfiguration.getStringAt("pathLanguagePacks", pathLanguagePacks)
+		pConsole.addMessage("initLanguages: path '{}'".format(Array.newWith(path)))
 		if path == null
 			return
 		end
 		
 		pTranslationManager.addFromDirectory(path, true)
+		pConsole.addMessage("initLanguages: found language packs:")
+		pTranslationManager.forEach(block LanguagePack each
+			pConsole.addMessage("- {}: {}".format(Array.newWith(each.getIdentifier(), each.getName())))
+		end)
 		
-		var String id = pConfiguration.getStringAt(\
-			"defaultLanguagePackIdentifier", Engine.getUserLocaleLanguage())
+		var String engineLocale = Engine.getUserLocaleLanguage()
+		pConsole.addMessage("initLanguages: system locale: " + engineLocale)
+		var String id = pConfiguration.getStringAt("defaultLanguagePackIdentifier", engineLocale)
+		pConsole.addMessage("initLanguages: default language identifier: " + id)
 		pTranslationManager.setActiveWithIdIfPresent(id)
 		EngineTranslations.get().setActiveWithIdIfPresent(id)
 		
@@ -1154,7 +1161,10 @@ class BaseGameApp extends Game
 			pTranslationManager.setActiveNamedIfPresent(lpName)
 		end
 		
-		pTranslationManager.setFallback(pTranslationManager.getActive())
+		var LanguagePack active = pTranslationManager.getActive()
+		pConsole.addMessage("initLanguages: active language: "\
+			+ (active != null if active.getIdentifier() else "-"))
+		pTranslationManager.setFallback(active)
 	end
 	
 	/**
