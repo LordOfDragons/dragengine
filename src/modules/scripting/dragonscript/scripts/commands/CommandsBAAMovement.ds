@@ -176,21 +176,34 @@ class CommandsBAAMovement
 	/** \brief Base class operating only on actors with BAAMovement action. */
 	class Base extends Command
 		var ECBehaviorPlayerControllable.Tracker pTracker
+		var PlayerControlledActorSelector pTrackerSelector
 		
-		func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
+		func new(ECBehaviorPlayerControllable.Tracker tracker, String name,\
 		String description) super(name, description)
 			if tracker == null
-				throw ENullPointer.new()
+				throw ENullPointer.new("tracker")
 			end
 			pTracker = tracker
 		end
 		
-		protected func ECBehaviorPlayerControllable.Tracker getTracker()
+		func ECBehaviorPlayerControllable.Tracker getTracker()
 			return pTracker
 		end
 		
-		protected func BAAMovement getMovement()
-			var ECBehaviorPlayerControllable.Instance actor = pTracker.getActor()
+		func PlayerControlledActorSelector getTrackerSelector()
+			return pTrackerSelector
+		end
+		
+		func void setTrackerSelector(PlayerControlledActorSelector trackerSelector)
+			pTrackerSelector = trackerSelector
+		end
+		
+		func BAAMovement getMovement()
+			return getMovement(pTracker)
+		end
+		
+		func BAAMovement getMovement(ECBehaviorPlayerControllable.Tracker tracker)
+			var ECBehaviorPlayerControllable.Instance actor = tracker.getActor()
 			if actor == null
 				return null
 			end
@@ -209,8 +222,20 @@ class CommandsBAAMovement
 			return null
 		end
 		
+		func BAAMovement getMovement(Binding binding)
+			return getMovement(pTrackerSelector != null\
+				if pTrackerSelector.getPlayerControlledActor(binding) else pTracker)
+		end
+		
 		func void start()
 			var BAAMovement movement = getMovement()
+			if movement != null
+				start(movement)
+			end
+		end
+		
+		func void start(Binding binding)
+			var BAAMovement movement = getMovement(binding)
 			if movement != null
 				start(movement)
 			end
@@ -223,6 +248,13 @@ class CommandsBAAMovement
 			end
 		end
 		
+		func void stop(Binding binding)
+			var BAAMovement movement = getMovement(binding)
+			if movement != null
+				stop(movement)
+			end
+		end
+		
 		func void analogRelative(float value)
 			var BAAMovement movement = getMovement()
 			if movement != null
@@ -230,8 +262,22 @@ class CommandsBAAMovement
 			end
 		end
 		
+		func void analogRelative(Binding binding, float value)
+			var BAAMovement movement = getMovement(binding)
+			if movement != null
+				analogRelative(movement, value)
+			end
+		end
+		
 		func void analogAbsolute(float value)
 			var BAAMovement movement = getMovement()
+			if movement != null
+				analogAbsolute(movement, value)
+			end
+		end
+		
+		func void analogAbsolute(Binding binding, float value)
+			var BAAMovement movement = getMovement(binding)
 			if movement != null
 				analogAbsolute(movement, value)
 			end
@@ -285,6 +331,11 @@ class CommandsBAAMovement
 			setTranslateDisplayName("UI.Command.MoveForward.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "moveForward")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void start(BAAMovement action)
 			action.moveForwardStart()
 		end
@@ -303,6 +354,11 @@ class CommandsBAAMovement
 		super(tracker, name, "Move backward")
 			setTranslateDescription("UI.Command.MoveBackward.Description")
 			setTranslateDisplayName("UI.Command.MoveBackward.DisplayName")
+		end
+		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "moveBackward")
+			setTrackerSelector(trackerSelector)
 		end
 		
 		func void start(BAAMovement action)
@@ -326,6 +382,11 @@ class CommandsBAAMovement
 			setTranslateDisplayName("UI.Command.MoveLeft.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "moveLeft")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void start(BAAMovement action)
 			action.moveLeftStart()
 		end
@@ -344,6 +405,11 @@ class CommandsBAAMovement
 		super(tracker, name, "Move right")
 			setTranslateDescription("UI.Command.MoveRight.Description")
 			setTranslateDisplayName("UI.Command.MoveRight.DisplayName")
+		end
+		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "moveRight")
+			setTrackerSelector(trackerSelector)
 		end
 		
 		func void start(BAAMovement action)
@@ -368,6 +434,11 @@ class CommandsBAAMovement
 			setTranslateDisplayName("UI.Command.LookLeft.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "lookLeft")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void start(BAAMovement action)
 			action.lookLeftStart()
 		end
@@ -386,6 +457,11 @@ class CommandsBAAMovement
 		super(tracker, name, "Look right")
 			setTranslateDescription("UI.Command.LookRight.Description")
 			setTranslateDisplayName("UI.Command.LookRight.DisplayName")
+		end
+		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "lookRight")
+			setTrackerSelector(trackerSelector)
 		end
 		
 		func void start(BAAMovement action)
@@ -408,6 +484,11 @@ class CommandsBAAMovement
 			setTranslateDisplayName("UI.Command.LookUp.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "lookUp")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void start(BAAMovement action)
 			action.lookUpStart()
 		end
@@ -426,6 +507,11 @@ class CommandsBAAMovement
 		super(tracker, name, "Look down")
 			setTranslateDescription("UI.Command.LookDown.Description")
 			setTranslateDisplayName("UI.Command.LookDown.DisplayName")
+		end
+		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "lookDown")
+			setTrackerSelector(trackerSelector)
 		end
 		
 		func void start(BAAMovement action)
@@ -450,6 +536,11 @@ class CommandsBAAMovement
 			setTranslateDisplayName("UI.Command.AnalogMoveFB.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "analogMoveFB")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void analogRelative(BAAMovement action, float value)
 			action.analogMoveFB(value, false)
 		end
@@ -468,6 +559,11 @@ class CommandsBAAMovement
 		super(tracker, name, "Analog move left/right")
 			setTranslateDescription("UI.Command.AnalogMoveLR.Description")
 			setTranslateDisplayName("UI.Command.AnalogMoveLR.DisplayName")
+		end
+		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "analogMoveLR")
+			setTrackerSelector(trackerSelector)
 		end
 		
 		func void analogRelative(BAAMovement action, float value)
@@ -490,6 +586,11 @@ class CommandsBAAMovement
 			setTranslateDisplayName("UI.Command.AnalogLookLR.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "analogLookLR")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void analogRelative(BAAMovement action, float value)
 			action.analogLookLR(value, false)
 		end
@@ -508,6 +609,11 @@ class CommandsBAAMovement
 		super(tracker, name, "Analog look up/down")
 			setTranslateDescription("UI.Command.AnalogLookUD.Description")
 			setTranslateDisplayName("UI.Command.AnalogLookUD.DisplayName")
+		end
+		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "analogLookUD")
+			setTrackerSelector(trackerSelector)
 		end
 		
 		func void analogRelative(BAAMovement action, float value)
@@ -532,6 +638,11 @@ class CommandsBAAMovement
 			setTranslateDisplayName("UI.Command.Crouch.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "crouch")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void start(BAAMovement action)
 			action.crouchStart()
 		end
@@ -552,6 +663,11 @@ class CommandsBAAMovement
 			setTranslateDisplayName("UI.Command.ToggleCrouch.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "toggleCrouch")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void start(BAAMovement action)
 			action.crouchToggle()
 		end
@@ -566,6 +682,11 @@ class CommandsBAAMovement
 		super(tracker, name, "Running")
 			setTranslateDescription("UI.Command.Run.Description")
 			setTranslateDisplayName("UI.Command.Run.DisplayName")
+		end
+		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "run")
+			setTrackerSelector(trackerSelector)
 		end
 		
 		func void start(BAAMovement action)
@@ -588,6 +709,11 @@ class CommandsBAAMovement
 			setTranslateDisplayName("UI.Command.ToggleRun.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "toggleRun")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void start(BAAMovement action)
 			action.runToggle()
 		end
@@ -603,26 +729,49 @@ class CommandsBAAMovement
 	end
 	
 	/**
+	 * \brief Add commands to command manager.
+	 * \version 1.35
+	 */
+	static func void addCommands(CommandManager commands,\
+	ECBehaviorPlayerControllable.Tracker tracker, PlayerControlledActorSelector trackerSelector)
+		addMovementCommands(commands, tracker, trackerSelector)
+		addCrouchCommands(commands, tracker, trackerSelector)
+		addRunCommands(commands, tracker, trackerSelector)
+	end
+	
+	/**
 	 * \brief Add movement commands to command manager.
 	 * \version 1.35
 	 * 
 	 * Adds Move*, Look*, AnalogMove* and AnalogLook*.
 	 */
-	static func void addMovementCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
-		commands.add(MoveForward.new(tracker))
-		commands.add(MoveBackward.new(tracker))
-		commands.add(MoveLeft.new(tracker))
-		commands.add(MoveRight.new(tracker))
+	static func void addMovementCommands(CommandManager commands,\
+	ECBehaviorPlayerControllable.Tracker tracker)
+		addMovementCommands(commands, tracker, null)
+	end
+	
+	/**
+	 * \brief Add movement commands to command manager.
+	 * \version 1.35
+	 * 
+	 * Adds Move*, Look*, AnalogMove* and AnalogLook*.
+	 */
+	static func void addMovementCommands(CommandManager commands,\
+	ECBehaviorPlayerControllable.Tracker tracker, PlayerControlledActorSelector trackerSelector)
+		commands.add(MoveForward.new(tracker, trackerSelector))
+		commands.add(MoveBackward.new(tracker, trackerSelector))
+		commands.add(MoveLeft.new(tracker, trackerSelector))
+		commands.add(MoveRight.new(tracker, trackerSelector))
 		
-		commands.add(LookLeft.new(tracker))
-		commands.add(LookRight.new(tracker))
-		commands.add(LookUp.new(tracker))
-		commands.add(LookDown.new(tracker))
+		commands.add(LookLeft.new(tracker, trackerSelector))
+		commands.add(LookRight.new(tracker, trackerSelector))
+		commands.add(LookUp.new(tracker, trackerSelector))
+		commands.add(LookDown.new(tracker, trackerSelector))
 		
-		commands.add(AnalogMoveFB.new(tracker))
-		commands.add(AnalogMoveLR.new(tracker))
-		commands.add(AnalogLookLR.new(tracker))
-		commands.add(AnalogLookUD.new(tracker))
+		commands.add(AnalogMoveFB.new(tracker, trackerSelector))
+		commands.add(AnalogMoveLR.new(tracker, trackerSelector))
+		commands.add(AnalogLookLR.new(tracker, trackerSelector))
+		commands.add(AnalogLookUD.new(tracker, trackerSelector))
 	end
 	
 	/**
@@ -631,9 +780,21 @@ class CommandsBAAMovement
 	 * 
 	 * Adds Crouch and ToggleCrouch.
 	 */
-	static func void addCrouchCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
-		commands.add(Crouch.new(tracker))
-		commands.add(ToggleCrouch.new(tracker))
+	static func void addCrouchCommands(CommandManager commands,\
+	ECBehaviorPlayerControllable.Tracker tracker)
+		addCrouchCommands(commands, tracker, null)
+	end
+	
+	/**
+	 * \brief Add crouch commands to command manager.
+	 * \version 1.35
+	 * 
+	 * Adds Crouch and ToggleCrouch.
+	 */
+	static func void addCrouchCommands(CommandManager commands,\
+	ECBehaviorPlayerControllable.Tracker tracker, PlayerControlledActorSelector trackerSelector)
+		commands.add(Crouch.new(tracker, trackerSelector))
+		commands.add(ToggleCrouch.new(tracker, trackerSelector))
 	end
 	
 	/**
@@ -642,9 +803,21 @@ class CommandsBAAMovement
 	 * 
 	 * Adds Run and ToggleRun.
 	 */
-	static func void addRunCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
-		commands.add(Run.new(tracker))
-		commands.add(ToggleRun.new(tracker))
+	static func void addRunCommands(CommandManager commands,\
+	ECBehaviorPlayerControllable.Tracker tracker)
+		addRunCommands(commands, tracker, null)
+	end
+	
+	/**
+	 * \brief Add run commands to command manager.
+	 * \version 1.35
+	 * 
+	 * Adds Run and ToggleRun.
+	 */
+	static func void addRunCommands(CommandManager commands,\
+	ECBehaviorPlayerControllable.Tracker tracker, PlayerControlledActorSelector trackerSelector)
+		commands.add(Run.new(tracker, trackerSelector))
+		commands.add(ToggleRun.new(tracker, trackerSelector))
 	end
 	
 	

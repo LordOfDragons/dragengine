@@ -216,7 +216,7 @@ class ConsoleInputField extends TextField
 		// releasing the key not pressing the key to avoid matching game bindings to be
 		// used when the user releases the key
 		if event.getKeyCode() == InputEventKey.escape and this.pCommandCloseConsole != null
-			this.pCommandCloseConsole.pulse()
+			pCommandCloseConsole.pulse(null)
 		end
 	end
 	
@@ -271,7 +271,7 @@ class ConsoleInputField extends TextField
 		if this.pCommands != null
 			var Command command = this.pCommands.getNamed( commandName )
 			if command != null
-				command.pulse()
+				command.pulse(null)
 				return
 			end
 		end

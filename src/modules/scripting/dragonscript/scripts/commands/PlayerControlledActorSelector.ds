@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,40 +22,23 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Gui
+namespace Dragengine.Commands
+pin Dragengine.Scenery
 
-pin Dragengine.Commands
-pin Dragengine.Gui.Events
 
 /**
- * \brief Action listener running a command.
+ * \brief Interface selecting \ref ECBehaviorPlayerControllable.Tracker matching binding.
+ * \version 1.35
+ * 
+ * This interface is useful for situations where bindings for the same command exist for multiple
+ * input devices and the input device producing the input is relevant. This is the case for
+ * example for local multiplayer games where input devices are assigned to individual players.
+ * This interface is presented the \ref Binding which produced the input and returns the
+ * \ref ECBehaviorPlayerControllable.Tracker to use.
  */
-class RunCommandActionListener extends DefaultActionListener
-	var CommandManager pCommandManager
-	var String pCommand
-	
-	
-	/** \brief Create action listener. */
-	func new(CommandManager manager, String command)
-		if manager == null or command == null
-			throw EInvalidParam.new()
-		end
-		
-		pCommandManager = manager
-		pCommand = command
-	end
-	
-	
+interface PlayerControlledActorSelector
 	/**
-	 * \brief Perform action.
-	 * \details Command is looked up in the command manager using a string identifier.
-	 *          If found the command Command.start() and Command.stop() is called
-	 *          in this order without delay. If not found nothing is done.
+	 * \brief Select \ref ECBehaviorPlayerControllable.Tracker matching binding.
 	 */
-	func void onAction(ActionEvent event)
-		var Command command = this.pCommandManager.getNamed(pCommand)
-		if command != null
-			command.pulse(null)
-		end
-	end
+	func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor(Binding binding)
 end

@@ -68,6 +68,7 @@ class CommandsBAAInteract
 	/** \brief Base class operating only on actors with BAAInteract action. */
 	class Base extends Command
 		var ECBehaviorPlayerControllable.Tracker pTracker
+		var PlayerControlledActorSelector pTrackerSelector
 		
 		func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
 		String description) super(name, description)
@@ -77,12 +78,24 @@ class CommandsBAAInteract
 			pTracker = tracker
 		end
 		
-		protected func ECBehaviorPlayerControllable.Tracker getTracker()
+		func ECBehaviorPlayerControllable.Tracker getTracker()
 			return pTracker
 		end
 		
-		protected func BAAInteract getInteract()
-			var ECBehaviorPlayerControllable.Instance actor = pTracker.getActor()
+		func PlayerControlledActorSelector getTrackerSelector()
+			return pTrackerSelector
+		end
+		
+		func void setTrackerSelector(PlayerControlledActorSelector trackerSelector)
+			pTrackerSelector = trackerSelector
+		end
+		
+		func BAAInteract getInteract()
+			return getInteract(pTracker)
+		end
+		
+		func BAAInteract getInteract(ECBehaviorPlayerControllable.Tracker tracker)
+			var ECBehaviorPlayerControllable.Instance actor = tracker.getActor()
 			if actor == null
 				return null
 			end
@@ -101,6 +114,11 @@ class CommandsBAAInteract
 			return null
 		end
 		
+		func BAAInteract getInteract(Binding binding)
+			return getInteract(pTrackerSelector != null\
+				if pTrackerSelector.getPlayerControlledActor(binding) else pTracker)
+		end
+		
 		func void start()
 			var BAAInteract interact = getInteract()
 			if interact != null
@@ -108,8 +126,22 @@ class CommandsBAAInteract
 			end
 		end
 		
+		func void start(Binding binding)
+			var BAAInteract interact = getInteract(binding)
+			if interact != null
+				start(interact)
+			end
+		end
+		
 		func void stop()
 			var BAAInteract interact = getInteract()
+			if interact != null
+				stop(interact)
+			end
+		end
+		
+		func void stop(Binding binding)
+			var BAAInteract interact = getInteract(binding)
 			if interact != null
 				stop(interact)
 			end
@@ -139,6 +171,11 @@ class CommandsBAAInteract
 			setTranslateDisplayName("UI.Command.PrimaryAction.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "primaryAction")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void start(BAAInteract action)
 			action.primaryActionStart()
 		end
@@ -159,6 +196,11 @@ class CommandsBAAInteract
 			setTranslateDisplayName("UI.Command.SecondaryAction.DisplayName")
 		end
 		
+		func new(ECBehaviorPlayerControllable.Tracker tracker,\
+		PlayerControlledActorSelector trackerSelector) this(tracker, "secondaryAction")
+			setTrackerSelector(trackerSelector)
+		end
+		
 		func void start(BAAInteract action)
 			action.secondaryActionStart()
 		end
@@ -173,8 +215,17 @@ class CommandsBAAInteract
 	
 	/** \brief Add commands to command manager. */
 	static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
-		commands.add(PrimaryAction.new(tracker))
-		commands.add(SecondaryAction.new(tracker))
+		addCommands(commands, tracker, null)
+	end
+	
+	/**
+	 * \brief Add commands to command manager.
+	 * \version 1.35
+	 */
+	static func void addCommands(CommandManager commands,\
+	ECBehaviorPlayerControllable.Tracker tracker, PlayerControlledActorSelector trackerSelector)
+		commands.add(PrimaryAction.new(tracker, trackerSelector))
+		commands.add(SecondaryAction.new(tracker, trackerSelector))
 	end
 	
 	

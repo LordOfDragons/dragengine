@@ -203,10 +203,10 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 				pValue = value
 				
 				if pCommandPositive != null
-					pCommandPositive.analogAbsolute(value)
+					pCommandPositive.analogAbsolute(null, value)
 					
 				elif pCommandNegative != null
-					pCommandNegative.analogAbsolute(value)
+					pCommandNegative.analogAbsolute(null, value)
 				end
 				
 				if value > 0.75 != pPressedPositive
@@ -214,10 +214,10 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 					
 					if pCommandPositive != null
 						if pPressedPositive
-							pCommandPositive.start()
+							pCommandPositive.start(null)
 							
 						else
-							pCommandPositive.stop()
+							pCommandPositive.stop(null)
 						end
 					end
 				end
@@ -227,10 +227,10 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 					
 					if pCommandNegative != null
 						if pPressedNegative
-							pCommandNegative.start()
+							pCommandNegative.start(null)
 							
 						else
-							pCommandNegative.stop()
+							pCommandNegative.stop(null)
 						end
 					end
 				end
