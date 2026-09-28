@@ -150,7 +150,7 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
     
     def checkInitState(self, context):
         if not self.armature and not self.mesh:
-            self.report({'INFO', 'ERROR'}, "There is no Armature or Mesh selected. Select at last one Armature or Mesh")
+            self.report({'ERROR'}, "There is no Armature or Mesh selected. Select at last one Armature or Mesh")
             return False
         return True
     

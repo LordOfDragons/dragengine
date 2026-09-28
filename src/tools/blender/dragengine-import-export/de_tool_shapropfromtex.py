@@ -47,7 +47,7 @@ class OBJECT_OT_ToolShapePropertyFromTexture(bpy.types.Operator):
         refMesh = [x for x in context.selected_objects
              if not x.rigid_body and x.dragengine_physics == 'NONE']
         if len(refMesh) != 1:
-            self.report({'INFO', 'ERROR'}, "Select exactly one non-physics object to map physics objects against.")
+            self.report({'ERROR'}, "Select exactly one non-physics object to map physics objects against.")
             return {'FINISHED'}
 
         refMesh = refMesh[0]

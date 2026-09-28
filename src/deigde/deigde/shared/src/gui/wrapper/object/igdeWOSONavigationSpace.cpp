@@ -109,7 +109,7 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 	decString pathNavSpace(GetStringProperty(
 		pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epPath),
 		pGDNavigationSpace.GetPath()));
-		
+	
 	if(pathNavSpace != pPathNavigationSpace){
 		pNavigationSpace->GetRooms().RemoveAll();
 		pNavigationSpace->GetWalls().RemoveAll();

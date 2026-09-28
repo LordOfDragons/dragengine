@@ -131,10 +131,10 @@ class OBJECT_OT_ExportOcclusionMesh( bpy.types.Operator, ExportHelper ):
 	
 	def checkInitState( self, context ):
 		if not self.mesh:
-			self.report( { 'INFO', 'ERROR' }, "There is no Mesh selected. Select at last a Mesh and optional an Armature" )
+			self.report( { 'ERROR' }, "There is no Mesh selected. Select at last a Mesh and optional an Armature" )
 			return False
 		if self.mesh.degeneratedFaces:
-			self.report( { 'INFO', 'ERROR' }, "Degenerated Faces found." )
+			self.report( { 'ERROR' }, "Degenerated Faces found." )
 			return False
 		return True
 	

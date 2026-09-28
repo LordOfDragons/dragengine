@@ -238,7 +238,7 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 	
 	def checkInitState(self, context):
 		if not self.armature and not self.mesh:
-			self.report({'INFO', 'ERROR'}, "There is no Armature or Mesh selected. Select at last one Armature or Mesh parented to an armature")
+			self.report({'ERROR'}, "There is no Armature or Mesh selected. Select at last one Armature or Mesh parented to an armature")
 			return False
 		return True
 	
@@ -458,7 +458,7 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 			
 			move = Armature.Move(action)
 			if [x for x in self.moves if x.name == move.name]:
-				self.report({'INFO', 'ERROR'}, "Tried to export two moves with duplicate export names ({}).".format(
+				self.report({'ERROR'}, "Tried to export two moves with duplicate export names ({}).".format(
 					", ".join(["'{}'".format(x.action.name) for x in self.moves if x.name == move.name])))
 				return False
 			self.moves.append(Armature.Move(action))
