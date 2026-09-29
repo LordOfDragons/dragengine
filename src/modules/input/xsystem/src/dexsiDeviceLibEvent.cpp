@@ -220,7 +220,8 @@ dexsiDevice(module, esLibevdev),
 
 pEvdevPath(pathDevice),
 pEvdevFile(-1),
-pEvdevDevice(nullptr)
+pEvdevDevice(nullptr),
+pHasUniqueId(false)
 {
 	// libevdev version
 	// https://www.freedesktop.org/software/libevdev/doc/latest/index.html
@@ -244,7 +245,8 @@ pEvdevDevice(nullptr)
 	
 	const char * const unique = libevdev_get_uniq(pEvdevDevice);
 	if(unique){
-		string.Format("%s%d%s", XINP_DEVID_PREFIX, esLibevdev,
+		pHasUniqueId = true;
+		string.Format("%s%dU%s", XINP_DEVID_PREFIX, esLibevdev,
 			dexsiDeviceManager::NormalizeID(unique).GetString());
 		
 	}else{
@@ -253,7 +255,7 @@ pEvdevDevice(nullptr)
 		const int product = libevdev_get_id_product(pEvdevDevice);
 		const int version = libevdev_get_id_version(pEvdevDevice);
 		
-		string.Format("%s%d%04x%04x%04x%04x", XINP_DEVID_PREFIX, esLibevdev,
+		string.Format("%s%dG%04x%04x%04x%04x", XINP_DEVID_PREFIX, esLibevdev,
 			bustype, vendor, product, version);
 	}
 	
@@ -386,11 +388,13 @@ pEvdevDevice(nullptr)
 				
 			string.Format("%d", indexAxis + 1);
 			axis->SetDisplayText(string);
+			}
+			
+			pEvdevMapRelAxis.SetAt(i, indexAxis++);
 		}
-		
-		pEvdevMapRelAxis.SetAt(i, indexAxis++);
 	}
-}	if(hasAbsoluteAxes){
+	
+	if(hasAbsoluteAxes){
 		int nextGeneric = 0;
 		
 		for(i=0; i<ABS_MAX; i++){
@@ -457,14 +461,16 @@ pEvdevDevice(nullptr)
 			
 			if(axis->GetType() == deInputDeviceAxis::eatStick){
 				// libevdev likes to lie about the deadzone of input devices. ensure the deadzone
-			// is not smaller than a specific percentage of the total range. typical deadzone
-			// ranges are 0.2 - 0.25 of half-range
-			axis->LimitFlat(0.1f);
+				// is not smaller than a specific percentage of the total range. typical deadzone
+				// ranges are 0.2 - 0.25 of half-range
+				axis->LimitFlat(0.1f);
+			}
+			
+			pEvdevMapAbsAxis.SetAt(i, indexAxis++);
 		}
-		
-		pEvdevMapAbsAxis.SetAt(i, indexAxis++);
 	}
-}	// keys and buttons
+	
+	// keys and buttons
 	if(hasKeys){
 		int countButtons = 0;
 		
@@ -512,13 +518,15 @@ pEvdevDevice(nullptr)
 				string.Format("bg%d", nextGeneric++);
 				button->SetID(string);
 				
-			string.Format("%d", nextGeneric);
-			button->SetDisplayText(string);
+				string.Format("%d", nextGeneric);
+				button->SetDisplayText(string);
+			}
+			
+			pEvdevMapKeys.SetAt(i - BTN_MISC, indexButton++);
 		}
-		
-		pEvdevMapKeys.SetAt(i - BTN_MISC, indexButton++);
 	}
-}	/*
+	
+	/*
 	if(libevdev_has_event_type(evdev, EV_SW)){
 		pModule.LogInfo("  switches:");
 		for(j=0; j<SW_MAX; j++){

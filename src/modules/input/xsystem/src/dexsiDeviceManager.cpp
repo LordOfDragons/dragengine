@@ -403,7 +403,19 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 				
 				// we can end up with duplicates for whatever reason
 				if(GetWithID(device->GetID())){
-					continue;
+					if(device->HasUniqueId()){
+						pModule.LogInfoFormat("LibEvDev: Ignore device with duplicate: %s",
+							device->GetID().GetString());
+							continue;
+					}
+					
+					int number = 2;
+					auto id = decString::Formatted("{}#{}", device->GetID(), number);
+					while(GetWithID(id)){
+						id.FormatSafe("{}#{}", device->GetID(), ++number);
+					}
+					device->SetID(id);
+					device->SetName(decString::Formatted("{} #{}", device->GetName(), number));
 				}
 				
 				switch(device->GetType()){
