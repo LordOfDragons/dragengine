@@ -68,9 +68,7 @@ private:
 	deoglSkinTexture *pUseSkinTexture;
 	deoglSkinState::Ref pUseSkinState;
 	deoglRDynamicSkin::Ref pUseDynamicSkin;
-	bool pUseDoubleSided;
-	bool pUseDecal;
-	bool pIsRendered;
+	bool pUseDoubleSided, pUseDecal, pIsRendered;
 	int pRenderTaskFilters;
 	
 	deoglSharedSPBElement::Ref pSharedSPBElement;
@@ -89,11 +87,8 @@ private:
 	deoglTexUnitsConfig *pTUCLuminance;
 	deoglTexUnitsConfig *pTUCGIMaterial;
 	
-	bool pValidParamBlocks;
-	bool pDirtyParamBlocks;
-	bool pDirtyTUCs;
-	bool pDirtyTUCsAll;
-	bool pDirtyTUCsEnvMapUse;
+	bool pValidParamBlocks, pDirtyParamBlocks;
+	bool pDirtyTUCs, pDirtyTUCsAll, pDirtyTUCsEnvMapUse;
 	
 	
 	
