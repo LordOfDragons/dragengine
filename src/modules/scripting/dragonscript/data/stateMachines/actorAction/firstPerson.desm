@@ -432,7 +432,7 @@
 	-->
 	<state id='shared.state.falling'>
 		<transition event='think'>
-			<import>shared.think.falling</import>>
+			<import>shared.think.falling</import>
 		</transition>
 		
 		<transition event='postThink'>

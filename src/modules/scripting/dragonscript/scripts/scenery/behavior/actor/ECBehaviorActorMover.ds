@@ -1255,7 +1255,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				end
 				
 				// heading for the next path point
-				if distance < locomotion.getAbsMovingSpeed() * 0.1   // add option for this
+				if distance < locomotion.getAbsMovingSpeed() * 0.1 // add option for this
 					// sanity check. if the position is more than 1m away from the corner the actor is most probably stuck
 					// due to some unholy combination of circumstances. recalculate the path to get out of the mess
 // 					if (nextCorner - position).getLength() > 1.0
