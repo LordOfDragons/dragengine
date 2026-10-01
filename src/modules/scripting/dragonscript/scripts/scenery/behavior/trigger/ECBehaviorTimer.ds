@@ -162,6 +162,34 @@ class ECBehaviorTimer extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
+		 * \brief Behavior tree action/condition "timer{(id)}.set".
+		 * \version 1.35
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("timeout", null)
+				if value != null
+					pInstance.setTimeout((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("timeoutSpread", null)
+				if value != null
+					pInstance.setTimeoutSpread((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
 		 * \brief Behavior tree action/condition "timer{(id)}.update".
 		 * \version 1.26
 		 */
@@ -357,6 +385,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
 				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
@@ -386,6 +415,14 @@ class ECBehaviorTimer extends DefaultECBehavior
 		end
 		
 		/**
+		 * \brief Set timeout in seconds.
+		 * \version 1.35
+		 */
+		func void setTimeout(float timeout)
+			pTimeout = DEMath.max(timeout, 0.0)
+		end
+		
+		/**
 		 * \brief Random timeout spread in seconds.
 		 * \version 1.12
 		 * 
@@ -395,6 +432,14 @@ class ECBehaviorTimer extends DefaultECBehavior
 		 */
 		func float getTimeoutSpread()
 			return pTimeoutSpread
+		end
+		
+		/**
+		 * \brief Set timeout spread is added to regular timeout.
+		 * \version 1.35
+		 */
+		func void setTimeoutSpread(float timeoutSpread)
+			pTimeoutSpread = DEMath.max(timeoutSpread, 0.0)
 		end
 		
 		/**
