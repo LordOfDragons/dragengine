@@ -52,18 +52,15 @@ public:
 	
 	
 	deoglSharedVBOList *pParentList;
-	GLuint pVBO;
-	GLuint pIBO;
+	GLuint pVBO, pIBO;
 	deTUniqueReference<deoglVAO> pVAO;
 	decTObjectList<deoglSharedVBOBlock> pBlocks;
-	int pSize;
-	int pUsedSize;
-	int pIndexSize;
-	int pIndexUsedSize;
+	int pSize, pUsedSize, pIndexSize, pIndexUsedSize;
 	bool pDirty;
 	
-	deoglMemoryConsumptionGPUUse pMemUseVBO;
-	deoglMemoryConsumptionGPUUse pMemUseIBO;
+	deoglMemoryConsumptionGPUUse pMemUseVBO, pMemUseIBO;
+	
+	decTList<unsigned char> pDataVBO, pDataIBO;
 	
 public:
 	/** \name Constructors and Destructors */

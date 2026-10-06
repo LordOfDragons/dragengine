@@ -146,7 +146,7 @@ void deoglDynamicOcclusionMesh::PrepareBVH(){
 		return;
 	}
 	
-	   PrepareForRender(); // make sure vertices are transformed
+	PrepareForRender(); // make sure vertices are transformed
 	
 	decTList<deoglBVH::sBuildPrimitive> primitives;
 	const int faceCount = pOcclusionMesh->GetSingleSidedFaceCount() + pOcclusionMesh->GetDoubleSidedFaceCount();

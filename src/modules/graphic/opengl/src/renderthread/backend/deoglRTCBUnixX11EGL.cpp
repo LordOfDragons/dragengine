@@ -164,13 +164,13 @@ void deoglRTCBUnixX11EGL::DropCompileContexts(int count){
 	
 	for(i=count; i<pCompileContextCount; i++){
 		logger.LogInfoFormat("Drop compile context %d", i);
-		if(pEGLCompileContext[i] != EGL_NO_CONTEXT){
-			pEglDestroyContext(pEGLDisplay, pEGLCompileContext[i]);
-			pEGLCompileContext[i] = EGL_NO_CONTEXT;
-		}
 		if(pEGLCompileSurface[i] != EGL_NO_SURFACE){
 			pEglDestroySurface(pEGLDisplay, pEGLCompileSurface[i]);
 			pEGLCompileSurface[i] = EGL_NO_SURFACE;
+		}
+		if(pEGLCompileContext[i] != EGL_NO_CONTEXT){
+			pEglDestroyContext(pEGLDisplay, pEGLCompileContext[i]);
+			pEGLCompileContext[i] = EGL_NO_CONTEXT;
 		}
 	}
 	
