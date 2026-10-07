@@ -106,21 +106,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animatoreditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataBones.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataLink.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataRule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataVertexPositionSets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -295,21 +280,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animatoreditor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataBones.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataLink.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataRule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataVertexPositionSets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfiguration.h">

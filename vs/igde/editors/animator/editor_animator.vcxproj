@@ -304,11 +304,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleTrackTo.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animator\wakeboard\aeWakeboard.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\animatoreditor.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataBones.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataController.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataLink.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataRule.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataVertexPositionSets.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfiguration.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfigurationXML.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeTaskSyncGameDefinition.cpp" />
@@ -369,11 +364,6 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleTrackTo.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\wakeboard\aeWakeboard.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animatoreditor.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataBones.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataController.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataLink.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataRule.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataVertexPositionSets.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfiguration.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfigurationXML.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeTaskSyncGameDefinition.h" />
