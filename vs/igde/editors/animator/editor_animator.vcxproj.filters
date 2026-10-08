@@ -172,6 +172,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRuleGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRuleMirror.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

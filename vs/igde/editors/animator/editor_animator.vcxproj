@@ -326,6 +326,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPController.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPLink.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRuleGroup.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRuleMirror.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRuleSubAnimator.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPShared.cpp" />

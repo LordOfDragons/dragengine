@@ -171,3 +171,17 @@ deAnimatorRule::Ref aeRuleTrackTo::CreateEngineRule(){
 aeRule::Ref aeRuleTrackTo::CreateCopy() const{
 	return Ref::New(*this);
 }
+
+void aeRuleTrackTo::CreateLinkCopies(){
+	aeRule::CreateLinkCopies();
+	mpTargetPosition.CreateLinkCopies();
+	mpTargetUp.CreateLinkCopies();
+}
+
+void aeRuleTrackTo::EnsureValidLinks(const aeAnimator &animator,
+decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	aeRule::EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetPosition.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetUp.EnsureValidLinks(animator, addLinks, addControllers);
+}

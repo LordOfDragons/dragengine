@@ -57,12 +57,9 @@ public:
 	igdeMetaPropertyFloatStorage::Storage mpReachRange;
 	igdeMetaPropertyStringStorage::Storage mpReachBone;
 	igdeMetaPropertyVectorStorage::Storage mpReachCenter;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetGoalPosition;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetGoalOrientation;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetLocalPosition;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetLocalOrientation;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetReachRange;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetReachCenter;
+	LinkStorage mpTargetGoalPosition, mpTargetGoalOrientation;
+	LinkStorage mpTargetLocalPosition, mpTargetLocalOrientation;
+	LinkStorage mpTargetReachRange, mpTargetReachCenter;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -97,6 +94,14 @@ public:
 	
 	/** Create a copy of this rule. */
 	aeRule::Ref CreateCopy() const override;
+	
+	/** Create link copies. Required for rules copied to clipboard. */
+	void CreateLinkCopies() override;
+	
+	/** Ensure links are valid. Required for rules pasted from clipboard. */
+	void EnsureValidLinks(const aeAnimator &animator,
+		decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+		decTDictionary<aeController::Ref,aeController::Ref> &addControllers) override;
 	/*@}*/
 	
 	/** \name Operators */

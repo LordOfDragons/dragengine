@@ -59,6 +59,7 @@ public:
 	
 private:
 	decTList<sRuleRemoved> pRulesRemoved;
+	aeController::List pAddControllers;
 	
 public:
 	cUndoSetLinks(aeMCPLinks &property, const igdeMetaContext::Ref &context,
@@ -78,6 +79,8 @@ public:
 				pProcessTargets(link, rule);
 			});
 		});
+		
+		pProcessControllers();
 	}
 	
 	inline const decTList<sRuleRemoved> &GetRulesRemoved() const{ return pRulesRemoved; }
@@ -87,9 +90,17 @@ public:
 		pRulesRemoved.Visit([&](const sRuleRemoved &t){
 			*t.target = t.target->GetValue() + t.link;
 		});
+		if(pAddControllers.IsNotEmpty()){
+			auto &animator = GetContext().DynamicCast<aeAnimator::MetaContext>()->GetOwnerRef();
+			animator.mpControllers.SetValue(animator.mpControllers.GetValue() - pAddControllers);
+		}
 	}
 	
 	void Redo() override{
+		if(pAddControllers.IsNotEmpty()){
+			auto &animator = GetContext().DynamicCast<aeAnimator::MetaContext>()->GetOwnerRef();
+			animator.mpControllers.SetValue(animator.mpControllers.GetValue() + pAddControllers);
+		}
 		pRulesRemoved.Visit([&](const sRuleRemoved &t){
 			*t.target = t.target->GetValue() - t.link;
 		});
@@ -173,6 +184,18 @@ private:
 		case deAnimatorRuleVisitorIdentify::ertUnknown:
 			break;
 		}
+	}
+	
+	void pProcessControllers(){
+		auto &animator = GetContext().DynamicCast<aeAnimator::MetaContext>()->GetOwnerRef();
+		
+		decTDictionary<aeController::Ref,aeController::Ref> addControllers;
+		GetNewValue().Visit([&](const deObject::Ref &object){
+			object.DynamicCast<aeLink>()->mpController.EnsureValidController(animator, addControllers);
+		});
+		addControllers.Visit([&](const aeController::Ref&, const aeController::Ref &value){
+			pAddControllers.Add(value);
+		});
 	}
 };
 
@@ -277,7 +300,8 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-aeMCPLinks::ObjectTypeRef aeMCPLinks::CopyObjectType(const ContextRef &context, const aeLink::List &existingObjects, const ObjectTypeRef &object) const{
+aeMCPLinks::ObjectTypeRef aeMCPLinks::CopyObjectType(const ContextRef &context,
+const aeLink::List &existingObjects, const ObjectTypeRef &object) const{
 	auto copied = aeLink::Ref::New(*object);
 	copied->mpName.SetValue(Owner(context).uniqueNameLink.Generate(
 		[&](const decString &name){
@@ -285,6 +309,7 @@ aeMCPLinks::ObjectTypeRef aeMCPLinks::CopyObjectType(const ContextRef &context, 
 				return existing.mpName == name;
 			});
 		}, copied->mpName), false);
+	copied->mpController.CreateControllerCopy();
 	return copied;
 }
 

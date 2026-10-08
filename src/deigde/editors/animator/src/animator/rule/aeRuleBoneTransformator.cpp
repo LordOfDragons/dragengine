@@ -323,3 +323,19 @@ deAnimatorRule::Ref aeRuleBoneTransformator::CreateEngineRule(){
 aeRule::Ref aeRuleBoneTransformator::CreateCopy() const{
 	return Ref::New(*this);
 }
+
+void aeRuleBoneTransformator::CreateLinkCopies(){
+	aeRule::CreateLinkCopies();
+	mpTargetTranslation.CreateLinkCopies();
+	mpTargetRotation.CreateLinkCopies();
+	mpTargetScaling.CreateLinkCopies();
+}
+
+void aeRuleBoneTransformator::EnsureValidLinks(const aeAnimator &animator,
+decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	aeRule::EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetTranslation.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetRotation.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetScaling.EnsureValidLinks(animator, addLinks, addControllers);
+}

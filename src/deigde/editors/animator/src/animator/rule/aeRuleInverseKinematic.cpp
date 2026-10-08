@@ -278,3 +278,25 @@ deAnimatorRule::Ref aeRuleInverseKinematic::CreateEngineRule(){
 aeRule::Ref aeRuleInverseKinematic::CreateCopy() const{
 	return Ref::New(*this);
 }
+
+void aeRuleInverseKinematic::CreateLinkCopies(){
+	aeRule::CreateLinkCopies();
+	mpTargetGoalPosition.CreateLinkCopies();
+	mpTargetGoalOrientation.CreateLinkCopies();
+	mpTargetLocalPosition.CreateLinkCopies();
+	mpTargetLocalOrientation.CreateLinkCopies();
+	mpTargetReachRange.CreateLinkCopies();
+	mpTargetReachCenter.CreateLinkCopies();
+}
+
+void aeRuleInverseKinematic::EnsureValidLinks(const aeAnimator &animator,
+decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	aeRule::EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetGoalPosition.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetGoalOrientation.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetLocalPosition.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetLocalOrientation.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetReachRange.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetReachCenter.EnsureValidLinks(animator, addLinks, addControllers);
+}

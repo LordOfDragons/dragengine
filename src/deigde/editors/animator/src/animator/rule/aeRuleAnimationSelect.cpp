@@ -172,3 +172,17 @@ deAnimatorRule::Ref aeRuleAnimationSelect::CreateEngineRule(){
 aeRule::Ref aeRuleAnimationSelect::CreateCopy() const{
 	return Ref::New(*this);
 }
+
+void aeRuleAnimationSelect::CreateLinkCopies(){
+	aeRule::CreateLinkCopies();
+	mpTargetMoveTime.CreateLinkCopies();
+	mpTargetSelect.CreateLinkCopies();
+}
+
+void aeRuleAnimationSelect::EnsureValidLinks(const aeAnimator &animator,
+decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	aeRule::EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetMoveTime.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetSelect.EnsureValidLinks(animator, addLinks, addControllers);
+}

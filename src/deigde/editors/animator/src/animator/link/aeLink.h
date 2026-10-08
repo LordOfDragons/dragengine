@@ -63,6 +63,23 @@ public:
 	template<typename T>
 	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
+	class ControllerStorage : public igdeMetaPropertyObjectStorage<aeController>::Storage{
+	public:
+		using igdeMetaPropertyObjectStorage<aeController>::Storage::Storage;
+		using igdeMetaPropertyObjectStorage<aeController>::Storage::SetValue;
+		using igdeMetaPropertyObjectStorage<aeController>::Storage::operator=;
+		
+	private:
+		aeController::Ref pControllerCopy;
+		
+	public:
+		void SetValue(const ControllerStorage &value, bool notify = true);
+		void CreateControllerCopy();
+		void EnsureValidController(const aeAnimator &animator,
+			decTDictionary<aeController::Ref,aeController::Ref> &addControllers);
+	};
+	
+	
 private:
 	aeWindowMain &pWindowMain;
 	MetaContext::Ref pMetaContext;
@@ -70,9 +87,10 @@ private:
 	
 	deAnimatorLink *pEngLink;
 	
+	
 public:
 	igdeMetaPropertyStringStorage::Storage mpName;
-	igdeMetaPropertyObjectStorage<aeController>::Storage mpController;
+	ControllerStorage mpController;
 	igdeMetaPropertyIntegerStorage::Storage mpRepeat;
 	igdeMetaPropertyCurveBezierStorage::Storage mpCurve;
 	igdeMetaPropertyStringStorage::Storage mpBone;

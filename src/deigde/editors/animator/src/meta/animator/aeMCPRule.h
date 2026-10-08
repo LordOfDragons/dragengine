@@ -93,8 +93,13 @@ public:
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule,
 		igdeMetaContextItemInfo &info) const override;
+	
 	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeRule::List &existingObjects,
 		const ObjectTypeRef &object) const override;
+	
+	deTObjectReference<igdeMetaPropertyListUndo> ChangePropertyValue(
+		const ContextRef &context, const List &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr) override;
 };
 
 
