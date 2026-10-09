@@ -22,13 +22,9 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.BehaviorTreeSystem
-
 pin Dragengine.Scenery
 pin Dragengine.Utils
-
-
 
 /**
  * \brief Behavior tree rule.
@@ -44,7 +40,7 @@ pin Dragengine.Utils
  * evaluate to true. This allows to prevent rules from being run or to interrupt a running
  * rule. If the condition is false the rule is considered to return BTResult.failure .
  */
-abstract class BTRule
+abstract class BTRule extends BTConditionGroup
 	/** \brief Condition modes. */
 	public enum ConditionMode
 		/** \brief All conditions have to evaluate to true. */
@@ -61,13 +57,8 @@ abstract class BTRule
 	end
 	
 	
-	
 	var String pID
 	var WeakReference pParent
-	var Array pConditions
-	var ConditionMode pConditionMode
-	var Dictionary pParameters
-	
 	
 	
 	/**
@@ -82,11 +73,7 @@ abstract class BTRule
 		
 		pID = id
 		pParent = WeakReference.new()
-		pConditions = Array.new()
-		pConditionMode = ConditionMode.allTrue
-		pParameters = Dictionary.new()
 	end
-	
 	
 	
 	/** \brief Unique rule identifier or \em null. */
@@ -103,113 +90,6 @@ abstract class BTRule
 	func void setParent(BTRule rule)
 		pParent.set(rule)
 	end
-	
-	/**
-	 * \brief Parameters as Dictionary of type String key and String value.
-	 * \warning Do not change the content of the dictionary as it is shared.
-	 */
-	func Dictionary getParameters()
-		return pParameters
-	end
-	
-	
-	
-	/** \brief Number of conditions. */
-	func int getConditionCount()
-		return pConditions.getCount()
-	end
-	
-	/** \brief Get condition at index. */
-	func String getConditionAt(int index)
-		return pConditions.getAt(index) cast String
-	end
-	
-	/** \brief Index of condition or -1 if absent. */
-	func int indexOfCondition(String condition)
-		return pConditions.indexOf(condition)
-	end
-	
-	/** \brief Add condition. */
-	func void addCondition(String condition)
-		if condition == null
-			throw EInvalidParam.new()
-		end
-		pConditions.add(condition)
-	end
-	
-	/** \brief Remove condition. */
-	func void removeCondition(String condition)
-		pConditions.remove(condition)
-	end
-	
-	/** \brief Remove all conditions. */
-	func void removeAllConditions()
-		pConditions.removeAll()
-	end
-	
-	/** \brief Visit conditions with block with parameter String. */
-	func void forEachCondition(Block ablock)
-		pConditions.forEach(ablock)
-	end
-	
-	/** \brief Find condition with block with parameter String. */
-	func String findCondition(Block ablock)
-		return pConditions.find(ablock) cast String
-	end
-	
-	/** \brief Condition mode from eConditionModes. */
-	func ConditionMode getConditionMode()
-		return pConditionMode
-	end
-	
-	/** \brief Set condition mode from eConditionModes. */
-	func void setConditionMode(ConditionMode mode)
-		pConditionMode = mode
-	end
-	
-	/**
-	 * \brief Evaluate all conditions.
-	 * 
-	 * If no condition is present \em true is returned.
-	 * 
-	 * \param parameters Dictionary with parameters of type String key and String value.
-	 *                   Do not change the content of the dictionary as it is shared.
-	 */
-	func bool evaluateConditions(BTContext context)
-		if pConditions.getCount() == 0
-			return true
-		end
-		
-		select pConditionMode
-		case ConditionMode.allTrue
-			return pConditions.find(block String each
-				var BTCondition condition = context.getCondition(each)
-				return condition == null or not condition.evaluateCondition(context, pParameters)
-			end) == null
-			
-		case ConditionMode.anyTrue
-			return pConditions.find(block String each
-				var BTCondition condition = context.getCondition(each)
-				return condition != null and condition.evaluateCondition(context, pParameters)
-			end) != null
-			
-		case ConditionMode.anyFalse
-			return pConditions.find(block String each
-				var BTCondition condition = context.getCondition(each)
-				return condition == null or not condition.evaluateCondition(context, pParameters)
-			end) != null
-			
-		case ConditionMode.allFalse
-			return pConditions.find(block String each
-				var BTCondition condition = context.getCondition(each)
-				return condition != null and condition.evaluateCondition(context, pParameters)
-			end) == null
-			
-		else
-			return false
-		end
-	end
-	
 	
 	
 	/**

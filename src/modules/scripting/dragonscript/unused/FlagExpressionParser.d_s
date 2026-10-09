@@ -1,0 +1,127 @@
+/** \brief Parser evaluating flag expressions. */
+class FlagExpressionParser
+	var String pSpecialCharacters
+	var int pPosition
+	
+	func new()
+		pSpecialCharacters = " \t!&|()\""
+	end
+	
+	/** \brief Parse and evaluate the complete expression. */
+	func bool parse(Instance instance, String expression)
+		pPosition = 0
+		var bool result = parseGroup(instance, expression, false)
+		if pPosition < expression.getLength()
+			throw EInvalidParam.new("unexpected ')'")
+		end
+		return result
+	end
+	
+	/** \brief Parse operands joined by either '&' or '|' but not both. */
+	func bool parseGroup(Instance instance, String expression, bool inGroup)
+		var bool result = parseOperand(instance, expression)
+		var byte character
+		var int op = 0 // 0 => none, 1 => and, 2 => or
+		var int nextOp = 0
+		var bool operand
+		
+		skipWhitespace(expression)
+		while pPosition < expression.getLength() and expression.getAt(pPosition) != ')'
+			character = expression.getAt(pPosition++)
+			if character == '&'
+				nextOp = 1
+				
+			elif character == '|'
+				nextOp = 2
+				
+			else
+				throw EInvalidParam.new("operator expected")
+			end
+			
+			if op != 0 and op != nextOp
+				throw EInvalidParam.new("'&' and '|' mixed without group")
+			end
+			op = nextOp
+			
+			operand = parseOperand(instance, expression)
+			if op == 1
+				result = result and operand
+				
+			else
+				result = result or operand
+			end
+			
+			skipWhitespace(expression)
+		end
+		
+		if inGroup and pPosition >= expression.getLength()
+			throw EInvalidParam.new("missing ')'")
+		end
+		return result
+	end
+	
+	/** \brief Parse negation, group or flag name and return its value. */
+	func bool parseOperand(Instance instance, String expression)
+		skipWhitespace(expression)
+		if pPosition >= expression.getLength()
+			throw EInvalidParam.new("operand expected")
+		end
+		
+		var byte character = expression.getAt(pPosition++)
+		if character == '!'
+			return not parseOperand(instance, expression)
+			
+		elif character == '('
+			var bool result = parseGroup(instance, expression, true)
+			pPosition++ // consume ')'
+			return result
+			
+		elif character == '"'
+			return instance.getFlag(parseName(expression, true))
+			
+		else
+			pPosition--
+			return instance.getFlag(parseName(expression, false))
+		end
+	end
+	
+	/** \brief Parse flag name, quoted or unquoted. */
+	func String parseName(String expression, bool quoted)
+		var String name = ""
+		var byte character
+		
+		if quoted
+			while pPosition < expression.getLength() and expression.getAt(pPosition) != '"'
+				character = expression.getAt(pPosition++)
+				if character == '\\'
+					if pPosition >= expression.getLength()
+						throw EInvalidParam.new("unterminated escape")
+					end
+					character = expression.getAt(pPosition++)
+				end
+				name = name + character
+			end
+			if pPosition >= expression.getLength()
+				throw EInvalidParam.new("missing closing quote")
+			end
+			pPosition++ // consume closing quote
+			
+		else
+			while pPosition < expression.getLength() and pSpecialCharacters.find(expression.getAt(pPosition)) == -1
+				name = name + expression.getAt(pPosition++)
+			end
+		end
+		
+		if name.empty()
+			throw EInvalidParam.new("flag name expected")
+		end
+		return name
+	end
+	
+	/** \brief Skip spaces and tabs. */
+	func void skipWhitespace(String expression)
+		while pPosition < expression.getLength() and (expression.getAt(pPosition) == ' ' or expression.getAt(pPosition) == '\t')
+			pPosition++
+		end
+	end
+end

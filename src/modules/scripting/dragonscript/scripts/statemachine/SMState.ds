@@ -22,13 +22,9 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.StateMachineSystem
-
 pin Dragengine.Scenery
 pin Dragengine.Utils
-
-
 
 /**
  * \brief State machine state.
@@ -47,9 +43,7 @@ pin Dragengine.Utils
  */
 class SMState
 	var String pID
-	var Array pEnterActions
-	var Array pExitActions
-	var Array pTransitions
+	var Array pEnterActions, pExitActions, pTransitions
 	var String pNextStateID
 	
 	

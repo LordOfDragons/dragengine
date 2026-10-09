@@ -240,6 +240,22 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 					end
 				end
 				
+				value = parameters.getAt("collisionFilter.filter.set", null)
+				if value != null
+					var CollisionFilter cf = pInstance.getCollider().getCollisionFilter()
+					var LayerMask lm = cf.getFilter()
+					lm.setBit(BehaviorElementClass.sharedFactoryHelper.defaultCollisionFilterMap().getAt(value cast String) cast int)
+					pInstance.getCollider().setCollisionFilter(CollisionFilter.new(cf.getCategory(), lm))
+				end
+				
+				value = parameters.getAt("collisionFilter.filter.clear", null)
+				if value != null
+					var CollisionFilter cf = pInstance.getCollider().getCollisionFilter()
+					var LayerMask lm = cf.getFilter()
+					lm.clearBit(BehaviorElementClass.sharedFactoryHelper.defaultCollisionFilterMap().getAt(value cast String) cast int)
+					pInstance.getCollider().setCollisionFilter(CollisionFilter.new(cf.getCategory(), lm))
+				end
+				
 				return BTResult.success
 			end
 		end

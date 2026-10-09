@@ -1,0 +1,198 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.StateMachineSystem
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+/**
+ * \brief Condition group for state machine transitions.
+ * \version 1.35
+ */
+class SMConditionGroup
+	var Dictionary pParameters
+	var Array pConditions, pConditionGroups
+	var SMTransition.ConditionMode pConditionMode
+	
+	
+	/** \brief Create condition group. */
+	func new()
+		pParameters = Dictionary.new()
+		pConditions = Array.new()
+		pConditionGroups = Array.new()
+		pConditionMode = SMTransition.ConditionMode.allTrue
+	end
+	
+	/** \brief Create copy of condition group. */
+	func new(SMConditionGroup group)
+		pParameters = Dictionary.new(group.pParameters)
+		pConditions = Array.new(group.pConditions)
+		pConditionGroups = Array.new(group.pConditionGroups)
+		pConditionMode = group.pConditionMode
+	end
+	
+	
+	/** \brief Get all conditions as \ref Array of \ref String. */
+	func Array getConditions()
+		return pConditions
+	end
+	
+	/**
+	 * \brief Parameters as Dictionary of \ref String key and \ref String value.
+	 * \warning Do not change the content of the dictionary as it is shared.
+	 */
+	func Dictionary getParameters()
+		return pParameters
+	end
+	
+	
+	/** \brief Count of conditions. */
+	func int getConditionCount()
+		return pConditions.getCount()
+	end
+	
+	/** \brief Get condition at index. */
+	func String getConditionAt(int index)
+		return pConditions.getAt(index) cast String
+	end
+	
+	/** \brief Add condition. */
+	func void addCondition(String condition)
+		if condition == null
+			throw ENullPointer.new("condition")
+		end
+		
+		pConditions.add(condition)
+	end
+	
+	/** \brief Visit conditions with block with parameter \ref String. */
+	func void forEachCondition(Block ablock)
+		pConditions.forEach(ablock)
+	end
+	
+	/** \brief Find condition with block with parameter \ref String. */
+	func String findCondition(Block ablock)
+		return pConditions.find(ablock) cast String
+	end
+	
+	/** \brief Condition mode. */
+	func SMTransition.ConditionMode getConditionMode()
+		return pConditionMode
+	end
+	
+	/** \brief Set condition mode. */
+	func void setConditionMode(SMTransition.ConditionMode mode)
+		if mode == null
+			throw ENullPointer.new("mode")
+		end
+		
+		pConditionMode = mode
+	end
+	
+	
+	/** \brief Get all condition groups as \ref Array of \ref SMConditionGroup. */
+	func Array getConditionGroups()
+		return pConditionGroups
+	end
+	
+	/** \brief Count of condition groups. */
+	func int getConditionGroupCount()
+		return pConditionGroups.getCount()
+	end
+	
+	/** \brief Get condition group at index. */
+	func SMConditionGroup getConditionGroupAt(int index)
+		return pConditionGroups.getAt(index) cast SMConditionGroup
+	end
+	
+	/** \brief Add condition group. */
+	func void addConditionGroup(SMConditionGroup group)
+		if group == null
+			throw ENullPointer.new("group")
+		end
+		
+		pConditionGroups.add(group)
+	end
+	
+	/** \brief Visit condition groups with block with parameter \ref SMConditionGroup. */
+	func void forEachConditionGroup(Block ablock)
+		pConditionGroups.forEach(ablock)
+	end
+	
+	/** \brief Find condition group with block with parameter \ref SMConditionGroup. */
+	func SMConditionGroup findConditionGroup(Block ablock)
+		return pConditionGroups.find(ablock) cast SMConditionGroup
+	end
+	
+	
+	/**
+	 * \brief Evaluate conditions.
+	 * 
+	 * If no condition is present true is returned.
+	 */
+	func bool evaluateConditions(SMContext context)
+		if pConditions.getCount() == 0 and pConditionGroups.getCount() == 0
+			return true
+		end
+		
+		var SMCondition condition
+		
+		select pConditionMode
+		case SMTransition.ConditionMode.allTrue
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
+			end) == null and pConditionGroups.find(block SMConditionGroup each
+				return not each.evaluateConditions(context)
+			end) == null
+			
+		case SMTransition.ConditionMode.anyTrue
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
+			end) != null or pConditionGroups.find(block SMConditionGroup each
+				return each.evaluateConditions(context)
+			end) != null
+			
+		case SMTransition.ConditionMode.anyFalse
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
+			end) != null or pConditionGroups.find(block SMConditionGroup each
+				return not each.evaluateConditions(context)
+			end) != null
+			
+		case SMTransition.ConditionMode.allFalse
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
+			end) == null and pConditionGroups.find(block SMConditionGroup each
+				return each.evaluateConditions(context)
+			end) == null
+			
+		else
+			return false
+		end
+	end
+end

@@ -188,13 +188,17 @@ class LoadBehaviorTree extends BaseXmlLoader
 	
 	/**\brief Read rule common. */
 	private func bool readRuleCommon(EasyXMLElement element, BTRule rule)
+		return readConditionGroup(element, rule)
+	end
+	
+	/** \brief Read condition group. */
+	private func bool readConditionGroup(EasyXMLElement element, BTConditionGroup group)
 		var String tagName = element.getTagName()
-		
 		if tagName.equals("parameter")
-			rule.getParameters().setAt(element.getAttributeNamed("name"), element.getFirstCData())
+			group.getParameters().setAt(element.getAttributeNamed("name"), element.getFirstCData())
 			
 		elif tagName.equals("condition")
-			rule.addCondition(element.getFirstCData())
+			group.addCondition(element.getFirstCData())
 			
 		elif tagName.equals("conditionMode")
 			var String value = element.getFirstCData()
@@ -203,12 +207,19 @@ class LoadBehaviorTree extends BaseXmlLoader
 				logInvalidValue(element, value)
 				throw EInvalidParam.new()
 			end
-			rule.setConditionMode(mode)
+			group.setConditionMode(mode)
+			
+		elif tagName.equals("conditionGroup")
+			var BTConditionGroup subGroup = BTConditionGroup.new()
+			if not readConditionGroup(element, subGroup)
+				logUnknownTag(element)
+				throw EInvalidParam.new()
+			end
+			group.addConditionGroup(subGroup)
 			
 		else
 			return false
 		end
-		
 		return true
 	end
 	

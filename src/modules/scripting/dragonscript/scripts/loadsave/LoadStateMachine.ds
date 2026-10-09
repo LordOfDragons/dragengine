@@ -163,31 +163,48 @@ class LoadStateMachine extends BaseXmlLoader
 		var SMStateAction action = SMStateAction.new(id)
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
-			if tagName.equals("parameter")
-				action.getParameters().setAt(element.getAttributeNamed("name"), element.getFirstCData())
-				
-			elif tagName.equals("condition")
-				action.addCondition(element.getFirstCData())
-				
-			elif tagName.equals("conditionMode")
-				var String value = element.getFirstCData()
-				var SMTransition.ConditionMode mode = SMTransition.ConditionMode.named(value)
-				if mode == null
-					logInvalidValue(element, value)
-					throw EInvalidParam.new()
-				end
-				action.setConditionMode(mode)
-				
-			elif tagName.equals("state")
+			if tagName.equals("state")
 				action.setStateID(element.getFirstCData())
 				
-			else
+			elif not readConditionGroup(element, action)
 				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
 		end)
 		
 		return action
+	end
+	
+	/** \brief Read condition group. */
+	private func bool readConditionGroup(EasyXMLElement element, SMConditionGroup group)
+		var String tagName = element.getTagName()
+		if tagName.equals("parameter")
+			group.getParameters().setAt(element.getAttributeNamed("name"), element.getFirstCData())
+			
+		elif tagName.equals("condition")
+			group.addCondition(element.getFirstCData())
+			
+		elif tagName.equals("conditionMode")
+			var String value = element.getFirstCData()
+			var SMTransition.ConditionMode mode = SMTransition.ConditionMode.named(value)
+			if mode == null
+				logInvalidValue(element, value)
+				throw EInvalidParam.new()
+			end
+			group.setConditionMode(mode)
+			
+		elif tagName.equals("conditionGroup")
+			var SMConditionGroup subGroup = SMConditionGroup.new()
+			if not readConditionGroup(element, subGroup)
+				logUnknownTag(element)
+				throw EInvalidParam.new()
+			end
+			group.addConditionGroup(subGroup)
+			
+		else
+			return false
+		end
+		return true
 	end
 	
 	/** \brief Read transition. */
@@ -205,21 +222,6 @@ class LoadStateMachine extends BaseXmlLoader
 			if tagName.equals("action")
 				transition.addAction(readStateAction(element))
 				
-			elif tagName.equals("parameter")
-				transition.getParameters().setAt(element.getAttributeNamed("name"), element.getFirstCData())
-				
-			elif tagName.equals("condition")
-				transition.addCondition(element.getFirstCData())
-				
-			elif tagName.equals("conditionMode")
-				var String value = element.getFirstCData()
-				var SMTransition.ConditionMode mode = SMTransition.ConditionMode.named(value)
-				if mode == null
-					logInvalidValue(element, value)
-					throw EInvalidParam.new()
-				end
-				transition.setConditionMode(mode)
-				
 			elif tagName.equals("import")
 				var String id = element.getFirstCData()
 				var SMState importState = stateMachine.getStateAt(id)
@@ -228,7 +230,7 @@ class LoadStateMachine extends BaseXmlLoader
 				end
 				transition.importState(importState)
 				
-			else
+			elif not readConditionGroup(element, transition)
 				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end

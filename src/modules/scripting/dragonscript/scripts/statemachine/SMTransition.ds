@@ -22,12 +22,9 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.StateMachineSystem
-
 pin Dragengine.Scenery
 pin Dragengine.Utils
-
 
 
 /**
@@ -35,7 +32,7 @@ pin Dragengine.Utils
  * 
  * Transitions run a set of actions before activating the new state in the state machine.
  */
-class SMTransition
+class SMTransition extends SMConditionGroup
 	/** \brief Condition modes. */
 	enum ConditionMode
 		/** \brief All conditions have to evaluate to true. */
@@ -53,9 +50,7 @@ class SMTransition
 	
 	
 	var String pEvent, pStateID, pDelegate
-	var Array pActions, pConditions
-	var ConditionMode pConditionMode
-	var Dictionary pParameters
+	var Array pActions
 	
 	
 	/**
@@ -92,25 +87,19 @@ class SMTransition
 		pStateID = stateID
 		pDelegate = delegate
 		pActions = Array.new()
-		pConditions = Array.new()
-		pConditionMode = ConditionMode.allTrue
-		pParameters = Dictionary.new()
 	end
 	
 	/**
 	 * \brief Create copy of state machine transition.
 	 * \version 1.26
 	 */
-	func new(SMTransition transition)
+	func new(SMTransition transition) super(transition)
 		pEvent = transition.pEvent
 		pStateID = transition.pStateID
 		pDelegate = transition.pDelegate
 		pActions = transition.pActions.map(block SMStateAction each
 			return SMStateAction.new(each)
 		end)
-		pConditions = Array.new(transition.pConditions)
-		pConditionMode = transition.pConditionMode
-		pParameters = Dictionary.new(transition.pParameters)
 	end
 	
 	
@@ -158,97 +147,6 @@ class SMTransition
 		return pActions.find(ablock) cast SMStateAction
 	end
 	
-	
-	/** \brief Count of conditions. */
-	func int getConditionCount()
-		return pConditions.getCount()
-	end
-	
-	/** \brief Get condition at index. */
-	func String getConditionAt(int index)
-		return pConditions.getAt(index) cast String
-	end
-	
-	/** \brief Add condition. */
-	func void addCondition(String condition)
-		if condition == null
-			throw EInvalidParam.new()
-		end
-		pConditions.add(condition)
-	end
-	
-	/** \brief Visit conditions with block with parameter String. */
-	func void forEachCondition(Block ablock)
-		pConditions.forEach(ablock)
-	end
-	
-	/** \brief Find condition with block with parameter String. */
-	func String findCondition(Block ablock)
-		return pConditions.find(ablock) cast String
-	end
-	
-	/** \brief Condition mode from eConditionModes. */
-	func ConditionMode getConditionMode()
-		return pConditionMode
-	end
-	
-	/** \brief Set condition mode from eConditionModes. */
-	func void setConditionMode(ConditionMode mode)
-		pConditionMode = mode
-	end
-	
-	/**
-	 * \brief Evaluate all conditions.
-	 * 
-	 * If no condition is present \em true is returned.
-	 * 
-	 * \param parameters Dictionary with parameters of type String key and String value.
-	 *                   Do not change the content of the dictionary as it is shared.
-	 */
-	func bool evaluateConditions(SMContext context)
-		if pConditions.getCount() == 0
-			return true
-		end
-		
-		var SMCondition condition
-		
-		select pConditionMode
-		case ConditionMode.allTrue
-			return pConditions.find(block String each
-				condition = context.getCondition(each)
-				return condition == null or not condition.evaluateCondition(context, pParameters)
-			end) == null
-			
-		case ConditionMode.anyTrue
-			return pConditions.find(block String each
-				condition = context.getCondition(each)
-				return condition != null and condition.evaluateCondition(context, pParameters)
-			end) != null
-			
-		case ConditionMode.anyFalse
-			return pConditions.find(block String each
-				condition = context.getCondition(each)
-				return condition == null or not condition.evaluateCondition(context, pParameters)
-			end) != null
-			
-		case ConditionMode.allFalse
-			return pConditions.find(block String each
-				condition = context.getCondition(each)
-				return condition != null and condition.evaluateCondition(context, pParameters)
-			end) == null
-			
-		else
-			return false
-		end
-	end
-	
-	/**
-	 * \brief Parameters as Dictionary of type String key and String value.
-	 * \warning Do not change the content of the dictionary as it is shared.
-	 */
-	func Dictionary getParameters()
-		return pParameters
-	end
 	
 	/**
 	 * \brief Import state.
