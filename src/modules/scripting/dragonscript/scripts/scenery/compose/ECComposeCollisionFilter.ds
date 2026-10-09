@@ -22,73 +22,96 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
-
 pin Dragengine.Preloading
 pin Dragengine.Utils
-
 
 /**
  * \brief Composable collision filter for element class.
  */
 class ECComposeCollisionFilter
-	/** \brief Collider collision filter. */
-	private var CollisionFilter pCollisionFilter
+	var CollisionFilter pCollisionFilter
+	var ECPCollisionFilter pProperty
 	
 	
+	/** \brief Create composable element class. */
+	func new()
+		pCollisionFilter = CollisionFilter.new()
+	end
+	
+	func new(CollisionFilter filter)
+		pCollisionFilter = filter
+	end
 	
 	/**
 	 * \brief Create composable element class.
-	 * 
-	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
-	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 * \version 1.35
 	 */
-	public func new()
-		this.pCollisionFilter = CollisionFilter.new()
+	func new(ECPCollisionFilter property)
+		pProperty = property
 	end
-	
-	public func new( CollisionFilter filter )
-		this.pCollisionFilter = filter
-	end
-	
 	
 	
 	/** \brief Collision filter. */
-	public func CollisionFilter getCollisionFilter()
-		return this.pCollisionFilter
+	func CollisionFilter getCollisionFilter()
+		return pProperty != null if pProperty.getCollisionFilter() else pCollisionFilter
 	end
 	
 	/** \brief Set collision filter. */
-	public func void setCollisionFilter( CollisionFilter collisionFilter )
-		this.pCollisionFilter = collisionFilter
+	func void setCollisionFilter(CollisionFilter collisionFilter)
+		if pProperty != null
+			pProperty.setCollisionFilter(collisionFilter)
+			
+		else
+			pCollisionFilter = collisionFilter
+		end
 	end
 	
 	/** \brief Convience function clearing bit in collision category. */
-	public func void collisionCategoryClearBit( int bit )
-		var LayerMask mask = this.pCollisionFilter.getCategory()
-		mask.clearBit( bit )
-		this.pCollisionFilter = CollisionFilter.new( mask, this.pCollisionFilter.getFilter() )
+	func void collisionCategoryClearBit(int bit)
+		if pProperty != null
+			pProperty.collisionCategoryClearBit(bit)
+			
+		else
+			var LayerMask mask = pCollisionFilter.getCategory()
+			mask.clearBit(bit)
+			pCollisionFilter = CollisionFilter.new(mask, pCollisionFilter.getFilter())
+		end
 	end
 	
 	/** \brief Convience function setting bit in collision category. */
-	public func void collisionCategorySetBit( int bit )
-		var LayerMask mask = this.pCollisionFilter.getCategory()
-		mask.setBit( bit )
-		this.pCollisionFilter = CollisionFilter.new( mask, this.pCollisionFilter.getFilter() )
+	func void collisionCategorySetBit(int bit)
+		if pProperty != null
+			pProperty.collisionCategorySetBit(bit)
+			
+		else
+			var LayerMask mask = pCollisionFilter.getCategory()
+			mask.setBit(bit)
+			pCollisionFilter = CollisionFilter.new(mask, pCollisionFilter.getFilter())
+		end
 	end
 	
 	/** \brief Convience function clearing bit in collision filter. */
-	public func void collisionFilterClearBit( int bit )
-		var LayerMask mask = this.pCollisionFilter.getFilter()
-		mask.clearBit( bit )
-		this.pCollisionFilter = CollisionFilter.new( this.pCollisionFilter.getCategory(), mask )
+	func void collisionFilterClearBit(int bit)
+		if pProperty != null
+			pProperty.collisionFilterClearBit(bit)
+			
+		else
+			var LayerMask mask = pCollisionFilter.getFilter()
+			mask.clearBit(bit)
+			pCollisionFilter = CollisionFilter.new(pCollisionFilter.getCategory(), mask)
+		end
 	end
 	
 	/** \brief Convience function setting bit in collision filter. */
-	public func void collisionFilterSetBit( int bit )
-		var LayerMask mask = this.pCollisionFilter.getFilter()
-		mask.setBit( bit )
-		this.pCollisionFilter = CollisionFilter.new( this.pCollisionFilter.getCategory(), mask )
+	func void collisionFilterSetBit(int bit)
+		if pProperty != null
+			pProperty.collisionFilterSetBit(bit)
+			
+		else
+			var LayerMask mask = pCollisionFilter.getFilter()
+			mask.setBit(bit)
+			pCollisionFilter = CollisionFilter.new(pCollisionFilter.getCategory(), mask)
+		end
 	end
 end

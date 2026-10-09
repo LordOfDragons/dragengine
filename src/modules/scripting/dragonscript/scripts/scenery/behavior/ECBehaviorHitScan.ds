@@ -62,7 +62,7 @@ pin Dragengine.StateMachineSystem
  *    func new()
  *       collider = ECBehaviorCollider.new(this, null)
  *       hitScan = ECBehaviorHitScan.new(this, collider)
- *       hitScan.getCollisionFilter().setCollisionFilter(...)
+ *       hitScan.getCollisionFilterProperty().setCollisionFilter(...)
  *    end
  * end
  * 
@@ -123,15 +123,6 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 *   <!-- optional: use component with id instead of empty string -->
 	 *   <string name='component'>second</string>
 	 * 
-	 *   <!-- optional: set collision filter. default value '1:0 1 2' which means
-	 *                  category BaseGameApp.CollisionFilterBit.dynamic
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actor.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>1:0 1 2</string>
-	 *   
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -164,8 +155,9 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				getHelper().defaultComponent(eclass, parameters), id)
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollisionFilter().setCollisionFilter(eclass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -347,7 +339,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			end
 			
 			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
-			pCollisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
+			pCollisionFilter = pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub)
 			pRange = DEMath.max(pECBehavior.getRange().getValue(stub), 0.0)
 			pOffset = DEMath.max(pECBehavior.getOffset().getValue(stub), 0.0)
 			pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
@@ -872,7 +864,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	
 	var ECBehaviorCollider pCollider
 	var ECBehaviorComponent pComponent
-	var ECComposeCollisionFilter pCollisionFilter
+	var ECPCollisionFilter pCollisionFilter
 	var ECPFloat pRange
 	var ECPFloat pOffset
 	var ECPVector pOrigin
@@ -909,6 +901,13 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		pComponent = component
 		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
+		eclass.addProperty(pRange = ECPFloat.new(prefix + "range", 20, 0))
+		eclass.addProperty(pOffset = ECPFloat.new(prefix + "offset", 0, 0))
+		eclass.addProperty(pOrigin = ECPVector.new(prefix + "origin", Vector.new()))
+		eclass.addProperty(pDirection = ECPVector.new(prefix + "direction", Vector.new(0, 0, 1)))
+		eclass.addProperty(pOrientation = ECPVector.new(prefix + "orientation", Vector.new()))
+		eclass.addProperty(pBone = ECPString.new(prefix + "bone", ""))
+		
 		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)
 		
 		var LayerMask cfFilter = LayerMask.newWith(\
@@ -916,14 +915,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			BaseGameApp.CollisionFilterBit.dynamic,\
 			BaseGameApp.CollisionFilterBit.actor)
 		
-		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
-		
-		eclass.addProperty(pRange = ECPFloat.new(prefix + "range", 20, 0))
-		eclass.addProperty(pOffset = ECPFloat.new(prefix + "offset", 0, 0))
-		eclass.addProperty(pOrigin = ECPVector.new(prefix + "origin", Vector.new()))
-		eclass.addProperty(pDirection = ECPVector.new(prefix + "direction", Vector.new(0, 0, 1)))
-		eclass.addProperty(pOrientation = ECPVector.new(prefix + "orientation", Vector.new()))
-		eclass.addProperty(pBone = ECPString.new(prefix + "bone", ""))
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			eclass.getCodecPropertyString(), eclass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(cfCategory, cfFilter))
+		eclass.addProperty(pCollisionFilter)
 		
 		eclass.addBehavior(this)
 	end
@@ -957,9 +952,19 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	end
 	
 	
-	
-	/** \brief Collision filter for AI collider. */
+	/**
+	 * \brief Collision filter for AI collider.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
 	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter for AI collider.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
 		return pCollisionFilter
 	end
 	

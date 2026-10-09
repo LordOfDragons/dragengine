@@ -1,0 +1,188 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Collision filter class property for use with XML loading.
+ * \version 1.35
+ * 
+ * Filter bits are defined using a list of names mapped to collision filter bit indices
+ * using \ref BaseGameApp#getCollisionFilterMap(). The format of the property value can be:
+ * 
+ * \code "category:filter" \endcode
+ * \code "category" \endcode
+ * \code "" \endcode
+ * 
+ * If category only is used filter equals to category. Both category and filter can be:
+ * 
+ * \code "bit1 bit2 ... bitN" \endcode
+ * 
+ * Bit names are looked up using the collision filter map. Empty string creates an empty
+ * collision filter.
+ */
+class ECPCollisionFilter extends ElementClassProperty
+	var CodecPropertyString pCodec
+	var Dictionary pCollisionFilterBitMap
+	var CollisionFilter pCollisionFilter
+	
+	
+	/** \brief Create property. */
+	func new(String name, CodecPropertyString codec, Dictionary collisionFilterBitMap)\
+	this(name, codec, collisionFilterBitMap, CollisionFilter.new())
+	end
+	
+	/** \brief Create property. */
+	func new(String name, CodecPropertyString codec, Dictionary collisionFilterBitMap,\
+	CollisionFilter collisionFilter) super(name)
+		if codec == null
+			throw ENullPointer.new("codec")
+		end
+		if collisionFilterBitMap == null
+			throw ENullPointer.new("collisionFilterBitMap")
+		end
+		if collisionFilter == null
+			throw ENullPointer.new("collisionFilter")
+		end
+		
+		pCodec = codec
+		pCollisionFilter = collisionFilter
+		pCollisionFilterBitMap = collisionFilterBitMap
+	end
+	
+	
+	/** \brief Property string codec. */
+	func CodecPropertyString getCodec()
+		return pCodec
+	end
+	
+	/** \brief Set property string codec. */
+	func void setCodec(CodecPropertyString codec)
+		if codec == null
+			throw ENullPointer.new()
+		end
+		
+		pCodec = codec
+	end
+	
+	/**
+	 * \brief Collision filter bit map.
+	 * \warning Do not modify map since it can be potentially shared. To modify create a copy
+	 *          and use \ref #setCollisionFilterBitMap().
+	 */
+	func Dictionary getCollisionFilterBitMap()
+		return pCollisionFilterBitMap
+	end
+	
+	/** \brief Set collision filter bit map. */
+	func void setCollisionFilterBitMap(Dictionary collisionFilterBitMap)
+		if collisionFilterBitMap == null
+			throw ENullPointer.new()
+		end
+		
+		pCollisionFilterBitMap = collisionFilterBitMap
+	end
+	
+	
+	/** \brief Collision filter. */
+	func CollisionFilter getCollisionFilter()
+		return pCollisionFilter
+	end
+	
+	/** \brief Set collision filter. */
+	func void setCollisionFilter(CollisionFilter collisionFilter)
+		if collisionFilter == null
+			throw ENullPointer.new()
+		end
+		
+		pCollisionFilter = collisionFilter
+	end
+	
+	/** \brief Convience function replacing collision category. */
+	func void collisionCategorySet(LayerMask layerMask)
+		pCollisionFilter = CollisionFilter.new(layerMask, pCollisionFilter.getFilter())
+	end
+	
+	/** \brief Convience function setting bit in collision category. */
+	func void collisionCategorySetBit(int bit)
+		var LayerMask mask = pCollisionFilter.getCategory()
+		mask.setBit(bit)
+		pCollisionFilter = CollisionFilter.new(mask, pCollisionFilter.getFilter())
+	end
+	
+	/** \brief Convience function clearing bit in collision category. */
+	func void collisionCategoryClearBit(int bit)
+		var LayerMask mask = pCollisionFilter.getCategory()
+		mask.clearBit(bit)
+		pCollisionFilter = CollisionFilter.new(mask, pCollisionFilter.getFilter())
+	end
+	
+	/** \brief Convience function replacing collision filter. */
+	func void collisionFilterSet(LayerMask layerMask)
+		pCollisionFilter = CollisionFilter.new(pCollisionFilter.getCategory(), layerMask)
+	end
+	
+	/** \brief Convience function setting bit in collision filter. */
+	func void collisionFilterSetBit(int bit)
+		var LayerMask mask = pCollisionFilter.getFilter()
+		mask.setBit(bit)
+		pCollisionFilter = CollisionFilter.new(pCollisionFilter.getCategory(), mask)
+	end
+	
+	/** \brief Convience function clearing bit in collision filter. */
+	func void collisionFilterClearBit(int bit)
+		var LayerMask mask = pCollisionFilter.getFilter()
+		mask.clearBit(bit)
+		pCollisionFilter = CollisionFilter.new(pCollisionFilter.getCategory(), mask)
+	end
+	
+	
+	func void setValue(Object value)
+		pCollisionFilter = pCodec.decodeCollisionFilter(value cast String, pCollisionFilterBitMap)
+	end
+	
+	func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pCollisionFilter = (property cast ECPCollisionFilter).pCollisionFilter
+	end
+	
+	
+	/**
+	 * \brief Collision filter modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored collision filter is
+	 * returned. If the named stub property is present it is decoded using the rules described
+	 * in the class comment.
+	 */
+	func CollisionFilter getCollisionFilter(StubWithProperties stub)
+		var String value = stub.getPropertyValueFor(getName(), null)
+		if value == null
+			return pCollisionFilter
+		end
+		return pCodec.decodeCollisionFilter(value, pCollisionFilterBitMap)
+	end
+end

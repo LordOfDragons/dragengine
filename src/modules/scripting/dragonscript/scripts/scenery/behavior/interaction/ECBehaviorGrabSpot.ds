@@ -122,13 +122,6 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorGrabSpot'>
-	 *   <!-- optional: set collision filter. default value '4:1' which means
-	 *                  category BaseGameApp.CollisionFilterBit.trigger
-	 *                  filter BaseGameApp.CollisionFilterBit.dynamic.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>4:1 2</string>
-	 *   
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -160,8 +153,9 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 				ECBehaviorCollider.getBehaviorIn(eclass), id)
 			
 			if parameters.has("collisionFilter")
-				behavior.getTouchCollider().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getTouchCollider().getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -635,7 +629,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		pTouchCollider = ECComposeCollider.new(eclass, prefix + "touchCollider.")
 		pTouchCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
 		pTouchCollider.getLocalGravity().setVector(Vector.new())
-		pTouchCollider.setCollisionFilter(CollisionFilter.new( \
+		pTouchCollider.getCollisionFilterProperty().setCollisionFilter(CollisionFilter.new( \
 			LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic), \
 			LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger)))
 		

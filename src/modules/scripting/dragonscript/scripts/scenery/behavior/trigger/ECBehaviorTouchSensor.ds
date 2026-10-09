@@ -163,13 +163,6 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorTouchSensor'>
-	 *   <!-- optional: set collision filter. default value '4:3' which means
-	 *                  category BaseGameApp.CollisionFilterBit.trigger
-	 *                  filter BaseGameApp.CollisionFilterBit.actorAI.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>3:4 0</string>
-	 *   
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -201,8 +194,9 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				ECBehaviorCollider.getBehaviorIn(eclass), id)
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -387,7 +381,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			
 			touchSensor.setPosition(element.getPosition())
 			touchSensor.setOrientation(element.getOrientation())
-			touchSensor.setCollisionFilter(pECBehavior.getCollisionFilter().getCollisionFilter())
+			touchSensor.setCollisionFilter(pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub))
 			touchSensor.setTrackEnterLeave(true)
 			touchSensor.setEnabled(pECBehavior.getTouching().getValue(stub))
 			
@@ -689,7 +683,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	
 	
 	var ECBehaviorCollider pCollider
-	var ECComposeCollisionFilter pCollisionFilter
+	var ECPCollisionFilter pCollisionFilter
 	var ECPShapeList pShape
 	var ECPBoolean pShapeFromSize
 	var ECPBoolean pTouching
@@ -722,10 +716,11 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		eclass.addProperty(pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString()))
 		
-		pCollisionFilter = ECComposeCollisionFilter.new()
-		pCollisionFilter.setCollisionFilter(CollisionFilter.new(\
-			LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger), \
-			LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)))
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			eclass.getCodecPropertyString(), eclass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger),\
+				LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)))
+		eclass.addProperty(pCollisionFilter)
 		
 		eclass.addProperty(pShapeFromSize = ECPBoolean.new(prefix + "shapeFromSize", false))
 		eclass.addProperty(pTouching = ECPBoolean.new(prefix + "touching", true))
@@ -763,8 +758,19 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		return pAttach
 	end
 	
-	/** \brief Collision filter. */
+	/**
+	 * \brief Collision filter.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
 	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
 		return pCollisionFilter
 	end
 	

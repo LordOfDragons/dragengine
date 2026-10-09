@@ -164,17 +164,6 @@ class ECBehaviorForceField extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorForceField'>
-	 *   <!-- optional: set collision filter. default value '6:0 1 2 3 5' which means
-	 *                  category BaseGameApp.CollisionFilterBit.forceField
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actor,
-	 *                         BaseGameApp.CollisionFilterBit.actorAI,
-	 *                         BaseGameApp.CollisionFilterBit.particle.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>6:0 1 2 3 5</string>
-	 * 
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more
 	 *                  supported values. default value is 'default' -->
 	 *   <string name='triggerTable'>default</string>
@@ -218,8 +207,9 @@ class ECBehaviorForceField extends DefaultECBehavior
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			if parameters.has("collisionFilter")
-				behavior.getForceField().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getForceField().getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			if parameters.has("syncTrigger")

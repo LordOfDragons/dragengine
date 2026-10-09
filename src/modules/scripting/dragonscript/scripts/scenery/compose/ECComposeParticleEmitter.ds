@@ -38,14 +38,14 @@ pin Dragengine.TriggerSystem
  * Sets the particle emitter to use by particle emitter instance.
  */
 class ECComposeParticleEmitter
-	private var ECPParticleEmitter pParticleEmitter
-	private var ECPFloat pTimeScale
-	private var ECPFloat pWarmUpTime
-	private var ECPBoolean pCasting
-	private var LayerMask pLayerMask
-	private var ECComposeCollisionFilter pCollisionFilter
+	var ECPParticleEmitter pParticleEmitter
+	var ECPFloat pTimeScale
+	var ECPFloat pWarmUpTime
+	var ECPBoolean pCasting
+	var LayerMask pLayerMask
+	var ECPCollisionFilter pCollisionFilter
 	
-	private var String pPrefix
+	var String pPrefix
 	
 	
 	
@@ -55,8 +55,8 @@ class ECComposeParticleEmitter
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new( ElementClass ownerClass, Loaders loaders ) \
-	this( ownerClass, loaders, "particleEmitter." )
+	func new(BehaviorElementClass ownerClass, Loaders loaders) \
+	this(ownerClass, loaders, "particleEmitter.")
 	end
 	
 	/**
@@ -65,83 +65,95 @@ class ECComposeParticleEmitter
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new( ElementClass ownerClass, Loaders loaders, String prefix )
+	func new(BehaviorElementClass ownerClass, Loaders loaders, String prefix)
 		if prefix == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pParticleEmitter = ECPParticleEmitter.new( prefix + "path", loaders.getParticleEmitter() )
-		ownerClass.addProperty( this.pParticleEmitter )
+		pParticleEmitter = ECPParticleEmitter.new(prefix + "path", loaders.getParticleEmitter())
+		ownerClass.addProperty(pParticleEmitter)
 		
-		this.pTimeScale = ECPFloat.new( prefix + "timeScale", 1 )
-		ownerClass.addProperty( this.pTimeScale )
+		pTimeScale = ECPFloat.new(prefix + "timeScale", 1)
+		ownerClass.addProperty(pTimeScale)
 		
-		this.pWarmUpTime = ECPFloat.new( prefix + "warmUpTime", 0 )
-		ownerClass.addProperty( this.pWarmUpTime )
+		pWarmUpTime = ECPFloat.new(prefix + "warmUpTime", 0)
+		ownerClass.addProperty(pWarmUpTime)
 		
-		this.pCasting = ECPBoolean.new( prefix + "casting", true )
-		ownerClass.addProperty( this.pCasting )
+		pCasting = ECPBoolean.new(prefix + "casting", true)
+		ownerClass.addProperty(pCasting)
 		
-		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.default )
+		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.default)
 		
-		this.pCollisionFilter = ECComposeCollisionFilter.new()
-		
-		var LayerMask lmCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.particle )
+		var LayerMask lmCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.particle)
 		
 		var LayerMask lmFilter = LayerMask.new()
-		lmFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
-		lmFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
-		lmFilter.setBit( BaseGameApp.CollisionFilterBit.actor )
-		lmFilter.setBit( BaseGameApp.CollisionFilterBit.forceField )
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.actor)
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.forceField)
 		
-		this.pCollisionFilter.setCollisionFilter( CollisionFilter.new( lmCategory, lmFilter ) )
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			ownerClass.getCodecPropertyString(), ownerClass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(lmCategory, lmFilter))
+		ownerClass.addProperty(pCollisionFilter)
 		
-		this.pPrefix = prefix
+		pPrefix = prefix
 	end
 	
 	
 	
 	/** \brief Particle emitter resource. */
-	public func ECPParticleEmitter getParticleEmitter()
-		return this.pParticleEmitter
+	func ECPParticleEmitter getParticleEmitter()
+		return pParticleEmitter
 	end
 	
 	/** \brief Time scale for controllers advanced by time. */
-	public func ECPFloat getTimeScale()
-		return this.pTimeScale
+	func ECPFloat getTimeScale()
+		return pTimeScale
 	end
 	
 	/** \brief Warm up time when start casting. */
-	public func ECPFloat getWarmUpTime()
-		return this.pWarmUpTime
+	func ECPFloat getWarmUpTime()
+		return pWarmUpTime
 	end
 	
 	/** \brief Emitter is casting particles. */
-	public func ECPBoolean getCasting()
-		return this.pCasting
+	func ECPBoolean getCasting()
+		return pCasting
 	end
 	
 	/** \brief Layer mask to set (basic layer mask). */
-	public func LayerMask getLayerMask()
-		return this.pLayerMask
+	func LayerMask getLayerMask()
+		return pLayerMask
 	end
 	
 	/** \brief Set layer mask to set (basic layer mask). */
-	public func void setLayerMask( LayerMask layerMask )
+	func void setLayerMask(LayerMask layerMask)
 		if layerMask == null
 			throw EInvalidParam.new()
 		end
-		this.pLayerMask = layerMask
+		pLayerMask = layerMask
 	end
 	
-	/** \brief Collision filter. */
-	public func ECComposeCollisionFilter getCollisionFilter()
-		return this.pCollisionFilter
+	/**
+	 * \brief Collision filter.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
+	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
+		return pCollisionFilter
 	end
 	
 	/** \brief Property prefix. */
-	public func String getPrefix()
-		return this.pPrefix
+	func String getPrefix()
+		return pPrefix
 	end
 	
 	
@@ -153,15 +165,15 @@ class ECComposeParticleEmitter
 	 * is not setEnableCasting() by default otherwise a burst of particles can be emitted
 	 * although the trigger created later on evaluates to false.
 	 */
-	public func ParticleEmitterInstance createParticleEmitterInstance( Element element, StubElement stub )
-		var ParticleEmitter emitter = this.pParticleEmitter.getParticleEmitter()
+	func ParticleEmitterInstance createParticleEmitterInstance(Element element, StubElement stub)
+		var ParticleEmitter emitter = pParticleEmitter.getParticleEmitter()
 		var String value
 		
 		// particle emitter resource
-		value = stub.getPropertyValueFor( this.pParticleEmitter.getName(), "" )
+		value = stub.getPropertyValueFor(pParticleEmitter.getName(), "")
 		if not value.empty()
 			try
-				emitter = this.pParticleEmitter.getLoader().loadFromFile( value )
+				emitter = pParticleEmitter.getLoader().loadFromFile(value)
 				
 			catch Exception e
 				throw ELoadResourceFailed.new(value, element.getClass().getClassname(), e)
@@ -174,30 +186,30 @@ class ECComposeParticleEmitter
 		
 		// create particle emitter instance
 		var ParticleEmitterInstance instance = ParticleEmitterInstance.new()
-		instance.setEmitter( emitter )
-		instance.setPosition( stub.getPosition() )
-		instance.setOrientation( Quaternion.newFromEuler( stub.getRotation() ) )
-		instance.setLayerMask( this.pLayerMask )
-		instance.setCollisionFilter( this.pCollisionFilter.getCollisionFilter() )
-		instance.setTimeScale( this.pTimeScale.getValue( stub ) )
-		instance.setWarmUpTime( this.pWarmUpTime.getValue( stub ) )
+		instance.setEmitter(emitter)
+		instance.setPosition(stub.getPosition())
+		instance.setOrientation(Quaternion.newFromEuler(stub.getRotation()))
+		instance.setLayerMask(pLayerMask)
+		instance.setCollisionFilter(pCollisionFilter.getCollisionFilter(stub))
+		instance.setTimeScale(pTimeScale.getValue(stub))
+		instance.setWarmUpTime(pWarmUpTime.getValue(stub))
 		return instance
 	end
 	
 	/** \brief Create casting trigger expression from stub or \em null if not used. */
-	public func TSTriggerExpression createTriggerCasting( Element element, StubElement stub )
-		return this.createTriggerCasting( element, stub, "" )
+	func TSTriggerExpression createTriggerCasting(Element element, StubElement stub)
+		return createTriggerCasting(element, stub, "")
 	end
 	
 	/** \brief Create casting trigger expression from stub or \em null if not used. */
-	public func TSTriggerExpression createTriggerCasting( Element element, StubElement stub, String defaultValue )
-		var String value = stub.getPropertyValueFor( this.pPrefix + "trigger", defaultValue )
+	func TSTriggerExpression createTriggerCasting(Element element, StubElement stub, String defaultValue)
+		var String value = stub.getPropertyValueFor(pPrefix + "trigger", defaultValue)
 		
 		if value.empty()
 			return null
 			
 		else
-			return element.getClass().getTriggerExpressionParser().stringToExpression( value )
+			return element.getClass().getTriggerExpressionParser().stringToExpression(value)
 		end
 	end
 end

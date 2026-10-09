@@ -167,16 +167,6 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorParticleEmitter'>
-	 *   <!-- optional: set collision filter. default value '5:0 1 2 6' which means
-	 *                  category BaseGameApp.CollisionFilterBit.particle
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actor,
-	 *                         BaseGameApp.CollisionFilterBit.forceField.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>5:0 1 2 6</string>
-	 * 
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values -->
 	 *   <string name='triggerTable'>default</string>
 	 * 
@@ -219,8 +209,8 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			if parameters.has("collisionFilter")
-				behavior.getParticleEmitter().getCollisionFilter().setCollisionFilter(\
-					ElementClass.getSharedCodecPropertyString().decodeCollisionFilter(\
+				behavior.getParticleEmitter().getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
 						parameters.getAt("collisionFilter") cast String))
 			end
 			

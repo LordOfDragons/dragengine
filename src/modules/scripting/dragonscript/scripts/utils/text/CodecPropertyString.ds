@@ -823,11 +823,28 @@ class CodecPropertyString
 	 * \version 1.25
 	 * 
 	 * Value is encoded as "bit1 bit2 ... bitN".
+	 * 
+	 * \deprecated Use \ref #decodeLayerMask(String,Dictionary) instead.
 	 */
 	func LayerMask decodeLayerMask(String value)
 		var LayerMask mask = LayerMask.new()
 		value.split(' ').forEach(block String each
 			mask.setBit(each.toInt())
+		end)
+		return mask
+	end
+	
+	/**
+	 * \brief Decode \ref LayerMask using filter bit names.
+	 * \version 1.35
+	 * 
+	 * Value is encoded as "bit1 bit2 ... bitN". The filter names are looked up in filterBitMap
+	 * to obtain the filter bit index. Unknown filter names throw an exception.
+	 */
+	func LayerMask decodeLayerMask(String value, Dictionary filterBitMap)
+		var LayerMask mask = LayerMask.new()
+		value.split(' ').forEach(block String each
+			mask.setBit(filterBitMap.getAt(each) cast int)
 		end)
 		return mask
 	end
@@ -843,6 +860,8 @@ class CodecPropertyString
 	 * Second form is the same as first form with filter equal to category.
 	 * 
 	 * Category and filter decode the same way as \ref #decodeLayerMask().
+	 * 
+	 * \deprecated Use \ref #decodeCollisionFilter(String,Dictionary) instead.
 	 */
 	func CollisionFilter decodeCollisionFilter(String value)
 		var Array parts = value.split(':')
@@ -856,6 +875,33 @@ class CodecPropertyString
 		else
 			return CollisionFilter.new(decodeLayerMask(\
 				parts.getAt(0) cast String), decodeLayerMask(parts.getAt(1) cast String))
+		end
+	end
+	
+	/**
+	 * \brief Decode \ref CollisionFilter using filter bit names.
+	 * \version 1.35
+	 * 
+	 * Value is encoded either as "category:filter", "category" or empty string.
+	 * 
+	 * Empty string creates collision filter with empty category and full filter.
+	 * 
+	 * Second form is the same as first form with filter equal to category.
+	 * 
+	 * Category and filter decode the same way as \ref #decodeLayerMask(String,Dictionary).
+	 */
+	func CollisionFilter decodeCollisionFilter(String value, Dictionary filterBitMap)
+		var Array parts = value.split(':')
+		
+		if parts.getCount() == 0
+			return CollisionFilter.new()
+			
+		elif parts.getCount() == 1
+			return CollisionFilter.new(decodeLayerMask(parts.getAt(0) cast String, filterBitMap))
+			
+		else
+			return CollisionFilter.new(decodeLayerMask(parts.getAt(0) cast String, filterBitMap),\
+				decodeLayerMask(parts.getAt(1) cast String, filterBitMap))
 		end
 	end
 	

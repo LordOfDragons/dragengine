@@ -158,11 +158,6 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 *                  default is 'default' -->
 	 *   <string name='bindingManager'>default</string>
 	 * 
-	 *   <!-- optional: set collision filter. default value '' which means empty category
-	 *                  and full filter. format is '', 'category' or 'category:filter'
-	 *                  where category and filter are a list of bits to set. -->
-	 *   <string name='collisionFilter'>6:0 1 2 3 5</string>
-	 *   
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -196,8 +191,9 @@ class ECBehaviorVRHand extends DefaultECBehavior
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String), id)
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollider().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollider().getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -1163,7 +1159,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		pCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
 		pCollider.getLocalGravity().setVector(Vector.new())
 		pCollider.getWeight().setValue(1)
-		pCollider.setCollisionFilter(CollisionFilter.new())
+		pCollider.getCollisionFilterProperty().setCollisionFilter(CollisionFilter.new())
 	end
 	
 	/**
@@ -1187,7 +1183,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		lmFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
 		lmFilter.setBit(BaseGameApp.CollisionFilterBit.particle)
 		
-		pCollider.setCollisionFilter(CollisionFilter.new(lmCategory, lmFilter))
+		pCollider.getCollisionFilterProperty().setCollisionFilter(CollisionFilter.new(lmCategory, lmFilter))
 	end
 	
 	

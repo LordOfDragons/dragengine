@@ -131,15 +131,6 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	 *   <!-- required: use vr hand with id. -->
 	 *   <string name='vrHand'>right</string>
 	 * 
-	 *   <!-- optional: set collision filter. default value '1:0 1 2' which means
-	 *                  category BaseGameApp.CollisionFilterBit.dynamic
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actor.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>6:0 1 2 3 5</string>
-	 *   
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -173,8 +164,9 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			behavior.setIgnoreCollider(ECBehaviorCollider.getBehaviorIn(eclass))
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -316,7 +308,6 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pECBehavior = ecbehavior
 			pListeners = Array.new()
 			pEnabled = false
-			pCollisionFilter = ecbehavior.getCollisionFilter().getCollisionFilter()
 			
 			pVRHand = ecbehavior.getVRHand().instance(element)
 		end
@@ -343,6 +334,8 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			
 			var BehaviorElement element = getElement()
 			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
+			
+			pCollisionFilter = pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub)
 			
 			pRange = DEMath.max(pECBehavior.getRange().getValue(stub), 0.0)
 			pNextTestOrigin = pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
@@ -857,7 +850,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	var ECPVector pRotation
 	var ECPShapeList pShape
 	var ECPString pTestBone
-	var ECComposeCollisionFilter pCollisionFilter
+	var ECPCollisionFilter pCollisionFilter
 	var Array pListenerFactories
 	var ECComposeBTSM pBTSMs
 	var String pPrefix
@@ -894,7 +887,10 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actor)
 		
-		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			eclass.getCodecPropertyString(), eclass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(cfCategory, cfFilter))
+		eclass.addProperty(pCollisionFilter)
 		
 		eclass.addBehavior(this)
 	end
@@ -961,8 +957,19 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		return pTestBone
 	end
 	
-	/** \brief Collision filter for AI collider. */
+	/**
+	 * \brief Collision filter for AI collider.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
 	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter for AI collider.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
 		return pCollisionFilter
 	end
 	

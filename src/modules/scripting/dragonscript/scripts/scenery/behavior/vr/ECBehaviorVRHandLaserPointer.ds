@@ -289,8 +289,8 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 			// after the particle emitter behavior has been added. this code here ensures
 			// the user does not have to worry about setting the collision filter manually
 			// unless he is doing something special
-			ecbehavior.getParticleEmitter().getParticleEmitter().getCollisionFilter()\
-				.setCollisionFilter(ecbehavior.getVRHandPointAt().getCollisionFilter().getCollisionFilter())
+			ecbehavior.getParticleEmitter().getParticleEmitter().getCollisionFilterProperty()\
+				.setCollisionFilter(ecbehavior.getVRHandPointAt().getCollisionFilterProperty().getCollisionFilter())
 			
 			pVRHandPointAt = ecbehavior.getVRHandPointAt().instance(element)
 			pParticleEmitter = ecbehavior.getParticleEmitter().instance(element)
@@ -575,8 +575,8 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		pParticleEmitter = ECBehaviorParticleEmitter.new(eclass, null,\
 			eclass.sharedFactoryHelper.defaultLoaders(), null, subID, prefix + "particleEmitter")
 		pParticleEmitter.getParticleEmitter().getCasting().setValue(false)
-		pParticleEmitter.getParticleEmitter().getCollisionFilter().setCollisionFilter(\
-			vrHandPointAt.getCollisionFilter().getCollisionFilter())
+		pParticleEmitter.getParticleEmitter().getCollisionFilterProperty().setCollisionFilter(\
+			vrHandPointAt.getCollisionFilterProperty().getCollisionFilter())
 		pParticleEmitter.getParticleEmitter().getParticleEmitter().setPath(\
 			"/shareddata/particles/laserpointer/laserpointer.depemit")
 		

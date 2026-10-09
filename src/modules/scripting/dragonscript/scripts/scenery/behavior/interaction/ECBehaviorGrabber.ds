@@ -161,13 +161,6 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	 *   <!-- optional: use vr hand with id instead of empty string -->
 	 *   <string name='vrHand'>right</string>
 	 * 
-	 *   <!-- optional: set collision filter. default value '4:1' which means
-	 *                  category BaseGameApp.CollisionFilterBit.trigger
-	 *                  filter BaseGameApp.CollisionFilterBit.dynamic.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>4:1 2</string>
-	 *   
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -206,8 +199,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			end
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -436,7 +430,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			
 			touchSensor.setPosition(getElement().getPosition())
 			touchSensor.setOrientation(getElement().getOrientation())
-			touchSensor.setCollisionFilter(pECBehavior.getCollisionFilter().getCollisionFilter())
+			touchSensor.setCollisionFilter(pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub))
 			touchSensor.setTrackEnterLeave(true)
 			touchSensor.setShape(pECBehavior.getShape().getShapeList(stub))
 			touchSensor.setEnabled(pEnabled)
@@ -932,7 +926,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	
 	var ECBehaviorVRHand pVRHand
 	var ECBehaviorCollider pCollider
-	var ECComposeCollisionFilter pCollisionFilter
+	var ECPCollisionFilter pCollisionFilter
 	var ECPShapeList pShape
 	var ECComposeAttachResource pAttach
 	var Array pListenerFactories
@@ -977,10 +971,11 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString())
 		eclass.addProperty(pShape)
 		
-		pCollisionFilter = ECComposeCollisionFilter.new()
-		pCollisionFilter.setCollisionFilter(CollisionFilter.new( \
-			LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger), \
-			LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)))
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			eclass.getCodecPropertyString(), eclass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger), \
+				LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)))
+		eclass.addProperty(pCollisionFilter)
 		
 		pAttach = ECComposeAttachResource.new(eclass, prefix)
 		
@@ -1037,8 +1032,19 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		return pAttach
 	end
 	
-	/** \brief Collision filter. */
+	/**
+	 * \brief Collision filter.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
 	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
 		return pCollisionFilter
 	end
 	

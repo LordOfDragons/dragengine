@@ -118,15 +118,6 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorLookAt'>
-	 *   <!-- optional: set collision filter. default value '3:0 1 2 3' which means
-	 *                  category BaseGameApp.CollisionFilterBit.actorAI
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actorAI.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>3:0 1 2 3</string>
-	 * 
 	 *   <!-- optional: use component with id instead of empty string -->
 	 *   <string name='component'>second</string>
 	 *   
@@ -169,8 +160,9 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			end
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -376,7 +368,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			pHasOrigin = not pOrigin.isZero()
 			
 			// create colliision test and add it to element collider
-			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
+			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub)
 			var Vector testDirection = Vector.new(0, 0, pRange)
 			pTestBone = pECBehavior.getTestBone().getValueOrNull(stub)
 			
@@ -808,7 +800,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	var ECPFloat pRange
 	var ECPVector pOrigin
 	var ECPString pTestBone
-	var ECComposeCollisionFilter pCollisionFilter
+	var ECPCollisionFilter pCollisionFilter
 	var Array pListenerFactories
 	var ECComposeBTSM pBTSMs
 	var String pPrefix
@@ -872,7 +864,10 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
 		
-		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			eclass.getCodecPropertyString(), eclass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(cfCategory, cfFilter))
+		eclass.addProperty(pCollisionFilter)
 		
 		eclass.addBehavior(this)
 	end
@@ -933,8 +928,19 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		return pTestBone
 	end
 	
-	/** \brief Collision filter for AI collider. */
+	/**
+	 * \brief Collision filter for AI collider.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
 	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter for AI collider.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
 		return pCollisionFilter
 	end
 	

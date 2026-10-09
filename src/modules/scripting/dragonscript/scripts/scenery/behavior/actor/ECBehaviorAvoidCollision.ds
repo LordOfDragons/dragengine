@@ -86,15 +86,6 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorAvoidCollision'>
-	 *   <!-- optional: set collision filter. default value '3:0 1 2 3' which means
-	 *                  category BaseGameApp.CollisionFilterBit.actorAI
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actorAI.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>3:0 1 2 3</string>
-	 * 
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -126,8 +117,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().setPropertiesFromParameters(eclass, parameters, "avoidCollision")
@@ -366,7 +358,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			end
 			
 			// create collision tests
-			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
+			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub)
 			pRadius = pECBehavior.getRadius().getValue(stub)
 			
 			pCCTAvoidCollision = ColliderCollisionTest.new(collisionFilter, Vector.new(), Vector.new())
@@ -1758,7 +1750,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	
 	
 	
-	var ECComposeCollisionFilter pCollisionFilter
+	var ECPCollisionFilter pCollisionFilter
 	var ECBehaviorActorMover pActorMover
 	var ECBehaviorRideOn pRideOn
 	var ECPFloat pRadius
@@ -1790,6 +1782,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		pRideOn = rideOn
 		pBTSMs = ECComposeBTSM.new()
 		
+		pRadius = ECPFloat.new(prefix + "radius", 0.4, 0)
+		eclass.addProperty(pRadius)
+		
 		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)
 		
 		var LayerMask cfFilter = LayerMask.new()
@@ -1797,10 +1792,10 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
 		
-		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
-		
-		pRadius = ECPFloat.new(prefix + "radius", 0.4, 0)
-		eclass.addProperty(pRadius)
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			eclass.getCodecPropertyString(), eclass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(cfCategory, cfFilter))
+		eclass.addProperty(pCollisionFilter)
 		
 		eclass.addBehavior(this)
 	end
@@ -1833,8 +1828,19 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		return pRideOn
 	end
 	
-	/** \brief Collision filter. */
+	/**
+	 * \brief Collision filter.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
 	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
 		return pCollisionFilter
 	end
 	

@@ -95,15 +95,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorClearPath'>
-	 *   <!-- optional: set collision filter. default value '3:0 1 2 3' which means
-	 *                  category BaseGameApp.CollisionFilterBit.actorAI
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actorAI.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>3:0 1 2 3</string>
-	 *   
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -133,8 +124,9 @@ class ECBehaviorClearPath extends DefaultECBehavior
 				ECBehaviorLocomotion.getBehaviorIn(eclass))
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -312,7 +304,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 				return
 			end
 			
-			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
+			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub)
 			pEnabled = pECBehavior.getEnabled().getValue(stub)
 			pCheckInterval = pECBehavior.getCheckInterval().getValue(stub)
 			pClearPathTime = pECBehavior.getClearPathTime().getValue(stub)
@@ -622,7 +614,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	
 	
 	var ECBehaviorLocomotion pLocomotion
-	var ECComposeCollisionFilter pCollisionFilter
+	var ECPCollisionFilter pCollisionFilter
 	var ECPBoolean pEnabled
 	var ECPFloat pCheckInterval
 	var ECPFloat pClearPathTime
@@ -648,15 +640,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		pLocomotion = locomotion
 		pBTSMs = ECComposeBTSM.new()
 		
-		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)
-		
-		var LayerMask cfFilter = LayerMask.new()
-		cfFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
-		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
-		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
-		
-		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
-		
 		pEnabled = ECPBoolean.new(prefix + "enabled", true)
 		eclass.addProperty(pEnabled)
 		
@@ -665,6 +648,18 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		
 		pClearPathTime = ECPFloat.new(prefix + "clearPathTime", 0.05, 0)
 		eclass.addProperty(pClearPathTime)
+		
+		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)
+		
+		var LayerMask cfFilter = LayerMask.new()
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
+		
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			eclass.getCodecPropertyString(), eclass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(cfCategory, cfFilter))
+		eclass.addProperty(pCollisionFilter)
 		
 		eclass.addBehavior(this)
 	end
@@ -691,8 +686,19 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		return pLocomotion
 	end
 	
-	/** \brief Collision filter. */
+	/**
+	 * \brief Collision filter.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
 	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
 		return pCollisionFilter
 	end
 	

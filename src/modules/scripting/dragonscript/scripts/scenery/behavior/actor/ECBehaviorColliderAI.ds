@@ -160,16 +160,6 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorColliderAI'>
-	 *   <!-- optional: set collision filter. default value '3:0 1 2 3 4' which means
-	 *                  category BaseGameApp.CollisionFilterBit.actorAI
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actorAI,
-	 *                         BaseGameApp.CollisionFilterBit.trigger.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>3:0 1 2 3 4</string>
-	 *   
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -199,8 +189,9 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 				ECBehaviorCollider.getBehaviorIn(eclass))
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -421,7 +412,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 			collider.setResponseType(CollisionResponse.kinematic)
 			collider.setUseLocalGravity(true)
 			collider.setGravity(Vector.new())
-			collider.setCollisionFilter(pECBehavior.getCollisionFilter().getCollisionFilter())
+			collider.setCollisionFilter(pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub))
 			collider.setGeometry(element.getPosition(), element.getOrientation())
 			//collider.setScaling(stub.getScaling()) // not supported yet
 			
@@ -703,7 +694,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	
 	
 	var ECBehaviorCollider pBaseCollider
-	var ECComposeCollisionFilter pCollisionFilter
+	var ECPCollisionFilter pCollisionFilter
 	var Array pListenerFactories
 	var ECComposeBTSM pBTSMs
 	var String pPrefix
@@ -732,8 +723,8 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		var ECComposeCollider ccollider = pBaseCollider.getCollider()
 		ccollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
 		ccollider.getLocalGravity().setVector(Vector.new())
-		ccollider.collisionFilterClearBit(BaseGameApp.CollisionFilterBit.actorAI)
-		ccollider.collisionFilterClearBit(BaseGameApp.CollisionFilterBit.trigger)
+		ccollider.getCollisionFilterProperty().collisionFilterClearBit(BaseGameApp.CollisionFilterBit.actorAI)
+		ccollider.getCollisionFilterProperty().collisionFilterClearBit(BaseGameApp.CollisionFilterBit.trigger)
 		
 		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)
 		
@@ -743,7 +734,10 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.trigger)
 		
-		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			eclass.getCodecPropertyString(), eclass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(cfCategory, cfFilter))
+		eclass.addProperty(pCollisionFilter)
 		
 		eclass.addBehavior(this)
 	end
@@ -771,8 +765,19 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		return pBaseCollider
 	end
 	
-	/** \brief Collision filter for AI collider. */
+	/**
+	 * \brief Collision filter for AI collider.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
 	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter for AI collider.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
 		return pCollisionFilter
 	end
 	

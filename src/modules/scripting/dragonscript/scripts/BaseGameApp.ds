@@ -395,6 +395,7 @@ class BaseGameApp extends Game
 	var GlobalEvents pGlobalEvents
 	var BaseGameServices pBaseGameServices
 	var SimpleConversationConverter pSimpleConversationConverter
+	var Dictionary pCollisionFilterMap
 	
 	static var BaseGameApp pApp = null
 	
@@ -486,6 +487,7 @@ class BaseGameApp extends Game
 		EngineTranslations.get() // preload engine translations
 		pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
 		pSimpleConversationConverter = createSimpleConversationConverter()
+		pCollisionFilterMap = Dictionary.new()
 		
 		loadConfiguration()
 		
@@ -502,6 +504,7 @@ class BaseGameApp extends Game
 		pSettings = ParameterTree.new()
 		loadSettings()
 		
+		initCollisionFilterMap()
 		createAndSetDesktop()
 		setInputProcessorDesktop()
 		
@@ -769,6 +772,17 @@ class BaseGameApp extends Game
 		return pSimpleConversationConverter
 	end
 	
+	/**
+	 * \brief Collision filter map.
+	 * \version 1.35
+	 * 
+	 * Returns \ref Dictionary mapping \ref String filter names to \ref int filter bits.
+	 * Used by \ref ECPCollisionFilter and other element class properties to allow defining
+	 * collision filters using well defined names.
+	 */
+	func Dictionary getCollisionFilterMap()
+		return pCollisionFilterMap
+	end
 	
 	
 	/** \brief Desktop widget. */
@@ -1027,6 +1041,35 @@ class BaseGameApp extends Game
 		end
 		
 		//pConfiguration.log(pConsole, "BaseGameApp.Configuration")
+	end
+	
+	/**
+	 * \brief Initialize collision filter map entries.
+	 * \version 1.35
+	 * 
+	 * Used by \ref ECPCollisionFilter and other element class properties to allow defining
+	 * collision filters using well defined names.
+	 * 
+	 * Default implementation sets these entries:
+	 * 
+	 * | Name | Bit |
+	 * | --- | --- |
+	 * | geometry | \ref CollisionFilterBit#geometry |
+	 * | dynamic | \ref CollisionFilterBit#dynamic |
+	 * | actor | \ref CollisionFilterBit#actor |
+	 * | actorAI | \ref CollisionFilterBit#actorAI |
+	 * | trigger | \ref CollisionFilterBit#trigger |
+	 * | particle | \ref CollisionFilterBit#particle |
+	 * | forceField | \ref CollisionFilterBit#forceField |
+	 */
+	protected func void initCollisionFilterMap()
+		pCollisionFilterMap.setAt("geometry", CollisionFilterBit.geometry)
+		pCollisionFilterMap.setAt("dynamic", CollisionFilterBit.dynamic)
+		pCollisionFilterMap.setAt("actor", CollisionFilterBit.actor)
+		pCollisionFilterMap.setAt("actorAI", CollisionFilterBit.actorAI)
+		pCollisionFilterMap.setAt("trigger", CollisionFilterBit.trigger)
+		pCollisionFilterMap.setAt("particle", CollisionFilterBit.particle)
+		pCollisionFilterMap.setAt("forceField", CollisionFilterBit.forceField)
 	end
 	
 	/** \brief Create and set desktop. */
