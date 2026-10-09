@@ -33,6 +33,7 @@ pin Dragengine.Utils
 
 /**
  * \brief Behavior element behavior adding timer support to behavior tree support.
+ * \deprecated Use \ref ECBehaviorBTSMTimers instead.
  * 
  * Behavior adds behavior tree actions and conditions to an ECBehaviorBehaviorTree allowing
  * behavior trees to start and wait for multiple independent timers. This behavior can be added

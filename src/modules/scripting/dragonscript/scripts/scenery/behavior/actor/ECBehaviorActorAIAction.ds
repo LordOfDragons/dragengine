@@ -61,6 +61,13 @@ pin Dragengine.StateMachineSystem
  * ECBehaviorActorAIAction.ConvoCommand for supported syntax.
  * 
  * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actoraiaction
+ * 
+ * \par Version 1.35
+ * 
+ * Action and AI instances are created from factories during \ref Instance#postInit() not inside
+ * \ref Instance#init(). This ensures all behaviors added after this behavior can properly add
+ * their behavior tree and state machine actions and conditions before the state machine or
+ * behavior tree runs for the first time due to action or AI activation.
  */
 class ECBehaviorActorAIAction extends DefaultECBehavior
 	/** \brief Factory for creating action. */
@@ -125,7 +132,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	end
 	
 	/** \brief Behavior instance. */
-	class Instance extends DefaultECBehaviorInstance
+	class Instance extends DefaultECBehaviorInstance implements BehaviorPostInit
 		/**
 		 * \brief Behavior tree action "aiAction.set".
 		 * \version 1.26
@@ -428,6 +435,15 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 			
+			if Engine.isCompatibleVersionNewer(1, 34)
+				element.registerPostInit(this)
+				
+			else
+				postInit(stub)
+			end
+		end
+		
+		func void postInit(StubElement stub)
 			var ActionFactory actionFactory = pECBehavior.getActionFactory()
 			var String factoryName = pECBehavior.getAction().getValueOrNull(stub)
 			if factoryName != null

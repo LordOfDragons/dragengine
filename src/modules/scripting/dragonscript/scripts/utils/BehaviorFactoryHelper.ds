@@ -1434,6 +1434,8 @@ class BehaviorFactoryHelper
 		factories.add(ECBehaviorShowElement.Factory.new())
 		factories.add(ECBehaviorShowMessage.Factory.new())
 		factories.add(ECBehaviorStateMachine.Factory.new())
+		factories.add(ECBehaviorBTSMTimers.Factory.new())
+		factories.add(ECBehaviorBTSMFlags.Factory.new())
 	end
 	
 	/** \brief Add actor behavior factories to factory list. */

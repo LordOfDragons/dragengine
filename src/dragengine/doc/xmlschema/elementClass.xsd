@@ -1275,6 +1275,25 @@
 								]]></xs:documentation>
 						</xs:annotation>
 					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorBTSMFlags'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds actions, conditions and events to <code>ECBehaviorBehaviorTree</code> and <code>ECBehaviorStateMachine</code> allowing scripts, behavior
+								trees and state machines to set, clear and wait for changes to flags.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_btsmflags)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorBTSMTimers'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds actions, conditions and events to <code>ECBehaviorBehaviorTree</code> and
+								<code>ECBehaviorStateMachine</code> allowing scripts, behavior trees and state machines to
+								start, stop and wait for multiple independent timers.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_btsmtimers)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
 					<xs:enumeration value='ECBehaviorStepAside'>
 						<xs:annotation>
 							<xs:documentation><![CDATA[

@@ -612,7 +612,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	 * \brief Get behavior in element class or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
-	 * of type ECBehaviorComponent.
+	 * of type ECBehaviorAttachable.
 	 */
 	static func ECBehaviorAttachable getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorAttachable each
@@ -624,7 +624,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	 * \brief Get instance in element or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
-	 * of type ECBehaviorAttachable.Instance . If more than one instance is present returns
+	 * of type ECBehaviorAttachable.Instance. If more than one instance is present returns
 	 * the first instance.
 	 */
 	static func Instance getInstanceIn(BehaviorElement element)
@@ -635,7 +635,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	
 	
 	
-	/** \brief Create Behavior instance. */
+	/** \brief Create behavior instance. */
 	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end

@@ -1,0 +1,555 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+/**
+ * \brief Behavior element behavior adding timer support to behavior trees and state machines.
+ * \version 1.35
+ * 
+ * Behavior adds actions, conditions and events allowing behavior trees and state machines to
+ * start, stop and wait for multiple independent timers.
+ * 
+ * This behavior can be added only once to an element class.
+ * 
+ * The following actions are added:
+ * 
+ * \par Action "timers.update"
+ * 
+ * Update timer. The following parameters are supported:
+ * 
+ * | Parameter | Value | Description |
+ * | --- | --- | --- |
+ * | start | string | Start named timer. |
+ * | timeout | 0 or larger | Seconds until the timer elapses. |
+ * | timeout.lower | 0 or larger | Minimum seconds of random timeout. |
+ * | timeout.upper | 0 or larger | Maximum seconds of random timeout. |
+ * | stop | string | Stop named timer. |
+ * 
+ * This is an example of starting a timer:
+ * \code{.xml}
+ * <action name='timers.update'>
+ *    <parameter name='start'>myTimer</parameter>
+ *    <parameter name='timeout'>1.5</parameter>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of starting a timer using random timeout:
+ * \code{.xml}
+ * <action name='timers.update'>
+ *    <parameter name='start'>myTimer</parameter>
+ *    <parameter name='timeout.lower'>1.5</parameter>
+ *    <parameter name='timeout.upper'>2.5</parameter>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of stopping a timer:
+ * \code{.xml}
+ * <action name='timers.update'>
+ *    <parameter name='stop'>myTimer</parameter>
+ * </action>
+ * \endcode
+ * 
+ * \par Action "timers.check"
+ * 
+ * Check for timer condition. Not existing timers are considered stopped.
+ * The following parameters are supported:
+ * 
+ * | Parameter | Value | Description |
+ * | --- | --- | --- |
+ * | timer | string | Name of the timer to check. |
+ * | running | true,false | Timer is running. |
+ * | remaining.less | 0 or larger | Remaining seconds is less than value. |
+ * | remaining.greater | 0 or larger | Remaining seconds is greater than value. |
+ * | wait | | If present action returns BTResult.running instead of BTResult.failed. |
+ * 
+ * This is an example of checking if a timer is running:
+ * \code{.xml}
+ * <action name='timers.check' id='waiting'>
+ *    <parameter name='timer'>myTimer</parameter>
+ *    <parameter name='running'>true</parameter>
+ * </action>
+ * \endcode
+ * 
+ * \par Condition "timers.check"
+ * 
+ * Check for timer condition. Not existing timers are considered stopped.
+ * The following parameters are supported:
+ * 
+ * | Parameter | Value | Description |
+ * | --- | --- | --- |
+ * | timers.timer | string | Name of the timer to check. |
+ * | timers.running | true,false | Timer is running. |
+ * | timers.remaining.less | 0 or larger | Remaining seconds is less than value. |
+ * | timers.remaining.greater | 0 or larger | Remaining seconds is greater than value. |
+ * 
+ * This is an example of an action that can only run if the timer "myTimer" is running:
+ * \code{.xml}
+ * <action name='myAction' id='doing something'>
+ *    <condition>timers.check</condition>
+ *    <parameter name='timers.timer'>myTimer</parameter>
+ *    <parameter name='timers.running'>true</parameter>
+ * </action>
+ * \endcode
+ * 
+ * \par Event "timers.elapsed:<name>"
+ * 
+ * Send to state machines if timer has elapsed. The name of the timer that has elapsed is
+ * appended to the event name.
+ * 
+ * This is an example of an transition that can only run if the timer "myTimer" has elapsed:
+ * \code{.xml}
+ * <transition event='timers.elapsed:myTimer' state='nextState'>
+ * </transition>
+ * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_btsmtimers
+ */
+class ECBehaviorBTSMTimers extends DefaultECBehavior
+	/** \brief Timer. */
+	class TrackedTimer
+		var String pName
+		var float pTimeout, pRemaining
+		var bool pEventPending
+		
+		
+		/** \brief Create timers. */
+		func new(String name)
+			pName = name
+			pEventPending = false
+		end
+		
+		/** \brief Create timer during loading. */
+		func new(String name, float timeout, float remaining, bool eventPending)
+			pName = name
+			pTimeout = timeout
+			pRemaining = remaining
+			pEventPending = eventPending
+		end
+		
+		
+		/** \brief Name. */
+		func String getName()
+			return pName
+		end
+		
+		/** \brief Timeout in seconds the timer has been started with. */
+		func float getTimeout()
+			return pTimeout
+		end
+		
+		/** \brief Remaining time in seconds. */
+		func float getRemaining()
+			return pRemaining
+		end
+		
+		/** \brief Event is pending. */
+		func bool getEventPending()
+			return pEventPending
+		end
+		
+		/** \brief Set if event is pending. */
+		func void setEventPending(bool eventPending)
+			pEventPending = eventPending
+		end
+		
+		
+		/** \brief Start timers. */
+		func void start(float timeout)
+			pTimeout = timeout
+			pRemaining = timeout
+			pEventPending = true
+		end
+		
+		/** \brief Stop timer reseting timeout and remaining to 0. */
+		func void stop()
+			pTimeout = 0
+			pRemaining = 0
+			pEventPending = false
+		end
+		
+		/** \brief Update timer reducing remaining time clamping it at 0. */
+		func void update(float elapsed)
+			pRemaining = DEMath.max(pRemaining - elapsed, 0.0)
+		end
+		
+		
+		/** \brief Remaining time is 0. */
+		func bool hasElapsed()
+			return pRemaining == 0
+		end
+		
+		/** \brief Remaining time is larger than 0. */
+		func bool hasNotElapsed()
+			return pRemaining > 0
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorBTSMTimers'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
+	 */
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorBTSMTimers")
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorBTSMTimers behavior = ECBehaviorBTSMTimers.new(eclass)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "timers")
+			return behavior
+		end
+	end
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Action "timers.update". */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value = parameters.getAt("start", null)
+				if value != null
+					pInstance.startTimer(value cast String, getTimeout(parameters))
+				end
+				
+				value = parameters.getAt("stop", null)
+				if value != null
+					pInstance.stopTimer(value cast String)
+				end
+				
+				return BTResult.success
+			end
+			
+			func float getTimeout(Dictionary parameters)
+				var Object value = parameters.getAt("timeout", null)
+				if value != null
+					return (value cast String).toFloat()
+					
+				else
+					var float lower = (parameters.getAt("timeout.lower") cast String).toFloat()
+					var float upper = (parameters.getAt("timeout.upper") cast String).toFloat()
+					return DEMath.random(lower, upper)
+				end
+			end
+		end
+		
+		/** \brief Action/condition "timers.check". */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var String timer = parameters.getAt(prefix + "timer") cast String
+				var bool result = true
+				
+				var Object value = parameters.getAt(prefix + "running", null)
+				if value != null
+					result &= pInstance.isTimerRunning(timer) == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "remaining.less", null)
+				if value != null
+					result &= pInstance.getTimerRemaining(timer) < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "remaining.greater", null)
+				if value != null
+					result &= pInstance.getTimerRemaining(timer) > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorBTSMTimers pECBehavior
+		var ECComposeBTSM.Instance pBTSMs
+		var Dictionary pTimers
+		var bool pCanSendEvents
+		var Array pElapsedTimers
+		
+		
+		/** \brief Create element. */
+		func new(ECBehaviorBTSMTimers ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pTimers = Dictionary.new()
+			pElapsedTimers = Array.new()
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			pBTSMs = null
+			super.dispose()
+		end
+		
+		
+		func void init(StubElement stub)
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+				
+				pCanSendEvents = pECBehavior.getBTSMs().hasAnyStateMachines()
+			end
+		end
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorBTSMTimers getECBehavior()
+			return pECBehavior
+		end
+		
+		
+		/** \brief Update timers. */
+		func void updateTimers(float elapsed)
+			pElapsedTimers.removeAll()
+			
+			pTimers.forEachValue(block TrackedTimer each
+				each.update(elapsed)
+				if each.hasElapsed() and each.getEventPending()
+					pElapsedTimers.add(each)
+				end
+			end)
+			
+			pElapsedTimers.forEach(block TrackedTimer each
+				each.setEventPending(false)
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "elapsed:" + each.getName())
+			end)
+		end
+		
+		
+		/** \brief Named timer or null. */
+		func TrackedTimer getTimer(String timer)
+			return pTimers.getAt(timer, null) cast TrackedTimer
+		end
+		
+		/** \brief Visit timers with block receiving parameter \ref TrackedTimer. */
+		func void forEachTimer(Block ablock)
+			pTimers.forEachValue(ablock)
+		end
+		
+		
+		/** \brief Start timer adding it if absent. */
+		func void startTimer(String timer, float timeout)
+			var TrackedTimer tracked = pTimers.getAt(timer, null) cast TrackedTimer
+			if tracked == null
+				tracked = TrackedTimer.new(timer)
+				pTimers.setAt(timer, tracked)
+			end
+			tracked.start(timeout)
+			setRequiresThink(pCanSendEvents)
+		end
+		
+		/** \brief Stop timer if present. */
+		func void stopTimer(String timer)
+			var TrackedTimer tracked = pTimers.getAt(timer, null) cast TrackedTimer
+			if tracked != null
+				tracked.stop()
+			end
+		end
+		
+		/** \brief Timer is present and running. */
+		func bool isTimerRunning(String timer)
+			var TrackedTimer tracked = pTimers.getAt(timer, null) cast TrackedTimer
+			return tracked != null and tracked.hasNotElapsed()
+		end
+		
+		/** \brief Remaining time of timer or 0 if absent. */
+		func float getTimerRemaining(String timer)
+			var TrackedTimer tracked = pTimers.getAt(timer, null) cast TrackedTimer
+			return tracked != null if tracked.getRemaining() else 0
+		end
+		
+		/** \brief Think frame update. */
+		func void think(float elapsed)
+			updateTimers(elapsed)
+		end
+		
+		
+		/** \brief Read element from file. */
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			pTimers.removeAll()
+			
+			select reader.readByte() // version
+			case 0
+				var int i, count = reader.readVarUInt()
+				var float timeout, remaining
+				var bool eventPending
+				var String name
+				
+				for i = 0 to count
+					name = reader.readVarString()
+					timeout = reader.readFloat()
+					remaining = reader.readFloat()
+					eventPending = env.readBool(reader)
+					pTimers.setAt(name, TrackedTimer.new(name, timeout, remaining, eventPending))
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		
+		/** \brief Write element to file. */
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			writer.writeVarUInt(pTimers.getCount())
+			pTimers.forEachValue(block TrackedTimer each
+				writer.writeVarString(each.getName())
+				writer.writeFloat(each.getTimeout())
+				writer.writeFloat(each.getRemaining())
+				env.writeBool(writer, each.getEventPending())
+			end)
+		end
+	end
+	
+	
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass) this(eclass, "timers.")
+	end
+	
+	func new(BehaviorElementClass eclass, String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
+		end
+		
+		pPrefix = prefix
+		pBTSMs = ECComposeBTSM.new()
+		
+		eclass.addBehavior(this)
+	end
+	
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pBTSMs = null
+		super.dispose()
+	end
+	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/** \brief Compose behavior trees and state machines. */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorBTSMTimers.
+	 */
+	static func ECBehaviorBTSMTimers getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorBTSMTimers each
+			return true
+		end) cast ECBehaviorBTSMTimers
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBTSMTimers.Instance. If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	/** \brief Create behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

@@ -969,7 +969,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * \brief Get behavior in element class or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
-	 * of type ECBehaviorComponent.
+	 * of type ECBehaviorAttachSlot.
 	 */
 	static func ECBehaviorAttachSlot getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorAttachSlot each
@@ -990,7 +990,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Get list of all behaviors in element.
+	 * \brief Get list of all behaviors in element class.
 	 * 
 	 * Returns list contains ECBehaviorAttachSlot behaviors in the order they have
 	 * been created in the element.
@@ -1007,7 +1007,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * \brief Get instance in element or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
-	 * of type ECBehaviorAttachSlot.Instance . If more than one instance is present returns
+	 * of type ECBehaviorAttachSlot.Instance. If more than one instance is present returns
 	 * the first instance.
 	 */
 	static func Instance getInstanceIn(BehaviorElement element)

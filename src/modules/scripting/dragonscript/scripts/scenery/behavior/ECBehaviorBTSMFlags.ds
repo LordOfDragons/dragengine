@@ -1,0 +1,427 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+/**
+ * \brief Behavior element behavior adding flags support to behavior trees and state machines.
+ * \version 1.35
+ * 
+ * Behavior adds actions, conditions and events allowing behavior trees and state machines to set,
+ * clear and check flags. This behavior can be added only once to an element class.
+ * 
+ * The following actions are added:
+ * 
+ * \par Action "flags.update"
+ * 
+ * Update flags. The following parameters are supported:
+ * 
+ * | Parameter | Value | Description |
+ * | --- | --- | --- |
+ * | set | string | Set named flag |
+ * | clear | string | Clear named flag |
+ * 
+ * This is an example of setting a flag:
+ * \code{.xml}
+ * <action name='flags.update'>
+ *    <parameter name='set'>arrived at target</parameter>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of setting and clearing a flag in the same action:
+ * \code{.xml}
+ * <action name='flags.update'>
+ *    <parameter name='set'>arrived at target</parameter>
+ *    <parameter name='clear'>stay seated</parameter>
+ * </action>
+ * \endcode
+ * 
+ * \par Action "flags.check"
+ * 
+ * Check for flag condition. Not existing flags are considered cleared.
+ * The following parameters are supported:
+ * 
+ * | Parameter | Value | Description |
+ * | --- | --- | --- |
+ * | flag | string | Flag to check |
+ * | set | true,false | Flag is set |
+ * | wait | | Wait until the flag is set or cleared |
+ * | reset | | Toggle flag after checking with all conditions fulfilled |
+ * 
+ * This is an example of checking if a flag is set right now:
+ * \code{.xml}
+ * <action name='flags.check'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ *    <parameter name='set'>true</parameter>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of checking if a flag is set and waiting until it is set:
+ * \code{.xml}
+ * <action name='flags.check' id='waiting'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ *    <parameter name='set'>true</parameter>
+ *    <parameter name='wait'/>
+ * </action>
+ * \endcode
+ * 
+ * This is an example of checking if a flag is set, waiting until the flag is set and then clear it:
+ * \code{.xml}
+ * <action name='flags.check' id='waiting'>
+ *    <parameter name='flag'>arrived at target</parameter>
+ *    <parameter name='set'>true</parameter>
+ *    <parameter name='wait'/>
+ *    <parameter name='reset'/>
+ * </action>
+ * \endcode
+ * 
+ * \par Condition "flags.check"
+ * 
+ * Check for flag condition. Not existing flags are considered cleared.
+ * The following parameters are supported:
+ * 
+ * | Parameter | Value | Description |
+ * | --- | --- | --- |
+ * | flags.flag | string | Flag to check |
+ * | flags.set | true,false | Flag is set |
+ * 
+ * This is an example of an action that can only run if the flag "arrived at target" is set:
+ * \code{.xml}
+ * <action name='myAction' id='doing something'>
+ *    <condition>flags.check</condition>
+ *    <parameter name='flags.flag'>arrived at target</parameter>
+ *    <parameter name='flags.set'>true</parameter>
+ * </action>
+ * \endcode
+ * 
+ * \par Event "flags.set:<name>"
+ * 
+ * Send to state machines if flag has been set. The name of the flag that has been set is appended
+ * to the event name.
+ * 
+ * This is an example of an transition that can only run if the flag "arrived at target" has been set:
+ * \code{.xml}
+ * <transition event='flags.set:arrived at target' state='nextState'>
+ * </transition>
+ * \endcode
+ * 
+ * \par Event "flags.cleared:<name>"
+ * 
+ * Send to state machines if flag has been cleared. The name of the flag that has been cleared is
+ * appended to the event name.
+ * 
+ * This is an example of an transition that can only run if the flag "arrived at target" has been cleared:
+ * \code{.xml}
+ * <transition event='flags.cleared:arrived at target' state='nextState'>
+ * </transition>
+ * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_btsmflags
+ */
+class ECBehaviorBTSMFlags extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorBTSMFlags'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
+	 */
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorBTSMFlags")
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorBTSMFlags behavior = ECBehaviorBTSMFlags.new(eclass)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "flags")
+			return behavior
+		end
+	end
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Action "flags.update". */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value = parameters.getAt("set", null)
+				if value != null
+					pInstance.setFlag(value cast String, true)
+				end
+				
+				value = parameters.getAt("clear", null)
+				if value != null
+					pInstance.setFlag(value cast String, false)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Action/condition "flags.check". */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var BTResult result = check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+				
+				if result == BTResult.success and parameters.has("reset")
+					pInstance.toggleFlag(parameters.getAt("flag") cast String)
+				end
+				
+				return result
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var String flag = parameters.getAt(prefix + "flag") cast String
+				var bool result = true
+				
+				var Object value = parameters.getAt(prefix + "set", null)
+				if value != null
+					result &= pInstance.getFlag(flag) == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorBTSMFlags pECBehavior
+		var ECComposeBTSM.Instance pBTSMs
+		var Dictionary pFlags
+		
+		
+		/** \brief Create element. */
+		func new(ECBehaviorBTSMFlags ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pFlags = Dictionary.new()
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			pBTSMs = null
+			super.dispose()
+		end
+		
+		
+		func void init(StubElement stub)
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
+		end
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorBTSMFlags getECBehavior()
+			return this.pECBehavior
+		end
+		
+		
+		/** \brief Flag is set. */
+		func bool getFlag(String name)
+			return pFlags.getAt(name, false) cast bool
+		end
+		
+		/** \brief Set flags. */
+		func void setFlag(String name, bool flagged)
+			if flagged == getFlag(name)
+				return
+			end
+			
+			pFlags.setAt(name, flagged)
+			
+			pBTSMs.runEvent(pECBehavior.getPrefix(), (flagged if "set:" else "cleared:") + name)
+		end
+		
+		/** \brief Toggle flag. */
+		func void toggleFlag(String name)
+			setFlag(name, not getFlag(name))
+		end
+		
+		
+		/** \brief List of set flags as \ref Array of \ref String. */
+		func Array getSetFlags()
+			var Array flags = Array.new()
+			pFlags.forEach(block String name, bool flagged
+				if flagged
+					flags.add(name)
+				end
+			end)
+			return flags
+		end
+		
+		
+		/** \brief Read element from file. */
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			pFlags.removeAll()
+			
+			select reader.readByte() // version
+			case 0
+				var int i, count = reader.readVarUInt()
+				for i = 0 to count
+					pFlags.setAt(reader.readVarString(), true)
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		
+		/** \brief Write element to file. */
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			var Array flags = getSetFlags()
+			writer.writeVarUInt(flags.getCount())
+			
+			flags.forEach(block String name
+				writer.writeVarString(name)
+			end)
+		end
+	end
+	
+	
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass) this(eclass, "flags.")
+	end
+	
+	func new(BehaviorElementClass eclass, String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
+		end
+		
+		pPrefix = prefix
+		pBTSMs = ECComposeBTSM.new()
+		
+		eclass.addBehavior(this)
+	end
+	
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pBTSMs = null
+		super.dispose()
+	end
+	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/** \brief Compose behavior trees and state machines. */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorBTSMFlags.
+	 */
+	static func ECBehaviorBTSMFlags getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorBTSMFlags each
+			return true
+		end) cast ECBehaviorBTSMFlags
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBTSMFlags.Instance. If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	/** \brief Create behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

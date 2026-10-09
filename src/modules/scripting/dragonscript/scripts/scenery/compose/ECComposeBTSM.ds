@@ -281,4 +281,20 @@ class ECComposeBTSM
 	func bool hasAny()
 		return pBehaviorTrees.getCount() > 0 or pStateMachines.getCount() > 0
 	end
+	
+	/**
+	 * \brief At least one behavior tree is present.
+	 * \version 1.35
+	 */
+	func bool hasAnyBehaviorTrees()
+		return pBehaviorTrees.getCount() > 0
+	end
+	
+	/**
+	 * \brief At least one state machine is present.
+	 * \version 1.35
+	 */
+	func bool hasAnyStateMachines()
+		return pStateMachines.getCount() > 0
+	end
 end
