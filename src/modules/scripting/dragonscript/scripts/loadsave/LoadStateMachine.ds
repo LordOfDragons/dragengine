@@ -192,11 +192,14 @@ class LoadStateMachine extends BaseXmlLoader
 	
 	/** \brief Read transition. */
 	private func SMTransition readTransition(EasyXMLElement root, StateMachine stateMachine)
-		var String stateId
+		var String stateId, delegate
 		if root.hasAttributeNamed("state")
 			stateId = root.getAttributeNamed("state")
+			
+		elif root.hasAttributeNamed("delegate")
+			delegate = root.getAttributeNamed("delegate")
 		end
-		var SMTransition transition = SMTransition.new(root.getAttributeNamed("event"), stateId)
+		var SMTransition transition = SMTransition.new(root.getAttributeNamed("event"), stateId, delegate)
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			if tagName.equals("action")

@@ -115,6 +115,34 @@
 						run exit actions. Then the transition actions are run. Afterward the
 						state is changed.
 						</p>
+						<p>
+						"nextState" and "delegate" can not be used at the same time.
+						</p>
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element type='xs:string' name='delegate'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Delegate event to trigger after all actions finished without state change.
+						<p>
+						If no delegate event is set the transition runs all actions and potentially
+						switches to another state. If delegate event is set the transition runs
+						all actions then runs the delegate event on the state machine. This does
+						not count as transition in transition situation since the delegate event
+						replaces the current event.
+						</p>
+						<p>
+						Delegate events are useful to run shared transition logic without importing
+						the logic into each transition. Instead a unique event is used which can
+						be easily reused and overwritten to make state machines cleaner and more stable.
+						</p>
+						<p>
+						"nextState" and "delegate" can not be used at the same time.
+						</p>
 						]]>
 					</xs:documentation>
 				</xs:annotation>

@@ -431,32 +431,35 @@ class SMContext
 			return
 		end
 		
-		pEventParameter = parameter
-		var SMTransition transition = pCurrentState.findTransition(block SMTransition each
-			return each.matches(this, event)
-		end)
-		
-		if doLog
-			if transition != null
-				pConsole.addMessage("{}: State '{}' event '{}'(param '{}') transition {} next state '{}'"\
-					.format(Array.newWith(pLoggingName, pCurrentState.getID(), event, parameter,\
-						pCurrentState.indexOfTransition(transition), transition.getStateID())))
-				
-			else
-				pConsole.addMessage("{}: State '{}' event '{}'({}) no transition"\
-					.format(Array.newWith(pLoggingName, pCurrentState.getID(), event, parameter)))
+		while event != null
+			var SMTransition transition = pCurrentState.findTransition(block SMTransition each
+				pEventParameter = parameter // ensure event parameter is set
+				return each.matches(this, event)
+			end)
+			
+			if doLog
+				if transition != null
+					pConsole.addMessage("{}: State '{}' event '{}'(param '{}') transition {} next state '{}' delegate event '{}'"\
+						.format(Array.newWith(pLoggingName, pCurrentState.getID(), event, parameter,\
+							pCurrentState.indexOfTransition(transition), transition.getStateID(),\
+							transition.getDelegate())))
+					
+				else
+					pConsole.addMessage("{}: State '{}' event '{}'({}) no transition"\
+						.format(Array.newWith(pLoggingName, pCurrentState.getID(), event, parameter)))
+				end
 			end
+			
+			if transition == null
+				break
+			end
+			
+			pEventParameter = parameter // ensure event parameter is set
+			transition.run(this)
+			
+			event = transition.getDelegate()
 		end
-		
-		if transition == null
-			pEventParameter = null
-			return
-		end
-		
-		pEventParameter = parameter // just to be on the safe side
-		transition.run(this)
 		pEventParameter = null
-		return
 	end
 	
 	private func void runDelayedEvents()

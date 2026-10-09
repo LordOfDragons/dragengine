@@ -52,7 +52,7 @@ class SMTransition
 	end
 	
 	
-	var String pEvent, pStateID
+	var String pEvent, pStateID, pDelegate
 	var Array pActions, pConditions
 	var ConditionMode pConditionMode
 	var Dictionary pParameters
@@ -70,13 +70,27 @@ class SMTransition
 	 * \param event Event to react to.
 	 * \param stateID State to switch to or null to stay in the same state.
 	 */
-	func new(String event, String stateID)
+	func new(String event, String stateID) this(event, stateID, null)
+	end
+	
+	/**
+	 * \brief Create state machine transition.
+	 * \version 1.35
+	 * \param event Event to react to.
+	 * \param stateID State to switch to or null to stay in the same state.
+	 * \param delegateEvent Delegate event or null.
+	 */
+	func new(String event, String stateID, String delegate)
 		if event == null
 			throw ENullPointer.new("event")
+		end
+		if stateID != null and delegate != null
+			throw EInvalidParam.new("stateID and delegateEvent can not be both non-null")
 		end
 		
 		pEvent = event
 		pStateID = stateID
+		pDelegate = delegate
 		pActions = Array.new()
 		pConditions = Array.new()
 		pConditionMode = ConditionMode.allTrue
@@ -90,6 +104,7 @@ class SMTransition
 	func new(SMTransition transition)
 		pEvent = transition.pEvent
 		pStateID = transition.pStateID
+		pDelegate = transition.pDelegate
 		pActions = transition.pActions.map(block SMStateAction each
 			return SMStateAction.new(each)
 		end)
@@ -107,6 +122,11 @@ class SMTransition
 	/** \brief Identifier of state to switch to or null to stay in the same state. */
 	func String getStateID()
 		return pStateID
+	end
+	
+	/** \brief Identifier of delegate event or null. */
+	func String getDelegate()
+		return pDelegate
 	end
 	
 	
