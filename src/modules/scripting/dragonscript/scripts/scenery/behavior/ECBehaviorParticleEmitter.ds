@@ -249,7 +249,12 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 				
 				value = parameters.getAt("casting", null)
 				if value != null
-					pInstance.setCasting(value.equals("true"))
+					if value.equals("pulse")
+						pInstance.pulseCasting()
+						
+					else
+						pInstance.setCasting(value.equals("true"))
+					end
 				end
 				
 				return BTResult.success
@@ -508,6 +513,15 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		/** \brief Toggle particle emitter instance casting state. */
 		func void toggle()
 			setCasting(not pCasting)
+		end
+		
+		/**
+		 * \brief Pulse particle emitter instance casting state.
+		 * \version 1.35
+		 */
+		func void pulseCasting()
+			setCasting(false)
+			setCasting(true)
 		end
 		
 		/** \brief Trigger target reflecting casting state. */

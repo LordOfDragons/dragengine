@@ -210,10 +210,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements TouchSensorListener
-		/**
-		 * \brief Behavior tree action "touchSensor{(id)}.set".
-		 * \version 1.26
-		 */
+		/** \brief Behavior tree action "touchSensor{(id)}.set". */
 		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
@@ -249,10 +246,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			end
 		end
 		
-		/**
-		 * \brief Behavior tree action/condition "touchSensor.check".
-		 * \version 1.26
-		 */
+		/** \brief Behavior tree action/condition "touchSensor.check". */
 		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
@@ -263,15 +257,15 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
+				return check(context, "", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
 			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
+				return check(context, pPrefix, parameters)
 			end
 			
-			func bool check(String prefix, Dictionary parameters)
+			func bool check(Object context, String prefix, Dictionary parameters)
 				var bool result = true
 				var Object value
 				
@@ -305,7 +299,44 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 					result &= pInstance.isPlayerTouching() == value.equals("true")
 				end
 				
+				value = parameters.getAt(prefix + "eventElement.flags.set", null)
+				if value != null
+					var ECBehaviorBTSMFlags.Instance flags = ECBehaviorBTSMFlags.getInstanceIn(\
+						(context cast SMContext).getEventParameter() cast BehaviorElement)
+					result &= flags != null and flags.getFlag(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "eventElement.flags.clear", null)
+				if value != null
+					var ECBehaviorBTSMFlags.Instance flags = ECBehaviorBTSMFlags.getInstanceIn(\
+						(context cast SMContext).getEventParameter() cast BehaviorElement)
+					result &= flags != null and not flags.getFlag(value cast String)
+				end
+				
 				return result
+			end
+		end
+		
+		/** \brief Behavior tree action "touchSensor{(id)}.update". */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value = parameters.getAt("eventElement.runEvent", null)
+				if value != null
+					var BehaviorElement element = (context cast SMContext).getEventParameter() cast BehaviorElement
+					if element != null
+						element.forEachInstance(block ECBehaviorStateMachine.Instance each
+							each.runEvent(value cast String, pInstance.getElement())
+						end)
+					end
+				end
+				
+				return BTResult.success
 			end
 		end
 		
@@ -334,6 +365,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		var TouchSensor pTouchSensor
 		var Array pTrackedElements, pTouchingElements, pListeners
 		var ECComposeBTSM.Instance pBTSMs
+		var bool pTouching
 		
 		
 		
@@ -342,6 +374,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			pECBehavior = ecbehavior
 			pTrackedElements = Array.new()
 			pListeners = Array.new()
+			pTouching = true
 		end
 		
 		/** \brief Dispose of behavior instance. */
@@ -365,6 +398,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		func void init(StubElement stub)
 			var BehaviorElement element = getElement()
 			
+			pTouching = pECBehavior.getTouching().getValue(stub)
 			pTouchSensor = createTouchSensor(stub)
 			
 			if pECBehavior.getCollider() != null
@@ -383,6 +417,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
 				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
@@ -399,7 +434,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			touchSensor.setOrientation(element.getOrientation())
 			touchSensor.setCollisionFilter(pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub))
 			touchSensor.setTrackEnterLeave(true)
-			touchSensor.setEnabled(pECBehavior.getTouching().getValue(stub))
+			touchSensor.setEnabled(pTouching and element.getTouchable())
 			
 			if pECBehavior.getShapeFromSize().getValue(stub)
 				var ShapeList shape = ShapeList.new()
@@ -443,12 +478,13 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		/** \brief Touch sensor is sensing touches. */
 		func bool getTouching()
-			return pTouchSensor.getEnabled()
+			return pTouching
 		end
 		
 		/** \brief Set if touch sensor is sensing touches. */
 		func void setTouching(bool touching)
-			pTouchSensor.setEnabled(touching)
+			pTouching = touching
+			pTouchSensor.setEnabled(touching and getElement().getTouchable())
 		end
 		
 		
@@ -589,12 +625,10 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		
 		
-		/** \brief Add element to game world. */
 		func void addToGameWorld()
 			getElement().getGameWorld().getWorld().addTouchSensor(pTouchSensor)
 		end
 		
-		/** \brief Remove element from game world. */
 		func void removeFromGameWorld()
 			prepareTouchingElements()
 			pTrackedElements.removeAll()
@@ -603,13 +637,17 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				pListeners.forEach(block Listener listener
 					listener.elementLeft(this, element)
 				end)
-				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix(), "left")
+				if pBTSMs != null and element castable BehaviorElement
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "left", element cast BehaviorElement)
 				end
 			end)
 			pTouchingElements = null
 			
 			getElement().getGameWorld().getWorld().removeTouchSensor(pTouchSensor)
+		end
+		
+		func void stateChanged()
+			pTouchSensor.setEnabled(pTouching and getElement().getTouchable())
 		end
 		
 		
@@ -638,8 +676,8 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.elementEntered(this, element)
 			end)
-			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix(), "entered")
+			if pBTSMs != null and element castable BehaviorElement
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "entered", element cast BehaviorElement)
 			end
 		end
 		
@@ -660,8 +698,8 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.elementLeft(this, element)
 			end)
-			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix(), "left")
+			if pBTSMs != null and element castable BehaviorElement
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "left", element cast BehaviorElement)
 			end
 		end
 		
@@ -692,7 +730,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
-			env.writeBool(writer, getTouching())
+			env.writeBool(writer, pTouching)
 		end
 	end
 	

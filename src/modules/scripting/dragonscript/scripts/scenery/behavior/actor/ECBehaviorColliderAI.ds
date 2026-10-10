@@ -315,7 +315,30 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 					pInstance.responseSliding((context cast SMContext).getEventParameter() cast CollisionInfo)
 				end
 				
+				var Object value = parameters.getAt("hitElement.runEvent", null)
+				if value != null
+					var BehaviorElement element = getHitElement((context cast SMContext).getEventParameter() cast CollisionInfo)
+					if element != null
+						element.forEachInstance(block ECBehaviorStateMachine.Instance each
+							each.runEvent(value cast String, pInstance.getElement())
+						end)
+					end
+				end
+				
 				return BTResult.success
+			end
+			
+			func BehaviorElement getHitElement(CollisionInfo info)
+				if not info.isCollider()
+					return null
+				end
+				
+				var Object owner = info.getCollider().getOwner()
+				if owner == null or not owner castable BehaviorElement
+					return null
+				end
+				
+				return owner cast BehaviorElement
 			end
 		end
 		
@@ -333,15 +356,15 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
+				return check(context, "", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
 			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
+				return check(context, pPrefix, parameters)
 			end
 			
-			func bool check(String prefix, Dictionary parameters)
+			func bool check(Object context, String prefix, Dictionary parameters)
 				var bool result = true
 				var Object value
 				
@@ -350,7 +373,47 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 					result &= pInstance.getCollider().getEnabled() == value.equals("true")
 				end
 				
+				if parameters.has(prefix + "hitElement")
+					result &= checkHitElememt(prefix, parameters,\
+						(context cast SMContext).getEventParameter() cast CollisionInfo)
+				end
+				
 				return result
+			end
+			
+			func bool checkHitElememt(String prefix, Dictionary parameters, CollisionInfo info)
+				var BehaviorElement element = getHitElement(info)
+				if element == null
+					return false
+				end
+				
+				var bool result = true
+				var Object value = parameters.getAt(prefix + "hitElement.flags.set", null)
+				if value != null
+					var ECBehaviorBTSMFlags.Instance flags = ECBehaviorBTSMFlags.getInstanceIn(element)
+					result &= flags != null and flags.getFlag(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "hitElement.flags.clear", null)
+				if value != null
+					var ECBehaviorBTSMFlags.Instance flags = ECBehaviorBTSMFlags.getInstanceIn(element)
+					result &= flags != null and not flags.getFlag(value cast String)
+				end
+				
+				return result
+			end
+			
+			func BehaviorElement getHitElement(CollisionInfo info)
+				if not info.isCollider()
+					return null
+				end
+				
+				var Object owner = info.getCollider().getOwner()
+				if owner == null or not owner castable BehaviorElement
+					return null
+				end
+				
+				return owner cast BehaviorElement
 			end
 		end
 		
@@ -681,7 +744,6 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 				each.colliderChanged(this, owner)
 			end)
 		end
-		
 		
 		
 		/** \brief Read element from file. */

@@ -460,6 +460,14 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		end
 		
 		/**
+		 * \brief Run event on state machine.
+		 * \version 1.35
+		 */
+		func void runEvent(String event, Object parameter)
+			pContext.runEvent(event, parameter)
+		end
+		
+		/**
 		 * \brief Reset state machine to initial state.
 		 */
 		protected func void reset()
