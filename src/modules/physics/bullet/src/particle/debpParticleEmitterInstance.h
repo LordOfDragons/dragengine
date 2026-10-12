@@ -73,7 +73,7 @@ public:
 	/** Creates a new peer. */
 	debpParticleEmitterInstance(dePhysicsBullet *bullet, deParticleEmitterInstance *instance);
 	/** Cleans up the peer. */
-	virtual ~debpParticleEmitterInstance();
+	~debpParticleEmitterInstance() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -129,26 +129,28 @@ public:
 	/** @name Notifications */
 	/*@{*/
 	/** Emitter changed. */
-	virtual void EmitterChanged();
+	void EmitterChanged() override;
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	/** Enable casting changed. */
-	virtual void EnableCastingChanged();
+	void EnableCastingChanged() override;
+	/** \brief Remove after last particle died changed. */
+	void RemoveAfterLastParticleDiedChanged() override;
 	/** Warm up time changed. */
-	virtual void WarmUpTimeChanged();
+	void WarmUpTimeChanged() override;
 	/** \brief Collision filter changed. */
-	virtual void CollisionFilterChanged();
+	void CollisionFilterChanged() override;
 	/** Controller changed. */
-	virtual void ControllerChanged(int controller);
+	void ControllerChanged(int controller) override;
 	/** Type changed. */
-	virtual void TypeChanged(int type);
+	void TypeChanged(int type) override;
 	
 	/** Reset burst particles. */
-	virtual void ResetBurst();
+	void ResetBurst() override;
 	/** Kill all particles. */
-	virtual void KillAllParticles();
+	void KillAllParticles() override;
 	/*@}*/
 	
 private:

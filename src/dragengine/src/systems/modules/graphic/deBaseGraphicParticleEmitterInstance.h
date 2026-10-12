@@ -61,6 +61,9 @@ public:
 	/** \brief Enable casting changed. */
 	virtual void EnableCastingChanged();
 	
+	/** \brief Remove after last particle died changed. */
+	virtual void RemoveAfterLastParticleDiedChanged();
+	
 	/** \brief Collision filter changed. */
 	virtual void CollisionFilterChanged();
 	
