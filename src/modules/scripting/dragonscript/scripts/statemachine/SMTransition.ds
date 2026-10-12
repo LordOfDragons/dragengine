@@ -179,8 +179,7 @@ class SMTransition extends SMConditionGroup
 		if pStateID != null
 			var String nextState = pStateID
 			
-			// set state to null. runs exit actions and switches context to "in transition"
-			// state. in this state events are delayed until a valid state is set
+			// set state to null. runs exit actions and switches context to "in transition" state
 			context.setCurrentState(null)
 			
 			// run transition actions
