@@ -267,6 +267,9 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("burstDetached")
+					pInstance.burstDetached()
+				end
 				
 				return BTResult.success
 			end
@@ -534,6 +537,38 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			return pTargetLastParticleDied
 		end
 		
+		
+		/**
+		 * \brief Created detached burst particle emitter instance.
+		 * \version 1.35
+		 * 
+		 * Clones the particle emitter instance used by this behavior as a standalone particle
+		 * emitter destroying itself once all burst particles died. Use this call if you intend
+		 * to dispose of the owner element before the casting finished. Call has no effect if
+		 * no particle emitter instance exist, particle emitter is not of burst type or owner
+		 * element is not in a game world.
+		 */
+		func void burstDetached()
+			if pParticleEmitterInstance == null\
+			or not pParticleEmitterInstance.getEmitter().getEmitBurst()
+				return
+			end
+			
+			var GameWorld gameWorld = getElement().getGameWorld()
+			if gameWorld == null
+				return
+			end
+			
+			var ParticleEmitterInstance instance = ParticleEmitterInstance.new()
+			instance.setEmitter(pParticleEmitterInstance.getEmitter())
+			instance.setPosition(pParticleEmitterInstance.getPosition())
+			instance.setOrientation(pParticleEmitterInstance.getOrientation())
+			instance.setLayerMask(pParticleEmitterInstance.getLayerMask())
+			instance.setCollisionFilter(pParticleEmitterInstance.getCollisionFilter())
+			instance.setRemoveAfterLastParticleDied(true)
+			instance.setEnableCasting(true)
+			gameWorld.getWorld().addParticleEmitter(instance)
+		end
 		
 		
 		/** \brief Add listener. */
