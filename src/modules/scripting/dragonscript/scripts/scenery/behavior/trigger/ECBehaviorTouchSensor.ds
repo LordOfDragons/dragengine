@@ -247,29 +247,16 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		end
 		
 		/** \brief Behavior tree action/condition "touchSensor.check". */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check(context, "", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(context, pPrefix, parameters)
-			end
-			
-			func bool check(Object context, String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
 				var bool result = true
-				var Object value
-				
-				value = parameters.getAt(prefix + "enabled", null)
+				var Object value = parameters.getAt(prefix + "enabled", null)
 				if value != null
 					result &= pInstance.getTouching() == value.equals("true")
 				end
@@ -299,44 +286,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 					result &= pInstance.isPlayerTouching() == value.equals("true")
 				end
 				
-				value = parameters.getAt(prefix + "eventElement.flags.set", null)
-				if value != null
-					var ECBehaviorBTSMFlags.Instance flags = ECBehaviorBTSMFlags.getInstanceIn(\
-						(context cast SMContext).getEventParameter() cast BehaviorElement)
-					result &= flags != null and flags.getFlag(value cast String)
-				end
-				
-				value = parameters.getAt(prefix + "eventElement.flags.clear", null)
-				if value != null
-					var ECBehaviorBTSMFlags.Instance flags = ECBehaviorBTSMFlags.getInstanceIn(\
-						(context cast SMContext).getEventParameter() cast BehaviorElement)
-					result &= flags != null and not flags.getFlag(value cast String)
-				end
-				
 				return result
-			end
-		end
-		
-		/** \brief Behavior tree action "touchSensor{(id)}.update". */
-		private class BTAUpdate extends BTSMActionCondition
-			var Instance pInstance
-			
-			func new(Instance instance)
-				pInstance = instance
-			end
-			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				var Object value = parameters.getAt("eventElement.runEvent", null)
-				if value != null
-					var BehaviorElement element = (context cast SMContext).getEventParameter() cast BehaviorElement
-					if element != null
-						element.forEachInstance(block ECBehaviorStateMachine.Instance each
-							each.runEvent(value cast String, pInstance.getElement())
-						end)
-					end
-				end
-				
-				return BTResult.success
 			end
 		end
 		
@@ -407,6 +357,11 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachTouchSensor(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pTouchSensor.setPosition(matrix.getPosition())
+				pTouchSensor.setOrientation(matrix.toQuaternion())
 			end
 			
 			pTouchSensor.setListener(this)
@@ -417,7 +372,6 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
 				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
-				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
@@ -451,7 +405,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		/**
 		 * \brief Attach touch sensor to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachTouchSensor(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pTouchSensor, stub)

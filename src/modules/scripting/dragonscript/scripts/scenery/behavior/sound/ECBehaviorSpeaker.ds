@@ -224,10 +224,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		/**
-		 * \brief Behavior tree action "speaker{(id)}.set".
-		 * \version 1.26
-		 */
+		/** \brief Behavior tree action "speaker{(id)}.set". */
 		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
@@ -252,33 +249,34 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 			end
 		end
 		
-		/**
-		 * \brief Behavior tree action/condition "speaker{(id)}.check".
-		 * \version 1.26
-		 */
-		private class BTACheck extends BTSMActionCondition
+		/** \brief Behavior tree action "speaker{(id)}.update". */
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
-				var bool result = true
-				var Object value
+				if parameters.has("playOnceDetached")
+					pInstance.playOnceDetached()
+				end
 				
-				value = parameters.getAt(prefix + "playing", null)
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Behavior tree action/condition "speaker{(id)}.check". */
+		private class BTACheck extends BTSMCondition
+			var Instance pInstance
+			
+			func new(Instance instance, String prefix) super(prefix)
+				pInstance = instance
+			end
+			
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+				var bool result = true
+				var Object value = parameters.getAt(prefix + "playing", null)
 				if value != null
 					result &= pInstance.getPlaying() == value.equals("true")
 				end
@@ -619,6 +617,36 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 			return pTriggerMuted
 		end
 		
+		
+		/**
+		 * \brief Created detached speaker instance.
+		 * \version 1.35
+		 * 
+		 * Clones the speaker instance used by this behavior as a standalone speaker destroying
+		 * itself once it finished playing. Use this call if you intend to dispose of the owner
+		 * element before the speaker finished. Call has no effect if no speaker instance exist
+		 * or owner element is not in a game world.
+		 */
+		func void playOnceDetached()
+			if pSpeaker == null
+				return
+			end
+			
+			var GameWorld gameWorld = getElement().getGameWorld()
+			if gameWorld == null
+				return
+			end
+			
+			var Speaker speaker = Speaker.new()
+			speaker.setSound(pSpeaker.getSound())
+			speaker.setPosition(pSpeaker.getPosition())
+			speaker.setOrientation(pSpeaker.getOrientation())
+			speaker.setVolume(pSpeaker.getVolume())
+			speaker.setRange(pSpeaker.getRange())
+			speaker.setLayerMask(pSpeaker.getLayerMask())
+			
+			gameWorld.getBehaviorOneShotSpeaker().addSpeaker(speaker)
+		end
 		
 		
 		/** \brief Add listener. */

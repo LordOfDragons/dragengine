@@ -35,8 +35,36 @@ pin Dragengine.StateMachineSystem
  * trees and state machines. State machine actions throw an exception if the shared action
  * returns \ref BTResult#failure.
  * 
- * To use actions overwrite \ref #runAction(Dictionary). To use conditions overwrite
- * \ref #evaluateCondition(Dictionary).
+ * To use actions overwrite \ref BTSMActionCondition#runActionShared(). To use conditions overwrite
+ * \ref BTSMActionCondition#evaluateConditionShared().
+ * 
+ * Typical usage looks like this (inside an \ref Scenery.DefaultECBehaviorInstance subclass):
+ * \code
+ * class BTSMAUpdate extends BTSMActionCondition
+ *   var Instance pInstance
+ *   
+ *   func new(Instance instance)
+ *     pInstance = instance
+ *   end
+ *   
+ *   func BTResult runActionShared(Object context, Dictionary parameters)
+ *     var Object value = parameters.getAt("parameterName", null)
+ *     if value != null
+ *       pInstance.doSomethingWith(value cast String)
+ *     end
+ *     return BTResult.success
+ *   end
+ * end
+ * \endcode
+ * 
+ * And adding it to \ref ECComposeBTSM.Instance like this (in \ref Scenery.DefaultECBehaviorInstance#init()):
+ * \code
+ * if pECBehavior.getBTSMs().hasAny()
+ *   var String prefix = pECBehavior.getPrefix()
+ *   var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+ *   btsms.addAllAction(prefix, "update", BTSMAUpdate.new(this))
+ * end
+ * \endcode
  */
 class BTSMActionCondition implements BTAction, BTCondition, SMAction, SMCondition
 	/** \brief Create shared behavior tree and state machine action and condition. */

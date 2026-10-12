@@ -125,26 +125,15 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "parameterTable.check".
 		 * \version 1.26
 		 */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
-				var String name = parameters.getAt("name") cast String
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+				var String name = parameters.getAt(prefix + "name") cast String
 				var int pval = pInstance.getParameterValue(name, 0)
 				var bool result = true
 				var Object value

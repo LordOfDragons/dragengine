@@ -233,10 +233,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		/**
-		 * \brief Behavior tree action "particleEmitter{(id)}.set".
-		 * \version 1.26
-		 */
+		/** \brief Behavior tree action "particleEmitter{(id)}.set". */
 		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
@@ -261,32 +258,30 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			end
 		end
 		
-		/**
-		 * \brief Behavior tree action/condition "particleEmitter{(id)}.check".
-		 * \version 1.26
-		 */
-		private class BTACheck extends BTSMActionCondition
+		/** \brief Behavior tree action "particleEmitter{(id)}.update". */
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
-				var Object value
 				
-				value = parameters.getAt(prefix + "casting", null)
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Behavior tree action/condition "particleEmitter{(id)}.check". */
+		private class BTACheck extends BTSMCondition
+			var Instance pInstance
+			
+			func new(Instance instance, String prefix) super(prefix)
+				pInstance = instance
+			end
+			
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+				var Object value = parameters.getAt(prefix + "casting", null)
 				if value != null and pInstance.getCasting() != value.equals("true")
 					return false
 				end
@@ -336,8 +331,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		var ParticleEmitterInstance pParticleEmitterInstance
 		var ECBehaviorTriggered.Instance pTrigger
 		var TSTriggerTable pTriggerTable
-		var TSNamedTriggerTarget pTargetCasting
-		var TSNamedTriggerTarget pTargetLastParticleDied
+		var TSNamedTriggerTarget pTargetCasting, pTargetLastParticleDied
 		var Array pListeners
 		var ECComposeBTSM.Instance pBTSMs
 		
@@ -412,6 +406,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
 				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end

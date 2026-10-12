@@ -48,7 +48,7 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       ECBehaviorNavigationSpace.new(this)
  *       ECBehaviorNavigationSpace.new(this, "subNavSpace")
  *    end
@@ -105,33 +105,33 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorNavigationSpace pECBehavior
-		private var ECBehaviorCollider.Instance pCollider
-		private var NavigationSpace pNavigationSpace
+		var ECBehaviorNavigationSpace pECBehavior
+		var ECBehaviorCollider.Instance pCollider
+		var NavigationSpace pNavigationSpace
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorNavigationSpace ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorNavigationSpace ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
-			this.pCollider = null
+		func void dispose()
+			pCollider = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			if this.pECBehavior.getCollider() != null
-				this.pCollider = this.pECBehavior.getCollider().instance( this.getElement() )
+		func void init(StubElement stub)
+			if pECBehavior.getCollider() != null
+				pCollider = pECBehavior.getCollider().instance(getElement())
 			end
 			
-			this.pNavigationSpace = this.createNavigationSpace( stub )
-			if this.pNavigationSpace == null
+			pNavigationSpace = createNavigationSpace(stub)
+			if pNavigationSpace == null
 				return
 			end
 			
@@ -150,8 +150,8 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 		 * 
 		 * Default implementation calls ECComposeNavigation.createNavigationSpace().
 		 */
-		protected func NavigationSpace createNavigationSpace( StubElement stub )
-			return this.pECBehavior.getNavigationSpace().createNavigationSpace( this.getElement(), stub )
+		protected func NavigationSpace createNavigationSpace(StubElement stub)
+			return pECBehavior.getNavigationSpace().createNavigationSpace(getElement(), stub)
 		end
 		
 		/**
@@ -166,42 +166,42 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorNavigationSpace getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorNavigationSpace getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Collider behavior or null if not attached. */
-		public func ECBehaviorCollider.Instance getCollider()
-			return this.pCollider
+		func ECBehaviorCollider.Instance getCollider()
+			return pCollider
 		end
 		
 		/** \brief NavigationSpace. */
-		public func NavigationSpace getNavigationSpace()
-			return this.pNavigationSpace
+		func NavigationSpace getNavigationSpace()
+			return pNavigationSpace
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			if this.pNavigationSpace != null
-				this.getElement().getGameWorld().getWorld().addNavigationSpace( this.pNavigationSpace )
+		func void addToGameWorld()
+			if pNavigationSpace != null
+				getElement().getGameWorld().getWorld().addNavigationSpace(pNavigationSpace)
 			end
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			if this.pNavigationSpace != null
-				this.getElement().getGameWorld().getWorld().removeNavigationSpace( this.pNavigationSpace )
+		func void removeFromGameWorld()
+			if pNavigationSpace != null
+				getElement().getGameWorld().getWorld().removeNavigationSpace(pNavigationSpace)
 			end
 		end
 	end
 	
 	
 	
-	private var ECBehaviorCollider pCollider
-	private var ECComposeNavigationSpace pNavigationSpace
-	private var ECComposeAttachResource pAttach
+	var ECBehaviorCollider pCollider
+	var ECComposeNavigationSpace pNavigationSpace
+	var ECComposeAttachResource pAttach
 	
 	
 	
@@ -210,78 +210,78 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em collider.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
-	this( eclass, collider, eclass.sharedFactoryHelper.defaultLoaders(), "" )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
+	this(eclass, collider, eclass.sharedFactoryHelper.defaultLoaders(), "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id ) \
-	this( eclass, collider, eclass.sharedFactoryHelper.defaultLoaders(), id )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
+	this(eclass, collider, eclass.sharedFactoryHelper.defaultLoaders(), id)
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders ) \
-	this( eclass, collider, loaders, "" )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders) \
+	this(eclass, collider, loaders, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	Loaders loaders, String id ) this( eclass, collider, loaders, id, \
-	id.empty() if "navigationSpace." else "navigationSpace(" + id + ")." )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	Loaders loaders, String id) this(eclass, collider, loaders, id, \
+	id.empty() if "navigationSpace." else "navigationSpace(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	Loaders loaders, String id, String prefix ) super( eclass, id )
-		this.pCollider = collider
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	Loaders loaders, String id, String prefix) super(eclass, id)
+		pCollider = collider
 		
-		this.pNavigationSpace = ECComposeNavigationSpace.new( eclass, loaders, prefix )
-		this.pAttach = ECComposeAttachResource.new( eclass, prefix )
+		pNavigationSpace = ECComposeNavigationSpace.new(eclass, loaders, prefix)
+		pAttach = ECComposeAttachResource.new(eclass, prefix)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pCollider = null
+	func void dispose()
+		pCollider = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Collider behavior or null to not attach. */
-	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+	func ECBehaviorCollider getCollider()
+		return pCollider
 	end
 	
 	/** \brief Composeable navigation space for element class. */
-	public func ECComposeNavigationSpace getNavigationSpace()
-		return this.pNavigationSpace
+	func ECComposeNavigationSpace getNavigationSpace()
+		return pNavigationSpace
 	end
 	
 	/** \brief Attach resource. */
-	public func ECComposeAttachResource getAttach()
-		return this.pAttach
+	func ECComposeAttachResource getAttach()
+		return pAttach
 	end
 	
 	
 	
 	/** \brief Set blocker parameters quickly. */
-	public func void setBlockerBox( int layer, int priority, Vector center, Vector halfExtents )
-		this.pNavigationSpace.getLayer().setValue( layer )
-		this.pNavigationSpace.getBlockingPriority().setValue( priority )
-		this.pNavigationSpace.getBlockerShape().getShapeList().removeAllShapes()
-		this.pNavigationSpace.getBlockerShape().getShapeList().addBox( center, halfExtents )
+	func void setBlockerBox(int layer, int priority, Vector center, Vector halfExtents)
+		pNavigationSpace.getLayer().setValue(layer)
+		pNavigationSpace.getBlockingPriority().setValue(priority)
+		pNavigationSpace.getBlockerShape().getShapeList().removeAllShapes()
+		pNavigationSpace.getBlockerShape().getShapeList().addBox(center, halfExtents)
 	end
 	
-	public func void setBlockerBox( int layer, int priority, Vector center, Vector halfExtents, Quaternion orientation )
-		this.pNavigationSpace.getLayer().setValue( layer )
-		this.pNavigationSpace.getBlockingPriority().setValue( priority )
-		this.pNavigationSpace.getBlockerShape().getShapeList().removeAllShapes()
-		this.pNavigationSpace.getBlockerShape().getShapeList().addBox( center, halfExtents, orientation )
+	func void setBlockerBox(int layer, int priority, Vector center, Vector halfExtents, Quaternion orientation)
+		pNavigationSpace.getLayer().setValue(layer)
+		pNavigationSpace.getBlockingPriority().setValue(priority)
+		pNavigationSpace.getBlockerShape().getShapeList().removeAllShapes()
+		pNavigationSpace.getBlockerShape().getShapeList().addBox(center, halfExtents, orientation)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -292,10 +292,10 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorNavigationSpace getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorNavigationSpace each
+	static func ECBehaviorNavigationSpace getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorNavigationSpace each
 			return true
-		end ) cast ECBehaviorNavigationSpace
+		end) cast ECBehaviorNavigationSpace
 	end
 	
 	/**
@@ -304,10 +304,10 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorNavigationSpace with specific identifier.
 	 */
-	static public func ECBehaviorNavigationSpace getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorNavigationSpace each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorNavigationSpace
+	static func ECBehaviorNavigationSpace getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorNavigationSpace each
+			return each.getID().equals(id)
+		end) cast ECBehaviorNavigationSpace
 	end
 	
 	/**
@@ -316,10 +316,10 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 	 * Returns list contains ECBehaviorNavigationSpace behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorNavigationSpace each
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorNavigationSpace each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -331,10 +331,10 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 	 * of type ECBehaviorNavigationSpace.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -343,10 +343,10 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorNavigationSpace.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -355,16 +355,16 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 	 * Returns list contains ECBehaviorNavigationSpace.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end
