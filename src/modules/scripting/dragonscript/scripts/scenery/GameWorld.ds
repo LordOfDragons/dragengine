@@ -63,6 +63,7 @@ class GameWorld
 	var Array pThinkingBehaviors
 	var bool pEnablePersistency, pEnableReadDynDataWithSize
 	
+	var GWBehaviorBTSM pBehaviorBTSM
 	var GWBehaviorOneShotSpeaker pBehaviorOneShotSpeaker
 	
 	
@@ -88,8 +89,8 @@ class GameWorld
 		pThinkingBehaviors = Array.new()
 		
 		// add behaviors
-		pBehaviorOneShotSpeaker = GWBehaviorOneShotSpeaker.new(this)
-		addBehavior(pBehaviorOneShotSpeaker)
+		addBehavior(pBehaviorBTSM = GWBehaviorBTSM.new(this))
+		addBehavior(pBehaviorOneShotSpeaker = GWBehaviorOneShotSpeaker.new(this))
 	end
 	
 	
@@ -118,6 +119,8 @@ class GameWorld
 			pBehaviors = null
 		end
 		pThinkingBehaviors = null
+		
+		pBehaviorBTSM = null
 		pBehaviorOneShotSpeaker = null
 		
 		pThinkers = null
@@ -253,6 +256,13 @@ class GameWorld
 		return pBehaviorOneShotSpeaker
 	end
 	
+	/**
+	 * \brief Behavior tree and state machine support game world behavior.
+	 * \version 1.35
+	 */
+	func GWBehaviorBTSM getBehaviorBTSM()
+		return pBehaviorBTSM
+	end
 	
 	
 	/**

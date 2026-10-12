@@ -1,0 +1,342 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.StateMachineSystem
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.Utils
+
+/**
+ * \brief GameWorld Behavior adding support for behavior tree and state machine access.
+ * \version 1.35
+ * 
+ * Allows gameworld behaviors to add behavior tree and state machine actions and conditions
+ * that can be used by behavior trees and state machines of behavior elements.
+ * 
+ * This behavior can be present only once in a GameWorld.
+ */
+class GWBehaviorBTSM extends DefaultGWBehavior
+	var Dictionary pBTActions, pBTConditions, pSMActions, pSMConditions
+	var SafeArray pReceiveEventsSMs
+	
+	
+	/** \brief Create element. */
+	func new(GameWorld gameWorld) super(gameWorld)
+		pBTActions = Dictionary.new()
+		pBTConditions = Dictionary.new()
+		pSMActions = Dictionary.new()
+		pSMConditions = Dictionary.new()
+		pReceiveEventsSMs = SafeArray.new()
+	end
+	
+	func void dispose()
+		pBTActions.removeAll()
+		pBTConditions.removeAll()
+		pSMActions.removeAll()
+		pSMConditions.removeAll()
+		pReceiveEventsSMs.removeAll()
+		super.dispose()
+	end
+	
+	
+	/** \brief Set state machine and behavior tree action. */
+	func void setAction(String name, BTSMActionCondition action)
+		setBTAction(name, action)
+		setSMAction(name, action)
+	end
+	
+	/** \brief Set state machine and behavior tree condition. */
+	func void setCondition(String name, BTSMActionCondition condition)
+		setBTCondition(name, condition)
+		setSMCondition(name, condition)
+	end
+	
+	/** \brief Set state machine and behavior tree action and condition. */
+	func void setActionCondition(String name, BTSMActionCondition actionCondition)
+		setAction(name, actionCondition)
+		setCondition(name, actionCondition)
+	end
+	
+	
+	/** \brief Count of behavior tree conditions. */
+	func int getBTConditionCount()
+		return pBTConditions.getCount()
+	end
+	
+	/** \brief Behavior tree condition for name or null if absent. */
+	func BTCondition getBTCondition(String name)
+		return pBTConditions.getAt(name, null) cast BTCondition
+	end
+	
+	/** \brief Behavior tree condition is present. */
+	func bool hasBTCondition(String name)
+		return pBTConditions.has(name)
+	end
+	
+	/**
+	 * \brief Visit behavior tree conditions using block with parameters
+	 *        \ref String name and \ref BTCondition condition.
+	 */
+	func void forEachBTCondition(Block ablock)
+		pBTConditions.forEach(ablock)
+	end
+	
+	/** \brief Set behavior tree condition for name. */
+	func void setBTCondition(String name, BTCondition condition)
+		if name == null
+			throw EInvalidParam.new("name")
+		end
+		if condition == null
+			throw EInvalidParam.new("condition")
+		end
+		pBTConditions.setAt(name, condition)
+	end
+	
+	/** \brief Set behavior tree condition for name using block. */
+	func void setBTCondition(String name, Block condition)
+		if name == null
+			throw EInvalidParam.new("name")
+		end
+		pBTConditions.setAt(name, BTBlockCondition.new(condition))
+	end
+	
+	/** \brief Remove behavior tree condition. */
+	func void removeBTCondition(String name)
+		pBTConditions.remove(name)
+	end
+	
+	/** \brief Remove all behavior tree conditions. */
+	func void removeAllBTConditions()
+		pBTConditions.removeAll()
+	end
+	
+	
+	/** \brief Count of behavior tree actions. */
+	func int getBTActionCount()
+		return pBTActions.getCount()
+	end
+	
+	/** \brief Behavior tree action for name or null if absent. */
+	func BTAction getBTAction(String name)
+		return pBTActions.getAt(name, null) cast BTAction
+	end
+	
+	/** \brief Behavior tree action is present. */
+	func bool hasBTAction(String name)
+		return pBTActions.has(name)
+	end
+	
+	/**
+	 * \brief Visit behavior tree actions using block with parameters
+	 *        \ref String name and \ref BTAction action.
+	 */
+	func void forEachBTAction(Block ablock)
+		pBTActions.forEach(ablock)
+	end
+	
+	/** \brief Set behavior tree action for name. */
+	func void setBTAction(String name, BTAction action)
+		if name == null
+			throw EInvalidParam.new("name")
+		end
+		if action == null
+			throw EInvalidParam.new("action")
+		end
+		pBTActions.setAt(name, action)
+	end
+	
+	/** \brief Set behavior tree action for name using block. */
+	func void setBTAction(String name, Block action)
+		if name == null
+			throw EInvalidParam.new("name")
+		end
+		pBTActions.setAt(name, BTBlockAction.new(action))
+	end
+	
+	/** \brief Remove behavior tree action. */
+	func void removeBTAction(String name)
+		pBTActions.remove(name)
+	end
+	
+	/** \brief Remove all behavior tree actions. */
+	func void removeAllBTActions()
+		pBTActions.removeAll()
+	end
+	
+	
+	/** \brief Count of state machine conditions. */
+	func int getSMConditionCount()
+		return pSMConditions.getCount()
+	end
+	
+	/** \brief State machine condition for name or null if absent. */
+	func SMCondition getSMCondition(String name)
+		return pSMConditions.getAt(name, null) cast SMCondition
+	end
+	
+	/** \brief State machine condition is present. */
+	func bool hasSMCondition(String name)
+		return pSMConditions.has(name)
+	end
+	
+	/**
+	 * \brief Visit state machine conditions using block with parameters
+	 *        \ref String name and \ref SMCondition condition.
+	 */
+	func void forEachSMCondition(Block ablock)
+		pSMConditions.forEach(ablock)
+	end
+	
+	/** \brief Set state machine condition for name. */
+	func void setSMCondition(String name, SMCondition condition)
+		if name == null
+			throw EInvalidParam.new("name")
+		end
+		if condition == null
+			throw EInvalidParam.new("condition")
+		end
+		pSMConditions.setAt(name, condition)
+	end
+	
+	/** \brief Set state machine condition for name using block. */
+	func void setSMCondition(String name, Block condition)
+		if name == null
+			throw EInvalidParam.new("name")
+		end
+		pSMConditions.setAt(name, SMBlockCondition.new(condition))
+	end
+	
+	/** \brief Remove state machine condition. */
+	func void removeSMCondition(String name)
+		pSMConditions.remove(name)
+	end
+	
+	/** \brief Remove all state machine conditions. */
+	func void removeAllSMConditions()
+		pSMConditions.removeAll()
+	end
+	
+	
+	/** \brief Count of state machine actions. */
+	func int getSMActionCount()
+		return pSMActions.getCount()
+	end
+	
+	/** \brief State machine action for name or null if absent. */
+	func SMAction getSMAction(String name)
+		return pSMActions.getAt(name, null) cast SMAction
+	end
+	
+	/** \brief State machine action is present. */
+	func bool hasSMAction(String name)
+		return pSMActions.has(name)
+	end
+	
+	/**
+	 * \brief Visit state machine actions using block with parameters
+	 *        \ref String name and \ref SMAction action.
+	 */
+	func void forEachSMAction(Block ablock)
+		pSMActions.forEach(ablock)
+	end
+	
+	/** \brief Set state machine action for name. */
+	func void setSMAction(String name, SMAction action)
+		if name == null
+			throw EInvalidParam.new("name")
+		end
+		if action == null
+			throw EInvalidParam.new("action")
+		end
+		pSMActions.setAt(name, action)
+	end
+	
+	/** \brief Set state machine action for name using block. */
+	func void setSMAction(String name, Block action)
+		if name == null
+			throw EInvalidParam.new("name")
+		end
+		pSMActions.setAt(name, SMBlockAction.new(action))
+	end
+	
+	/** \brief Remove state machine action. */
+	func void removeSMAction(String name)
+		pSMActions.remove(name)
+	end
+	
+	/** \brief Remove all state machine actions. */
+	func void removeAllSMActions()
+		pSMActions.removeAll()
+	end
+	
+	
+	/** \brief Register state machine to receive events. */
+	func void registerReceiveEvents(ECBehaviorStateMachine.Instance stateMachine)
+		if stateMachine == null
+			throw ENullPointer.new("stateMachine")
+		end
+		pReceiveEventsSMs.addIfAbsent(stateMachine)
+	end
+	
+	/** \brief Unregister state machine from receiving events. */
+	func void unregisterReceiveEvents(ECBehaviorStateMachine.Instance stateMachine)
+		pReceiveEventsSMs.removeIfPresent(stateMachine)
+	end
+	
+	/**
+	 * \brief Run event on registered state machines.
+	 * 
+	 * To avoid conflicts with events send by element class behaviors prefix event with
+	 * "gameWorld." unless it is a global event with unique name.
+	 */
+	func void runSMEvent(String event)
+		pReceiveEventsSMs.forEach(block ECBehaviorStateMachine.Instance each
+			each.runEvent(event)
+		end)
+	end
+	
+	/**
+	 * \brief Run event on registered state machines.
+	 * 
+	 * To avoid conflicts with events send by element class behaviors prefix event with
+	 * "gameWorld." unless it is a global event with unique name.
+	 */
+	func void runSMEvent(String event, Object parameter)
+		pReceiveEventsSMs.forEach(block ECBehaviorStateMachine.Instance each
+			each.runEvent(event, parameter)
+		end)
+	end
+	
+	
+	/**
+	 * \brief Get behavior in game world or null if absent.
+	 * 
+	 * Use this method to check if GameWorld contains behavior of type GWBehaviorBTSM.
+	 */
+	static func GWBehaviorBTSM getBehaviorIn(GameWorld gameWorld)
+		return gameWorld.findBehavior(block GWBehaviorBTSM each
+			return true
+		end) cast GWBehaviorBTSM
+	end
+end
