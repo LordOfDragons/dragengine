@@ -172,11 +172,51 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
+				var ECBehaviorAttachable.Instance attachable = pInstance.getAttachable()
 				var Object value
+				
+				value = parameters.getAt("attach", null)
+				if value != null
+					if attachable != null
+						return BTResult.failure
+					end
+					
+					if value.equals("eventElement")
+						var BehaviorElement element = ECBehaviorStateMachine.getEventParameterElement(context cast SMContext)
+						if element == null
+							return BTResult.failure
+						end
+						
+						attachable = ECBehaviorAttachable.getInstanceIn(element)
+						if attachable == null
+							return BTResult.failure
+						end
+						
+						if parameters.getAt("attach.world", "").equals("true")
+							pInstance.attachWorld(attachable)
+							
+						else
+							var CodecPropertyString codec = ElementClass.getSharedCodecPropertyString()
+							var Quaternion orientation = Quaternion.new()
+							var Vector position = Vector.new()
+							
+							value = parameters.getAt("attach.position", null)
+							if value != null
+								position = codec.decodeVector(value cast String)
+							end
+							
+							value = parameters.getAt("attach.rotation", null)
+							if value != null
+								orientation = Quaternion.newFromEuler(codec.decodeVector(value cast String))
+							end
+							
+							pInstance.attach(attachable, position, orientation)
+						end
+					end
+				end
 				
 				value = parameters.getAt("interactElement.assign", null)
 				if value != null
-					var ECBehaviorAttachable.Instance attachable = pInstance.getAttachable()
 					if attachable == null
 						return BTResult.failure
 					end
@@ -197,6 +237,17 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 					pInstance.getElement())
 						return BTResult.failure
 					end
+				end
+				
+				value = parameters.getAt("runEvent", null)
+				if value != null
+					if attachable == null
+						return BTResult.failure
+					end
+					
+					attachable.getElement().forEachInstance(block ECBehaviorStateMachine.Instance each
+						each.runEvent(value cast String, pInstance.getElement())
+					end)
 				end
 				
 				value = parameters.getAt("detach", null)
@@ -225,10 +276,33 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			end
 			
 			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+				var ECBehaviorAttachable.Instance attachable = pInstance.getAttachable()
 				var bool result = true
 				var Object value = parameters.getAt(prefix + "empty", null)
 				if value != null
 					result &= pInstance.isEmpty() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "flags.set", null)
+				if value != null
+					if attachable != null
+						var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(attachable.getElement())
+						result &= flags != null and flags.getFlag(value cast String)
+						
+					else
+						result = false
+					end
+				end
+				
+				value = parameters.getAt(prefix + "flags.clear", null)
+				if value != null
+					if attachable != null
+						var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(attachable.getElement())
+						result &= flags != null and not flags.getFlag(value cast String)
+						
+					else
+						result = false
+					end
 				end
 				
 				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getAttachable(),\

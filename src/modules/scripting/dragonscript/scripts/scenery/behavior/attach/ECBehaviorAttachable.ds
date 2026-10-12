@@ -161,11 +161,11 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
+				var ECBehaviorAttachSlot.Instance attachSlot = pInstance.getAttachSlot()
 				var Object value
 				
 				value = parameters.getAt("interactElement.assign", null)
 				if value != null
-					var ECBehaviorAttachSlot.Instance attachSlot = pInstance.getAttachSlot()
 					if attachSlot == null
 						return BTResult.failure
 					end
@@ -186,6 +186,17 @@ class ECBehaviorAttachable extends DefaultECBehavior
 					pInstance.getElement())
 						return BTResult.failure
 					end
+				end
+				
+				value = parameters.getAt("runEvent", null)
+				if value != null
+					if attachSlot == null
+						return BTResult.failure
+					end
+					
+					attachSlot.getElement().forEachInstance(block ECBehaviorStateMachine.Instance each
+						each.runEvent(value cast String, pInstance.getElement())
+					end)
 				end
 				
 				value = parameters.getAt("detach", null)
@@ -213,10 +224,33 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			end
 			
 			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+				var ECBehaviorAttachSlot.Instance attachSlot = pInstance.getAttachSlot()
 				var bool result = true
 				var Object value = parameters.getAt(prefix + "attached", null)
 				if value != null
 					result &= pInstance.isAttached() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "flags.set", null)
+				if value != null
+					if attachSlot != null
+						var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(attachSlot.getElement())
+						result &= flags != null and flags.getFlag(value cast String)
+						
+					else
+						result = false
+					end
+				end
+				
+				value = parameters.getAt(prefix + "flags.clear", null)
+				if value != null
+					if attachSlot != null
+						var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(attachSlot.getElement())
+						result &= flags != null and not flags.getFlag(value cast String)
+						
+					else
+						result = false
+					end
 				end
 				
 				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getAttachSlot(),\
