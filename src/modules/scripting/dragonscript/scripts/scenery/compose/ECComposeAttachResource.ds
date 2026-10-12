@@ -22,13 +22,10 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
-
 pin Dragengine.Gui
 pin Dragengine.Preloading
 pin Dragengine.Utils
-
 
 /**
  * \brief Composable attachable resource for element class.
@@ -38,11 +35,9 @@ pin Dragengine.Utils
  * a property prefix. Supports attaching static or at a specific bone.
  */
 class ECComposeAttachResource
-	private var ECPVector pPosition
-	private var ECPVector pOrientation
-	private var ECPString pBone
-	private var String pPrefix
-	
+	var ECPVector pPosition, pOrientation
+	var ECPString pBone
+	var String pPrefix
 	
 	
 	/**
@@ -51,7 +46,7 @@ class ECComposeAttachResource
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new( ElementClass ownerClass ) this( ownerClass, "attach." )
+	func new(ElementClass ownerClass) this(ownerClass, "attach.")
 	end
 	
 	/**
@@ -63,41 +58,33 @@ class ECComposeAttachResource
 	 * empty \em prefix is typically of the form 'name.' which results for example in a
 	 * property named 'name.position'.
 	 */
-	public func new( ElementClass ownerClass, String prefix )
-		this.pPosition = ECPVector.new( prefix + "position", Vector.new() )
-		ownerClass.addProperty( this.pPosition )
-		
-		this.pOrientation = ECPVector.new( prefix + "orientation", Vector.new() )
-		ownerClass.addProperty( this.pOrientation )
-		
-		this.pBone = ECPString.new( prefix + "bone", "" )
-		ownerClass.addProperty( this.pBone )
-		
-		this.pPrefix = prefix
+	func new(ElementClass ownerClass, String prefix)
+		ownerClass.addProperty(pPosition = ECPVector.new(prefix + "position", Vector.new()))
+		ownerClass.addProperty(pOrientation = ECPVector.new(prefix + "orientation", Vector.new()))
+		ownerClass.addProperty(pBone = ECPString.new(prefix + "bone", ""))
+		pPrefix = prefix
 	end
-	
 	
 	
 	/** \brief Attach position. */
-	public func ECPVector getPosition()
-		return this.pPosition
+	func ECPVector getPosition()
+		return pPosition
 	end
 	
 	/** \brief Attach orientation. */
-	public func ECPVector getOrientation()
-		return this.pOrientation
+	func ECPVector getOrientation()
+		return pOrientation
 	end
 	
 	/** \brief Name of bone to attach to \em null if not used. */
-	public func ECPString getBone()
-		return this.pBone
+	func ECPString getBone()
+		return pBone
 	end
 	
 	/** \brief Property prefix. */
-	public func String getPrefix()
-		return this.pPrefix
+	func String getPrefix()
+		return pPrefix
 	end
-	
 	
 	
 	/**
@@ -125,22 +112,35 @@ class ECComposeAttachResource
 	 * - Speaker
 	 * - TouchSensor
 	 */
-	public func void attach( Collider collider, Object resource, StubElement stub )
+	func void attach(Collider collider, Object resource, StubElement stub)
 		if collider == null or resource == null
 			return
 		end
 		
 		var CodecPropertyString codec = stub.getClass().getCodecPropertyString()
-		var Vector position = this.pPosition.getVector( stub, codec )
-		var Vector orientation = this.pOrientation.getVector( stub, codec )
-		var String bone = this.pBone.getValue( stub )
+		var Vector position = pPosition.getVector(stub, codec)
+		var Vector orientation = pOrientation.getVector(stub, codec)
+		var String bone = pBone.getValue(stub)
 		
 		if bone.empty()
-			collider.attachStatic( resource, position, Quaternion.newFromEuler( orientation ) )
+			collider.attachStatic(resource, position, Quaternion.newFromEuler(orientation))
 			
 		else
-			( collider cast ColliderRig ).attachBone( resource, bone, \
-				position, Quaternion.newFromEuler( orientation ) )
+			(collider cast ColliderRig).attachBone(resource, bone, \
+				position, Quaternion.newFromEuler(orientation))
 		end
+	end
+	
+	/**
+	 * \brief Attach matrix for static positioning of resources.
+	 * \version 1.35
+	 */
+	func DMatrix attachMatrix(StubElement stub)
+		var CodecPropertyString codec = stub.getClass().getCodecPropertyString()
+		var Vector position = pPosition.getVector(stub, codec)
+		var Vector orientation = pOrientation.getVector(stub, codec)
+		
+		return DMatrix.newRT(DVector.new(orientation), DVector.new(position))\
+			* DMatrix.newRT(DVector.new(stub.getRotation()), stub.getPosition())
 	end
 end
