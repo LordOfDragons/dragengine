@@ -1430,6 +1430,7 @@ class BehaviorFactoryHelper
 		factories.add(ECBehaviorCustomColor.Factory.new())
 		factories.add(ECBehaviorDecal.Factory.new())
 		factories.add(ECBehaviorEnvMapProbe.Factory.new())
+		factories.add(ECBehaviorFlags.Factory.new())
 		factories.add(ECBehaviorForceField.Factory.new())
 		factories.add(ECBehaviorHitScan.Factory.new())
 		factories.add(ECBehaviorLight.Factory.new())
@@ -1444,8 +1445,7 @@ class BehaviorFactoryHelper
 		factories.add(ECBehaviorShowElement.Factory.new())
 		factories.add(ECBehaviorShowMessage.Factory.new())
 		factories.add(ECBehaviorStateMachine.Factory.new())
-		factories.add(ECBehaviorBTSMTimers.Factory.new())
-		factories.add(ECBehaviorBTSMFlags.Factory.new())
+		factories.add(ECBehaviorTimers.Factory.new())
 	end
 	
 	/** \brief Add actor behavior factories to factory list. */

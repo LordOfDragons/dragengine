@@ -129,9 +129,9 @@ pin Dragengine.Utils
  * </transition>
  * \endcode
  * 
- * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_btsmtimers
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_timers
  */
-class ECBehaviorBTSMTimers extends DefaultECBehavior
+class ECBehaviorTimers extends DefaultECBehavior
 	/** \brief Timer. */
 	class TrackedTimer
 		var String pName
@@ -218,7 +218,7 @@ class ECBehaviorBTSMTimers extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorBTSMTimers'>
+	 * <behavior type='ECBehaviorTimers'>
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -237,14 +237,14 @@ class ECBehaviorBTSMTimers extends DefaultECBehavior
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory extends DefaultBehaviorFactory
-		func new() super("ECBehaviorBTSMTimers")
+		func new() super("ECBehaviorTimers")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			var ECBehaviorBTSMTimers behavior = ECBehaviorBTSMTimers.new(eclass)
+			var ECBehaviorTimers behavior = ECBehaviorTimers.new(eclass)
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			getHelper().setPropertiesFromParameters(eclass, parameters, "timers")
 			return behavior
@@ -290,25 +290,14 @@ class ECBehaviorBTSMTimers extends DefaultECBehavior
 		end
 		
 		/** \brief Action/condition "timers.check". */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
 				var String timer = parameters.getAt(prefix + "timer") cast String
 				var bool result = true
 				
@@ -332,7 +321,7 @@ class ECBehaviorBTSMTimers extends DefaultECBehavior
 		end
 		
 		
-		var ECBehaviorBTSMTimers pECBehavior
+		var ECBehaviorTimers pECBehavior
 		var ECComposeBTSM.Instance pBTSMs
 		var Dictionary pTimers
 		var bool pCanSendEvents
@@ -340,7 +329,7 @@ class ECBehaviorBTSMTimers extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		func new(ECBehaviorBTSMTimers ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorTimers ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pTimers = Dictionary.new()
 			pElapsedTimers = Array.new()
@@ -367,7 +356,7 @@ class ECBehaviorBTSMTimers extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		func ECBehaviorBTSMTimers getECBehavior()
+		func ECBehaviorTimers getECBehavior()
 			return pECBehavior
 		end
 		
@@ -526,19 +515,19 @@ class ECBehaviorBTSMTimers extends DefaultECBehavior
 	 * \brief Get behavior in element class or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
-	 * of type ECBehaviorBTSMTimers.
+	 * of type ECBehaviorTimers.
 	 */
-	static func ECBehaviorBTSMTimers getBehaviorIn(BehaviorElementClass eclass)
-		return eclass.findBehavior(block ECBehaviorBTSMTimers each
+	static func ECBehaviorTimers getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorTimers each
 			return true
-		end) cast ECBehaviorBTSMTimers
+		end) cast ECBehaviorTimers
 	end
 	
 	/**
 	 * \brief Get instance in element or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
-	 * of type ECBehaviorBTSMTimers.Instance. If more than one instance is present returns
+	 * of type ECBehaviorTimers.Instance. If more than one instance is present returns
 	 * the first instance.
 	 */
 	static func Instance getInstanceIn(BehaviorElement element)

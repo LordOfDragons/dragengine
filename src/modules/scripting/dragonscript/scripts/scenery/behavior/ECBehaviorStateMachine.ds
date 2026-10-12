@@ -240,10 +240,6 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements BehaviorPostInit
-		/**
-		 * \brief Behavior tree action "stateMachine{(id)}.set".
-		 * \version 1.26
-		 */
 		private class BTASet implements BTAction
 			var Instance pInstance
 			
@@ -271,10 +267,6 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 		end
 		
-		/**
-		 * \brief Behavior tree action "stateMachine{(id)}.event".
-		 * \version 1.26
-		 */
 		private class BTAEvent implements BTAction
 			var Instance pInstance
 			
@@ -288,10 +280,6 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 		end
 		
-		/**
-		 * \brief Behavior tree action/condition "stateMachine{(id)}.check".
-		 * \version 1.26
-		 */
 		private class BTACheck implements BTAction, BTCondition
 			var Instance pInstance
 			var String pPrefix
@@ -360,11 +348,224 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 		end
 		
+		/** State machine action and condition "gameWorld". */
+		private class SMACGameWorld implements SMAction, SMCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void runAction(SMContext context, Dictionary parameters)
+				var Object value = parameters.getAt("receiveEvents", null)
+				if value != null
+					pInstance.setReceiveGameWorldEvents(value.equals("true"))
+				end
+				
+				var GameWorld gameWorld = pInstance.getElement().getGameWorld()
+				if gameWorld == null
+					return
+				end
+				
+				value = parameters.getAt("action", null) cast String
+				if value == null
+					return
+				end
+				
+				var SMAction action = gameWorld.getBehaviorBTSM().getSMAction(value cast String)
+				if action != null
+					var Dictionary nparams = Dictionary.new(parameters)
+					nparams.remove("action")
+					nparams.removeIfExisting("receiveEvents")
+					nparams.setAt("element", pInstance.getElement())
+					action.runAction(context, nparams)
+				end
+			end
+			
+			func bool evaluateCondition(SMContext context, Dictionary parameters)
+				var GameWorld gameWorld = pInstance.getElement().getGameWorld()
+				if gameWorld == null
+					return false
+				end
+				
+				var String name = parameters.getAt("gameWorld.condition", null) cast String
+				if name == null
+					return false
+				end
+				
+				var SMCondition condition = gameWorld.getBehaviorBTSM().getSMCondition(name)
+				if condition == null
+					return false
+				end
+				
+				var Dictionary nparams = Dictionary.new(parameters)
+				nparams.remove("gameWorld.condition")
+				nparams.setAt("gameWorld.element", pInstance.getElement())
+				return condition.evaluateCondition(context, nparams)
+			end
+		end
+		
+		/** State machine action "element.set". */
+		private class SMAElementSet implements SMAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void runAction(SMContext context, Dictionary parameters)
+				var Object value = parameters.getAt("visible", null)
+				if value != null
+					pInstance.getElement().setVisible(value.equals("true"))
+				end
+				
+				value = parameters.getAt("touchable", null)
+				if value != null
+					pInstance.getElement().setTouchable(value.equals("true"))
+				end
+			end
+		end
+		
+		/** State machine action "element.update". */
+		private class SMAElementUpdate implements SMAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void runAction(SMContext context, Dictionary parameters)
+				var Object value = parameters.getAt("log", null)
+				if value != null
+					pInstance.getElement().log(value cast String)
+				end
+				
+				// "spawn"
+				
+				if parameters.has("dispose")
+					pInstance.getElement().safeDispose()
+				end
+			end
+		end
+		
+		/** State machine condition "element.check". */
+		private class SMCElementCheck implements SMCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func bool evaluateCondition(SMContext context, Dictionary parameters)
+				var bool result = true
+				
+				var Object value = parameters.getAt("element.visible", null)
+				if value != null
+					result &= pInstance.getElement().getVisible() == value.equals("true")
+				end
+				
+				value = parameters.getAt("element.touchable", null)
+				if value != null
+					result &= pInstance.getElement().getTouchable() == value.equals("true")
+				end
+				
+				value = parameters.getAt("element.inGameWorld", null)
+				if value != null
+					result &= (pInstance.getElement().getGameWorld() != null) == value.equals("true")
+				end
+				
+				value = parameters.getAt("element.hasParent", null)
+				if value != null
+					result &= (pInstance.getElement().getParent() != null) == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		/** \brief State machine action "eventElement.update". */
+		private class SMAEventElementUpdate implements SMAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void runAction(SMContext context, Dictionary parameters)
+				var BehaviorElement element = getEventElement(context)
+				if element == null
+					return
+				end
+				
+				var Object value = parameters.getAt("runEvent", null)
+				if value != null
+					element.forEachInstance(block ECBehaviorStateMachine.Instance each
+						each.runEvent(value cast String, pInstance.getElement())
+					end)
+				end
+			end
+			
+			static func BehaviorElement getEventElement(SMContext context)
+				var Object eventParameter = context.getEventParameter()
+				
+				if eventParameter castable BehaviorElement
+					return eventParameter cast BehaviorElement
+				end
+				
+				if eventParameter castable CollisionInfo
+					var CollisionInfo cinfo = eventParameter cast CollisionInfo
+					if not cinfo.isCollider()
+						return null
+					end
+					
+					var Object owner = cinfo.getCollider().getOwner()
+					if owner == null or not owner castable BehaviorElement
+						return null
+					end
+					
+					return owner cast BehaviorElement
+				end
+				
+				return null
+			end
+		end
+		
+		/** \brief State machine condition "eventElement.check". */
+		private class SMCEventElementCheck implements SMCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func bool evaluateCondition(SMContext context, Dictionary parameters)
+				var BehaviorElement behaviorElement = SMAEventElementUpdate.getEventElement(context)
+				if behaviorElement == null
+					return false
+				end
+				
+				var bool result = true
+				var Object value = parameters.getAt("eventElement.flags.set", null)
+				if value != null
+					var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(behaviorElement)
+					result &= flags != null and flags.getFlag(value cast String)
+				end
+				
+				value = parameters.getAt("eventElement.flags.clear", null)
+				if value != null
+					var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(behaviorElement)
+					result &= flags != null and not flags.getFlag(value cast String)
+				end
+				
+				return result
+			end
+		end
+		
 		
 		var ECBehaviorStateMachine pECBehavior
 		var StateMachine pStateMachine
 		var SMContext pContext
-		
+		var bool pReceiveGameWorldEvents
 		
 		
 		/** \brief Create element. */
@@ -399,6 +600,15 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 				pContext.setLogStateChanges(true)
 				pContext.setLogActions(true)
 			end
+			
+			var SMACGameWorld smacGameWorld = SMACGameWorld.new(this)
+			pContext.setAction("element.set", SMAElementSet.new(this))
+			pContext.setAction("element.update", SMAElementUpdate.new(this))
+			pContext.setAction("eventElement.update", SMAEventElementUpdate.new(this))
+			pContext.setAction("gameWorld", smacGameWorld)
+			pContext.setCondition("element.check", SMCElementCheck.new(this))
+			pContext.setCondition("eventElement.check", SMCEventElementCheck.new(this))
+			pContext.setCondition("gameWorld", smacGameWorld)
 			
 			pECBehavior.setActionsConditions(this)
 			
@@ -449,7 +659,6 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		func SMContext getContext()
 			return pContext
 		end
-		
 		
 		
 		/**
@@ -506,14 +715,36 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			pContext.setCondition(name, conditionBlock)
 		end
 		
+		/**
+		 * \brief State machine receives \ref GWBehaviorBTSM events.
+		 * \version 1.35
+		 */
+		func bool getReceiveGameWorldEvents()
+			return pReceiveGameWorldEvents
+		end
+		
+		/**
+		 * \brief Set if state machine receives \ref GWBehaviorBTSM events.
+		 * \version 1.35
+		 */
+		func void setReceiveGameWorldEvents(bool receive)
+			if receive == pReceiveGameWorldEvents
+				return
+			end
+			
+			pReceiveGameWorldEvents = receive
+			updateReceiveGameWorldEvents()
+		end
 		
 		
 		func void addToGameWorld()
+			updateReceiveGameWorldEvents()
 			runEvent("addToGameWorld")
 		end
 		
 		func void removeFromGameWorld()
 			runEvent("removeFromGameWorld")
+			updateReceiveGameWorldEvents()
 		end
 		
 		func void enterFrame()
@@ -521,16 +752,30 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		end
 		
 		
+		private func void updateReceiveGameWorldEvents()
+			var GameWorld gameWorld = getElement().getGameWorld()
+			if gameWorld == null
+				return
+			end
+			
+			if pReceiveGameWorldEvents
+				gameWorld.getBehaviorBTSM().registerReceiveEvents(this)
+				
+			else
+				gameWorld.getBehaviorBTSM().unregisterReceiveEvents(this)
+			end
+		end
+		
 		
 		/** \brief Read element from file. */
 		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
-				
 				if flags.getAt(0)
 					pContext.readFromFile(env, reader)
 				end
+				pReceiveGameWorldEvents = flags.getAt(1)
 				
 			else
 				throw EInvalidParam.new("unsupported version")
@@ -541,8 +786,9 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new(1)
+			var PersistencyFlags flags = PersistencyFlags.new(2)
 			flags.setAt(0, true)
+			flags.setAt(1, pReceiveGameWorldEvents)
 			flags.writeToFile(writer)
 			
 			pContext.writeToFile(env, writer)

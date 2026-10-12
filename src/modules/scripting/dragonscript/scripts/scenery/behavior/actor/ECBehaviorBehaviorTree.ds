@@ -307,6 +307,141 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/** \brief Behavior tree action and condition "gameWorld". */
+		private class BTACGameWorld implements BTAction, BTCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var String name = parameters.getAt("action", null) cast String
+				if name == null
+					return BTResult.failure
+				end
+				
+				var GameWorld gameWorld = pInstance.getElement().getGameWorld()
+				if gameWorld == null
+					return BTResult.failure
+				end
+				
+				var BTAction action = gameWorld.getBehaviorBTSM().getBTAction(name)
+				if action == null
+					return BTResult.failure
+				end
+				
+				var Dictionary nparams = Dictionary.new(parameters)
+				nparams.remove("action")
+				nparams.setAt("element", pInstance.getElement())
+				return action.runAction(context, nparams)
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				var String name = parameters.getAt("gameWorld.condition", null) cast String
+				if name == null
+					return false
+				end
+				
+				var GameWorld gameWorld = pInstance.getElement().getGameWorld()
+				if gameWorld == null
+					return false
+				end
+				
+				var BTCondition condition = gameWorld.getBehaviorBTSM().getBTCondition(name)
+				if condition == null
+					return false
+				end
+				
+				var Dictionary nparams = Dictionary.new(parameters)
+				nparams.remove("gameWorld.condition")
+				nparams.setAt("gameWorld.element", pInstance.getElement())
+				return condition.evaluateCondition(context, nparams)
+			end
+		end
+		
+		/** Behavior tree action "element.set". */
+		private class BTACElementSet implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value = parameters.getAt("visible", null)
+				if value != null
+					pInstance.getElement().setVisible(value.equals("true"))
+				end
+				
+				value = parameters.getAt("touchable", null)
+				if value != null
+					pInstance.getElement().setTouchable(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/** Behavior tree action "element.update". */
+		private class BTACElementUpdate implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value = parameters.getAt("log", null)
+				if value != null
+					pInstance.getElement().log(value cast String)
+				end
+				
+				if parameters.has("dispose")
+					pInstance.getElement().safeDispose()
+					return BTResult.running
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/** Behavior tree condition "element.check". */
+		private class BTACElementCheck implements BTCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				var bool result = true
+				
+				var Object value = parameters.getAt("element.visible", null)
+				if value != null
+					result &= pInstance.getElement().getVisible() == value.equals("true")
+				end
+				
+				value = parameters.getAt("element.touchable", null)
+				if value != null
+					result &= pInstance.getElement().getTouchable() == value.equals("true")
+				end
+				
+				value = parameters.getAt("element.inGameWorld", null)
+				if value != null
+					result &= (pInstance.getElement().getGameWorld() != null) == value.equals("true")
+				end
+				
+				value = parameters.getAt("element.hasParent", null)
+				if value != null
+					result &= (pInstance.getElement().getParent() != null) == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorBehaviorTree pECBehavior
 		var BehaviorTree pBehaviorTree
 		var BTContext pContext
@@ -344,6 +479,13 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 			
 			pContext = createContext(stub, pBehaviorTree)
 			pContext.setConsole(BehaviorElementClass.sharedFactoryHelper.defaultConsole())
+			
+			var BTACGameWorld btac = BTACGameWorld.new(this)
+			pContext.setAction("element.set", BTACElementSet.new(this))
+			pContext.setAction("element.update", BTACElementUpdate.new(this))
+			pContext.setAction("gameWorld", btac)
+			pContext.setCondition("element.check", BTACElementCheck.new(this))
+			pContext.setCondition("gameWorld", btac)
 			
 			setRequiresThink(pRun)
 			pECBehavior.createListeners(this)

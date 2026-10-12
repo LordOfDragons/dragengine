@@ -142,9 +142,9 @@ pin Dragengine.Utils
  * </transition>
  * \endcode
  * 
- * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_btsmflags
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_flags
  */
-class ECBehaviorBTSMFlags extends DefaultECBehavior
+class ECBehaviorFlags extends DefaultECBehavior
 	/**
 	 * \brief Behavior factory.
 	 * 
@@ -152,7 +152,7 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorBTSMFlags'>
+	 * <behavior type='ECBehaviorFlags'>
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -171,14 +171,14 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory extends DefaultBehaviorFactory
-		func new() super("ECBehaviorBTSMFlags")
+		func new() super("ECBehaviorFlags")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			var ECBehaviorBTSMFlags behavior = ECBehaviorBTSMFlags.new(eclass)
+			var ECBehaviorFlags behavior = ECBehaviorFlags.new(eclass)
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			getHelper().setPropertiesFromParameters(eclass, parameters, "flags")
 			return behavior
@@ -212,18 +212,15 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 		end
 		
 		/** \brief Action/condition "flags.check". */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				var BTResult result = check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+				var BTResult result = super.runActionShared(context, parameters)
 				
 				if result == BTResult.success and parameters.has("reset")
 					pInstance.toggleFlag(parameters.getAt("flag") cast String)
@@ -232,11 +229,7 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 				return result
 			end
 			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
 				var String flag = parameters.getAt(prefix + "flag") cast String
 				var bool result = true
 				
@@ -250,13 +243,13 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 		end
 		
 		
-		var ECBehaviorBTSMFlags pECBehavior
+		var ECBehaviorFlags pECBehavior
 		var ECComposeBTSM.Instance pBTSMs
 		var Dictionary pFlags
 		
 		
 		/** \brief Create element. */
-		func new(ECBehaviorBTSMFlags ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorFlags ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pFlags = Dictionary.new()
 		end
@@ -269,6 +262,13 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 		
 		
 		func void init(StubElement stub)
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			pECBehavior.getFlags().getList(stub, codec).forEach(block String flag
+				if not flag.empty()
+					pFlags.setAt(flag, true)
+				end
+			end)
+			
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
@@ -280,7 +280,7 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		func ECBehaviorBTSMFlags getECBehavior()
+		func ECBehaviorFlags getECBehavior()
 			return this.pECBehavior
 		end
 		
@@ -352,6 +352,7 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 	
 	var ECComposeBTSM pBTSMs
 	var String pPrefix
+	var ECPStringList pFlags
 	
 	
 	/** \brief Create behavior element class. */
@@ -365,6 +366,8 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 		
 		pPrefix = prefix
 		pBTSMs = ECComposeBTSM.new()
+		
+		eclass.addProperty(pFlags = ECPStringList.new(prefix + "flags"))
 		
 		eclass.addBehavior(this)
 	end
@@ -387,6 +390,11 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 		return pBTSMs
 	end
 	
+	/** \brief Initially set flags. */
+	func ECPStringList getFlags()
+		return pFlags
+	end
+	
 	
 	/** \brief Get instance in element from owner element class. */
 	func Instance instance(BehaviorElement element)
@@ -398,19 +406,19 @@ class ECBehaviorBTSMFlags extends DefaultECBehavior
 	 * \brief Get behavior in element class or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
-	 * of type ECBehaviorBTSMFlags.
+	 * of type ECBehaviorFlags.
 	 */
-	static func ECBehaviorBTSMFlags getBehaviorIn(BehaviorElementClass eclass)
-		return eclass.findBehavior(block ECBehaviorBTSMFlags each
+	static func ECBehaviorFlags getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorFlags each
 			return true
-		end) cast ECBehaviorBTSMFlags
+		end) cast ECBehaviorFlags
 	end
 	
 	/**
 	 * \brief Get instance in element or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
-	 * of type ECBehaviorBTSMFlags.Instance. If more than one instance is present returns
+	 * of type ECBehaviorFlags.Instance. If more than one instance is present returns
 	 * the first instance.
 	 */
 	static func Instance getInstanceIn(BehaviorElement element)
