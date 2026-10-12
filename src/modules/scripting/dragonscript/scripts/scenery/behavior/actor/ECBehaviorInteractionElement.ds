@@ -119,15 +119,6 @@ class ECBehaviorInteractionElement extends DefaultECBehavior
 			func BTResult runActionShared(Object context, Dictionary parameters)
 				var Object value
 				
-				value = parameters.getAt("interact", null)
-				if value != null
-					if not ECBehaviorInteraction.checkInteraction(pInstance.getInteractionElement(),\
-					value cast String, parameters.getAt("interact.parameters", null) cast String,\
-					pInstance.getElement())
-						return BTResult.failure
-					end
-				end
-				
 				value = parameters.getAt("assign", null)
 				if value != null
 					var Instance other = ECBehaviorInteractionElement.getInstanceIn(\
@@ -142,6 +133,26 @@ class ECBehaviorInteractionElement extends DefaultECBehavior
 					else
 						pInstance.setInteractionElement(other.getInteractionElement())
 					end
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getInteractionElement(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				value = parameters.getAt("runEvent", null)
+				if value != null
+					if pInstance.getInteractionElement() == null
+						return BTResult.failure
+					end
+					
+					pInstance.getInteractionElement().forEachInstance(block ECBehaviorStateMachine.Instance each
+						each.runEvent(value cast String, pInstance.getElement())
+					end)
 				end
 				
 				if parameters.has("clear")
@@ -165,6 +176,28 @@ class ECBehaviorInteractionElement extends DefaultECBehavior
 				var Object value = parameters.getAt(prefix + "set", null)
 				if value != null
 					result &= pInstance.isSet() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "flags.set", null)
+				if value != null
+					if pInstance.getInteractionElement() != null
+						var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(pInstance.getInteractionElement())
+						result &= flags != null and flags.getFlag(value cast String)
+						
+					else
+						result = false
+					end
+				end
+				
+				value = parameters.getAt(prefix + "flags.clear", null)
+				if value != null
+					if pInstance.getInteractionElement() != null
+						var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(pInstance.getInteractionElement())
+						result &= flags != null and not flags.getFlag(value cast String)
+						
+					else
+						result = false
+					end
 				end
 				
 				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getInteractionElement(),\

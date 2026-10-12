@@ -552,7 +552,22 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 					return
 				end
 				
-				var Object value = parameters.getAt("runEvent", null)
+				var Object value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement != null
+						interactionElement.setInteractionElement(element)
+					end
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					ECBehaviorInteraction.checkInteraction(element, value cast String,\
+						parameters.getAt("interact.parameters", null) cast String, pInstance.getElement())
+				end
+				
+				value = parameters.getAt("runEvent", null)
 				if value != null
 					element.forEachInstance(block ECBehaviorStateMachine.Instance each
 						each.runEvent(value cast String, pInstance.getElement())
