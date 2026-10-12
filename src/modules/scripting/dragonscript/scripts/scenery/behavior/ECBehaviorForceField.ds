@@ -367,6 +367,11 @@ class ECBehaviorForceField extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachForceField(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pForceField.setPosition(matrix.getPosition())
+				pForceField.setOrientation(matrix.toQuaternion())
 			end
 			
 			if pECBehavior.getBTSMs().hasAny()
@@ -408,7 +413,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 		/**
 		 * \brief Attach force field to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachForceField(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pForceField, stub)

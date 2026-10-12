@@ -135,8 +135,13 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 				return
 			end
 			
-			if this.pCollider != null and this.pCollider.getCollider() != null
-				this.attachNavigationSpace( stub, this.pCollider )
+			if pCollider != null and pCollider.getCollider() != null
+				attachNavigationSpace(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pNavigationSpace.setPosition(matrix.getPosition())
+				pNavigationSpace.setOrientation(matrix.toQuaternion())
 			end
 		end
 		
@@ -152,10 +157,10 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 		/**
 		 * \brief Attach navigation space to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
-		protected func void attachNavigationSpace( StubElement stub, ECBehaviorCollider.Instance collider )
-			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pNavigationSpace, stub )
+		protected func void attachNavigationSpace(StubElement stub, ECBehaviorCollider.Instance collider)
+			pECBehavior.getAttach().attach(collider.getCollider(), pNavigationSpace, stub)
 		end
 		
 		

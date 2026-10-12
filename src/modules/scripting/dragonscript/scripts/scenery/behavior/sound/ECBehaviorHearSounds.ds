@@ -298,6 +298,11 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachSoundLevelMeter(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pSoundLevelMeter.setPosition(matrix.getPosition())
+				pSoundLevelMeter.setOrientation(matrix.toQuaternion())
 			end
 			
 			pSoundLevelMeter.setListener(this)
@@ -332,7 +337,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		/**
 		 * \brief Attach sound level meter to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachSoundLevelMeter(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pSoundLevelMeter, stub)

@@ -76,6 +76,11 @@ class IMMBehaviorColliderInteract extends DefaultECBehavior
 			
 			if pBaseCollider != null and pBaseCollider.getCollider() != null
 				pECBehavior.getAttach().attach(pBaseCollider.getCollider(), pCollider, stub)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pCollider.setPosition(matrix.getPosition())
+				pCollider.setOrientation(matrix.toQuaternion())
 			end
 		end
 		

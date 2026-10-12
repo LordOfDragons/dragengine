@@ -164,6 +164,11 @@ class ECBehaviorCamera extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachCamera(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pCamera.setPosition(matrix.getPosition())
+				pCamera.setOrientation(matrix.toQuaternion())
 			end
 		end
 		
@@ -201,7 +206,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 		/**
 		 * \brief Attach camera to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachCamera(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pCamera, stub)

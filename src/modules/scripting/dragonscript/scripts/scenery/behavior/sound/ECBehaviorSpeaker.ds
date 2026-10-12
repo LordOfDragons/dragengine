@@ -403,6 +403,11 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachSpeaker(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pSpeaker.setPosition(matrix.getPosition())
+				pSpeaker.setOrientation(matrix.toQuaternion())
 			end
 			
 			if pECBehavior.getBTSMs().hasAny()
@@ -462,7 +467,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		/**
 		 * \brief Attach speaker to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachSpeaker(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pSpeaker, stub)

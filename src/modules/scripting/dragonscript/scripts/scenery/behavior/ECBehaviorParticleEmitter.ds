@@ -401,6 +401,11 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachEmitterInstance(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pParticleEmitterInstance.setPosition(matrix.getPosition())
+				pParticleEmitterInstance.setOrientation(matrix.toQuaternion())
 			end
 			
 			if pECBehavior.getBTSMs().hasAny()
@@ -442,7 +447,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		/**
 		 * \brief Attach particle emitter instance to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachEmitterInstance(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pParticleEmitterInstance, stub)

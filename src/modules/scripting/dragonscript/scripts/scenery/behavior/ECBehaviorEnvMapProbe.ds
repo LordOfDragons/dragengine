@@ -116,8 +116,13 @@ class ECBehaviorEnvMapProbe extends DefaultECBehavior
 			
 			this.pEnvMapProbe = this.createEnvMapProbe( stub )
 			
-			if this.pCollider != null and this.pCollider.getCollider() != null
-				this.attachEnvMapProbe( stub, this.pCollider )
+			if pCollider != null and pCollider.getCollider() != null
+				attachEnvMapProbe(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pEnvMapProbe.setPosition(matrix.getPosition())
+				pEnvMapProbe.setOrientation(matrix.toQuaternion())
 			end
 		end
 		
@@ -133,10 +138,10 @@ class ECBehaviorEnvMapProbe extends DefaultECBehavior
 		/**
 		 * \brief Attach environment map probe to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
-		protected func void attachEnvMapProbe( StubElement stub, ECBehaviorCollider.Instance collider )
-			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pEnvMapProbe, stub )
+		protected func void attachEnvMapProbe(StubElement stub, ECBehaviorCollider.Instance collider)
+			pECBehavior.getAttach().attach(collider.getCollider(), pEnvMapProbe, stub)
 		end
 		
 		

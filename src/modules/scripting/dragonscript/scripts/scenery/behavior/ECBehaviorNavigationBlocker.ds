@@ -136,8 +136,13 @@ class ECBehaviorNavigationBlocker extends DefaultECBehavior
 				return
 			end
 			
-			if this.pCollider != null and this.pCollider.getCollider() != null
-				this.attachNavigationBlocker( stub, this.pCollider )
+			if pCollider != null and pCollider.getCollider() != null
+				attachNavigationBlocker(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pNavigationBlocker.setPosition(matrix.getPosition())
+				pNavigationBlocker.setOrientation(matrix.toQuaternion())
 			end
 		end
 		
@@ -153,10 +158,10 @@ class ECBehaviorNavigationBlocker extends DefaultECBehavior
 		/**
 		 * \brief Attach navigation blocker to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
-		protected func void attachNavigationBlocker( StubElement stub, ECBehaviorCollider.Instance collider )
-			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pNavigationBlocker, stub )
+		protected func void attachNavigationBlocker(StubElement stub, ECBehaviorCollider.Instance collider)
+			pECBehavior.getAttach().attach(collider.getCollider(), pNavigationBlocker, stub)
 		end
 		
 		

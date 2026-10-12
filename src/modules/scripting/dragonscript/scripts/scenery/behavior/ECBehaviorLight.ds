@@ -389,6 +389,11 @@ class ECBehaviorLight extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachLight(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pLight.setPosition(matrix.getPosition())
+				pLight.setOrientation(matrix.toQuaternion())
 			end
 			
 			if pECBehavior.getBTSMs().hasAny()
@@ -447,7 +452,7 @@ class ECBehaviorLight extends DefaultECBehavior
 		/**
 		 * \brief Attach light to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachLight(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pLight, stub)
