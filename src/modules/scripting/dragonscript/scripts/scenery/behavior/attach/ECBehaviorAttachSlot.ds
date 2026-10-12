@@ -193,6 +193,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 						end
 						
 						if parameters.getAt("attach.world", "").equals("true")
+							attachable.detach()
 							pInstance.attachWorld(attachable)
 							
 						else
@@ -210,6 +211,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 								orientation = Quaternion.newFromEuler(codec.decodeVector(value cast String))
 							end
 							
+							attachable.detach()
 							pInstance.attach(attachable, position, orientation)
 						end
 					end
