@@ -105,16 +105,90 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 					pInstance.setParameterValue(name, (value cast String).toInt())
 				end
 				
+				value = parameters.getAt("value.parameter", null)
+				if value != null
+					pInstance.setParameterValue(name, pInstance.getParameterValue(value cast String, 0))
+				end
+				
 				value = parameters.getAt("value.increment", null)
 				if value != null
 					pInstance.setParameterValue(name, pInstance.getParameterValue(name, 0)\
 						+ (value cast String).toInt())
 				end
 				
+				value = parameters.getAt("value.increment.parameter", null)
+				if value != null
+					pInstance.setParameterValue(name, pInstance.getParameterValue(name, 0)\
+						+ pInstance.getParameterValue(value cast String, 0))
+				end
+				
 				value = parameters.getAt("value.decrement", null)
 				if value != null
 					pInstance.setParameterValue(name, pInstance.getParameterValue(name, 0)\
 						- (value cast String).toInt())
+				end
+				
+				value = parameters.getAt("value.decrement.parameter", null)
+				if value != null
+					pInstance.setParameterValue(name, pInstance.getParameterValue(name, 0)\
+						- pInstance.getParameterValue(value cast String, 0))
+				end
+				
+				value = parameters.getAt("value.multiply", null)
+				if value != null
+					pInstance.setParameterValue(name, pInstance.getParameterValue(name, 0)\
+						* (value cast String).toInt())
+				end
+				
+				value = parameters.getAt("value.multiply.parameter", null)
+				if value != null
+					pInstance.setParameterValue(name, pInstance.getParameterValue(name, 0)\
+						* pInstance.getParameterValue(value cast String, 0))
+				end
+				
+				value = parameters.getAt("value.divide", null)
+				if value != null
+					pInstance.setParameterValue(name, pInstance.getParameterValue(name, 0)\
+						/ (value cast String).toInt())
+				end
+				
+				value = parameters.getAt("value.divide.parameter", null)
+				if value != null
+					pInstance.setParameterValue(name, pInstance.getParameterValue(name, 0)\
+						/ pInstance.getParameterValue(value cast String, 0))
+				end
+				
+				value = parameters.getAt("value.minimum", null)
+				if value != null
+					pInstance.setParameterValue(name, DEMath.min(\
+						pInstance.getParameterValue(name, 0), (value cast String).toInt()))
+				end
+				
+				value = parameters.getAt("value.minimum.parameter", null)
+				if value != null
+					pInstance.setParameterValue(name, DEMath.min(\
+						pInstance.getParameterValue(name, 0),\
+						pInstance.getParameterValue(value cast String, 0)))
+				end
+				
+				value = parameters.getAt("value.maximum", null)
+				if value != null
+					pInstance.setParameterValue(name, DEMath.max(\
+						pInstance.getParameterValue(name, 0), (value cast String).toInt()))
+				end
+				
+				value = parameters.getAt("value.maximum.parameter", null)
+				if value != null
+					pInstance.setParameterValue(name, DEMath.max(\
+						pInstance.getParameterValue(name, 0),\
+						pInstance.getParameterValue(value cast String, 0)))
+				end
+				
+				value = parameters.getAt("value.swap", null)
+				if value != null
+					var int v = pInstance.getParameterValue(name, 0)
+					pInstance.setParameterValue(name, pInstance.getParameterValue(value cast String, 0))
+					pInstance.setParameterValue(value cast String, v)
 				end
 				
 				return BTResult.success
@@ -143,9 +217,19 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 					result &= pval == (value cast String).toInt()
 				end
 				
+				value = parameters.getAt(prefix + "value.parameter", null)
+				if value != null
+					result &= pval == pInstance.getParameterValue(value cast String, 0)
+				end
+				
 				value = parameters.getAt(prefix + "value.not", null)
 				if value != null
 					result &= pval != (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "value.not.parameter", null)
+				if value != null
+					result &= pval != pInstance.getParameterValue(value cast String, 0)
 				end
 				
 				value = parameters.getAt(prefix + "value.less", null)
@@ -153,9 +237,39 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 					result &= pval < (value cast String).toInt()
 				end
 				
+				value = parameters.getAt(prefix + "value.less.parameter", null)
+				if value != null
+					result &= pval < pInstance.getParameterValue(value cast String, 0)
+				end
+				
+				value = parameters.getAt(prefix + "value.lessOrEqual", null)
+				if value != null
+					result &= pval <= (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "value.lessOrEqual.parameter", null)
+				if value != null
+					result &= pval <= pInstance.getParameterValue(value cast String, 0)
+				end
+				
 				value = parameters.getAt(prefix + "value.greater", null)
 				if value != null
 					result &= pval > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "value.greater.parameter", null)
+				if value != null
+					result &= pval > pInstance.getParameterValue(value cast String, 0)
+				end
+				
+				value = parameters.getAt(prefix + "value.greaterOrEqual", null)
+				if value != null
+					result &= pval >= (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "value.greaterOrEqual.parameter", null)
+				if value != null
+					result &= pval >= pInstance.getParameterValue(value cast String, 0)
 				end
 				
 				return result
