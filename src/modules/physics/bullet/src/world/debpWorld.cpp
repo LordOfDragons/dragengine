@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "debpCollisionDispatcher.h"
 #include "debpConstraintSolver.h"
 #include "debpGhostPairCallback.h"
@@ -124,8 +120,8 @@ pGhostPairCallback(NULL),
 pDirtyOctree(true),
 pDirtyDynWorldAABB(true),
 
-pDetNextCollider(NULL),
-pDetNextTouchSensor(NULL),
+pDetNextCollider(nullptr),
+pDetNextTouchSensor(nullptr),
 
 pColDetPrepareColliderCount(0),
 pColDetPrepareColliderProcessCount(0),
@@ -352,7 +348,7 @@ timerUpdateDynWorldAABBsCount++;
 
 
 
-void debpWorld::pColDetPrepareColliderAdd(debpCollider *collider){
+void debpWorld::ColDetPrepareColliderAdd(debpCollider *collider){
 	if(collider->GetColDetPrepareIndex() != -1){
 		DETHROW(deeInvalidParam);
 	}
@@ -368,7 +364,7 @@ void debpWorld::pColDetPrepareColliderAdd(debpCollider *collider){
 	pColDetPrepareColliderCount++;
 }
 
-void debpWorld::pColDetPrepareColliderRemove(debpCollider *collider){
+void debpWorld::ColDetPrepareColliderRemove(debpCollider *collider){
 	if(collider->GetColDetPrepareIndex() == -1){
 		DETHROW(deeInvalidParam);
 	}
@@ -379,7 +375,7 @@ void debpWorld::pColDetPrepareColliderRemove(debpCollider *collider){
 
 
 
-void debpWorld::pColDetFinishColliderAdd(debpCollider *collider){
+void debpWorld::ColDetFinishColliderAdd(debpCollider *collider){
 	if(collider->GetColDetFinishIndex() != -1){
 		DETHROW(deeInvalidParam);
 	}
@@ -395,7 +391,7 @@ void debpWorld::pColDetFinishColliderAdd(debpCollider *collider){
 	pColDetFinishColliderCount++;
 }
 
-void debpWorld::pColDetFinishColliderRemove(debpCollider *collider){
+void debpWorld::ColDetFinishColliderRemove(debpCollider *collider){
 	if(collider->GetColDetFinishIndex() == -1){
 		DETHROW(deeInvalidParam);
 	}
@@ -406,7 +402,7 @@ void debpWorld::pColDetFinishColliderRemove(debpCollider *collider){
 
 
 
-void debpWorld::pPPCTColliderAdd(debpCollider *collider){
+void debpWorld::PPCTColliderAdd(debpCollider *collider){
 	if(collider->GetPPCProcessingIndex() != -1){
 		DETHROW(deeInvalidParam);
 	}
@@ -422,7 +418,7 @@ void debpWorld::pPPCTColliderAdd(debpCollider *collider){
 	pPPCTColliderCount++;
 }
 
-void debpWorld::pPPCTColliderRemove(debpCollider *collider){
+void debpWorld::PPCTColliderRemove(debpCollider *collider){
 	if(collider->GetPPCProcessingIndex() == -1){
 		DETHROW(deeInvalidParam);
 	}
@@ -432,7 +428,7 @@ void debpWorld::pPPCTColliderRemove(debpCollider *collider){
 }
 
 
-void debpWorld::pUpdateOctreeColliderAdd(debpCollider *collider){
+void debpWorld::UpdateOctreeColliderAdd(debpCollider *collider){
 	if(collider->GetUpdateOctreeIndex() != -1){
 		DETHROW(deeInvalidParam);
 	}
@@ -448,7 +444,7 @@ void debpWorld::pUpdateOctreeColliderAdd(debpCollider *collider){
 	pUpdateOctreeColliderCount++;
 }
 
-void debpWorld::pUpdateOctreeColliderRemove(debpCollider *collider){
+void debpWorld::UpdateOctreeColliderRemove(debpCollider *collider){
 	if(collider->GetUpdateOctreeIndex() == -1){
 		DETHROW(deeInvalidParam);
 	}
@@ -456,7 +452,6 @@ void debpWorld::pUpdateOctreeColliderRemove(debpCollider *collider){
 	pUpdateOctreeColliders[collider->GetUpdateOctreeIndex()] = NULL;
 	collider->SetUpdateOctreeIndex(-1);
 }
-
 
 
 #ifdef DO_TIMING2
@@ -742,43 +737,43 @@ void debpWorld::ColliderAdded(deCollider *collider){
 }
 
 void debpWorld::ColliderRemoved(deCollider *collider){
-	((debpCollider*)collider->GetPeerPhysics())->SetParentWorld(NULL);
-	
-	if(pDetNextCollider == collider){
-		pDetNextCollider = static_cast<deCollider*>(pDetNextCollider->GetLLWorld().GetNext() ? pDetNextCollider->GetLLWorld().GetNext()->GetOwner() : nullptr);
+	if(pDetNextCollider && pDetNextCollider->GetOwner() == collider){
+		pDetNextCollider = pDetNextCollider->GetNext();
 	}
+	
+	static_cast<debpCollider*>(collider->GetPeerPhysics())->SetParentWorld(nullptr);
 }
 
 void debpWorld::AllCollidersRemoved(){
+	pDetNextCollider = nullptr;
+	
 	pWorld.GetColliders().Visit([](deCollider *collider){
-		debpCollider * const bpCollider = (debpCollider*)collider->GetPeerPhysics();
+		auto bpCollider = static_cast<debpCollider*>(collider->GetPeerPhysics());
 		if(bpCollider){
-			bpCollider->SetParentWorld(NULL);
+			bpCollider->SetParentWorld(nullptr);
 		}
 	});
-	
-	pDetNextCollider = NULL;
 }
 
 void debpWorld::TouchSensorAdded(deTouchSensor *touchSensor){
-	((debpTouchSensor*)touchSensor->GetPeerPhysics())->SetParentWorld(this);
+	static_cast<debpTouchSensor*>(touchSensor->GetPeerPhysics())->SetParentWorld(this);
 }
 
 void debpWorld::TouchSensorRemoved(deTouchSensor *touchSensor){
-	if(pDetNextTouchSensor == touchSensor){
-		pDetNextTouchSensor = static_cast<deTouchSensor*>(pDetNextTouchSensor->GetLLWorld().GetNext() ? pDetNextTouchSensor->GetLLWorld().GetNext()->GetOwner() : nullptr);
+	if(pDetNextTouchSensor && pDetNextTouchSensor->GetOwner() == touchSensor){
+		pDetNextTouchSensor = pDetNextTouchSensor->GetNext();
 	}
 	
-	((debpTouchSensor*)touchSensor->GetPeerPhysics())->SetParentWorld(NULL);
+	static_cast<debpTouchSensor*>(touchSensor->GetPeerPhysics())->SetParentWorld(nullptr);
 }
 
 void debpWorld::AllTouchSensorsRemoved(){
-	pDetNextTouchSensor = NULL;
+	pDetNextTouchSensor = nullptr;
 	
-	pWorld.GetTouchSensors().Visit([](deTouchSensor *touchSensor){
-		debpTouchSensor * const bpTouchSensor = (debpTouchSensor*)touchSensor->GetPeerPhysics();
+	pWorld.GetTouchSensors().Visit([&](deTouchSensor *touchSensor){
+		auto bpTouchSensor = static_cast<debpTouchSensor*>(touchSensor->GetPeerPhysics());
 		if(bpTouchSensor){
-			bpTouchSensor->SetParentWorld(NULL);
+			bpTouchSensor->SetParentWorld(nullptr);
 		}
 	});
 }
@@ -1089,7 +1084,7 @@ DEBUG_PRINT_TIMER("Update Positions");
 DEBUG_PRINT_TIMER("Finish Detection");
 	
 	// make touch sensors notify their peers about touch changes accumulated during collision
-	// detection. this potentially modifies colliders including adding or removing them
+	// detection. this potentially removes touch sensors so removal is guarded
 	pApplyTouchSensorChanges();
 DEBUG_PRINT_TIMER("Apply Touch Sensor Changes");
 	
@@ -1617,13 +1612,16 @@ void debpWorld::pApplyTouchSensorChanges(){
 		pPerfTimer.Reset();
 	}
 	
-	pDetNextTouchSensor = nullptr;
-	pWorld.GetTouchSensors().Visit([&](deTouchSensor *touchSensor){
-		((debpTouchSensor*)touchSensor->GetPeerPhysics())->ApplyChanges();
+	pDetNextTouchSensor = pWorld.GetTouchSensors().GetRoot();
+	while(pDetNextTouchSensor){
+		auto touchSensor = static_cast<debpTouchSensor*>(pDetNextTouchSensor->GetOwner()->GetPeerPhysics());
+		pDetNextTouchSensor = pDetNextTouchSensor->GetNext();
+		
+		touchSensor->ApplyChanges();
 		
 		if(debugInfo){
 			debugInfo->IncrementElapsedTime(pPerfTimer.GetElapsedTime());
 			debugInfo->IncrementCounter(1);
 		}
-	});
+	}
 }
