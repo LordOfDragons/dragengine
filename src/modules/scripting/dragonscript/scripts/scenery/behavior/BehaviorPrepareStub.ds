@@ -30,23 +30,28 @@ pin Dragengine.Preloading
 
 
 /**
- * \brief Interface for behaviors supporting preventing element creation.
- * \version 1.23
+ * \brief Interface for behaviors supporting preinitialization.
+ * \version 1.17
  * 
- * Preventing creation allows behaviors to cancel creating and adding an element
- * before Element.init() is called. This can be used for to randomly create or not
- * create an element as well as creating elements only if the player choose a certain
- * difficulty level.
+ * Preinitializing allows behaviors to modify StubElement before Element.init() is called.
+ * This can be used to alter the behavior initialization procss my modifying the stub
+ * properties or textures.
  * 
- * Prevent creation is tested after \ref BehaviorPrepareStub interfaces are processed.
+ * Usually preinitializing is done for elements to be added to a game world. It is thus
+ * possible to use game world stub properties to alter the initialization. This can be
+ * used to adjust the behavior depending on what game world they are created for. It is
+ * also possible preinitialization is done without the element to be added to a specific
+ * game world. In this case gameWorld is null. Behaviors added for preinitializing have
+ * to be able to handle gameWorld being null.
  */
-public interface BehaviorPreventCreation
+public interface BehaviorPrepareStub
 	/**
-	 * \brief Prevent creation of element.
+	 * \brief Prepare stub.
 	 * 
-	 * Called by \ref BehaviorElementClass#createAndAddElement(StubElement,GameWorld)
-	 * after \ref BehaviorPrepareStub interfaces have been processed. If true is
-	 * returned the element is not created and added to the game world.
+	 * Called by \ref BehaviorElementClass#createAndAddElement(StubElement,GameWorld) with
+	 * loading set to false and
+	 * \ref BehaviorElementClass#loadAndAddElement(PersistencyEnvironment,StubElement,FileReader,GameWorld)
+	 * with loading set to true.
 	 */
-	func bool preventCreation(StubElement stub, GameWorld gameWorld)
+	func void prepareStub(StubElement stub, GameWorld gameWorld, bool loading)
 end
