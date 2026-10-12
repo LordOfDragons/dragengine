@@ -30,6 +30,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.ConversationSystem
 
 
 /**
@@ -397,11 +398,68 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 					pInstance.getElement().log(value cast String)
 				end
 				
+				value = parameters.getAt("teleport", null)
+				if value != null
+					runTeleport(context, parameters, value cast String)
+				end
+				
 				if parameters.has("dispose")
 					pInstance.getElement().safeDispose()
 					return BTResult.running
 				end
 				
+				return BTResult.success
+			end
+			
+			func BTResult runTeleport(BTContext context, Dictionary parameters, String type)
+				var BehaviorElement element = pInstance.getElement()
+				var GameWorld gameWorld = element.getGameWorld()
+				if gameWorld == null
+					return BTResult.failure
+				end
+				
+				var CodecPropertyString codec = ElementClass.getSharedCodecPropertyString()
+				var DVector position = DVector.new(), rotation = DVector.new()
+				
+				var Object value = parameters.getAt("teleport.position", null)
+				if value != null
+					position = codec.decodeDVector(value cast String)
+				end
+				
+				value = parameters.getAt("teleport.rotation", null)
+				if value != null
+					rotation = codec.decodeDVector(value cast String)
+				end
+				
+				var DMatrix matrix = DMatrix.newRT(rotation, position)
+				
+				value = parameters.getAt("teleport.target", null)
+				if type.equals("spawn")
+					var SpawnPoint sp = gameWorld.getSpawnPoints().getNamed(value cast String)
+					if sp == null
+						return BTResult.failure
+					end
+					
+					matrix = matrix * sp.getMatrix()
+					
+				elif type.equals("coordsys")
+					var ConversationCoordSystem ccs = gameWorld.getConvoCoordSystemList().getAt(StringID.new(value cast String))
+					if ccs == null
+						return BTResult.failure
+					end
+					
+					matrix = matrix * ccs.getMatrix()
+					
+				else
+					return BTResult.failure
+				end
+				
+				var ECBehaviorAttachable.Instance attachable = ECBehaviorAttachable.getInstanceIn(element)
+				if attachable != null
+					attachable.detach()
+				end
+				
+				element.setGeometry(matrix.getPosition(), matrix.toQuaternion())
 				return BTResult.success
 			end
 		end

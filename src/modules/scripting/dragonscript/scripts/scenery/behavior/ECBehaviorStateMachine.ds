@@ -31,6 +31,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.ConversationSystem
 
 
 /**
@@ -440,11 +441,65 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 					pInstance.getElement().log(value cast String)
 				end
 				
-				// "spawn"
+				value = parameters.getAt("teleport", null)
+				if value != null
+					runTeleport(context, parameters, value cast String)
+				end
 				
 				if parameters.has("dispose")
 					pInstance.getElement().safeDispose()
 				end
+			end
+			
+			func void runTeleport(SMContext context, Dictionary parameters, String type)
+				var BehaviorElement element = pInstance.getElement()
+				var GameWorld gameWorld = element.getGameWorld()
+				if gameWorld == null
+					return
+				end
+				
+				var CodecPropertyString codec = ElementClass.getSharedCodecPropertyString()
+				var DVector position = DVector.new(), rotation = DVector.new()
+				
+				var Object value = parameters.getAt("teleport.position", null)
+				if value != null
+					position = codec.decodeDVector(value cast String)
+				end
+				
+				value = parameters.getAt("teleport.rotation", null)
+				if value != null
+					rotation = codec.decodeDVector(value cast String)
+				end
+				
+				var DMatrix matrix = DMatrix.newRT(rotation, position)
+				
+				value = parameters.getAt("teleport.target", null)
+				if type.equals("spawn")
+					var SpawnPoint sp = gameWorld.getSpawnPoints().getNamed(value cast String)
+					if sp == null
+						return
+					end
+					
+					matrix = matrix * sp.getMatrix()
+					
+				elif type.equals("coordsys")
+					var ConversationCoordSystem ccs = gameWorld.getConvoCoordSystemList().getAt(StringID.new(value cast String))
+					if ccs == null
+						return
+					end
+					
+					matrix = matrix * ccs.getMatrix()
+					
+				else
+					return
+				end
+				
+				var ECBehaviorAttachable.Instance attachable = ECBehaviorAttachable.getInstanceIn(element)
+				if attachable != null
+					attachable.detach()
+				end
+				
+				element.setGeometry(matrix.getPosition(), matrix.toQuaternion())
 			end
 		end
 		
@@ -492,7 +547,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 			
 			func void runAction(SMContext context, Dictionary parameters)
-				var BehaviorElement element = getEventElement(context)
+				var BehaviorElement element = ECBehaviorStateMachine.getEventParameterElement(context)
 				if element == null
 					return
 				end
@@ -503,30 +558,6 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 						each.runEvent(value cast String, pInstance.getElement())
 					end)
 				end
-			end
-			
-			static func BehaviorElement getEventElement(SMContext context)
-				var Object eventParameter = context.getEventParameter()
-				
-				if eventParameter castable BehaviorElement
-					return eventParameter cast BehaviorElement
-				end
-				
-				if eventParameter castable CollisionInfo
-					var CollisionInfo cinfo = eventParameter cast CollisionInfo
-					if not cinfo.isCollider()
-						return null
-					end
-					
-					var Object owner = cinfo.getCollider().getOwner()
-					if owner == null or not owner castable BehaviorElement
-						return null
-					end
-					
-					return owner cast BehaviorElement
-				end
-				
-				return null
 			end
 		end
 		
@@ -539,7 +570,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 			
 			func bool evaluateCondition(SMContext context, Dictionary parameters)
-				var BehaviorElement behaviorElement = SMAEventElementUpdate.getEventElement(context)
+				var BehaviorElement behaviorElement = ECBehaviorStateMachine.getEventParameterElement(context)
 				if behaviorElement == null
 					return false
 				end
@@ -919,6 +950,36 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		pActionConditionFactories.forEach(block ActionConditionFactory each
 			each.setActionsConditions(instance)
 		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get event element from state machine context event parameter.
+	 * \version 1.35
+	 */
+	static func BehaviorElement getEventParameterElement(SMContext context)
+		var Object eventParameter = context.getEventParameter()
+		
+		if eventParameter castable BehaviorElement
+			return eventParameter cast BehaviorElement
+		end
+		
+		if eventParameter castable CollisionInfo
+			var CollisionInfo cinfo = eventParameter cast CollisionInfo
+			if not cinfo.isCollider()
+				return null
+			end
+			
+			var Object owner = cinfo.getCollider().getOwner()
+			if owner == null or not owner castable BehaviorElement
+				return null
+			end
+			
+			return owner cast BehaviorElement
+		end
+		
+		return null
 	end
 	
 	

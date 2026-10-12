@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
-
 pin Dragengine.Gui
 pin Dragengine.Scenery
 pin Dragengine.Preloading
@@ -36,58 +34,55 @@ pin Dragengine.Preloading
  * Spawn points have a unique name and are added to the SpawnPointList of a GameWorld.
  */
 class SpawnPoint
-	private var String pName
-	private var DVector pPosition
-	private var Quaternion pOrientation
-	
+	var String pName
+	var DVector pPosition
+	var Quaternion pOrientation
 	
 	
 	/** \brief Create spawn point. */
-	public func new( String name )
+	func new(String name)
 		if name == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("name")
 		end
-		this.pName = name
+		pName = name
 	end
-	
 	
 	
 	/** \brief Unique name of spawn point. */
-	public func String getName()
-		return this.pName
+	func String getName()
+		return pName
 	end
 	
 	/** \brief Spawn position. */
-	public func DVector getPosition()
-		return this.pPosition
+	func DVector getPosition()
+		return pPosition
 	end
 	
 	/** \brief Set spawn position. */
-	public func void setPosition( DVector position )
+	func void setPosition(DVector position)
 		if position == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("position")
 		end
-		this.pPosition = position
+		pPosition = position
 	end
 	
 	/** \brief Spawn orientation. */
-	public func Quaternion getOrientation()
-		return this.pOrientation
+	func Quaternion getOrientation()
+		return pOrientation
 	end
 	
 	/** \brief Set spawn orientation. */
-	public func void setOrientation( Quaternion orientation )
+	func void setOrientation(Quaternion orientation)
 		if orientation == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("orientation")
 		end
-		this.pOrientation = orientation
+		pOrientation = orientation
 	end
 	
 	/** \brief Spawn matrix. */
-	public func DMatrix getMatrix()
-		return DMatrix.newWorld( this.pPosition, this.pOrientation )
+	func DMatrix getMatrix()
+		return DMatrix.newWorld(pPosition, pOrientation)
 	end
-	
 	
 	
 	/**
@@ -95,8 +90,8 @@ class SpawnPoint
 	 * 
 	 * If the element is spawned already in another world it teleport instead.
 	 */
-	public func void spawn( GameWorld gameWorld, Element element )
-		this.spawn( gameWorld, element, Vector.new(), Vector.new() )
+	func void spawn(GameWorld gameWorld, Element element)
+		spawn(gameWorld, element, Vector.new(), Vector.new())
 	end
 	
 	/**
@@ -105,20 +100,30 @@ class SpawnPoint
 	 * The position and rotation are relative to the spawn point. If the element is already
 	 * in the game world teleports the element instead.
 	 */
-	public func void spawn( GameWorld gameWorld, Element element, Vector position, Vector rotation )
-		if gameWorld == null or element == null or position == null or rotation == null
-			throw EInvalidParam.new()
+	func void spawn(GameWorld gameWorld, Element element, Vector position, Vector rotation)
+		if gameWorld == null
+			throw ENullPointer.new("gameWorld")
+		end
+		if element == null
+			throw ENullPointer.new("element")
+		end
+		if position == null
+			throw ENullPointer.new("position")
+		end
+		if rotation == null
+			throw ENullPointer.new("rotation")
 		end
 		
+		var DMatrix matrix = DMatrix.newRT(DVector.new(position), DVector.new(rotation))\
+			* DMatrix.newWorld(pPosition, pOrientation)
+		
 		if element.getGameWorld() == gameWorld
-			element.setGeometry( this.pPosition + DVector.new( position ), \
-				this.pOrientation * Quaternion.newFromEuler( rotation ) )
+			element.setGeometry(matrix.getPosition(), matrix.toQuaternion())
 			
 		else
 			element.removeFromGameWorldIfPresent()
-			element.setGeometry( this.pPosition + DVector.new( position ), \
-				this.pOrientation * Quaternion.newFromEuler( rotation ) )
-			gameWorld.addElement( element )
+			element.setGeometry(matrix.getPosition(), matrix.toQuaternion())
+			gameWorld.addElement(element)
 		end
 	end
 end
