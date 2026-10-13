@@ -363,23 +363,27 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 					pInstance.setReceiveGameWorldEvents(value.equals("true"))
 				end
 				
-				var GameWorld gameWorld = pInstance.getElement().getGameWorld()
+				var BehaviorElement element = pInstance.getElement()
+				var GameWorld gameWorld = element.getGameWorld()
 				if gameWorld == null
 					return
 				end
 				
 				value = parameters.getAt("action", null) cast String
-				if value == null
-					return
+				if value != null
+					var SMAction action = gameWorld.getBehaviorBTSM().getSMAction(value cast String)
+					if action != null
+						var Dictionary nparams = Dictionary.new(parameters)
+						nparams.remove("action")
+						nparams.removeIfExisting("receiveEvents")
+						nparams.setAt("element", element)
+						action.runAction(context, nparams)
+					end
 				end
 				
-				var SMAction action = gameWorld.getBehaviorBTSM().getSMAction(value cast String)
-				if action != null
-					var Dictionary nparams = Dictionary.new(parameters)
-					nparams.remove("action")
-					nparams.removeIfExisting("receiveEvents")
-					nparams.setAt("element", pInstance.getElement())
-					action.runAction(context, nparams)
+				value = parameters.getAt("runEvent", null)
+				if value != null
+					gameWorld.getBehaviorBTSM().runSMEvent(value cast String, element)
 				end
 			end
 			
@@ -585,22 +589,36 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 			
 			func bool evaluateCondition(SMContext context, Dictionary parameters)
-				var BehaviorElement behaviorElement = ECBehaviorStateMachine.getEventParameterElement(context)
-				if behaviorElement == null
+				var BehaviorElement element = ECBehaviorStateMachine.getEventParameterElement(context)
+				if element == null
 					return false
 				end
 				
 				var bool result = true
 				var Object value = parameters.getAt("eventElement.flags.set", null)
 				if value != null
-					var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(behaviorElement)
+					var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(element)
 					result &= flags != null and flags.getFlag(value cast String)
 				end
 				
 				value = parameters.getAt("eventElement.flags.clear", null)
 				if value != null
-					var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(behaviorElement)
+					var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(element)
 					result &= flags != null and not flags.getFlag(value cast String)
+				end
+				
+				value = parameters.getAt("eventElement.interactElement.assigned", null)
+				if value != null
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					result &= interactionElement != null and interactionElement.getInteractionElement() == element
+				end
+				
+				value = parameters.getAt("eventElement.interactElement.assigned.not", null)
+				if value != null
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					result &= interactionElement != null and interactionElement.getInteractionElement() != element
 				end
 				
 				return result

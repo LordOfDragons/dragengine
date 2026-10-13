@@ -317,25 +317,34 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 			end
 			
 			func BTResult runAction(BTContext context, Dictionary parameters)
-				var String name = parameters.getAt("action", null) cast String
-				if name == null
-					return BTResult.failure
-				end
-				
-				var GameWorld gameWorld = pInstance.getElement().getGameWorld()
+				var BehaviorElement element = pInstance.getElement()
+				var GameWorld gameWorld = element.getGameWorld()
 				if gameWorld == null
 					return BTResult.failure
 				end
 				
-				var BTAction action = gameWorld.getBehaviorBTSM().getBTAction(name)
-				if action == null
-					return BTResult.failure
+				var Object value = parameters.getAt("action", null) cast String
+				if value != null
+					var BTAction action = gameWorld.getBehaviorBTSM().getBTAction(value cast String)
+					if action == null
+						return BTResult.failure
+					end
+					
+					var Dictionary nparams = Dictionary.new(parameters)
+					nparams.remove("action")
+					nparams.setAt("element", pInstance.getElement())
+					var BTResult result = action.runAction(context, nparams)
+					if result != BTResult.success
+						return result
+					end
 				end
 				
-				var Dictionary nparams = Dictionary.new(parameters)
-				nparams.remove("action")
-				nparams.setAt("element", pInstance.getElement())
-				return action.runAction(context, nparams)
+				value = parameters.getAt("runEvent", null)
+				if value != null
+					gameWorld.getBehaviorBTSM().runSMEvent(value cast String, element)
+				end
+				
+				return BTResult.success
 			end
 			
 			func bool evaluateCondition(BTContext context, Dictionary parameters)
