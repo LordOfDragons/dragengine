@@ -1438,6 +1438,7 @@ class BehaviorFactoryHelper
 		factories.add(ECBehaviorLightAnimation.Factory.new())
 		factories.add(ECBehaviorNavigationBlocker.Factory.new())
 		factories.add(ECBehaviorNavigationSpace.Factory.new())
+		factories.add(ECBehaviorParameterTree.Factory.new())
 		factories.add(ECBehaviorParticleEmitter.Factory.new())
 		factories.add(ECBehaviorRandomizeCreation.Factory.new())
 		factories.add(ECBehaviorRandomizeGeometry.Factory.new())
