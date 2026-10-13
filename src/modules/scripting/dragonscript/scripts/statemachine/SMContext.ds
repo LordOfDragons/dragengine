@@ -438,11 +438,19 @@ class SMContext
 					return each.matches(this, event)
 				end)
 				
+				if transition == null
+					transition = pStateMachine.findTransition(block SMTransition each
+						pEventParameter = parameter // ensure event parameter is set
+						return each.matches(this, event)
+					end)
+				end
+				
 				if doLog
 					if transition != null
 						pConsole.addMessage("{}: State '{}' event '{}'(param '{}') transition {} next state '{}' delegate event '{}'"\
 							.format(Array.newWith(pLoggingName, pCurrentState.getID(), event, parameter,\
-								pCurrentState.indexOfTransition(transition), transition.getStateID(),\
+								pCurrentState.indexOfTransition(transition), transition.getStateID()\
+									+ (pCurrentState.indexOfTransition(transition) == -1 if "[G]" else ""),\
 								transition.getDelegate())))
 						
 					else

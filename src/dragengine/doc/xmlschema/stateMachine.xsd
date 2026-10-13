@@ -458,6 +458,7 @@
 			</xs:element>
 			
 			<xs:element type='state' name='state'/>
+			<xs:element type='transition' name='transition'/>
 		</xs:choice>
 	</xs:complexType>
 	

@@ -100,6 +100,9 @@ class LoadStateMachine extends BaseXmlLoader
 			elif tagName.equals("state")
 				stateMachine.addStateReplace(readState(element, stateMachine))
 				
+			elif tagName.equals("transition")
+				stateMachine.addTransition(readTransition(element, stateMachine))
+				
 			elif tagName.equals("import")
 				var StateMachine imported = loadFromFile(\
 					File.absolutePath(element.getFirstCData(), basePath).getPath())
@@ -107,9 +110,11 @@ class LoadStateMachine extends BaseXmlLoader
 				if imported.getInitialState() != null
 					stateMachine.setInitialState(imported.getInitialState())
 				end
-				
 				imported.forEachState(block SMState each
 					stateMachine.addStateReplace(each)
+				end)
+				imported.forEachTransition(block SMTransition each
+					stateMachine.addTransition(each)
 				end)
 				
 			else

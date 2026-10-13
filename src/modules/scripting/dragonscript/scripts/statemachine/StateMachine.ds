@@ -33,13 +33,14 @@ pin Dragengine.Utils
  */
 class StateMachine
 	var Dictionary pStates
+	var Array pTransitions
 	var String pInitialState
 	var String pFilename
-	
 	
 	/** \brief Create state machine. */
 	func new()
 		pStates = Dictionary.new()
+		pTransitions = Array.new()
 	end
 	
 	/** \brief Create state machine with empty state. */
@@ -136,5 +137,73 @@ class StateMachine
 	 */
 	func String getFilename()
 		return pFilename
+	end
+	
+	
+	/**
+	 * \brief Count of transitions.
+	 * \version 1.35
+	 */
+	func int getTransitionCount()
+		return pTransitions.getCount()
+	end
+	
+	/**
+	 * \brief Get transition at index.
+	 * \version 1.35
+	 */
+	func SMTransition getTransitionAt(int index)
+		return pTransitions.getAt(index) cast SMTransition
+	end
+	
+	/**
+	 * \brief Index of transition or -1 if absent.
+	 * \version 1.35
+	 */
+	func int indexOfTransition(SMTransition transition)
+		return pTransitions.indexOf(transition)
+	end
+	
+	/**
+	 * \brief Add transition.
+	 * \version 1.35
+	 */
+	func void addTransition(SMTransition transition)
+		if transition == null
+			throw EInvalidParam.new()
+		end
+		pTransitions.add(transition)
+	end
+	
+	/**
+	 * \brief Remove transition.
+	 * \version 1.35
+	 */
+	func void removeTransition(SMTransition transition)
+		pTransitions.remove(transition)
+	end
+	
+	/**
+	 * \brief Remove all transitions.
+	 * \version 1.35
+	 */
+	func void removeAllTransitions()
+		pTransitions.removeAll()
+	end
+	
+	/**
+	 * \brief Visit transitions with block with parameter SMTransition.
+	 * \version 1.35
+	 */
+	func void forEachTransition(Block ablock)
+		pTransitions.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Find transition with block with parameter SMTransition.
+	 * \version 1.35
+	 */
+	func SMTransition findTransition(Block ablock)
+		return pTransitions.find(ablock) cast SMTransition
 	end
 end
