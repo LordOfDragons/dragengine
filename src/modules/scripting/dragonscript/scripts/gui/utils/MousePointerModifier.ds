@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Gui
-
 pin Dragengine.Gui.Events
 pin Dragengine.Gui.Listeners
 pin Dragengine.Scenery
 pin Dragengine.Utils
-
 
 /**
  * \brief Modifies active desktop mouse pointer.
@@ -42,17 +39,16 @@ pin Dragengine.Utils
  * Mouse pointer modifier can be enabled/disabled by setting/clearing desktop instance.
  */
 class MousePointerModifier extends DefaultMousePointerListener
-	private var Desktop pDesktop
-	private var float pTransparency
-	private var ColorMatrix pColorTransform
-	private var TexMatrix2 pTransform
-	
+	var Desktop pDesktop
+	var float pTransparency
+	var ColorMatrix pColorTransform
+	var TexMatrix2 pTransform
 	
 	
 	/**
 	 * \brief Create mouse pointer modifier.
 	 */
-	public func new()
+	func new()
 		pTransparency = 1
 		pColorTransform = ColorMatrix.new()
 		pTransform = TexMatrix2.new()
@@ -61,19 +57,18 @@ class MousePointerModifier extends DefaultMousePointerListener
 	/**
 	 * \brief Dispose of mouse pointer modifier.
 	 */
-	public func void dispose()
+	func void dispose()
 		setDesktop(null)
 	end
 	
 	
-	
 	/** \brief Desktop or null. */
-	public func Desktop getDesktop()
+	func Desktop getDesktop()
 		return pDesktop
 	end
 	
 	/** \brief Set desktop or null. */
-	public func void setDesktop(Desktop desktop)
+	func void setDesktop(Desktop desktop)
 		if desktop == pDesktop
 			return
 		end
@@ -95,12 +90,12 @@ class MousePointerModifier extends DefaultMousePointerListener
 	end
 	
 	/** \brief Transparency. */
-	public func float getTransparency()
+	func float getTransparency()
 		return pTransparency
 	end
 	
 	/** \brief Set transparency. */
-	public func void setTransparency(float transparency)
+	func void setTransparency(float transparency)
 		transparency = DEMath.clamp(transparency, 0.0, 1.0)
 		if DEMath.fabs(transparency - pTransparency) < 0.001
 			return
@@ -115,12 +110,12 @@ class MousePointerModifier extends DefaultMousePointerListener
 	end
 	
 	/** \brief Color transformation. */
-	public func ColorMatrix getColorTransform()
+	func ColorMatrix getColorTransform()
 		return pColorTransform
 	end
 	
 	/** \brief Set color transformation. */
-	public func void setColorTransform(ColorMatrix transform)
+	func void setColorTransform(ColorMatrix transform)
 		if transform.equals(pColorTransform)
 			return
 		end
@@ -134,12 +129,12 @@ class MousePointerModifier extends DefaultMousePointerListener
 	end
 	
 	/** \brief Transformation. */
-	public func TexMatrix2 getTransform()
+	func TexMatrix2 getTransform()
 		return pTransform
 	end
 	
 	/** \brief Set transformation. */
-	public func void setTransform(TexMatrix2 transform)
+	func void setTransform(TexMatrix2 transform)
 		if transform.equals(pTransform)
 			return
 		end
@@ -153,18 +148,17 @@ class MousePointerModifier extends DefaultMousePointerListener
 	end
 	
 	
-	
 	/**
 	 * \brief Mouse pointer changed.
 	 * 
 	 * Updates the active mouse pointer instance with the current modifications.
 	 */
-	public func void onMousePointerChanged(MousePointerEvent event)
+	func void onMousePointerChanged(MousePointerEvent event)
 		updateMousePointer()
 	end
 	
 	/** \brief Update mouse pointer. */
-	public func void updateMousePointer()
+	func void updateMousePointer()
 		var Canvas canvas = getMousePointerCanvas()
 		if canvas != null
 			canvas.setTransparency(pTransparency)
@@ -174,14 +168,13 @@ class MousePointerModifier extends DefaultMousePointerListener
 	end
 	
 	
-	
 	/** \brief Mouse pointer instance or null. */
-	public func MousePointer getMousePointerInstance()
+	func MousePointer getMousePointerInstance()
 		return pDesktop != null if pDesktop.getMousePointerInstance() else null
 	end
 	
 	/** \brief Mouse pointer instance canvas or null. */
-	public func Canvas getMousePointerCanvas()
+	func Canvas getMousePointerCanvas()
 		var MousePointer mousePointer = getMousePointerInstance()
 		return mousePointer != null if mousePointer.getCanvas() else null
 	end

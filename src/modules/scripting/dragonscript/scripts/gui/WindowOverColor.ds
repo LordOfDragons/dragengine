@@ -22,16 +22,12 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Gui
-
 pin Dragengine.Gui.Events
 pin Dragengine.Gui.Layouts
 pin Dragengine.Scenery
 pin Dragengine.Utils
 pin Dragengine.Preloading
-
-
 
 /**
  * \brief Window blending over color.
@@ -39,30 +35,23 @@ pin Dragengine.Preloading
  * Allows to create effects like white-out or black-out where the game content is blended
  * over white or black.
  * 
- * To use this window place it above all other windows you would like to blend by this
- * effect. Then set the designer selector for the window. This sets the color to blend to
- * or any other desired content. The default selector is "Window.OverColor". Change this
- * to a name suiting your needs. Also set blend timing parameters. The blend timing parameters
- * consist of the time in seconds it takes to fade in to the color, the time in seconds
- * to stay at the color and the time in seconds it takes to fade out again. By default the
- * window is set maximized covering the entire desktop.
+ * To use this window place it above all other windows you would like to blend by this effect.
+ * Then set the designer selector for the window. This sets the color to blend to or any other
+ * desired content. The default selector is "Window.OverColor". Change this to a name suiting
+ * your needs. Also set blend timing parameters. The blend timing parameters consist of the time
+ * in seconds it takes to fade in to the color, the time in seconds to stay at the color and the
+ * time in seconds it takes to fade out again. By default the window is set maximized covering
+ * the entire desktop.
  * 
  * To trigger the effect call startFade()
  */
 class WindowOverColor extends Window
-	private var float pTimeFadeIn
-	private var float pTimeStay
-	private var float pTimeFadeOut
-	private var float pThreshold1
-	private var float pThreshold2
-	private var bool pUseSmoothStep
-	private var float pElapsed
-	private var bool pRunning
-	
+	var float pTimeFadeIn, pTimeStay, pTimeFadeOut, pThreshold1, pThreshold2, pElapsed
+	var bool pUseSmoothStep, pRunning
 	
 	
 	/** \brief Create window. */
-	public func new()
+	func new()
 		pTimeFadeIn = 1
 		pTimeStay = 1
 		pTimeFadeOut = 1
@@ -77,54 +66,52 @@ class WindowOverColor extends Window
 	end
 	
 	
-	
 	/** \brief Time in seconds to fade in. */
-	public func float getTimeFadeIn()
+	func float getTimeFadeIn()
 		return pTimeFadeIn
 	end
 	
 	/** \brief Set time in seconds to fade in. */
-	public func void setTimeFadeIn(float time)
+	func void setTimeFadeIn(float time)
 		pTimeFadeIn = DEMath.max(time, 0.0)
 		updateThresholds()
 	end
 	
 	/** \brief Time in seconds to stay at color. */
-	public func float getTimeStay()
+	func float getTimeStay()
 		return pTimeStay
 	end
 	
 	/** \brief Set time in seconds to stay at color. */
-	public func void setTimeStay(float time)
+	func void setTimeStay(float time)
 		pTimeStay = DEMath.max(time, 0.0)
 		updateThresholds()
 	end
 	
 	/** \brief Time in seconds to fade out. */
-	public func float getTimeFadeOut()
+	func float getTimeFadeOut()
 		return pTimeFadeOut
 	end
 	
 	/** \brief Set time in seconds to fade out. */
-	public func void setTimeFadeOut(float time)
+	func void setTimeFadeOut(float time)
 		pTimeFadeOut = DEMath.max(time, 0.0)
 		updateThresholds()
 	end
 	
 	/** \brief Use smooth step instead of linear step. */
-	public func bool getUseSmoothStep()
+	func bool getUseSmoothStep()
 		return pUseSmoothStep
 	end
 	
 	/** \brief Set to use smooth step instead of linear step. */
-	public func void setUseSmoothStep(bool useSmoothStep)
+	func void setUseSmoothStep(bool useSmoothStep)
 		pUseSmoothStep = useSmoothStep
 	end
 	
 	
-	
 	/** \brief Elapsed time. */
-	public func float getElapsed()
+	func float getElapsed()
 		return pElapsed
 	end
 	
@@ -134,14 +121,13 @@ class WindowOverColor extends Window
 	end
 	
 	/** \brief Running. */
-	public func bool getRunning()
+	func bool getRunning()
 		return pRunning
 	end
 	
 	
-	
 	/** \brief Start fading if not running. */
-	public func void startFading()
+	func void startFading()
 		if pRunning
 			return
 		end
@@ -154,7 +140,7 @@ class WindowOverColor extends Window
 	end
 	
 	/** \brief Stop fading immediatly if running. */
-	public func void stopFading()
+	func void stopFading()
 		if not pRunning
 			return
 		end
@@ -166,12 +152,7 @@ class WindowOverColor extends Window
 		setVisible(false)
 	end
 	
-	/**
-	 * \brief Do frame update.
-	 * 
-	 * Update fading
-	 */
-	public func void onFrameUpdate(float elapsed)
+	func void onFrameUpdate(float elapsed)
 		if not pRunning
 			stopFading()
 			return
@@ -210,7 +191,6 @@ class WindowOverColor extends Window
 	end
 	
 	
-	
 	/**
 	 * \brief Widget at coordinates or \em null if not found.
 	 * 
@@ -218,7 +198,7 @@ class WindowOverColor extends Window
 	 * this method. It might not work. If you need original getWidgetAt behavior from
 	 * super class use realGetWidgetAt().
 	 */
-	public func Widget getWidgetAt(Point position)
+	func Widget getWidgetAt(Point position)
 		return null
 	end
 	
@@ -226,7 +206,7 @@ class WindowOverColor extends Window
 	 * \brief Super class getWidgetAt without overwritten behavior.
 	 * \version 1.12
 	 */
-	public func Widget realGetWidgetAt(Point position)
+	func Widget realGetWidgetAt(Point position)
 		return super.getWidgetAt(position)
 	end
 end
