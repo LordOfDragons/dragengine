@@ -906,6 +906,14 @@
 								]]></xs:documentation>
 						</xs:annotation>
 					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorInteractionElement'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds supported storing for a longer time an element found by another behavior.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_interactionelement)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
 					<xs:enumeration value='ECBehaviorInteractionSpot'>
 						<xs:annotation>
 							<xs:documentation><![CDATA[
