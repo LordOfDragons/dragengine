@@ -396,6 +396,7 @@ class BaseGameApp extends Game
 	var BaseGameServices pBaseGameServices
 	var SimpleConversationConverter pSimpleConversationConverter
 	var Dictionary pCollisionFilterMap
+	var Array pBehaviors
 	
 	static var BaseGameApp pApp = null
 	
@@ -408,6 +409,7 @@ class BaseGameApp extends Game
 	 * method call to support proper hook-method calls with custom subclass behavior.
 	 */
 	func new()
+		pBehaviors = Array.new()
 		pathDesktopGuiTheme = defaultPathGuiTheme
 		pathLanguagePacks = null
 		defaultLanguagePackName = UnicodeString.newFromUTF8("English")
@@ -563,6 +565,14 @@ class BaseGameApp extends Game
 		pElementClassList = ElementClassList.new()
 		createAndAddElementClasses()
 		pLoaders.getWorld().setElementClassList(pElementClassList)
+		
+		createAppBehaviors()
+		pBehaviors.forEach(block GABehavior each
+			each.initGame()
+		end)
+		pBehaviors.forEach(block GABehavior each
+			each.postInitGame()
+		end)
 	end
 	
 	/**
@@ -573,6 +583,11 @@ class BaseGameApp extends Game
 	 * After this super-call BaseGameApp.getApp() returns null.
 	 */
 	func void cleanUp()
+		pBehaviors.forEachReverse(block GABehavior each
+			each.cleanUp()
+		end)
+		pBehaviors.removeAll()
+		
 		if pScreenshotCreator != null
 			pScreenshotCreator.dispose()
 		end
@@ -689,9 +704,13 @@ class BaseGameApp extends Game
 	 * Subclass has to super-call this method first before doing per-frame updates.
 	 */
 	func void onFrameUpdate()
-		TimerManager.advanceDefault(Engine.getElapsedTime())
+		var float elapsed = Engine.getElapsedTime()
+		TimerManager.advanceDefault(elapsed)
 		FrameUpdateManager.notifyAllDefault()
 		pScreenshotCreator.update()
+		pBehaviors.forEach(block GABehavior each
+			each.onFrameUpdate(elapsed)
+		end)
 	end
 	
 	/**
@@ -701,6 +720,12 @@ class BaseGameApp extends Game
 	 */
 	func void onResizeRenderWindow()
 		pDesktop.setSize(GraphicSystem.getWindowSize())
+	end
+	
+	func void onAppActivate()
+		pBehaviors.forEach(block GABehavior each
+			each.onAppActivate()
+		end)
 	end
 	
 	/**
@@ -1021,6 +1046,71 @@ class BaseGameApp extends Game
 		pSettings.setAt(BaseGameApp.settingInputMouseSensitivity, DEMath.max(sensitivity, 0.01))
 	end
 	
+	
+	/**
+	 * \brief Count of behaviors.
+	 * \version 1.35
+	 */
+	func int getBehaviorCount()
+		return pBehaviors.getCount()
+	end
+	
+	/**
+	 * \brief Behavior at index.
+	 * \version 1.35
+	 */
+	func GABehavior getBehaviorAt(int index)
+		return pBehaviors.getAt(index) cast GABehavior
+	end
+	
+	/**
+	 * \brief Add behavior.
+	 * \version 1.35
+	 */
+	func void addBehavior(GABehavior behavior)
+		if behavior == null
+			throw ENullPointer.new()
+		end
+		if pBehaviors.has(behavior)
+			throw EInvalidParam.new("duplicate behavior")
+		end
+		pBehaviors.add(behavior)
+	end
+	
+	/**
+	 * \brief Visit behaviors with block.
+	 * \version 1.35
+	 * 
+	 * Block is required to have one parameter of type \ref GABehavior or subclass thereof.
+	 * Block is called only for behaviors castable to block parameter type.
+	 */
+	func void forEachBehavior(Block ablock)
+		pBehaviors.forEachCastable(ablock)
+	end
+	
+	/**
+	 * \brief Find behavior with block.
+	 * \version 1.35
+	 * 
+	 * Block is required to have one parameter \ref GABehavior or subclass thereof and returning
+	 * true if the right behavior is found otherwise false. Block is called only for
+	 * behaviors castable to block parameter type.
+	 */
+	func GABehavior findBehavior(Block ablock)
+		return pBehaviors.findCastable(ablock) cast GABehavior
+	end
+	
+	/**
+	 * \brief Collect behaviors with block into Array.
+	 * \version 1.35
+	 * 
+	 * Block is required to have one parameter \ref GABehavior or subclass thereof and returning
+	 * true if the right behavior is found otherwise false. Block is called only for
+	 * behaviors castable to block parameter type.
+	 */
+	func Array collectBehaviors(Block ablock)
+		return pBehaviors.collectCastable(ablock)
+	end
 	
 	
 	/**
@@ -1504,6 +1594,13 @@ class BaseGameApp extends Game
 		
 		// if debugging is enabled
 		pConsoleCommands.add(ScriptModuleStatsConsoleCommand.new())
+	end
+	
+	/**
+	 * \brief Create application behaviors.
+	 * \version 1.35
+	 */
+	protected func void createAppBehaviors()
 	end
 	
 	/**

@@ -1,0 +1,473 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine
+pin Dragengine.Utils
+pin Dragengine.StateMachineSystem
+pin Dragengine.Gui
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+
+/**
+ * \brief Game app behavior adding state machine support.
+ * \version 1.35
+ * 
+ * The state machine to run is loaded from \ref BaseGameApp#getConfiguration() using string key
+ * "appBehavior/stateMachine/path" or "appBehavior/stateMachine(id)/path". To enable debug logging
+ * set string key "appBehavior/stateMachine/debug" or "appBehavior/stateMachine(id)/debug".
+ */
+class GABehaviorStateMachine extends DefaultGABehavior
+	/** \brief Action "engine.update". */
+	private class SMAEngineUpdate implements SMAction
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func void runAction(SMContext context, Dictionary parameters)
+			var Object value
+			
+			if parameters.has("resetTimers")
+				Engine.resetTimers()
+			end
+			
+			value = parameters.getAt("restart", null)
+			if value != null
+				Engine.restart(value cast String)
+			end
+			
+			value = parameters.getAt("log", null)
+			if value != null
+				Engine.log(value cast String)
+			end
+			
+			if parameters.has("quit")
+				Engine.quit()
+			end
+		end
+	end
+	
+	/** \brief Condition "engine.check". */
+	private class SMCEngineCheck implements SMCondition
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func bool evaluateCondition(SMContext context, Dictionary parameters)
+			var bool result = true
+			
+			var Object value = parameters.getAt("engine.appActive", null)
+			if value != null
+				result &= Engine.getAppActive() == value.equals("true")
+			end
+			
+			value = parameters.getAt("engine.editMode", null)
+			if value != null
+				result &= Engine.getEditMode() == value.equals("true")
+			end
+			
+			value = parameters.getAt("engine.supportsService", null)
+			if value != null
+				result &= Engine.getSupportedServices().has(value cast String)
+			end
+			
+			value = parameters.getAt("engine.supportsService.not", null)
+			if value != null
+				result &= not Engine.getSupportedServices().has(value cast String)
+			end
+			
+			return result
+		end
+	end
+	
+	/** \brief Action "app.update". */
+	private class SMAAppUpdate implements SMAction
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func void runAction(SMContext context, Dictionary parameters)
+			var BaseGameApp app = BaseGameApp.getApp()
+			var Object value
+			
+			value = parameters.getAt("inputProcessor", null)
+			if value != null
+				if value.equals("desktop")
+					app.setInputProcessorDesktop()
+					
+				elif value.equals("bindings")
+					app.setInputProcessorBindings()
+					
+				elif value.equals("none")
+					app.setInputProcessorNothing()
+				end
+			end
+			
+			value = parameters.getAt("desktop.guiTheme", null)
+			if value != null
+				app.desktopLoadGuiTheme(value cast String)
+			end
+			
+			if parameters.has("settings.save")
+				app.saveSettings()
+			end
+			if parameters.has("bindings.save")
+				app.saveBindings()
+			end
+			if parameters.has("loadGameWorld.cancel")
+				app.cancelLoadGameWorld()
+			end
+			if parameters.has("loadGameWorld.finish")
+				app.finishLoadGameWorld()
+			end
+			if parameters.has("windowGameWorld.addShoutConsole")
+				app.getWindowGameWorld().addWidget(ShoutConsole.new(app.getConsole()))
+			end
+		end
+	end
+	
+	/** \brief Condition "app.check". */
+	private class SMCAppCheck implements SMCondition
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func bool evaluateCondition(SMContext context, Dictionary parameters)
+			var BaseGameApp app = BaseGameApp.getApp()
+			var bool result = true
+			
+			var Object value = parameters.getAt("app.config", null)
+			if value != null
+				var Object cvalue = app.getConfiguration().getAt(value cast String, null)
+				if cvalue castable bool
+					cvalue = cvalue cast bool if "true" else "false"
+				end
+				
+				value = parameters.getAt("app.config.equal", null)
+				if value != null
+					result &= cvalue.equals(value)
+				end
+				
+				value = parameters.getAt("app.config.notEqual", null)
+				if value != null
+					result &= not cvalue.equals(value)
+				end
+				
+				value = parameters.getAt("app.config.less", null)
+				if value != null
+					result &= cvalue.toString().toInt() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt("app.config.lessOrEqual", null)
+				if value != null
+					result &= cvalue.toString().toInt() <= (value cast String).toInt()
+				end
+				
+				value = parameters.getAt("app.config.greater", null)
+				if value != null
+					result &= cvalue.toString().toInt() > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt("app.config.greaterOrEqual", null)
+				if value != null
+					result &= cvalue.toString().toInt() >= (value cast String).toInt()
+				end
+			end
+			
+			value = parameters.getAt("app.setting", null)
+			if value != null
+				var Object cvalue = app.getSettings().getAt(value cast String, null)
+				if cvalue castable bool
+					cvalue = cvalue cast bool if "true" else "false"
+				end
+				
+				value = parameters.getAt("app.setting.equal", null)
+				if value != null
+					result &= cvalue.equals(value)
+				end
+				
+				value = parameters.getAt("app.setting.notEqual", null)
+				if value != null
+					result &= not cvalue.equals(value)
+				end
+				
+				value = parameters.getAt("app.setting.less", null)
+				if value != null
+					result &= cvalue.toString().toInt() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt("app.setting.lessOrEqual", null)
+				if value != null
+					result &= cvalue.toString().toInt() <= (value cast String).toInt()
+				end
+				
+				value = parameters.getAt("app.setting.greater", null)
+				if value != null
+					result &= cvalue.toString().toInt() > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt("app.setting.greaterOrEqual", null)
+				if value != null
+					result &= cvalue.toString().toInt() >= (value cast String).toInt()
+				end
+			end
+			
+			value = parameters.getAt("services.initialized", null)
+			if value != null
+				result &= (app.getBaseGameServices().getInitializeServiceCount() == 0) == value.equals("true")
+			end
+			
+			return result
+		end
+	end
+	
+	/** \brief Action "windowLogo.update". */
+	private class SMAWindowLogoUpdate implements SMAction
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func void runAction(SMContext context, Dictionary parameters)
+			var BaseGameApp app = BaseGameApp.getApp()
+			var Object value
+			
+			value = parameters.getAt("show", null)
+			if value != null
+				var String eventName = parameters.getAt("event") cast String
+				var ActionListener action = BlockActionListener.new(block ActionEvent event
+					pInstance.runEvent(eventName)
+				end)
+				
+				if value.equals("dragengine")
+					WindowLogo.showDragengineLogo(app.getDesktop(), action)
+					
+				elif value.equals("image")
+					var Image image = Image.new(parameters.getAt("image") cast String)
+					var Sound sound
+					
+					value = parameters.getAt("sound", null)
+					if value != null
+						sound = Sound.new(value cast String)
+					end
+					
+					WindowLogo.showImageLogo(app.getDesktop(), image, sound, action)
+					
+				elif value.equals("video")
+					var Video video = Video.new(parameters.getAt("video") cast String)
+					WindowLogo.showVideoLogo(app.getDesktop(), video, action)
+				end
+			end
+		end
+	end
+	
+	
+	var String pPath
+	var StateMachine pStateMachine
+	var SMContext pContext
+	var bool pServicesInitializedEventPending
+	
+	
+	/** \brief Create behavior with empty identifier. */
+	func new() this("")
+		pServicesInitializedEventPending = true
+	end
+	
+	/** \brief Create behavior. */
+	func new(String id) this(id, null)
+	end
+	
+	/** \brief Create behavior with path. */
+	func new(String id, String path) super(id)
+		if id == null
+			throw ENullPointer.new("id")
+		end
+		pPath = path
+	end
+	
+	
+	/** \brief State machine path or null. */
+	func String getPath()
+		return pPath
+	end
+	
+	/** \brief Set state machine path or null. */
+	func void setPath(String path)
+		pPath = path
+	end
+	
+	/** \brief State machine or null if not loaded. */
+	func StateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/** \brief Context. */
+	func SMContext getContext()
+		return pContext
+	end
+	
+	
+	/** \brief Run event on state machine. */
+	func void runEvent(String event)
+		pContext.runEvent(event)
+	end
+	
+	/** \brief Run event with parameter on state machine. */
+	func void runEvent(String event, Object parameter)
+		pContext.runEvent(event, parameter)
+	end
+	
+	/** \brief Reset state machine to initial state. */
+	protected func void reset()
+		pContext.reset()
+	end
+	
+	/** \brief Set action to state machine. */
+	func void setAction(String name, SMAction action)
+		pContext.setAction(name, action)
+	end
+	
+	/**
+	 * \brief Set action to state machine using block.
+	 * 
+	 * Block receives arguments \ref SMContext context and \ref Dictionary parameters.
+	 */
+	func void setAction(String name, Block actionBlock)
+		pContext.setAction(name, actionBlock)
+	end
+	
+	/** \brief Set condition to state machine. */
+	func void setCondition(String name, SMCondition condition)
+		pContext.setCondition(name, condition)
+	end
+	
+	/**
+	 * \brief Set condition to state machine using block.
+	 * 
+	 * Block receives arguments \ref SMContext context and \ref Dictionary parameters and
+	 * returns \ref bool.
+	 */
+	func void setCondition(String name, Block conditionBlock)
+		pContext.setCondition(name, conditionBlock)
+	end
+	
+	
+	func void initGame()
+		var String basePath = getID().empty() if "appBehavior/stateMachine/"\
+			else "appBehavior/stateMachine(" + getID() + ")/"
+		
+		var BaseGameApp app = BaseGameApp.getApp()
+		var ParameterTree config = app.getConfiguration()
+		var String path = config.getStringAt(basePath + "path", pPath)
+		if path != null and not path.empty()
+			pStateMachine = loadStateMachine(path)
+		end
+		if pStateMachine == null
+			pStateMachine = StateMachine.newEmpty()
+		end
+		
+		pContext = createContext(pStateMachine)
+		pContext.setConsole(app.getConsole())
+		
+		var String debug = config.getStringAt(basePath + "debug", null)
+		if debug != null and not debug.empty()
+			pContext.setLoggingName(debug)
+			pContext.setLogTransitions(true)
+			pContext.setLogStateChanges(true)
+			pContext.setLogActions(true)
+		end
+		
+		pContext.setAction("engine.update", SMAEngineUpdate.new(this))
+		pContext.setCondition("engine.check", SMCEngineCheck.new(this))
+		
+		pContext.setAction("app.update", SMAAppUpdate.new(this))
+		pContext.setCondition("app.check", SMCAppCheck.new(this))
+		
+		pContext.setAction("windowLogo.update", SMAWindowLogoUpdate.new(this))
+	end
+	
+	func void postInitGame()
+		runEvent("initGame")
+	end
+	
+	func void cleanUp()
+		pContext = null
+	end
+	
+	func void onFrameUpdate(float elapsed)
+		if pServicesInitializedEventPending\
+		and BaseGameApp.getApp().getBaseGameServices().getInitializeServiceCount() == 0
+			pServicesInitializedEventPending = false
+			runEvent("servicesInitialized")
+		end
+		
+		runEvent("update", elapsed)
+	end
+	
+	func void onAppActivate()
+		runEvent(Engine.getAppActive() if "appActivated" else "appDeactivated")
+	end
+	
+	
+	/** \brief Load state machine. */
+	protected func StateMachine loadStateMachine(String path)
+		return BaseGameApp.getApp().getLoaders().getStateMachine().loadFromFile(path)
+	end
+	
+	/** \brief Create context. */
+	protected func SMContext createContext(StateMachine stateMachine)
+		return SMContext.new(stateMachine)
+	end
+	
+	
+	/**
+	 * \brief Get behavior in game app or null if absent.
+	 * 
+	 * Use this method to check if \ref BaseGameApp contains behavior of type \ref GABehaviorStateMachine.
+	 */
+	static func GABehaviorStateMachine getBehaviorInApp()
+		return BaseGameApp.getApp().findBehavior(block GABehaviorStateMachine each
+			return true
+		end) cast GABehaviorStateMachine
+	end
+	
+	/**
+	 * \brief Get behavior in game app with identifier or null if absent.
+	 * 
+	 * Use this method to check if \ref BaseGameApp contains behavior of type \ref GABehaviorStateMachine.
+	 */
+	static func GABehaviorStateMachine getBehaviorInApp(String id)
+		return BaseGameApp.getApp().findBehavior(block GABehaviorStateMachine each
+			return each.getID().equals(id)
+		end) cast GABehaviorStateMachine
+	end
+end

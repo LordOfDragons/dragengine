@@ -449,9 +449,7 @@ class SMContext
 					if transition != null
 						pConsole.addMessage("{}: State '{}' event '{}'(param '{}') transition {} next state '{}' delegate event '{}'"\
 							.format(Array.newWith(pLoggingName, pCurrentState.getID(), event, parameter,\
-								pCurrentState.indexOfTransition(transition), transition.getStateID()\
-									+ (pCurrentState.indexOfTransition(transition) == -1 if "[G]" else ""),\
-								transition.getDelegate())))
+								pCurrentState.indexOfTransition(transition), transition.getStateID(), transition.getDelegate())))
 						
 					else
 						pConsole.addMessage("{}: State '{}' event '{}'({}) no transition"\

@@ -35,6 +35,7 @@
 			<xs:element type='parameter' name='parameter'/>
 			<xs:element type='condition' name='condition'/>
 			<xs:element type='condition_mode' name='conditionMode'/>
+			<xs:element type='action_state' name='state'/>
 		</xs:choice>
 		
 		<xs:attribute type='xs:string' name='name' use='optional'>
@@ -268,6 +269,17 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
+	<xs:simpleType name='action_state'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Identifier of state to switch to after action runs.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
 	<xs:complexType name='enterAction'>
 		<xs:annotation>
 			<xs:documentation>
@@ -293,6 +305,7 @@
 			<xs:element type='parameter' name='parameter'/>
 			<xs:element type='condition' name='condition'/>
 			<xs:element type='condition_mode' name='conditionMode'/>
+			<xs:element type='action_state' name='state'/>
 		</xs:choice>
 		
 		<xs:attribute type='xs:string' name='name' use='optional'>
@@ -306,16 +319,6 @@
 					or behaviors linked to them. See the respective behavior documentation
 					to learn about supported action names.
 					</p>
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:string' name='state' use='optional'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Identifier of state to switch to after action runs.
 					]]>
 				</xs:documentation>
 			</xs:annotation>

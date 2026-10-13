@@ -178,9 +178,6 @@ class GameWorld
 	/**
 	 * \brief Add behavior.
 	 * \version 1.17
-	 * 
-	 * This is called by constructors of class implementing GWBehavior. Usually you do not
-	 * have to call this manually.
 	 */
 	func void addBehavior(GWBehavior behavior)
 		if behavior == null or pBehaviors.has(behavior)
