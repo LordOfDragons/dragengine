@@ -187,6 +187,12 @@
 	<translation name="Igde.LoadSaveSystem.FilePattern.Camera">Kamera</translation>
 	<translation name="Igde.LoadSaveSystem.FilePattern.World">Welt</translation>
 	<translation name="Igde.LoadSaveSystem.FilePattern.DragengineGameProject">Drag[en]gine-Spielprojekt</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.ParameterTree">Parameterbaum</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.StateMachine">Zustandsmaschine</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.BehaviorTree">Verhaltensbaum</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.GuiTheme">GUI-Thema</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.Conversation">Konversation</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.SimpleConversation">Einfache Konversation</translation>
 	
 	<!-- Dialog Browser -->
 	<translation name="Igde.DialogBrowser.Action.RebuildPreview">Vorschau neu erstellen</translation>

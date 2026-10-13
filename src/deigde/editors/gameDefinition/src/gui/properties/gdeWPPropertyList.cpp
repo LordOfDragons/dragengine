@@ -865,6 +865,12 @@ pGameDefinition(nullptr)
 	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Sky", nullptr, (void*)(intptr_t)gdeProperty::epptSky);
 	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Camera", nullptr, (void*)(intptr_t)gdeProperty::epptCamera);
 	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.World", nullptr, (void*)(intptr_t)gdeProperty::epptWorld);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.ParameterTree", nullptr, (void*)(intptr_t)gdeProperty::epptParameterTree);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.StateMachine", nullptr, (void*)(intptr_t)gdeProperty::epptStateMachine);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.BehaviorTree", nullptr, (void*)(intptr_t)gdeProperty::epptBehaviorTree);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.GuiTheme", nullptr, (void*)(intptr_t)gdeProperty::epptGuiTheme);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Conversation", nullptr, (void*)(intptr_t)gdeProperty::epptConversation);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.SimpleConversation", nullptr, (void*)(intptr_t)gdeProperty::epptSimpleConversation);
 	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Custom", nullptr, (void*)(intptr_t)gdeProperty::epptCustom);
 	
 	helper.FormLineStretchFirst(form, "@GameDefinition.WPPropertyList.CustomPattern", "@GameDefinition.WPPropertyList.CustomPattern.ToolTip", frameLine);

@@ -167,6 +167,24 @@ public:
 		/** \brief World. */
 		epptWorld,
 		
+		/** \brief Parameter tree. */
+		epptParameterTree,
+
+		/** \brief State machine. */
+		epptStateMachine,
+
+		/** \brief Behavior tree. */
+		epptBehaviorTree,
+		
+		/** \brief GUI Theme. */
+		epptGuiTheme,
+		
+		/** \brief Conversation. */
+		epptConversation,
+
+		/** \brief Simple conversation. */
+		epptSimpleConversation,
+		
 		/** \brief Custom file pattern. */
 		epptCustom
 	};

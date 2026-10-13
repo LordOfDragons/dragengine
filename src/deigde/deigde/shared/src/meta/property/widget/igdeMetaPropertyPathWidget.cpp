@@ -596,7 +596,31 @@ decStringDictionary &dict) const{
 		break;
 		
 	case igdeEnvironment::efpltWorld:
-		pFileInfoWorld(engine, path, dict);
+		pFileInfoWorld(environment, engine, path, dict);
+		break;
+		
+	case igdeEnvironment::efpltParameterTree:
+		pFileInfoParameterTree(environment, engine, path, dict);
+		break;
+		
+	case igdeEnvironment::efpltStateMachine:
+		pFileInfoStateMachine(environment, engine, path, dict);
+		break;
+		
+	case igdeEnvironment::efpltBehaviorTree:
+		pFileInfoBehaviorTree(environment, engine, path, dict);
+		break;
+		
+	case igdeEnvironment::efpltGuiTheme:
+		pFileInfoGuiTheme(environment, engine, path, dict);
+		break;
+		
+	case igdeEnvironment::efpltConversation:
+		pFileInfoConversation(environment, engine, path, dict);
+		break;
+		
+	case igdeEnvironment::efpltSimpleConversation:
+		pFileInfoSimpleConversation(environment, engine, path, dict);
 		break;
 		
 	case igdeEnvironment::efpltAll:
@@ -858,6 +882,30 @@ void igdeMetaPropertyPathWidget::pFileInfoCamera(igdeEnvironment &environment,
 deEngine &engine, const decString &path, decStringDictionary &dict) const{
 }
 
-void igdeMetaPropertyPathWidget::pFileInfoWorld(deEngine &engine,
-const decString &path, decStringDictionary &dict) const{
+void igdeMetaPropertyPathWidget::pFileInfoWorld(igdeEnvironment &environment,
+deEngine &engine, const decString &path, decStringDictionary &dict) const{
+}
+
+void igdeMetaPropertyPathWidget::pFileInfoParameterTree(igdeEnvironment &environment,
+deEngine &engine, const decString &path, decStringDictionary &dict) const{
+}
+
+void igdeMetaPropertyPathWidget::pFileInfoStateMachine(igdeEnvironment &environment,
+deEngine &engine, const decString &path, decStringDictionary &dict) const{
+}
+
+void igdeMetaPropertyPathWidget::pFileInfoBehaviorTree(igdeEnvironment &environment,
+deEngine &engine, const decString &path, decStringDictionary &dict) const{
+}
+
+void igdeMetaPropertyPathWidget::pFileInfoGuiTheme(igdeEnvironment &environment,
+deEngine &engine, const decString &path, decStringDictionary &dict) const{
+}
+
+void igdeMetaPropertyPathWidget::pFileInfoConversation(igdeEnvironment &environment,
+deEngine &engine, const decString &path, decStringDictionary &dict) const{
+}
+
+void igdeMetaPropertyPathWidget::pFileInfoSimpleConversation(igdeEnvironment &environment,
+deEngine &engine, const decString &path, decStringDictionary &dict) const{
 }

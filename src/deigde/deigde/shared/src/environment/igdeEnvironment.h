@@ -90,7 +90,13 @@ public:
 		efpltVideo, //!< Video.
 		efpltSpeechAnimation, //!< Speech animation.
 		efpltCamera, //!< Camera file.
-		efpltWorld //!< World file.
+		efpltWorld, //!< World file.
+		efpltParameterTree, //!< Parameter tree.
+		efpltStateMachine, //!< State machine.
+		efpltBehaviorTree, //!< Behavior tree.
+		efpltGuiTheme, //!< GUI Theme.
+		efpltConversation, //!< Conversation.
+		efpltSimpleConversation //!< Simple Conversation.
 	};
 	
 	/** \brief Stock icons. */

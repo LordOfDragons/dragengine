@@ -158,7 +158,26 @@ protected:
 	void pFileInfoCamera(igdeEnvironment &environment, deEngine &engine,
 		const decString &path, decStringDictionary &dict) const;
 	
-	void pFileInfoWorld(deEngine &engine, const decString &path, decStringDictionary &dict) const;
+	void pFileInfoWorld(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoParameterTree(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoStateMachine(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoBehaviorTree(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoGuiTheme(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoConversation(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+
+	void pFileInfoSimpleConversation(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
 };
 
 #endif

@@ -178,6 +178,24 @@ const igdeFilePattern::List *igdeEnvironmentIGDE::GetOpenFilePatternList(eFilePa
 	case efpltWorld:
 		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplWorld);
 		
+	case efpltParameterTree:
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplParameterTree);
+		
+	case efpltStateMachine:
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplStateMachine);
+		
+	case efpltBehaviorTree:
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplBehaviorTree);
+		
+	case efpltGuiTheme:
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplGuiTheme);
+		
+	case efpltConversation:
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplConversation);
+		
+	case efpltSimpleConversation:
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSimpleConversation);
+		
 	default:
 		DETHROW(deeInvalidParam);
 	}
@@ -221,7 +239,7 @@ const igdeFilePattern::List *igdeEnvironmentIGDE::GetSaveFilePatternList(eFilePa
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplRig);
 		
 	case efpltSky:
-		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSky);
 		
 	case efpltSkin:
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSkin);
@@ -236,13 +254,31 @@ const igdeFilePattern::List *igdeEnvironmentIGDE::GetSaveFilePatternList(eFilePa
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplVideo);
 		
 	case efpltSpeechAnimation:
-		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSpeechAnimation);
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSpeechAnimation);
 		
 	case efpltCamera:
-		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplCamera);
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplCamera);
 		
 	case efpltWorld:
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplWorld);
+		
+	case efpltParameterTree:
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplParameterTree);
+		
+	case efpltStateMachine:
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplStateMachine);
+		
+	case efpltBehaviorTree:
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplBehaviorTree);
+		
+	case efpltGuiTheme:
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplGuiTheme);
+		
+	case efpltConversation:
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplConversation);
+		
+	case efpltSimpleConversation:
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSimpleConversation);
 		
 	default:
 		DETHROW(deeInvalidParam);

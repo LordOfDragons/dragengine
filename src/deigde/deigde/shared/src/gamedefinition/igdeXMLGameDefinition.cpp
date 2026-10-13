@@ -1861,6 +1861,24 @@ void igdeXMLGameDefinition::pParseProperty(const decXmlElementTag &root, igdeGDP
 			}else if(strcmp(type, "world") == 0){
 				property.SetPathPatternType(igdeGDProperty::epptWorld);
 				
+			}else if(strcmp(type, "parameterTree") == 0){
+				property.SetPathPatternType(igdeGDProperty::epptParameterTree);
+				
+			}else if(strcmp(type, "stateMachine") == 0){
+				property.SetPathPatternType(igdeGDProperty::epptStateMachine);
+				
+			}else if(strcmp(type, "behaviorTree") == 0){
+				property.SetPathPatternType(igdeGDProperty::epptBehaviorTree);
+				
+			}else if(strcmp(type, "guiTheme") == 0){
+				property.SetPathPatternType(igdeGDProperty::epptGuiTheme);
+				
+			}else if(strcmp(type, "conversation") == 0){
+				property.SetPathPatternType(igdeGDProperty::epptConversation);
+				
+			}else if(strcmp(type, "simpleConversation") == 0){
+				property.SetPathPatternType(igdeGDProperty::epptSimpleConversation);
+				
 			}else if(strcmp(type, "custom") == 0){
 				property.SetPathPatternType(igdeGDProperty::epptCustom);
 				

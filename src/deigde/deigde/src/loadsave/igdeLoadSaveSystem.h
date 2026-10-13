@@ -64,10 +64,16 @@ public:
 		efplSynthesizer,
 		efplSpeechAnimation,
 		efplCamera,
-		efplWorld
+		efplWorld,
+		efplParameterTree,
+		efplStateMachine,
+		efplBehaviorTree,
+		efplGuiTheme,
+		efplConversation,
+		efplSimpleConversation
 	};
 	
-	static const int FilePatternListCount = efplWorld + 1;
+	static const int FilePatternListCount = efplSimpleConversation + 1;
 	
 	/** \brief FOX File pattern lists. */
 	enum eFOXFilePatternLists{

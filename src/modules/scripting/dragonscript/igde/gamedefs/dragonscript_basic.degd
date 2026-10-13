@@ -41,6 +41,11 @@
 			</category>
 		</skins>
 	</categories>
+	<property name='parameterTree.path'>
+		<description>Path to parameter tree to load (GWBehaviorParameterTree).</description>
+		<type>path</type>
+		<pathPatternType>parameterTree</pathPatternType>
+	</property>
 	<findPathClasses>/shareddata/models</findPathClasses>
 	<findPathSkins>/shareddata/materials</findPathSkins>
 	<defaultClass>SimpleElement</defaultClass>
@@ -952,10 +957,7 @@
 		<property name='guiTheme'>
 			<description>Path to gui theme to use.</description>
 			<type>path</type>
-			<pathPatternType>custom</pathPatternType>
-			<customPathPattern>
-				<add name='Dra[en]gine Gui Theme' pattern='*.degt' default='.degt'/>
-			</customPathPattern>
+			<pathPatternType>guiTheme</pathPatternType>
 		</property>
 		<property name='designerSelector'>
 			<description>Designer selector to use for Panel.</description>
@@ -984,10 +986,7 @@
 		<property name='guiTheme'>
 			<description>Path to gui theme to use.</description>
 			<type>path</type>
-			<pathPatternType>custom</pathPatternType>
-			<customPathPattern>
-				<add name='Dra[en]gine Gui Theme' pattern='*.degt' default='.degt'/>
-			</customPathPattern>
+			<pathPatternType>guiTheme</pathPatternType>
 		</property>
 		<property name='designerSelector'>
 			<description>Designer selector to use for Desktop.</description>
@@ -1278,18 +1277,12 @@
 		<property name='path'>
 			<description>Path to conversation resource to load.</description>
 			<type>path</type>
-			<pathPatternType>custom</pathPatternType>
-			<customPathPattern>
-				<add name='Dra[en]gine Conversation' pattern='*.deconvo' default='.deconvo'/>
-			</customPathPattern>
+			<pathPatternType>conversation</pathPatternType>
 		</property>
 		<property name='pathSimple'>
 			<description>Path to simple conversation resource to load.</description>
 			<type>path</type>
-			<pathPatternType>custom</pathPatternType>
-			<customPathPattern>
-				<add name='Dra[en]gine Simple Conversation' pattern='*.desconvo' default='.desconvo'/>
-			</customPathPattern>
+			<pathPatternType>simpleConversation</pathPatternType>
 		</property>
 		<property name='addPlayer'>
 			<description>If not an empty string adds the player actor to the conversation using the value of this property as conversation actor identifier.</description>
@@ -2126,10 +2119,7 @@
 		<property name='pathParameters'>
 			<description>If not empty string path of file containing camera parameters (*.decamera). These parameters override the manual set parameters if present in the file.</description>
 			<type>path</type>
-			<pathPatternType>custom</pathPatternType>
-			<customPathPattern>
-				<add name='Dra[en]gine Camera Parameters' pattern='*.decamera' default='.decamera'/>
-			</customPathPattern>
+			<pathPatternType>camera</pathPatternType>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
@@ -2245,10 +2235,7 @@
 		<property name='path'>
 			<description>Path to behavior tree to load. If empty uses empty behavior tree always failing to run.</description>
 			<type>path</type>
-			<pathPatternType>custom</pathPatternType>
-			<customPathPattern>
-				<add name='Dra[en]gine Behavior Tree' pattern='*.debt' default='.debt'/>
-			</customPathPattern>
+			<pathPatternType>behaviorTree</pathPatternType>
 		</property>
 		<property name='run'>
 			<description>Run behavior tree during element thinking.</description>
@@ -2265,10 +2252,7 @@
 		<property name='path'>
 			<description>Path to state machine to load.</description>
 			<type>path</type>
-			<pathPatternType>custom</pathPatternType>
-			<customPathPattern>
-				<add name='Dra[en]gine State Machine' pattern='*.desm' default='.desm'/>
-			</customPathPattern>
+			<pathPatternType>stateMachine</pathPatternType>
 		</property>
 		<property name='debug'>
 			<description>Debug mode prefix. If not empty string enables debug mode with prefix to locate log messages easily.</description>
@@ -3179,6 +3163,22 @@
 		<property name='orientation'>
 			<description>If not empty string use orientation in euler angles relative to parent instead of current object coordinate system.</description>
 			<type>vector3</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorParameterTree'>
+		<description>Behavior element behavior adding support to access a parameter tree.<br/><br/>This behavior uses property prefix "parameterTree.".</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>parameterTree.</defaultInheritPropertyPrefix>
+		<property name='path'>
+			<description>Path to parameter tree to load.</description>
+			<type>path</type>
+			<pathPatternType>parameterTree</pathPatternType>
+		</property>
+		<property name='dataPath'>
+			<description>Path to the data within the parameter tree.</description>
+			<type>string</type>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>

@@ -232,6 +232,30 @@ void gdeDefaultPropertyValue::SetValue(const decString &value, const gdeProperty
 		pGDProperty->SetPathPatternType(igdeGDProperty::epptWorld);
 		break;
 		
+	case gdeProperty::epptParameterTree:
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptParameterTree);
+		break;
+
+	case gdeProperty::epptStateMachine:
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptStateMachine);
+		break;
+
+	case gdeProperty::epptBehaviorTree:
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptBehaviorTree);
+		break;
+		
+	case gdeProperty::epptGuiTheme:
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptGuiTheme);
+		break;
+		
+	case gdeProperty::epptConversation:
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptConversation);
+		break;
+
+	case gdeProperty::epptSimpleConversation:
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptSimpleConversation);
+		break;
+		
 	case gdeProperty::epptCustom:
 		pGDProperty->SetPathPatternType(igdeGDProperty::epptCustom);
 		break;
