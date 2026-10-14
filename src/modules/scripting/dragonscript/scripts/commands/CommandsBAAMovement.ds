@@ -820,6 +820,28 @@ class CommandsBAAMovement
 		commands.add(ToggleRun.new(tracker, trackerSelector))
 	end
 	
+	/**
+	 * \brief Remove all supported commands if present.
+	 * \version 1.35
+	 */
+	static func void removeSupportedCommands(CommandManager commands)
+		commands.removeNamed("moveForward")
+		commands.removeNamed("moveBackward")
+		commands.removeNamed("moveLeft")
+		commands.removeNamed("moveRight")
+		commands.removeNamed("lookLeft")
+		commands.removeNamed("lookRight")
+		commands.removeNamed("lookUp")
+		commands.removeNamed("lookDown")
+		commands.removeNamed("analogMoveFB")
+		commands.removeNamed("analogMoveLR")
+		commands.removeNamed("analogLookLR")
+		commands.removeNamed("analogLookUD")
+		commands.removeNamed("crouch")
+		commands.removeNamed("toggleCrouch")
+		commands.removeNamed("run")
+		commands.removeNamed("toggleRun")
+	end
 	
 	
 	/** \brief Input scheme to use for adding default bindings. */

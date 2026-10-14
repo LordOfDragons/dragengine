@@ -228,6 +228,14 @@ class CommandsBAAInteract
 		commands.add(SecondaryAction.new(tracker, trackerSelector))
 	end
 	
+	/**
+	 * \brief Remove all supported commands if present.
+	 * \version 1.35
+	 */
+	static func void removeSupportedCommands(CommandManager commands)
+		commands.removeNamed("primaryAction")
+		commands.removeNamed("secondaryAction")
+	end
 	
 	
 	/**
