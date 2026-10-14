@@ -1,0 +1,113 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine
+pin Dragengine.StateMachineSystem
+pin Dragengine.Utils
+
+/**
+ * \brief Composable component for application behaviors supporting state machines.
+ * \version 1.35
+ * 
+ * Stores list of \ref GABehaviorStateMachine behaviors. Also provides helper methods to add
+ * actions and conditions to all state machines.
+ */
+class GAComposeBTSM
+	private class EntrySM
+		public var SMContext context
+		
+		func new(GABehaviorStateMachine behavior)
+			context = behavior.getContext()
+		end
+		
+		func void addAction(String prefix, String name, BTSMActionCondition action)
+			context.setAction(prefix + name, action)
+		end
+		
+		func void addCondition(String prefix, String name, BTSMActionCondition condition)
+			context.setCondition(prefix + name, condition)
+		end
+		
+		func void addActionCondition(String prefix, String name, BTSMActionCondition actionCondition)
+			context.setAction(prefix + name, actionCondition)
+			context.setCondition(prefix + name, actionCondition)
+		end
+	end
+	
+	
+	var Array pSMContexts
+	
+	
+	/**
+	 * \brief Create composable application behavior.
+	 * 
+	 * Find state machine behaviors and store contexts. Call this during \ref GABehavior#initGame().
+	 */
+	func new()
+		pSMContexts = Array.new()
+		BaseGameApp.getApp().forEachBehavior(block GABehaviorStateMachine each
+			pSMContexts.add(EntrySM.new(each))
+		end)
+	end
+	
+	
+	/** \brief At least one state machine is present. */
+	func bool hasAny()
+		return pSMContexts.getCount() > 0
+	end
+	
+	
+	/** \brief Add action to all state machines. */
+	func void addAllAction(String prefix, String name, BTSMActionCondition action)
+		pSMContexts.forEach(block EntrySM each
+			each.addAction(prefix, name, action)
+		end)
+	end
+	
+	/** \brief Add condition to all state machines. */
+	func void addAllCondition(String prefix, String name, BTSMActionCondition condition)
+		pSMContexts.forEach(block EntrySM each
+			each.addCondition(prefix, name, condition)
+		end)
+	end
+	
+	/** \brief Add action/condition to all state machines. */
+	func void addAllActionCondition(String prefix, String name, BTSMActionCondition actionCondition)
+		pSMContexts.forEach(block EntrySM each
+			each.addActionCondition(prefix, name, actionCondition)
+		end)
+	end
+	
+	
+	/** \brief Run event on all state machine contexts. */
+	func void runEvent(String prefix, String event)
+		runEvent(prefix, event, null)
+	end
+	
+	func void runEvent(String prefix, String event, Object parameter)
+		pSMContexts.forEach(block EntrySM each
+			each.context.runEvent(prefix + event, parameter)
+		end)
+	end
+end

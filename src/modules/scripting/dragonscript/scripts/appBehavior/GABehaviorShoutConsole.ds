@@ -1,0 +1,140 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine
+pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.Gui
+
+/**
+ * \brief Game app behavior adding \ref ShoutConsole to \ref WindowGameWorld.
+ * \version 1.35
+ */
+class GABehaviorShoutConsole extends DefaultGABehavior
+	/** \brief Action "shoutConsole.update". */
+	private class SMAEngineUpdate extends BTSMActionCondition
+		var GABehaviorShoutConsole pInstance
+		
+		func new(GABehaviorShoutConsole instance)
+			pInstance = instance
+		end
+		
+		func BTResult runActionShared(Object context, Dictionary parameters)
+			if parameters.has("addToWindow")
+				pInstance.addShoutConsole()
+			end
+			if parameters.has("clear")
+				pInstance.getShoutConsole().clear()
+			end
+			
+			var Object value = parameters.getAt("visible", null)
+			if value != null
+				pInstance.getShoutConsole().setVisible(value.equals("true"))
+			end
+			
+			return BTResult.success
+		end
+	end
+	
+	
+	var GAComposeBTSM pBTSMs
+	var ShoutConsole pShoutConsole
+	
+	
+	/** \brief Create behavior. */
+	func new()
+	end
+	
+	
+	/** \brief Composable component for state machines. */
+	func GAComposeBTSM getBTSM()
+		return pBTSMs
+	end
+	
+	/** \brief Shout console or null. */
+	func ShoutConsole getShoutConsole()
+		return pShoutConsole
+	end
+	
+	
+	func void initGame()
+		addShoutConsole()
+		
+		pBTSMs = GAComposeBTSM.new()
+		if pBTSMs.hasAny()
+			pBTSMs.addAllAction("shoutConsole.", "update", SMAEngineUpdate.new(this))
+		end
+	end
+	
+	func void postInitGame()
+		if pShoutConsole != null
+			pShoutConsole.clear()
+		end
+	end
+	
+	func void cleanUp()
+		pBTSMs = null
+		
+		if pShoutConsole != null
+			pShoutConsole.safeDispose()
+			pShoutConsole = null
+		end
+	end
+	
+	/**
+	 * \brief Add shout console to current game world window.
+	 * 
+	 * If shout console exists it is first disposed of.
+	 **/
+	func void addShoutConsole()
+		var BaseGameApp app = BaseGameApp.getApp()
+		var WindowGameWorld window = app.getWindowGameWorld()
+		
+		if pShoutConsole != null and pShoutConsole.getParent() == window
+			return
+		end
+		
+		if pShoutConsole != null
+			pShoutConsole.safeDispose()
+			pShoutConsole = null
+		end
+		
+		if window != null
+			pShoutConsole = ShoutConsole.new(app.getConsole())
+			window.addWidget(pShoutConsole)
+		end
+	end
+	
+	
+	/**
+	 * \brief Get behavior in game app or null if absent.
+	 * 
+	 * Use this method to check if \ref BaseGameApp contains behavior of type \ref GABehaviorShoutConsole.
+	 */
+	static func GABehaviorShoutConsole getBehaviorInApp()
+		return BaseGameApp.getApp().findBehavior(block GABehaviorShoutConsole each
+			return true
+		end) cast GABehaviorShoutConsole
+	end
+end
