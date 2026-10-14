@@ -275,6 +275,13 @@ class BaseGameApp extends Game
 	 */
 	public static var String eventDeviceParamsChanged = "deviceParamsChanged"
 	
+	/**
+	 * \brief Default binding updater interface.
+	 * \version 1.35
+	 */
+	interface DefaultBindingUpdater
+		func void updateDefaultBindings(DefaultBindingHelper helper)
+	end
 	
 	
 	/**
@@ -284,7 +291,7 @@ class BaseGameApp extends Game
 	 * called if the configuration parameter tree file is located in a different place.
 	 * 
 	 * Using a configuration parameter tree file is optional. If the file is not present it
-	 * is not loaded. Can also be set to \em null in this case.
+	 * is not loaded. Can also be set to null in this case.
 	 * 
 	 * If the configuration file is present and values exist matching properties defined
 	 * in this class the configuration file values take precendence. This allows to modify
@@ -302,7 +309,7 @@ class BaseGameApp extends Game
 	/**
 	 * \brief Path to directory containing language packs.
 	 * 
-	 * Default value is \em null. To support internationalization in your game set the
+	 * Default value is null. To support internationalization in your game set the
 	 * property to a valid path. Also set default language property if required.
 	 */
 	public var String pathLanguagePacks
@@ -397,6 +404,7 @@ class BaseGameApp extends Game
 	var SimpleConversationConverter pSimpleConversationConverter
 	var Dictionary pCollisionFilterMap
 	var Array pBehaviors
+	var SafeArray pDefaultBindingUpdaters
 	
 	static var BaseGameApp pApp = null
 	
@@ -409,7 +417,6 @@ class BaseGameApp extends Game
 	 * method call to support proper hook-method calls with custom subclass behavior.
 	 */
 	func new()
-		pBehaviors = Array.new()
 		pathDesktopGuiTheme = defaultPathGuiTheme
 		pathLanguagePacks = null
 		defaultLanguagePackName = UnicodeString.newFromUTF8("English")
@@ -455,22 +462,34 @@ class BaseGameApp extends Game
 	 * - Bindings have been loaded from the saved bindings file or default bindings created
 	 * 
 	 * The super-call also invoked these hook methods to do initialization work:
-	 * - loadConfiguration()
-	 * - createBaseGameServices()
-	 * - autoInitBaseGameServices()
-	 * - initLanguages()
-	 * - registerPersistencyFactories()
-	 * - createWindowGameWorld()
-	 * - createPanelHud()
-	 * - createWindowConsole()
-	 * - createTriggerTable()
-	 * - createSkinAnnotations()
-	 * - createConnectionTracker()
-	 * - createAndAddElementClasses()
-	 * - createAndAddCommands()
-	 * - createAndAddConsoleCommands()
-	 * - loadSettings() and optionally initSettings()
-	 * - loadBindings() and optionally defaultBindings()
+	 * - \ref #loadConfiguration()
+	 * - \ref #createBaseGameServices()
+	 * - \ref #autoInitBaseGameServices()
+	 * - \ref #initLanguages()
+	 * - \ref #registerPersistencyFactories()
+	 * - \ref #loadSettings() and optionally \ref #initSettings() on first run
+	 * - \ref #createTriggerTable()
+	 * - \ref #createSkinAnnotations()
+	 * - \ref #createConnectionTracker()
+	 * - \ref #createNetworkStateTracker()
+	 * - \ref #createScreenshotCreator()
+	 * - \ref #initCollisionFilterMap()
+	 * - \ref #createAndAddCommands()
+	 * - \ref #createAndAddConsoleCommands()
+	 * - \ref #createAndSetDesktop()
+	 * - \ref #setInputProcessorDesktop()
+	 * - \ref #createWindowGameWorld() and \ref #createPanelHud() if present
+	 * - \ref #createWindowSubTitle()
+	 * - \ref #createWindowPlayerChoice()
+	 * - \ref #createWindowConsole()
+	 * - \ref #createAndAddBehaviorFactories()
+	 * - \ref #createAndAddAttachableBehaviorFactories()
+	 * - \ref #createAppBehaviors(). Here app behaviors must modify all of the above if required.
+	 * - \ref #createAndAddElementClasses().
+	 * - \ref #loadBindings() and \ref #defaultBindings() if not loaded
+	 * - On all app behaviors \ref GABehavior#initGame() is called.
+	 * - \ref #loadXmlElementClasses()
+	 * - On all app behaviors \ref GABehavior#postInitGame() is called.
 	 */
 	func void initGame()
 		pApp = this
@@ -490,6 +509,7 @@ class BaseGameApp extends Game
 		pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
 		pSimpleConversationConverter = createSimpleConversationConverter()
 		pCollisionFilterMap = Dictionary.new()
+		pDefaultBindingUpdaters = SafeArray.new()
 		
 		loadConfiguration()
 		
@@ -507,33 +527,6 @@ class BaseGameApp extends Game
 		loadSettings()
 		
 		initCollisionFilterMap()
-		createAndSetDesktop()
-		setInputProcessorDesktop()
-		
-		pWindowGameWorld = createWindowGameWorld()
-		if pWindowGameWorld != null
-			pDesktop.addWindow(pWindowGameWorld)
-			
-			pPanelHud = createPanelHud()
-			if pPanelHud != null
-				pWindowGameWorld.getPanelStack().addWidget(pPanelHud)
-			end
-		end
-		
-		pWindowSubTitle = createWindowSubTitle()
-		if pWindowSubTitle != null
-			pDesktop.addWindow(pWindowSubTitle)
-		end
-		
-		pWindowPlayerChoice = createWindowPlayerChoice()
-		if pWindowPlayerChoice != null
-			pDesktop.addWindow(pWindowPlayerChoice)
-		end
-		
-		pWindowConsole = createWindowConsole()
-		if pWindowConsole != null
-			pDesktop.addWindow(pWindowConsole)
-		end
 		
 		pTriggerTable = createTriggerTable()
 		pSkinAnnotations = createSkinAnnotations()
@@ -543,18 +536,20 @@ class BaseGameApp extends Game
 		
 		pCommandManager = CommandManager.new()
 		pConsoleCommands = ConsoleCommandList.new()
-		
+		pBindingManager = BindingManager.new()
 		createAndAddCommands()
 		createAndAddConsoleCommands()
 		
-		if pWindowConsole != null
-			pWindowConsole.setCommandManager(pCommandManager)
-			pWindowConsole.setConsoleCommands(pConsoleCommands)
-		end
+		createAndSetDesktop()
+		setInputProcessorDesktop()
 		
-		pBindingManager = BindingManager.new()
-		loadBindings()
-		pBindingManager.addListener(AttachDeviceDefaultBindings.new())
+		setWindowGameWorld(createWindowGameWorld())
+		if pWindowGameWorld != null
+			setPanelHud(createPanelHud())
+		end
+		setWindowSubTitle(createWindowSubTitle())
+		setWindowPlayerChoice(createWindowPlayerChoice())
+		setWindowConsole(createWindowConsole())
 		
 		pBehaviorFactories = BehaviorFactoryList.new()
 		createAndAddBehaviorFactories()
@@ -562,14 +557,22 @@ class BaseGameApp extends Game
 		pAttachableBehaviorFactories = AttachableBehaviorFactoryList.new()
 		createAndAddAttachableBehaviorFactories()
 		
-		pElementClassList = ElementClassList.new()
-		createAndAddElementClasses()
-		pLoaders.getWorld().setElementClassList(pElementClassList)
-		
+		pBehaviors = Array.new()
 		createAppBehaviors()
+		
+		pElementClassList = ElementClassList.new()
+		pLoaders.getWorld().setElementClassList(pElementClassList)
+		createAndAddElementClasses()
+		
+		loadBindings()
+		pBindingManager.addListener(AttachDeviceDefaultBindings.new())
+		
 		pBehaviors.forEach(block GABehavior each
 			each.initGame()
 		end)
+		
+		loadXmlElementClasses()
+		
 		pBehaviors.forEach(block GABehavior each
 			each.postInitGame()
 		end)
@@ -646,6 +649,7 @@ class BaseGameApp extends Game
 		pSkinAnnotations = null
 		pGlobalEvents = null
 		pLoaders = null
+		pDefaultBindingUpdaters = null
 		
 		if pBaseGameServices != null
 			pBaseGameServices.dispose()
@@ -920,31 +924,160 @@ class BaseGameApp extends Game
 	
 	
 	
-	/** \brief Console window toggled using CommandToggleConsole or \em null if absent. */
+	/** \brief Console window toggled using CommandToggleConsole or null if absent. */
 	func WindowConsole getWindowConsole()
 		return pWindowConsole
 	end
 	
-	/** \brief SubTitle window or \em null if absent. */
+	/**
+	 * \brief Set console window toggled using CommandToggleConsole or null if absent.
+	 * \version 1.35
+	 * 
+	 * Assigns the command manager and console commands to the window. Adds the console window
+	 * to the desktop if it has no parent. If \ref CommandToggleConsole is present assigns the
+	 * window to the command.
+	 */
+	func void setWindowConsole(WindowConsole window)
+		if window == pWindowConsole
+			return
+		end
+		
+		pCommandManager.forEach(block Command each
+			if each castable CommandToggleConsole
+				(each cast CommandToggleConsole).setWindow(null)
+			end
+		end)
+		if pWindowConsole != null
+			pWindowConsole.safeDispose()
+		end
+		
+		pWindowConsole = window
+		
+		if window != null
+			window.setCommandManager(pCommandManager)
+			window.setConsoleCommands(pConsoleCommands)
+			
+			if window.getParent() == null
+				pDesktop.addWindow(window)
+			end
+			
+			pCommandManager.forEach(block Command each
+				if each castable CommandToggleConsole
+					(each cast CommandToggleConsole).setWindow(window)
+				end
+			end)
+		end
+	end
+	
+	/** \brief SubTitle window or null if absent. */
 	func WindowSubTitle getWindowSubTitle()
 		return pWindowSubTitle
 	end
 	
-	/** \brief PlayerChoice window or \em null if absent. */
+	/**
+	 * \brief Set SubTitle window or null if absent.
+	 * \version 1.35
+	 * 
+	 * Adds the window to the desktop if it has no parent.
+	 */
+	func void setWindowSubTitle(WindowSubTitle window)
+		if window == pWindowSubTitle
+			return
+		end
+		
+		if pWindowSubTitle != null
+			pWindowSubTitle.safeDispose()
+		end
+		
+		pWindowSubTitle = window
+		
+		if window != null and window.getParent() == null
+			pDesktop.addWindow(window)
+		end
+	end
+	
+	/** \brief PlayerChoice window or null if absent. */
 	func WindowPlayerChoice getWindowPlayerChoice()
 		return pWindowPlayerChoice
 	end
 	
-	/** \brief Game world window or \em null. */
+	/**
+	 * \brief Set player choice window or null if absent.
+	 * \version 1.35
+	 * 
+	 * Adds the window to the desktop if it has no parent.
+	 */
+	func void setWindowPlayerChoice(WindowPlayerChoice window)
+		if window == pWindowPlayerChoice
+			return
+		end
+		
+		if pWindowPlayerChoice != null
+			pWindowPlayerChoice.safeDispose()
+		end
+		
+		pWindowPlayerChoice = window
+		
+		if window != null and window.getParent() == null
+			pDesktop.addWindow(window)
+		end
+	end
+	
+	/** \brief Game world window or null. */
 	func WindowGameWorld getWindowGameWorld()
 		return pWindowGameWorld
 	end
 	
-	/** \brief Game world HUD panel or \em null. */
+	/**
+	 * \brief Set game world window or null.
+	 * \version 1.35
+	 * 
+	 * Clears panel HUD if present. Adds the window to the desktop if it has no parent.
+	 */
+	func void setWindowGameWorld(WindowGameWorld window)
+		if window == pWindowGameWorld
+			return
+		end
+		
+		setPanelHud(null)
+		if pWindowGameWorld != null
+			pWindowGameWorld.safeDispose()
+		end
+		
+		pWindowGameWorld = window
+		
+		if window != null and window.getParent() == null
+			pDesktop.addWindow(window)
+		end
+	end
+	
+	/** \brief Game world HUD panel or null. */
 	func PanelHud getPanelHud()
 		return pPanelHud
 	end
 	
+	/**
+	 * \brief Set game world HUD panel or null.
+	 * \version 1.35
+	 * 
+	 * Adds the panel to the game world window panel stack if game world window is present and
+	 * panel has no parent.
+	 */
+	func void setPanelHud(PanelHud panel)
+		if panel == pPanelHud
+			return
+		end
+		
+		if pPanelHud != null
+			pPanelHud.safeDispose()
+		end
+		
+		pPanelHud = panel
+		
+		if panel != null and pWindowGameWorld != null and panel.getParent() == null
+			pWindowGameWorld.getPanelStack().addWidget(panel)
+		end
+	end
 	
 	
 	/** \brief Input Processor. */
@@ -1114,6 +1247,29 @@ class BaseGameApp extends Game
 	
 	
 	/**
+	 * \brief Add default binding updater.
+	 * \version 1.35
+	 */
+	func void addDefaultBindingUpdater(DefaultBindingUpdater updater)
+		if updater == null
+			throw ENullPointer.new()
+		end
+		pDefaultBindingUpdaters.addIfAbsent(updater)
+	end
+	
+	/**
+	 * \brief Remove default binding updater.
+	 * \version 1.35
+	 */
+	func void removeDefaultBindingUpdater(DefaultBindingUpdater updater)
+		if updater == null
+			throw ENullPointer.new()
+		end
+		pDefaultBindingUpdaters.removeIfPresent(updater)
+	end
+	
+	
+	/**
 	 * \brief Load configuration from parameter tree XML file if present.
 	 * 
 	 * Uses pathConfiguration to located the file.
@@ -1200,7 +1356,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Creates instance of TranslationManager.
 	 */
-	protected func TranslationManager createTranslationManager()
+	func TranslationManager createTranslationManager()
 		return TranslationManager.new()
 	end
 	
@@ -1210,7 +1366,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Creates instance of SimpleConversationConverter.
 	 */
-	protected func SimpleConversationConverter createSimpleConversationConverter()
+	func SimpleConversationConverter createSimpleConversationConverter()
 		return SimpleConversationConverter.new()
 	end
 	
@@ -1227,7 +1383,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Creates instance of BaseGameServices.
 	 */
-	protected func BaseGameServices createBaseGameServices()
+	func BaseGameServices createBaseGameServices()
 		return BaseGameServices.new(pConfiguration, pConsole)
 	end
 	
@@ -1246,7 +1402,7 @@ class BaseGameApp extends Game
 	 * \brief Load language packs and select active language pack.
 	 * 
 	 * Default implementation loads language packs from path specified by property
-	 * pathLanguagePacks if property is not \em null and path is valid. Activates the
+	 * pathLanguagePacks if property is not null and path is valid. Activates the
 	 * language pack with the first matching identifier from the below list:
 	 * - Configuration property named "defaultLanguagePackIdentifier"
 	 * - Current user locale language
@@ -1304,20 +1460,20 @@ class BaseGameApp extends Game
 	 * \brief Create game world window.
 	 * 
 	 * Default implementation creates an instance of WindowGameWorld. Subclass can return
-	 * \em null to not use a game world window or changing window parameters for example
+	 * null to not use a game world window or changing window parameters for example
 	 * to hide it if a main menu requires 
 	 */
-	protected func WindowGameWorld createWindowGameWorld()
+	func WindowGameWorld createWindowGameWorld()
 		return WindowGameWorld.new()
 	end
 	
 	/**
 	 * \brief Create game world hud panel.
 	 * 
-	 * Default implementation creates an instance of PanelHud. Subclass can return \em null
+	 * Default implementation creates an instance of PanelHud. Subclass can return null
 	 * to not use a game world hud panel or changing parameters.
 	 */
-	protected func PanelHud createPanelHud()
+	func PanelHud createPanelHud()
 		return PanelHud.new()
 	end
 	
@@ -1325,9 +1481,9 @@ class BaseGameApp extends Game
 	 * \brief Create console window.
 	 * 
 	 * Default implementation creates an instance of WinowConsole and assigns getConsole().
-	 * Subclass can return \em null to not use a console window.
+	 * Subclass can return null to not use a console window.
 	 */
-	protected func WindowConsole createWindowConsole()
+	func WindowConsole createWindowConsole()
 		var WindowConsole window = WindowConsole.new()
 		window.setConsole(pConsole)
 		return window
@@ -1337,11 +1493,11 @@ class BaseGameApp extends Game
 	 * \brief Create sub title window.
 	 * 
 	 * Default implementation creates an instance of WindowSubTitle. Subclass can return
-	 * \em null to not use a subtitle window. For conversations to work an instance
+	 * null to not use a subtitle window. For conversations to work an instance
 	 * implementing the conversation subtitle interface is required. WindowSubTitle does
 	 * fulfill this requirement.
 	 */
-	protected func WindowSubTitle createWindowSubTitle()
+	func WindowSubTitle createWindowSubTitle()
 		return WindowSubTitle.new()
 	end
 	
@@ -1349,11 +1505,11 @@ class BaseGameApp extends Game
 	 * \brief Create player choice window.
 	 * 
 	 * Default implementation creates an instance of WindowPlayerChoice. Subclass can return
-	 * \em null to not use a player choise window. For conversations to work an instance
+	 * null to not use a player choise window. For conversations to work an instance
 	 * implementing the conversation player choice interface is required. WindowPlayerChoice
 	 * does fulfill this requirement.
 	 */
-	protected func WindowPlayerChoice createWindowPlayerChoice()
+	func WindowPlayerChoice createWindowPlayerChoice()
 		return WindowPlayerChoice.new(pDesktop)
 	end
 	
@@ -1362,7 +1518,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Creates instance of TSTriggerTable.
 	 */
-	protected func TSTriggerTable createTriggerTable()
+	func TSTriggerTable createTriggerTable()
 		return TSTriggerTable.new()
 	end
 	
@@ -1382,7 +1538,7 @@ class BaseGameApp extends Game
 	 * 
 	 * See LoadSkinAnnotations.loadFromFiles for details about the ".deskinann" files.
 	 */
-	protected func SkinAnnotations createSkinAnnotations()
+	func SkinAnnotations createSkinAnnotations()
 		return SkinAnnotations.new()
 	end
 	
@@ -1391,7 +1547,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Creates instance of ConnectionTracker.
 	 */
-	protected func ConnectionTracker createConnectionTracker()
+	func ConnectionTracker createConnectionTracker()
 		return ConnectionTracker.new()
 	end
 	
@@ -1400,7 +1556,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Creates instance of NetworkStateTracker.
 	 */
-	protected func NetworkStateTracker createNetworkStateTracker()
+	func NetworkStateTracker createNetworkStateTracker()
 		return NetworkStateTracker.new()
 	end
 	
@@ -1410,7 +1566,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Creates instance of ScreenshotCreator and assigns console.
 	 */
-	protected func ScreenshotCreator createScreenshotCreator()
+	func ScreenshotCreator createScreenshotCreator()
 		var ScreenshotCreator creator = ScreenshotCreator.new()
 		creator.setConsole(pConsole)
 		return creator
@@ -1526,6 +1682,25 @@ class BaseGameApp extends Game
 	end
 	
 	/**
+	 * \brief Create element classes from XML files and add them to element class list.
+	 * \version 1.35
+	 * 
+	 * Uses configuration list value "xmlElementClassDirectories" as directories to search
+	 * recursively for XML element classes (.deeclass).
+	 */
+	protected func void loadXmlElementClasses()
+		var Array list = pConfiguration.getArrayAt("xmlElementClassDirectories", null)
+		if list == null
+			return
+		end
+		
+		var LoadElementClass loader = getLoaders().getElementClass()
+		list.forEach(block String each
+			loader.addXmlElementClasses(pElementClassList, each, true)
+		end)
+	end
+	
+	/**
 	 * \brief Create commands and add them to command list.
 	 * 
 	 * Commands are used by the BindingInputProcessor to bind player actions to player input.
@@ -1560,10 +1735,7 @@ class BaseGameApp extends Game
 	protected func void createAndAddCoreCommands()
 		pCommandManager.add(CommandQuitGame.new())
 		pCommandManager.add(CommandScreenshot.new(pScreenshotCreator))
-		
-		if pWindowConsole != null
-			pCommandManager.add(CommandToggleConsole.new(pWindowConsole))
-		end
+		pCommandManager.add(CommandToggleConsole.new())
 	end
 	
 	/**
@@ -1739,6 +1911,9 @@ class BaseGameApp extends Game
 		var DefaultBindingHelper helper = coreDefaultBindings()
 		CommandsBAAMovement.addDefaultBindings(helper, CommandsBAAMovement.InputScheme.wasd)
 		CommandsBAAInteract.addDefaultBindings(helper)
+		pDefaultBindingUpdaters.forEach(block DefaultBindingUpdater each
+			each.updateDefaultBindings(helper)
+		end)
 		return helper
 	end
 	
@@ -1788,7 +1963,7 @@ class BaseGameApp extends Game
 	
 	
 	
-	/** \brief Game world loader or \em null. */
+	/** \brief Game world loader or null. */
 	func GameWorldLoader getGameWorldLoader()
 		return pGameWorldLoader
 	end

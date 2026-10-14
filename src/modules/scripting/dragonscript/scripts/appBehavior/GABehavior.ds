@@ -23,10 +23,20 @@
  */
 
 namespace Dragengine
+pin Dragengine.Commands
 
 /**
  * \brief GameApp Behavior instance interface providing the actual game app behavior.
  * \version 1.35
+ * 
+ * App behaviors are created during \ref BaseGameApp#initGame() call after the majority of
+ * BaseGameApp class members have been created and initialized with some exceptions:
+ * - Create and add element classes (before \ref #initGame())
+ * - Loading bindings (before \ref #initGame())
+ * - Load XML element classes (before \ref #postInitGame())
+ * 
+ * These actions are performed as outlined. All other data already initialized before app
+ * behaviors are created should be modified during app behavior construction time.
  */
 interface GABehavior
 	/**

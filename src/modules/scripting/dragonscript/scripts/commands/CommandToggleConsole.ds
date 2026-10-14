@@ -22,11 +22,8 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Commands
-
 pin Dragengine.Gui
-
 
 /**
  * \brief Toggle console command.
@@ -41,42 +38,47 @@ pin Dragengine.Gui
  * when the user tries to close the window by pressing Escape key.
  */
 class CommandToggleConsole extends Command
-	/** \brief Console window to show and hide. */
-	private var WindowConsole pWindow
+	var WindowConsole pWindow
 	
 	
-	
-	/** \brief Create command. */
-	public func new(WindowConsole window)
-		if window == null
-			throw EInvalidParam.new()
-		end
-		
-		pWindow = window
-		
+	/**
+	 * \brief Create command.
+	 * \version 1.35
+	 */
+	func new()
 		setName("toggleConsole")
 		setDescription("Toggle console")
 		setTranslateDescription("UI.Command.ToggleConsole.Description")
 		setTranslateDisplayName("UI.Command.ToggleConsole.DisplayName")
-		
-		window.setCommandCloseConsole(this)
+	end
+	
+	/** \brief Create command. */
+	func new(WindowConsole window) this()
+		setWindow(window)
 	end
 	
 	
-	
-	/** \brief Console window to show and hide. */
-	public func WindowConsole getWindow()
+	/** \brief Console window to show and hide or null. */
+	func WindowConsole getWindow()
 		return pWindow
 	end
 	
-	/** \brief Set console window to show and hide. */
-	public func void setWindow(WindowConsole window)
-		if window == null
-			throw EInvalidParam.new()
+	/** \brief Set console window to show and hide or null. */
+	func void setWindow(WindowConsole window)
+		if window == pWindow
+			return
 		end
+		
+		if pWindow != null
+			pWindow.setCommandCloseConsole(null)
+		end
+		
 		pWindow = window
+		
+		if window != null
+			window.setCommandCloseConsole(this)
+		end
 	end
-	
 	
 	
 	/**
@@ -86,14 +88,24 @@ class CommandToggleConsole extends Command
 	 * processor which would cause KEY_RELEASE to be send to the console causing an
 	 * unwanted typing in the input field.
 	 */
-	public func void stop()
+	func void stop()
+		if pWindow == null
+			return
+		end
+		
+		var BaseGameApp app = BaseGameApp.getApp()
+		
 		if pWindow.getVisible()
 			pWindow.setVisible(false)
-			BaseGameApp.getApp().setInputProcessorBindings()
+			if app != null
+				app.setInputProcessorBindings()
+			end
 			
 		else
 			pWindow.setVisible(true)
-			BaseGameApp.getApp().setInputProcessorDesktop()
+			if app != null
+				app.setInputProcessorDesktop()
+			end
 		end
 	end
 end

@@ -36,6 +36,19 @@ pin Dragengine.Scenery
  * The state machine to run is loaded from \ref BaseGameApp#getConfiguration() using string key
  * "appBehavior/stateMachine/path" or "appBehavior/stateMachine(id)/path". To enable debug logging
  * set string key "appBehavior/stateMachine/debug" or "appBehavior/stateMachine(id)/debug".
+ * 
+ * Example configuration file:
+ * \code{.xml}
+ * <parameterTree>
+ *     <!-- other game configurations -->
+ *     
+ *     <!-- define state machine to load and run -->
+ *     <string path='appBehavior/stateMachine/path'>/content/statemachines/game.desm</string>
+ *     
+ *     <!-- enable debug logging for the state machine -->
+ *     <string path="appBehavior/stateMachine/debug">SM-Game</string>
+ * </parameterTree>
+ * \endcode
  */
 class GABehaviorStateMachine extends DefaultGABehavior
 	/** \brief Action "engine.update". */
@@ -145,9 +158,6 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			end
 			if parameters.has("loadGameWorld.finish")
 				app.finishLoadGameWorld()
-			end
-			if parameters.has("windowGameWorld.addShoutConsole")
-				app.getWindowGameWorld().addWidget(ShoutConsole.new(app.getConsole()))
 			end
 		end
 	end
