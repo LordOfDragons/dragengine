@@ -15,7 +15,7 @@
 	<!--
 	Desktop gui theme path property.
 	
-	Set by default to BaseGameApp.DEFAULT_GUITHEME
+	Set by default to BaseGameApp.defaultPathGuiTheme
 	-->
 	<!--
 	<string path='pathDesktopGuiTheme'>/shareddata/guithemes/modern/modern.degt</string>
@@ -34,21 +34,34 @@
 	
 	
 	<!--
-	Name of default language pack to activate.
+	Identifier of default language pack to activate.
 	
-	Default value is "English". If no such language pack is found internationalization
-	is disabled. The language pack name is matched case sensitive.
+	Default value is "en". First the locale of the system is used to find matching language pack.
+	If not found the default language pack identifier is used. If still no matching language pack
+	can is found, internationalization is disabled. The language pack identifier is matched case
+	sensitive.
 	-->
 	<!--
-	<string path='defaultLanguagePackName'>English</string>
+	<string path='defaultLanguagePackIdentifier'>en</string>
+	-->
+	
+	
+	<!--
+	Settings save file path property.
+	
+	Default value is "/config/settings.dept". Set this to the value to be located underneath
+	directory "Config Path" set in the game project.
+	-->
+	<!--
+	<string path='pathSavedSettings'>/config/settings.dept</string>
 	-->
 	
 	
 	<!--
 	Binding save file path property.
 	
-	Default value is "/config/bindings.xml". Set this to the value of "Config Path"
-	in the game project if the value is different from "/config".
+	Default value is "/config/bindings.xml". Set this to the value to be located underneath
+	directory "Config Path" set in the game project.
 	-->
 	<!--
 	<string path='pathSavedBindings'>/config/bindings.xml</string>
@@ -93,4 +106,14 @@
 	<boolean path='dpiAware'>false</boolean>
 	-->
 	
+	
+	<!--
+	List of directories to load XML element classes from.
+	
+	Used by BaseGameApp.createAndAddXmlElementClasses() to load XML element classes (.deeclass).
+	Using XML element classes is faster than creating element classes using script code manually.
+	-->
+	<list path='xmlElementClassDirectories'>
+		<string>/content/models</string>
+	</list>
 </parameterTree>
