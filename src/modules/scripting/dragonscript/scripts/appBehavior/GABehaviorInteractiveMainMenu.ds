@@ -54,12 +54,6 @@ class GABehaviorInteractiveMainMenu extends DefaultGABehavior
 				pInstance.getInteractiveMainMenu().setMainCameraSpot(value cast String)
 			end
 			
-			value = parameters.getAt("action", null)
-			if value != null
-				pInstance.getInteractiveMainMenu().setActionAt(value cast String,\
-					ActionRunEvent.new(pInstance, parameters.getAt("event") cast String))
-			end
-			
 			value = parameters.getAt("visible", null)
 			if value != null
 				pInstance.getInteractiveMainMenu().setVisible(value.equals("true"))
@@ -126,7 +120,7 @@ class GABehaviorInteractiveMainMenu extends DefaultGABehavior
 	private class SMCCheck extends BTSMCondition
 		var GABehaviorInteractiveMainMenu pInstance
 		
-		func new(GABehaviorInteractiveMainMenu instance) super("interactiveMainMenu.")
+		func new(GABehaviorInteractiveMainMenu instance) super(instance.getPrefix())
 			pInstance = instance
 		end
 		
@@ -143,12 +137,17 @@ class GABehaviorInteractiveMainMenu extends DefaultGABehavior
 				result &= pInstance.getInteractiveMainMenu().isReady() == value.equals("true")
 			end
 			
+			value = parameters.getAt(prefix + "canLoadWorld", null)
+			if value != null
+				result &= (pInstance.getInteractiveMainMenu().getState()\
+					== InteractiveMainMenu.State.constructed) == value.equals("true")
+			end
+			
 			return result
 		end
 	end
 	
-	/** \brief Action listener running state machine event. */
-	class ActionRunEvent implements ActionListener
+	private class ActionRunEvent implements ActionListener
 		var GABehaviorInteractiveMainMenu pInstance
 		var String pEvent
 		
@@ -158,19 +157,29 @@ class GABehaviorInteractiveMainMenu extends DefaultGABehavior
 		end
 		
 		func void onAction(ActionEvent event)
-			pInstance.getBTSM().runEvent("", pEvent, pInstance)
+			pInstance.getBTSM().runEvent(pInstance.getPrefix(), pEvent, pInstance)
 		end
 	end
 	
 	
 	var GAComposeBTSM pBTSMs
 	var InteractiveMainMenu pWindow
+	var InteractiveMainMenu.State pLastState
+	var String pPrefix
+	var Dictionary pActions
 	
 	
 	/** \brief Create behavior. */
 	func new()
+		pPrefix = "interactiveMainMenu."
+		pActions = Dictionary.new()
 	end
 	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Composable component for state machines. */
 	func GAComposeBTSM getBTSM()
@@ -187,21 +196,61 @@ class GABehaviorInteractiveMainMenu extends DefaultGABehavior
 		var BaseGameApp app = BaseGameApp.getApp()
 		pWindow = InteractiveMainMenu.new(app.getConsole())
 		app.getDesktop().addWindow(pWindow)
+		pLastState = pWindow.getState()
 		
 		pBTSMs = GAComposeBTSM.new()
 		if pBTSMs.hasAny()
-			pBTSMs.addAllAction("interactiveMainMenu.", "set", BTSMSet.new(this))
-			pBTSMs.addAllAction("interactiveMainMenu.", "update", SMAEngineUpdate.new(this))
-			pBTSMs.addAllCondition("interactiveMainMenu.", "check", SMCCheck.new(this))
+			pBTSMs.addAllAction(pPrefix, "set", BTSMSet.new(this))
+			pBTSMs.addAllAction(pPrefix, "update", SMAEngineUpdate.new(this))
+			pBTSMs.addAllCondition(pPrefix, "check", SMCCheck.new(this))
 		end
 	end
 	
 	func void cleanUp()
 		pBTSMs = null
-		
 		if pWindow != null
 			pWindow.safeDispose()
 			pWindow = null
+		end
+		pActions.removeAll()
+	end
+	
+	func void onFrameUpdate(float elapsed)
+		var InteractiveMainMenu.State state = pWindow.getState()
+		if state == pLastState
+			return
+		end
+		
+		if pLastState == InteractiveMainMenu.State.loadingWorld
+			pLastState = state
+			
+			pActions.forEachKey(block String each
+				pWindow.setActionAt(each, null)
+			end)
+			pActions.removeAll()
+			
+			if state == InteractiveMainMenu.State.constructed
+				pBTSMs.runEvent(pPrefix, "loadWorld.failed", this)
+				
+			else
+				pWindow.getWorld().forEachElement(block Element each
+					if each castable BehaviorElement
+						var IMMBehaviorHotSpot.Instance hotSpot =\
+							IMMBehaviorHotSpot.getInstanceIn(each cast BehaviorElement)
+						if hotSpot != null
+							var String action = hotSpot.getAction()
+							if action != null
+								pWindow.setActionAt(action, ActionRunEvent.new(this, "action:" + action))
+							end
+						end
+					end
+				end)
+				
+				pBTSMs.runEvent(pPrefix, "loadWorld.finished", this)
+			end
+			
+		else
+			pLastState = state
 		end
 	end
 	
