@@ -1,0 +1,557 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine
+pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.Gui
+pin Dragengine.Gui.MainMenus.Interactive
+pin Dragengine.Scenery
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Designers
+
+/**
+ * \brief Game app behavior adding support to \ref Desktop to fade over canvas.
+ * \version 1.35
+ * 
+ * Canvas is styled using \ref WidgetDesigner typically used to blend over black, white, an image
+ * or a video.
+ */
+class GABehaviorFadeOverCanvas extends DefaultGABehavior
+	/** \brief Action "fadeOverCanvas.set". */
+	private class BTSMSet extends BTSMActionCondition
+		var GABehaviorFadeOverCanvas pInstance
+		
+		func new(GABehaviorFadeOverCanvas instance)
+			pInstance = instance
+		end
+		
+		func BTResult runActionShared(Object context, Dictionary parameters)
+			var Object value = parameters.getAt("time.fadeIn", null)
+			if value != null
+				pInstance.getFadeOverCanvas().setTimeFadeIn((value cast String).toFloat())
+			end
+			
+			value = parameters.getAt("time.stay", null)
+			if value != null
+				pInstance.getFadeOverCanvas().setTimeStay((value cast String).toFloat())
+			end
+			
+			value = parameters.getAt("time.fadeOut", null)
+			if value != null
+				pInstance.getFadeOverCanvas().setTimeFadeOut((value cast String).toFloat())
+			end
+			
+			value = parameters.getAt("smoothStep", null)
+			if value != null
+				pInstance.getFadeOverCanvas().setUseSmoothStep(value.equals("true"))
+			end
+			
+			value = parameters.getAt("canvasCreator", null)
+			if value != null
+				pInstance.getFadeOverCanvas().setCanvasCreator(BehaviorElementClass.sharedFactoryHelper.\
+					defaultLoaders().getCanvasCreator().loadFromFile(value cast String))
+			end
+			
+			value = parameters.getAt("designerSelector", null)
+			if value != null
+				pInstance.getFadeOverCanvas().setCanvasCreator(\
+					BaseGameApp.getApp().getDesktop().getGuiTheme(), value cast String)
+			end
+			
+			value = parameters.getAt("designerSelector.preset", null)
+			if value != null
+				if value.equals("black")
+					pInstance.getFadeOverCanvas().setCanvasCreator(\
+						BaseGameApp.getApp().getDesktop().getGuiTheme(),\
+						GABehaviorFadeOverCanvas.FadeOverCanvas.designerSelectorBlack)
+					
+				elif value.equals("white")
+					pInstance.getFadeOverCanvas().setCanvasCreator(\
+						BaseGameApp.getApp().getDesktop().getGuiTheme(),\
+						GABehaviorFadeOverCanvas.FadeOverCanvas.designerSelectorWhite)
+				end
+			end
+			
+			return BTResult.success
+		end
+	end
+	
+	/** \brief Action "fadeOverCanvas.update". */
+	private class BTSMUpdate extends BTSMActionCondition
+		var GABehaviorFadeOverCanvas pInstance
+		
+		func new(GABehaviorFadeOverCanvas instance)
+			pInstance = instance
+		end
+		
+		func BTResult runActionShared(Object context, Dictionary parameters)
+			var Object value = parameters.getAt("set", null)
+			if value != null
+				if value.equals("hidden")
+					pInstance.getFadeOverCanvas().setHidden()
+					
+				elif value.equals("shown")
+					pInstance.getFadeOverCanvas().setShown()
+				end
+			end
+			
+			value = parameters.getAt("fade", null)
+			if value != null
+				if value.equals("in")
+					pInstance.getFadeOverCanvas().fadeIn()
+					
+				elif value.equals("out")
+					pInstance.getFadeOverCanvas().fadeOut()
+				end
+			end
+			
+			return BTResult.success
+		end
+	end
+	
+	/** \brief Condition "fadeOverCanvas.check". */
+	private class BTSMCheck extends BTSMCondition
+		var GABehaviorFadeOverCanvas pInstance
+		
+		func new(GABehaviorFadeOverCanvas instance) super(instance.getPrefix())
+			pInstance = instance
+		end
+		
+		func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+			var bool result = true
+			
+			var Object value = parameters.getAt(prefix + "running", null)
+			if value != null
+				result &= pInstance.getFadeOverCanvas().isRunning() == value.equals("true")
+			end
+			
+			value = parameters.getAt(prefix + "state", null)
+			if value != null
+				result &= pInstance.getFadeOverCanvas().getState().name().equals(value)
+			end
+			
+			value = parameters.getAt(prefix + "state.not", null)
+			if value != null
+				result &= not pInstance.getFadeOverCanvas().getState().name().equals(value)
+			end
+			
+			return result
+		end
+	end
+	
+	/**
+	 * \brief Fade over canvas.
+	 * 
+	 * This class can be used without \ref GABehaviorFadeOverCanvas.
+	 */
+	class FadeOverCanvas
+		/** \brief State. */
+		enum State
+			hidden
+			fadeIn
+			shown
+			fadeOut
+		end
+		
+		private class Updater extends FrameUpdateListener
+			var FadeOverCanvas pFoc
+			
+			func new(FadeOverCanvas foc)
+				pFoc = foc
+			end
+			
+			func void frameUpdate(float elapsed)
+				pFoc.update(elapsed)
+			end
+		end
+		
+		
+		/** \brief Designer selector for fading over black. */
+		static fixed public var String designerSelectorBlack = "FadeOverCanvas.Black"
+		
+		/** \brief Designer selector for fading over white. */
+		static fixed public var String designerSelectorWhite = "FadeOverCanvas.White"
+		
+		
+		var CanvasView pCanvasContainer
+		var Canvas pCanvasFade
+		var CanvasCreator pCanvasCreator
+		var float pTimeFadeIn, pTimeStay, pTimeFadeOut, pElapsed
+		var bool pUseSmoothStep
+		var State pState
+		var Updater pUpdater
+		
+		
+		func new(Widget widget)
+			pTimeFadeIn = 1
+			pTimeStay = 1
+			pTimeFadeOut = 1
+			pUseSmoothStep = true
+			pState = State.hidden
+			
+			var CanvasView parent = widget.getCanvasWidget()
+			pCanvasContainer = CanvasView.new()
+			pCanvasContainer.setSize(parent.getSize())
+			pCanvasContainer.setOrder(DEMath.max(3, parent.getCanvasCount() + 1))
+			pCanvasContainer.setTransparency(0)
+			pCanvasContainer.setVisible(false)
+			parent.addCanvas(pCanvasContainer)
+			
+			setCanvasCreator(widget, designerSelectorBlack)
+		end
+		
+		/** \brief Dispose of fade over canvas. */
+		func void dispose()
+			stopUpdater()
+			if pCanvasContainer != null
+				var CanvasView parent = pCanvasContainer.getParentView()
+				if parent != null
+					parent.removeCanvas(pCanvasContainer)
+				end
+			end
+			
+			pCanvasContainer = null
+			pCanvasFade = null
+			pCanvasCreator = null
+		end
+		
+		
+		/** \brief Canvas container or null. */
+		func CanvasView getCanvasContainer()
+			return pCanvasContainer
+		end
+		
+		/** \brief Fade canvas or null. */
+		func Canvas getCanvasFade()
+			return pCanvasFade
+		end
+		
+		/** \brief Canvas creator or null. */
+		func CanvasCreator getCanvasCreator()
+			return pCanvasCreator
+		end
+		
+		/** \brief Set canvas creator or null. */
+		func void setCanvasCreator(CanvasCreator creator)
+			pCanvasCreator = creator
+		end
+		
+		/** \brief Set canvas creator from gui theme designer. */
+		func void setCanvasCreator(DefaultWidgetDesigner designer)
+			setCanvasCreator(designer.getDesignNormal().getCanvasCreator())
+		end
+		
+		/** \brief Set canvas creator from gui theme selector. */
+		func void setCanvasCreator(GuiTheme theme, String selector)
+			setCanvasCreator(theme.getWidgetDesigner(selector) cast DefaultWidgetDesigner)
+		end
+		
+		/** \brief Set canvas creator from gui theme selector. */
+		func void setCanvasCreator(Widget widget, String selector)
+			setCanvasCreator(widget.getGuiTheme(), selector)
+		end
+		
+		
+		/** \brief Time in seconds to fade in. */
+		func float getTimeFadeIn()
+			return pTimeFadeIn
+		end
+		
+		/** \brief Set time in seconds to fade in. */
+		func void setTimeFadeIn(float time)
+			pTimeFadeIn = DEMath.max(time, 0.0)
+		end
+		
+		/** \brief Time in seconds to stay visible. */
+		func float getTimeStay()
+			return pTimeStay
+		end
+		
+		/** \brief Set time in seconds to stay visible. */
+		func void setTimeStay(float time)
+			pTimeStay = DEMath.max(time, 0.0)
+		end
+		
+		/** \brief Time in seconds to fade out. */
+		func float getTimeFadeOut()
+			return pTimeFadeOut
+		end
+		
+		/** \brief Set time in seconds to fade out. */
+		func void setTimeFadeOut(float time)
+			pTimeFadeOut = DEMath.max(time, 0.0)
+		end
+		
+		/** \brief Use smooth step instead of linear step. */
+		func bool getUseSmoothStep()
+			return pUseSmoothStep
+		end
+		
+		/** \brief Set to use smooth step instead of linear step. */
+		func void setUseSmoothStep(bool useSmoothStep)
+			pUseSmoothStep = useSmoothStep
+		end
+		
+		
+		/** \brief Elapsed time. */
+		func float getElapsed()
+			return pElapsed
+		end
+		
+		/** \brief Set elapsed time. */
+		protected func void setElapsed(float elapsed)
+			pElapsed = elapsed
+		end
+		
+		/** \brief State. */
+		func State getState()
+			return pState
+		end
+		
+		/** \brief Set state. */
+		protected func void setState(State state)
+			if state != pState
+				pState = state
+				onStateChanged()
+			end
+		end
+		
+		/** \brief Running. */
+		func bool isRunning()
+			return pState != State.hidden
+		end
+		
+		
+		/** \brief Start fading in if state is \ref State#hidden. */
+		func void fadeIn()
+			if pState != State.hidden
+				return
+			end
+			
+			if pCanvasCreator != null
+				pCanvasFade = pCanvasCreator.createCanvas(pCanvasContainer.getSize())
+				pCanvasContainer.addCanvas(pCanvasFade)
+			end
+			pCanvasContainer.setTransparency(0)
+			pCanvasContainer.setVisible(true)
+			
+			startUpdater()
+			pElapsed = 0
+			setState(State.fadeIn)
+		end
+		
+		/** \brief Start fading out if state is \ref State#shown. */
+		func void fadeOut()
+			if pState != State.shown
+				return
+			end
+			
+			pElapsed = 0
+			startUpdater()
+			setState(State.fadeOut)
+		end
+		
+		/** \brief Set to hidden. */
+		func void setHidden()
+			stopUpdater()
+			
+			pCanvasContainer.setTransparency(0)
+			pCanvasContainer.setVisible(false)
+			pCanvasContainer.removeAllCanvas()
+			pCanvasFade = null
+			
+			pElapsed = 0
+			setState(State.hidden)
+		end
+		
+		/** \brief Set to shown. */
+		func void setShown()
+			stopUpdater()
+			
+			var CanvasView parent = pCanvasContainer.getParentView()
+			if parent != null
+				var Point size = parent.getSize()
+				pCanvasContainer.setSize(size)
+				if pCanvasFade == null and pCanvasCreator != null
+					pCanvasFade = pCanvasCreator.createCanvas(size)
+					pCanvasContainer.addCanvas(pCanvasFade)
+				end
+			end
+			pCanvasContainer.setTransparency(1)
+			pCanvasContainer.setVisible(true)
+			
+			pElapsed = 0
+			setState(State.shown)
+		end
+		
+		
+		/** \brief Update fader. */
+		func void update(float elapsed)
+			if pState == State.hidden
+				return
+			end
+			
+			var CanvasView parent = pCanvasContainer.getParentView()
+			if parent == null
+				return
+			end
+			
+			var Point size = pCanvasContainer.getParentView().getSize()
+			pCanvasContainer.setSize(size)
+			if pCanvasFade != null
+				pCanvasFade.setSize(size)
+			end
+			
+			pElapsed += elapsed
+			
+			if pState == State.fadeIn
+				if pElapsed < pTimeFadeIn
+					if pUseSmoothStep
+						pCanvasContainer.setTransparency(DEMath.smoothStep(pElapsed, 0, pTimeFadeIn))
+						
+					else
+						pCanvasContainer.setTransparency(DEMath.linearStep(pElapsed, 0, pTimeFadeIn))
+					end
+					
+				else
+					pCanvasContainer.setTransparency(1)
+					pElapsed -= pTimeFadeIn
+					setState(State.shown)
+				end
+			end
+			
+			if pState == State.shown and pElapsed >= pTimeStay
+				pElapsed -= pTimeStay
+				setState(State.fadeOut)
+			end
+			
+			if pState == State.fadeOut
+				if pElapsed < pTimeFadeOut
+					if pUseSmoothStep
+						pCanvasContainer.setTransparency(DEMath.smoothStep(pElapsed, 0, pTimeFadeOut, 1, 0))
+						
+					else
+						pCanvasContainer.setTransparency(DEMath.linearStep(pElapsed, 0, pTimeFadeOut, 1, 0))
+					end
+					
+				else
+					setHidden()
+				end
+			end
+		end
+		
+		/** \brief Start updater. */
+		protected func void startUpdater()
+			if pUpdater == null
+				pUpdater = Updater.new(this)
+			end
+		end
+		
+		/** \brief Stop updater. */
+		protected func void stopUpdater()
+			if pUpdater != null
+				pUpdater.giveUp()
+				pUpdater = null
+			end
+		end
+		
+		/** \brief State changed. */
+		func void onStateChanged()
+		end
+	end
+	
+	private class FocWrapper extends FadeOverCanvas
+		var GABehaviorFadeOverCanvas pInstance
+		
+		func new(GABehaviorFadeOverCanvas instance) super(BaseGameApp.getApp().getDesktop())
+			pInstance = instance
+		end
+		
+		func void onStateChanged()
+			pInstance.getBTSM().runEvent(pInstance.getPrefix(), getState().name(), pInstance)
+		end
+	end
+	
+	
+	var GAComposeBTSM pBTSMs
+	var String pPrefix
+	var FocWrapper pWrapper
+	
+	
+	/** \brief Create behavior. */
+	func new()
+		pPrefix = "fadeOverCanvas."
+	end
+	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/** \brief Composable component for state machines. */
+	func GAComposeBTSM getBTSM()
+		return pBTSMs
+	end
+	
+	
+	func void initGame()
+		pBTSMs = GAComposeBTSM.new()
+		if pBTSMs.hasAny()
+			pBTSMs.addAllAction(pPrefix, "set", BTSMSet.new(this))
+			pBTSMs.addAllAction(pPrefix, "update", BTSMUpdate.new(this))
+			pBTSMs.addAllCondition(pPrefix, "check", BTSMCheck.new(this))
+		end
+		
+		pWrapper = FocWrapper.new(this)
+	end
+	
+	func void cleanUp()
+		if pWrapper != null
+			pWrapper.dispose()
+			pWrapper = null
+		end
+		pBTSMs = null
+	end
+	
+	
+	/** \brief Fade over canvas or null. */
+	func FadeOverCanvas getFadeOverCanvas()
+		return pWrapper
+	end
+	
+	
+	/**
+	 * \brief Get behavior in game app or null if absent.
+	 * 
+	 * Use this method to check if \ref BaseGameApp contains behavior of type \ref GABehaviorFadeOverCanvas.
+	 */
+	static func GABehaviorFadeOverCanvas getBehaviorInApp()
+		return BaseGameApp.getApp().findBehavior(block GABehaviorFadeOverCanvas each
+			return true
+		end) cast GABehaviorFadeOverCanvas
+	end
+end

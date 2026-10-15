@@ -26,6 +26,7 @@ namespace Dragengine.Scenery
 pin Dragengine.StateMachineSystem
 pin Dragengine.BehaviorTreeSystem
 pin Dragengine.Utils
+pin Dragengine.Preloading
 
 /**
  * \brief GameWorld Behavior adding support for behavior tree and state machine access.
@@ -37,6 +38,23 @@ pin Dragengine.Utils
  * This behavior can be present only once in a GameWorld.
  */
 class GWBehaviorBTSM extends DefaultGWBehavior
+	/** \brief Action "app.btsm.runEvent". */
+	private class BTSMAppBtsmRunEvent extends BTSMActionCondition
+		var GAComposeBTSM pBTSMs
+		
+		func new()
+		end
+		
+		func BTResult runActionShared(Object context, Dictionary parameters)
+			if pBTSMs == null
+				pBTSMs = GAComposeBTSM.new()
+			end
+			pBTSMs.runEvent("", parameters.getAt("event") cast String)
+			return BTResult.success
+		end
+	end
+	
+	
 	var Dictionary pBTActions, pBTConditions, pSMActions, pSMConditions
 	var SafeArray pReceiveEventsSMs
 	
@@ -57,6 +75,10 @@ class GWBehaviorBTSM extends DefaultGWBehavior
 		pSMConditions.removeAll()
 		pReceiveEventsSMs.removeAll()
 		super.dispose()
+	end
+	
+	func void init(StubGameWorld stub)
+		setAction("app.btsm.runEvent", BTSMAppBtsmRunEvent.new())
 	end
 	
 	

@@ -300,6 +300,68 @@ class GABehaviorStateMachine extends DefaultGABehavior
 		end
 	end
 	
+	/** \brief Action "windowGameWorld.set". */
+	private class SMAWindowGameWorldSet implements SMAction
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func void runAction(SMContext context, Dictionary parameters)
+			var WindowGameWorld window = BaseGameApp.getApp().getWindowGameWorld()
+			var Object value
+			
+			value = parameters.getAt("visible", null)
+			if value != null
+				window.setVisible(value.equals("true"))
+			end
+		end
+	end
+	
+	/** \brief Action "windowGameWorld.update". */
+	private class SMAWindowGameWorldUpdate implements SMAction
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func void runAction(SMContext context, Dictionary parameters)
+			var WindowGameWorld window = BaseGameApp.getApp().getWindowGameWorld()
+			var Object value
+			
+			value = parameters.getAt("runEvent", null)
+			if value != null
+				var GameWorld gameWorld = window.getGameWorld()
+				if gameWorld != null
+					gameWorld.getBehaviorBTSM().runSMEvent(value cast String)
+				end
+			end
+		end
+	end
+	
+	/** \brief Condition "windowGameWorld.check". */
+	private class SMCWindowGameWorldCheck implements SMCondition
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func bool evaluateCondition(SMContext context, Dictionary parameters)
+			var WindowGameWorld window = BaseGameApp.getApp().getWindowGameWorld()
+			var bool result = true
+			
+			var Object value = parameters.getAt("visible", null)
+			if value != null
+				result &= window.getVisible() == value.equals("true")
+			end
+			
+			return result
+		end
+	end
+	
 	
 	var String pPath
 	var StateMachine pStateMachine
@@ -423,6 +485,10 @@ class GABehaviorStateMachine extends DefaultGABehavior
 		pContext.setCondition("app.check", SMCAppCheck.new(this))
 		
 		pContext.setAction("windowLogo.update", SMAWindowLogoUpdate.new(this))
+		
+		pContext.setAction("windowGameWorld.set", SMAWindowGameWorldSet.new(this))
+		pContext.setAction("windowGameWorld.update", SMAWindowGameWorldUpdate.new(this))
+		pContext.setCondition("windowGameWorld.check", SMCWindowGameWorldCheck.new(this))
 	end
 	
 	func void postInitGame()

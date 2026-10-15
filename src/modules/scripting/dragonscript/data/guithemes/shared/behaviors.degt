@@ -3,8 +3,22 @@
 	<!--
 		Behavior ECBehaviorRenderablePanel
 	-->
-	
 	<designer name='RenderablePanel' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='1' b='1'/>
+		</canvasCreator>
+	</designer>
+	
+	<!--
+		App Behavior GABehaviorFadeOverCanvas FadeOverCanvas
+	-->
+	<designer name='FadeOverCanvas.Black' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='FadeOverCanvas.White' type='Widget'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
 			<color parameter='colorFill' r='1' g='1' b='1'/>
 		</canvasCreator>

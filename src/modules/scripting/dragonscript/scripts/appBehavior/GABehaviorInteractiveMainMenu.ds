@@ -64,7 +64,7 @@ class GABehaviorInteractiveMainMenu extends DefaultGABehavior
 	end
 	
 	/** \brief Action "interactiveMainMenu.update". */
-	private class SMAEngineUpdate extends BTSMActionCondition
+	private class BTSMUpdate extends BTSMActionCondition
 		var GABehaviorInteractiveMainMenu pInstance
 		
 		func new(GABehaviorInteractiveMainMenu instance)
@@ -117,7 +117,7 @@ class GABehaviorInteractiveMainMenu extends DefaultGABehavior
 	end
 	
 	/** \brief Condition "interactiveMainMenu.check". */
-	private class SMCCheck extends BTSMCondition
+	private class BTSMCheck extends BTSMCondition
 		var GABehaviorInteractiveMainMenu pInstance
 		
 		func new(GABehaviorInteractiveMainMenu instance) super(instance.getPrefix())
@@ -147,32 +147,79 @@ class GABehaviorInteractiveMainMenu extends DefaultGABehavior
 		end
 	end
 	
-	private class ActionRunEvent implements ActionListener
-		var GABehaviorInteractiveMainMenu pInstance
-		var String pEvent
-		
-		func new(GABehaviorInteractiveMainMenu instance, String event)
-			pInstance = instance
-			pEvent = event
+	private class ImmWrapper extends InteractiveMainMenu
+		private class ActionRunEvent implements ActionListener
+			var GABehaviorInteractiveMainMenu pInstance
+			var String pEvent
+			
+			func new(GABehaviorInteractiveMainMenu instance, String event)
+				pInstance = instance
+				pEvent = event
+			end
+			
+			func void onAction(ActionEvent event)
+				pInstance.getBTSM().runEvent(pInstance.getPrefix(), pEvent, pInstance)
+			end
 		end
 		
-		func void onAction(ActionEvent event)
-			pInstance.getBTSM().runEvent(pInstance.getPrefix(), pEvent, pInstance)
+		var GABehaviorInteractiveMainMenu pInstance
+		var Dictionary pAssignedActions
+		
+		func new(GABehaviorInteractiveMainMenu instance) super(BaseGameApp.getApp().getConsole())
+			pInstance = instance
+			pAssignedActions = Dictionary.new()
+		end
+		
+		func void dispose()
+			pAssignedActions.removeAll()
+			super.dispose()
+		end
+		
+		func void loadWorld(String path)
+			super.loadWorld(path)
+			
+			pAssignedActions.forEachKey(block String each
+				setActionAt(each, null)
+			end)
+			pAssignedActions.removeAll()
+			
+			pInstance.getBTSM().runEvent(pInstance.getPrefix(), "loadWorld.started", pInstance)
+		end
+		
+		protected func void launchMainMenu()
+			super.launchMainMenu()
+			
+			getWorld().forEachElement(block Element each
+				if each castable BehaviorElement
+					var IMMBehaviorHotSpot.Instance hotSpot =\
+						IMMBehaviorHotSpot.getInstanceIn(each cast BehaviorElement)
+					if hotSpot != null
+						var String action = hotSpot.getAction()
+						if action != null
+							setActionAt(action, ActionRunEvent.new(pInstance, "action:" + action))
+						end
+					end
+				end
+			end)
+			
+			pInstance.getBTSM().runEvent(pInstance.getPrefix(), "loadWorld.finished", pInstance)
+		end
+		
+		protected func void loadWorldFailed(Exception e)
+			super.loadWorldFailed(e)
+			pInstance.getBTSM().runEvent(pInstance.getPrefix(), "loadWorld.failed", pInstance)
 		end
 	end
 	
 	
-	var GAComposeBTSM pBTSMs
-	var InteractiveMainMenu pWindow
-	var InteractiveMainMenu.State pLastState
 	var String pPrefix
-	var Dictionary pActions
+	var GAComposeBTSM pBTSMs
+	var ImmWrapper pWrapper
 	
 	
 	/** \brief Create behavior. */
 	func new()
 		pPrefix = "interactiveMainMenu."
-		pActions = Dictionary.new()
 	end
 	
 	
@@ -188,69 +235,27 @@ class GABehaviorInteractiveMainMenu extends DefaultGABehavior
 	
 	/** \brief Interactive main menu or null. */
 	func InteractiveMainMenu getInteractiveMainMenu()
-		return pWindow
+		return pWrapper
 	end
 	
 	
 	func void initGame()
-		var BaseGameApp app = BaseGameApp.getApp()
-		pWindow = InteractiveMainMenu.new(app.getConsole())
-		app.getDesktop().addWindow(pWindow)
-		pLastState = pWindow.getState()
-		
 		pBTSMs = GAComposeBTSM.new()
 		if pBTSMs.hasAny()
 			pBTSMs.addAllAction(pPrefix, "set", BTSMSet.new(this))
-			pBTSMs.addAllAction(pPrefix, "update", SMAEngineUpdate.new(this))
-			pBTSMs.addAllCondition(pPrefix, "check", SMCCheck.new(this))
+			pBTSMs.addAllAction(pPrefix, "update", BTSMUpdate.new(this))
+			pBTSMs.addAllCondition(pPrefix, "check", BTSMCheck.new(this))
 		end
+		
+		pWrapper = ImmWrapper.new(this)
+		BaseGameApp.getApp().getDesktop().addWindow(pWrapper)
 	end
 	
 	func void cleanUp()
 		pBTSMs = null
-		if pWindow != null
-			pWindow.safeDispose()
-			pWindow = null
-		end
-		pActions.removeAll()
-	end
-	
-	func void onFrameUpdate(float elapsed)
-		var InteractiveMainMenu.State state = pWindow.getState()
-		if state == pLastState
-			return
-		end
-		
-		if pLastState == InteractiveMainMenu.State.loadingWorld
-			pLastState = state
-			
-			pActions.forEachKey(block String each
-				pWindow.setActionAt(each, null)
-			end)
-			pActions.removeAll()
-			
-			if state == InteractiveMainMenu.State.constructed
-				pBTSMs.runEvent(pPrefix, "loadWorld.failed", this)
-				
-			else
-				pWindow.getWorld().forEachElement(block Element each
-					if each castable BehaviorElement
-						var IMMBehaviorHotSpot.Instance hotSpot =\
-							IMMBehaviorHotSpot.getInstanceIn(each cast BehaviorElement)
-						if hotSpot != null
-							var String action = hotSpot.getAction()
-							if action != null
-								pWindow.setActionAt(action, ActionRunEvent.new(this, "action:" + action))
-							end
-						end
-					end
-				end)
-				
-				pBTSMs.runEvent(pPrefix, "loadWorld.finished", this)
-			end
-			
-		else
-			pLastState = state
+		if pWrapper != null
+			pWrapper.safeDispose()
+			pWrapper = null
 		end
 	end
 	
