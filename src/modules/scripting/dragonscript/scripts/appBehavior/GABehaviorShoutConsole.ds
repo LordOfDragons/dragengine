@@ -33,7 +33,7 @@ pin Dragengine.Gui
  */
 class GABehaviorShoutConsole extends DefaultGABehavior
 	/** \brief Action "shoutConsole.update". */
-	private class SMAEngineUpdate extends BTSMActionCondition
+	private class BTSMUpdate extends BTSMActionCondition
 		var GABehaviorShoutConsole pInstance
 		
 		func new(GABehaviorShoutConsole instance)
@@ -83,7 +83,7 @@ class GABehaviorShoutConsole extends DefaultGABehavior
 		
 		pBTSMs = GAComposeBTSM.new()
 		if pBTSMs.hasAny()
-			pBTSMs.addAllAction("shoutConsole.", "update", SMAEngineUpdate.new(this))
+			pBTSMs.addAllAction("shoutConsole.", "update", BTSMUpdate.new(this))
 		end
 	end
 	

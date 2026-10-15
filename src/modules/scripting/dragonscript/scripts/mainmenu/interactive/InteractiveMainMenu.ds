@@ -410,12 +410,12 @@ class InteractiveMainMenu extends Window
 		return pWorldRenderer
 	end
 	
-	/** \brief Name of main camera spot is no hot-spot is active. */
+	/** \brief Name of main camera spot if no hot-spot is active. */
 	func String getMainCameraSpot()
 		return pMainCameraSpot
 	end
 	
-	/** \brief Set name of main camera spot is no hot-spot is active. */
+	/** \brief Set name of main camera spot if no hot-spot is active. */
 	func void setMainCameraSpot(String name)
 		pMainCameraSpot = name
 	end

@@ -1,0 +1,219 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine
+pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.Gui
+pin Dragengine.Gui.MainMenus.Interactive
+pin Dragengine.Scenery
+pin Dragengine.Gui.Events
+
+/**
+ * \brief Game app behavior adding \ref InteractiveMainMenu to desktop.
+ * \version 1.35
+ */
+class GABehaviorInteractiveMainMenu extends DefaultGABehavior
+	/** \brief Action "interactiveMainMenu.set". */
+	private class BTSMSet extends BTSMActionCondition
+		var GABehaviorInteractiveMainMenu pInstance
+		
+		func new(GABehaviorInteractiveMainMenu instance)
+			pInstance = instance
+		end
+		
+		func BTResult runActionShared(Object context, Dictionary parameters)
+			var Object value = parameters.getAt("fadeInTime", null)
+			if value != null
+				pInstance.getInteractiveMainMenu().setMenuFadeInTime((value cast String).toFloat())
+			end
+			
+			value = parameters.getAt("mainCameraSpot", null)
+			if value != null
+				pInstance.getInteractiveMainMenu().setMainCameraSpot(value cast String)
+			end
+			
+			value = parameters.getAt("action", null)
+			if value != null
+				pInstance.getInteractiveMainMenu().setActionAt(value cast String,\
+					ActionRunEvent.new(pInstance, parameters.getAt("event") cast String))
+			end
+			
+			value = parameters.getAt("visible", null)
+			if value != null
+				pInstance.getInteractiveMainMenu().setVisible(value.equals("true"))
+			end
+			
+			return BTResult.success
+		end
+	end
+	
+	/** \brief Action "interactiveMainMenu.update". */
+	private class SMAEngineUpdate extends BTSMActionCondition
+		var GABehaviorInteractiveMainMenu pInstance
+		
+		func new(GABehaviorInteractiveMainMenu instance)
+			pInstance = instance
+		end
+		
+		func BTResult runActionShared(Object context, Dictionary parameters)
+			var Object value = parameters.getAt("activateHotSpot.action", null)
+			if value != null
+				var IMMBehaviorHotSpot.Instance hotSpot =\
+					pInstance.getInteractiveMainMenu().getHotSpotWithAction(value cast String)
+				if hotSpot != null
+					pInstance.getInteractiveMainMenu().activateHotSpot(hotSpot)
+				end
+			end
+			
+			value = parameters.getAt("activeHotSpot.action", null)
+			if value != null
+				var IMMBehaviorHotSpot.Instance hotSpot =\
+					pInstance.getInteractiveMainMenu().getHotSpotWithAction(value cast String)
+				if hotSpot != null
+					pInstance.getInteractiveMainMenu().setActiveHotSpot(hotSpot)
+				end
+			end
+			
+			value = parameters.getAt("loadWorld", null)
+			if value != null
+				pInstance.getInteractiveMainMenu().loadWorld(value cast String)
+			end
+			
+			if parameters.has("deactivateHotSpot")
+				pInstance.getInteractiveMainMenu().deactivateHotSpot()
+			end
+			if parameters.has("reset")
+				pInstance.getInteractiveMainMenu().reset()
+			end
+			
+			value = parameters.getAt("pause", null)
+			if value != null
+				if value.equals("true")
+					pInstance.getInteractiveMainMenu().pause()
+					
+				else
+					pInstance.getInteractiveMainMenu().resume()
+				end
+			end
+			
+			return BTResult.success
+		end
+	end
+	
+	/** \brief Condition "interactiveMainMenu.check". */
+	private class SMCCheck extends BTSMCondition
+		var GABehaviorInteractiveMainMenu pInstance
+		
+		func new(GABehaviorInteractiveMainMenu instance) super("interactiveMainMenu.")
+			pInstance = instance
+		end
+		
+		func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+			var bool result = true
+			
+			var Object value = parameters.getAt(prefix + "visible", null)
+			if value != null
+				result &= pInstance.getInteractiveMainMenu().getVisible() == value.equals("true")
+			end
+			
+			value = parameters.getAt(prefix + "ready", null)
+			if value != null
+				result &= pInstance.getInteractiveMainMenu().isReady() == value.equals("true")
+			end
+			
+			return result
+		end
+	end
+	
+	/** \brief Action listener running state machine event. */
+	class ActionRunEvent implements ActionListener
+		var GABehaviorInteractiveMainMenu pInstance
+		var String pEvent
+		
+		func new(GABehaviorInteractiveMainMenu instance, String event)
+			pInstance = instance
+			pEvent = event
+		end
+		
+		func void onAction(ActionEvent event)
+			pInstance.getBTSM().runEvent("", pEvent, pInstance)
+		end
+	end
+	
+	
+	var GAComposeBTSM pBTSMs
+	var InteractiveMainMenu pWindow
+	
+	
+	/** \brief Create behavior. */
+	func new()
+	end
+	
+	
+	/** \brief Composable component for state machines. */
+	func GAComposeBTSM getBTSM()
+		return pBTSMs
+	end
+	
+	/** \brief Interactive main menu or null. */
+	func InteractiveMainMenu getInteractiveMainMenu()
+		return pWindow
+	end
+	
+	
+	func void initGame()
+		var BaseGameApp app = BaseGameApp.getApp()
+		pWindow = InteractiveMainMenu.new(app.getConsole())
+		app.getDesktop().addWindow(pWindow)
+		
+		pBTSMs = GAComposeBTSM.new()
+		if pBTSMs.hasAny()
+			pBTSMs.addAllAction("interactiveMainMenu.", "set", BTSMSet.new(this))
+			pBTSMs.addAllAction("interactiveMainMenu.", "update", SMAEngineUpdate.new(this))
+			pBTSMs.addAllCondition("interactiveMainMenu.", "check", SMCCheck.new(this))
+		end
+	end
+	
+	func void cleanUp()
+		pBTSMs = null
+		
+		if pWindow != null
+			pWindow.safeDispose()
+			pWindow = null
+		end
+	end
+	
+	
+	/**
+	 * \brief Get behavior in game app or null if absent.
+	 * 
+	 * Use this method to check if \ref BaseGameApp contains behavior of type \ref GABehaviorInteractiveMainMenu.
+	 */
+	static func GABehaviorInteractiveMainMenu getBehaviorInApp()
+		return BaseGameApp.getApp().findBehavior(block GABehaviorInteractiveMainMenu each
+			return true
+		end) cast GABehaviorInteractiveMainMenu
+	end
+end
