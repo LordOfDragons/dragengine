@@ -28,6 +28,8 @@ pin Dragengine.StateMachineSystem
 pin Dragengine.Gui
 pin Dragengine.Gui.Events
 pin Dragengine.Scenery
+pin Dragengine.CameraDirectors
+pin Dragengine.Preloading
 
 /**
  * \brief Game app behavior adding state machine support.
@@ -316,6 +318,106 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			if value != null
 				window.setVisible(value.equals("true"))
 			end
+			
+			value = parameters.getAt("cameraDirector", null)
+			if value != null
+				if value.equals("playerControlledActor")
+					runCameraDirectorPlayerControlledActor(window, parameters)
+				end
+			end
+		end
+		
+		func void runCameraDirectorPlayerControlledActor(WindowGameWorld window, Dictionary parameters)
+			var PlayerControlledActorCameraDirector director = PlayerControlledActorCameraDirector.new()
+			var CodecPropertyString codec = ElementClass.getSharedCodecPropertyString()
+			
+			var Object value = parameters.getAt("cameraDirector.loadCamera", null)
+			if value != null
+				BehaviorElementClass.sharedFactoryHelper.defaultLoaders().\
+					getCamera().loadFromFile(value cast String, director)
+			end
+			
+			value = parameters.getAt("cameraDirector.pivot", null)
+			if value != null
+				director.setPivot(codec.decodeDVector(value cast String))
+			end
+			
+			value = parameters.getAt("cameraDirector.pivot.aboveGround", null)
+			if value != null
+				director.setPivotAboveGround((value cast String).toFloat())
+			end
+			
+			value = parameters.getAt("cameraDirector.localMatrix.position", null)
+			var Object value2 = parameters.getAt("cameraDirector.localMatrix.rotation", null)
+			if value != null or value2 != null
+				director.setLocalMatrix(\
+					value != null if codec.decodeVector(value cast String) else Vector.new(),\
+					value2 != null if codec.decodeVector(value2 cast String) else Vector.new())
+			end
+			
+			value = parameters.getAt("cameraDirector.azimuth", null)
+			if value != null
+				director.setAzimuth((value cast String).toFloat())
+			end
+			
+			value = parameters.getAt("cameraDirector.azimuth.lock", null)
+			if value != null
+				director.setLockAzimuth(value.equals("true"))
+			end
+			
+			value = parameters.getAt("cameraDirector.elevation", null)
+			if value != null
+				director.setElevation((value cast String).toFloat())
+			end
+			
+			value = parameters.getAt("cameraDirector.elevation.lock", null)
+			if value != null
+				director.setLockElevation(value.equals("true"))
+			end
+			
+			value = parameters.getAt("cameraDirector.distance", null)
+			if value != null
+				director.setDistance((value cast String).toFloat())
+			end
+			
+			value = parameters.getAt("cameraDirector.useOrientation", null)
+			if value != null
+				director.setUseOrientation(value.equals("true"))
+			end
+			
+			value = parameters.getAt("cameraDirector.bone", null)
+			if value != null
+				director.setBone(value cast String)
+			end
+			
+			window.setCameraDirector(director)
+		end
+	end
+	
+	/** \brief Game world loaders sendings events to state machine. */
+	class GameWorldLoader extends WindowGameWorld.Loader
+		var GABehaviorStateMachine pInstance
+		
+		func new() this(GABehaviorStateMachine.getBehaviorInApp(), BaseGameApp.getApp().getWindowGameWorld())
+		end
+		
+		func new(GABehaviorStateMachine instance, WindowGameWorld window) super(window)
+			pInstance = instance
+		end
+		
+		func void dispose()
+			super.dispose()
+			pInstance = null
+		end
+		
+		func void onLoadWorldFinished()
+			super.onLoadWorldFinished()
+			pInstance.runEvent("windowGameWorld.loadWorld.finished")
+		end
+		
+		func void onLoadWorldFailed()
+			super.onLoadWorldFailed()
+			pInstance.runEvent("windowGameWorld.loadWorld.failed")
 		end
 	end
 	
@@ -328,7 +430,8 @@ class GABehaviorStateMachine extends DefaultGABehavior
 		end
 		
 		func void runAction(SMContext context, Dictionary parameters)
-			var WindowGameWorld window = BaseGameApp.getApp().getWindowGameWorld()
+			var BaseGameApp app = BaseGameApp.getApp()
+			var WindowGameWorld window = app.getWindowGameWorld()
 			var Object value
 			
 			value = parameters.getAt("runEvent", null)
@@ -336,6 +439,65 @@ class GABehaviorStateMachine extends DefaultGABehavior
 				var GameWorld gameWorld = window.getGameWorld()
 				if gameWorld != null
 					gameWorld.getBehaviorBTSM().runSMEvent(value cast String)
+				end
+			end
+			
+			if parameters.has("clearWorld")
+				window.setGameWorld(null)
+			end
+			
+			value = parameters.getAt("loadWorld", null)
+			if value != null
+				var GameWorldLoader gwl = GameWorldLoader.new(pInstance, window)
+				gwl.setPathWorld(value cast String)
+				
+				value = parameters.getAt("loadWorld.enableNetworking", null)
+				if value != null
+					gwl.setEnableNetworking(value.equals("true"))
+				end
+				
+				value = parameters.getAt("loadWorld.ignorePersistableElements", null)
+				if value != null
+					gwl.setIgnorePersistableElements(value.equals("true"))
+				end
+				
+				app.startLoadGameWorld(gwl)
+			end
+			
+			value = parameters.getAt("addBehavior", null)
+			if value != null
+				var GameWorld gameWorld = window.getGameWorld()
+				if gameWorld != null
+					var GWBehaviorFactory factory = BaseGameApp.getApp().\
+						getGWBehaviorFactories().getWithId(value cast String)
+					if factory == null
+						throw EInvalidParam.new("GWBehaviorFactory not found: " + value)
+					end
+					
+					factory.addBehavior(gameWorld, parameters.getAt("addBehavior.id", "") cast String)
+				end
+			end
+			
+			value = parameters.getAt("createElement", null)
+			if value != null
+				var GameWorld gameWorld = window.getGameWorld()
+				if gameWorld != null
+					var BehaviorFactoryHelper bfh = BehaviorElementClass.sharedFactoryHelper
+					var StubElement stub = StubElement.new(bfh.defaultElementClassList().\
+						getNamed(value cast String), bfh.defaultIDGenerator().nextID())
+					
+					var Element element
+					try
+						element = stub.createElement()
+						gameWorld.getSpawnPoints().getNamed(parameters.getAt(\
+							"createElement.spawn") cast String).spawn(gameWorld, element)
+						
+					catch Exception e
+						if element != null
+							element.safeDispose()
+						end
+						throw
+					end
 				end
 			end
 		end

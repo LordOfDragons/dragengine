@@ -382,6 +382,7 @@ class BaseGameApp extends Game
 	var InputProcessor pInputProcessor
 	var BehaviorFactoryList pBehaviorFactories
 	var AttachableBehaviorFactoryList pAttachableBehaviorFactories
+	var GWBehaviorFactoryList pGWBehaviorFactories
 	var ElementClassList pElementClassList
 	var CommandManager pCommandManager
 	var ConsoleCommandList pConsoleCommands
@@ -484,6 +485,7 @@ class BaseGameApp extends Game
 	 * - \ref #createWindowConsole()
 	 * - \ref #createAndAddBehaviorFactories()
 	 * - \ref #createAndAddAttachableBehaviorFactories()
+	 * - \ref #createAndAddGWBehaviorFactories()
 	 * - \ref #createAppBehaviors(). Here app behaviors must modify all of the above if required.
 	 * - \ref #createAndAddElementClasses().
 	 * - \ref #loadBindings() and \ref #defaultBindings() if not loaded
@@ -557,6 +559,9 @@ class BaseGameApp extends Game
 		pAttachableBehaviorFactories = AttachableBehaviorFactoryList.new()
 		createAndAddAttachableBehaviorFactories()
 		
+		pGWBehaviorFactories = GWBehaviorFactoryList.new()
+		createAndAddGWBehaviorFactories()
+		
 		pBehaviors = Array.new()
 		createAppBehaviors()
 		
@@ -601,6 +606,7 @@ class BaseGameApp extends Game
 		
 		pBehaviorFactories = null
 		pAttachableBehaviorFactories = null
+		pGWBehaviorFactories = null
 		
 		if pGameWorldLoader != null
 			cancelLoadGameWorld()
@@ -865,6 +871,14 @@ class BaseGameApp extends Game
 	 */
 	func AttachableBehaviorFactoryList getAttachableBehaviorFactories()
 		return pAttachableBehaviorFactories
+	end
+	
+	/**
+	 * \brief Game world behavior factories.
+	 * \version 1.35
+	 */
+	func GWBehaviorFactoryList getGWBehaviorFactories()
+		return pGWBehaviorFactories
 	end
 	
 	/** \brief Element classes list. */
@@ -1595,6 +1609,13 @@ class BaseGameApp extends Game
 	 */
 	protected func void createAndAddAttachableBehaviorFactories()
 		BehaviorElementClass.sharedFactoryHelper.addAllAttachableFactories(pAttachableBehaviorFactories)
+	end
+	
+	/**
+	 * \brief Create game world behavior factories adding them to the factory list.
+	 */
+	protected func void createAndAddGWBehaviorFactories()
+		BehaviorElementClass.sharedFactoryHelper.addAllGWFactories(pGWBehaviorFactories)
 	end
 	
 	/**

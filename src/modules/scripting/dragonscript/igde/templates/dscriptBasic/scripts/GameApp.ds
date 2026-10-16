@@ -159,6 +159,38 @@ class GameApp extends BaseGameApp
 	end
 	
 	/**
+	 * \brief Create attachable behavior factories adding them to the factory list.
+	 * 
+	 * \ref #getAttachableBehaviorFactories() is used by \ref GenericBehaviorElementClass to set
+	 * the initial list of allowed factories. Default uses
+	 * \ref BehaviorFactoryHelper#addAllAttachableFactories() to populate the list.
+	 */
+	protected func void createAndAddAttachableBehaviorFactories()
+		// Always super-call unless you want to start with an empty factory list
+		super.createAndAddAttachableBehaviorFactories()
+		
+		// Add custom behavior factories. See ECBehaviorComponent.Factory for an example on
+		// how a behavior can be added factory support. See ECBehaviorTwoStateAnimated.Factory
+		// for an more complex example using parameters to fine tune behavior construction.
+		var AttachableBehaviorFactoryList factories = getAttachableBehaviorFactories()
+		//factories.add(MyBehavior.Factory.new())
+	end
+	
+	/**
+	 * \brief Create game world behavior factories adding them to the factory list.
+	 */
+	protected func void createAndAddGWBehaviorFactories()
+		// Always super-call unless you want to start with an empty factory list
+		super.createAndAddGWBehaviorFactories()
+		
+		// Add custom game world behavior factories. See ECBehaviorComponent.Factory for an example on
+		// how a behavior can be added factory support. See ECBehaviorTwoStateAnimated.Factory
+		// for an more complex example using parameters to fine tune behavior construction.
+		var GWBehaviorFactoryList factories = getGWBehaviorFactories()
+		//factories.add(MyBehavior.Factory.new())
+	end
+	
+	/**
 	 * \brief Create element classes and add them to element class list.
 	 * 
 	 * Element classes list contains all element classes world files are allowed to be used.

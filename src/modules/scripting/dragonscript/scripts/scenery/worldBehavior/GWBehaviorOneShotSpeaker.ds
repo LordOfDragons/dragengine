@@ -32,6 +32,7 @@ pin Dragengine.Scenery
 
 /**
  * \brief GameWorld Behavior adding support for one-shot speakers.
+ * \version 1.17
  * 
  * One shot speakers are deploy-and-forget type speakers playing a sound or synthesizer once
  * then self-destroy.

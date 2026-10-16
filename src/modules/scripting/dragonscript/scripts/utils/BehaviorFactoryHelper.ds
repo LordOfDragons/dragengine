@@ -1637,4 +1637,19 @@ class BehaviorFactoryHelper
 	func void addCommonAttachableFactories(AttachableBehaviorFactoryList factories)
 		factories.add(ECABehaviorAnchorElement.Factory.new())
 	end
+	
+	/**
+	 * \brief Add all game world behavior factories to factory list.
+	 * \version 1.35
+	 */
+	func void addAllGWFactories(GWBehaviorFactoryList factories)
+		addCommonGWFactories(factories)
+	end
+	
+	/**
+	 * \brief Add common game world behavior factories to factory list.
+	 * \version 1.35
+	 */
+	func void addCommonGWFactories(GWBehaviorFactoryList factories)
+	end
 end
