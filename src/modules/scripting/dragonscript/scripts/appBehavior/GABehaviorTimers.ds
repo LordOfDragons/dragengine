@@ -1,0 +1,299 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
+pin Dragengine.Utils
+
+/**
+ * \brief Application behavior element adding timer support to behavior trees and state machines.
+ * \version 1.35
+ * 
+ * Behavior adds actions, conditions and events allowing behavior trees and state machines to
+ * start, stop and wait for multiple independent timers.
+ * 
+ * This behavior can be added only once.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:gabehavior_timers
+ */
+class GABehaviorTimers extends DefaultGABehavior
+	/** \brief Timer. */
+	class TrackedTimer
+		var String pName
+		var float pTimeout, pRemaining
+		var bool pEventPending
+		
+		
+		/** \brief Create timers. */
+		func new(String name)
+			pName = name
+		end
+		
+		/** \brief Create timer during loading. */
+		func new(String name, float timeout, float remaining, bool eventPending)
+			pName = name
+			pTimeout = timeout
+			pRemaining = remaining
+			pEventPending = eventPending
+		end
+		
+		
+		/** \brief Name. */
+		func String getName()
+			return pName
+		end
+		
+		/** \brief Timeout in seconds the timer has been started with. */
+		func float getTimeout()
+			return pTimeout
+		end
+		
+		/** \brief Remaining time in seconds. */
+		func float getRemaining()
+			return pRemaining
+		end
+		
+		/** \brief Event is pending. */
+		func bool getEventPending()
+			return pEventPending
+		end
+		
+		/** \brief Set if event is pending. */
+		func void setEventPending(bool eventPending)
+			pEventPending = eventPending
+		end
+		
+		
+		/** \brief Start timers. */
+		func void start(float timeout)
+			pTimeout = timeout
+			pRemaining = timeout
+			pEventPending = true
+		end
+		
+		/** \brief Stop timer reseting timeout and remaining to 0. */
+		func void stop()
+			pTimeout = 0
+			pRemaining = 0
+			pEventPending = false
+		end
+		
+		/** \brief Update timer reducing remaining time clamping it at 0. */
+		func void update(float elapsed)
+			pRemaining = DEMath.max(pRemaining - elapsed, 0.0)
+		end
+		
+		
+		/** \brief Remaining time is 0. */
+		func bool hasElapsed()
+			return pRemaining == 0
+		end
+		
+		/** \brief Remaining time is larger than 0. */
+		func bool hasNotElapsed()
+			return pRemaining > 0
+		end
+	end
+	
+	/** \brief Action "timers.update". */
+	private class BTSMUpdate extends BTSMActionCondition
+		var GABehaviorTimers pInstance
+		
+		func new(GABehaviorTimers instance)
+			pInstance = instance
+		end
+		
+		func BTResult runActionShared(Object context, Dictionary parameters)
+			var Object value = parameters.getAt("start", null)
+			if value != null
+				pInstance.startTimer(value cast String, getTimeout(parameters))
+			end
+			
+			value = parameters.getAt("stop", null)
+			if value != null
+				pInstance.stopTimer(value cast String)
+			end
+			
+			return BTResult.success
+		end
+		
+		func float getTimeout(Dictionary parameters)
+			var Object value = parameters.getAt("timeout", null)
+			if value != null
+				return (value cast String).toFloat()
+				
+			else
+				var float lower = (parameters.getAt("timeout.lower") cast String).toFloat()
+				var float upper = (parameters.getAt("timeout.upper") cast String).toFloat()
+				return DEMath.random(lower, upper)
+			end
+		end
+	end
+	
+	/** \brief Action/condition "timers.check". */
+	private class BTSMCheck extends BTSMCondition
+		var GABehaviorTimers pInstance
+		
+		func new(GABehaviorTimers instance) super(instance.getPrefix())
+			pInstance = instance
+		end
+		
+		func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+			var String timer = parameters.getAt(prefix + "timer") cast String
+			var bool result = true
+			
+			var Object value = parameters.getAt(prefix + "running", null)
+			if value != null
+				result &= pInstance.isTimerRunning(timer) == value.equals("true")
+			end
+			
+			value = parameters.getAt(prefix + "remaining.less", null)
+			if value != null
+				result &= pInstance.getTimerRemaining(timer) < (value cast String).toFloat()
+			end
+			
+			value = parameters.getAt(prefix + "remaining.greater", null)
+			if value != null
+				result &= pInstance.getTimerRemaining(timer) > (value cast String).toFloat()
+			end
+			
+			return result
+		end
+	end
+	
+	
+	var GAComposeBTSM pBTSMs
+	var String pPrefix
+	var Dictionary pTimers
+	var Array pElapsedTimers
+	
+	
+	/** \brief Create behavior. */
+	func new()
+		pPrefix = "timers."
+		pTimers = Dictionary.new()
+		pElapsedTimers = Array.new()
+	end
+	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/** \brief Composable component for state machines. */
+	func GAComposeBTSM getBTSM()
+		return pBTSMs
+	end
+	
+	
+	func void initGame()
+		pBTSMs = GAComposeBTSM.new()
+		if pBTSMs.hasAny()
+			pBTSMs.addAllAction(pPrefix, "update", BTSMUpdate.new(this))
+			pBTSMs.addAllCondition(pPrefix, "check", BTSMCheck.new(this))
+		end
+	end
+	
+	func void cleanUp()
+		pBTSMs = null
+	end
+	
+	
+	/** \brief Update timers. */
+	func void updateTimers(float elapsed)
+		pElapsedTimers.removeAll()
+		
+		pTimers.forEachValue(block TrackedTimer each
+			each.update(elapsed)
+			if each.hasElapsed() and each.getEventPending()
+				pElapsedTimers.add(each)
+			end
+		end)
+		
+		pElapsedTimers.forEach(block TrackedTimer each
+			each.setEventPending(false)
+			pBTSMs.runEvent(pPrefix, "elapsed:" + each.getName())
+		end)
+	end
+	
+	
+	/** \brief Named timer or null. */
+	func TrackedTimer getTimer(String timer)
+		return pTimers.getAt(timer, null) cast TrackedTimer
+	end
+	
+	/** \brief Visit timers with block receiving parameter \ref TrackedTimer. */
+	func void forEachTimer(Block ablock)
+		pTimers.forEachValue(ablock)
+	end
+	
+	
+	/** \brief Start timer adding it if absent. */
+	func void startTimer(String timer, float timeout)
+		var TrackedTimer tracked = pTimers.getAt(timer, null) cast TrackedTimer
+		if tracked == null
+			tracked = TrackedTimer.new(timer)
+			pTimers.setAt(timer, tracked)
+		end
+		tracked.start(timeout)
+	end
+	
+	/** \brief Stop timer if present. */
+	func void stopTimer(String timer)
+		var TrackedTimer tracked = pTimers.getAt(timer, null) cast TrackedTimer
+		if tracked != null
+			tracked.stop()
+		end
+	end
+	
+	/** \brief Timer is present and running. */
+	func bool isTimerRunning(String timer)
+		var TrackedTimer tracked = pTimers.getAt(timer, null) cast TrackedTimer
+		return tracked != null and tracked.hasNotElapsed()
+	end
+	
+	/** \brief Remaining time of timer or 0 if absent. */
+	func float getTimerRemaining(String timer)
+		var TrackedTimer tracked = pTimers.getAt(timer, null) cast TrackedTimer
+		return tracked != null if tracked.getRemaining() else 0
+	end
+	
+	func void onFrameUpdate(float elapsed)
+		updateTimers(elapsed)
+	end
+	
+	
+	/**
+	 * \brief Get behavior in game app or null if absent.
+	 * 
+	 * Use this method to check if \ref BaseGameApp contains behavior of type \ref GABehaviorTimers.
+	 */
+	static func GABehaviorTimers getBehaviorInApp()
+		return BaseGameApp.getApp().findBehavior(block GABehaviorTimers each
+			return true
+		end) cast GABehaviorTimers
+	end
+end

@@ -1219,7 +1219,7 @@ class BaseGameApp extends Game
 			throw ENullPointer.new()
 		end
 		if pBehaviors.has(behavior)
-			throw EInvalidParam.new("duplicate behavior")
+			throw EInvalidParam.new("duplicate behavior " + behavior.className())
 		end
 		pBehaviors.add(behavior)
 	end

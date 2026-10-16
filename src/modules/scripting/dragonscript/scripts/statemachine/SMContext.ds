@@ -431,6 +431,7 @@ class SMContext
 			return
 		end
 		
+		var SMState recoverState = pCurrentState
 		try
 			while event != null
 				var SMTransition transition = pCurrentState.findTransition(block SMTransition each
@@ -461,6 +462,7 @@ class SMContext
 					break
 				end
 				
+				recoverState = pCurrentState
 				pEventParameter = parameter // ensure event parameter is set
 				pTransitionInProgress = true
 				transition.run(this)
@@ -473,6 +475,9 @@ class SMContext
 		catch Exception e
 			pTransitionInProgress = false
 			pEventParameter = null
+			if pCurrentState == null
+				pCurrentState = recoverState
+			end
 			throw e
 		end
 		
@@ -501,6 +506,7 @@ class SMContext
 	 */
 	func void reset()
 		pCurrentState = null
+		pDelayedEvents = null
 		setCurrentState(pStateMachine.getStateAt(pStateMachine.getInitialState()))
 	end
 	

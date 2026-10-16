@@ -212,4 +212,6 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementReportMod.Enum.ReportType.illegalContent'>Verbotener Inhalt</translation>
 	<translation name='UI.ModManagementReportMod.Enum.ReportType.other'>Anderer Grund</translation>
 	<translation name='UI.Submit'>Senden</translation>
+	<translation name='UI.WindowLoading.Loading'>Laden...</translation>
+	<translation name='UI.WindowLoading.Finished'>Taste drücken zum Fortfahren</translation>
 </languagePack>

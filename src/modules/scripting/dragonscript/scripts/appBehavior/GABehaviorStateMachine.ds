@@ -119,8 +119,8 @@ class GABehaviorStateMachine extends DefaultGABehavior
 		end
 	end
 	
-	/** \brief Action "app.update". */
-	private class SMAAppUpdate implements SMAction
+	/** \brief Action "app.set". */
+	private class SMAAppSet implements SMAction
 		var GABehaviorStateMachine pInstance
 		
 		func new(GABehaviorStateMachine instance)
@@ -148,6 +148,19 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			if value != null
 				app.desktopLoadGuiTheme(value cast String)
 			end
+		end
+	end
+	
+	/** \brief Action "app.update". */
+	private class SMAAppUpdate implements SMAction
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func void runAction(SMContext context, Dictionary parameters)
+			var BaseGameApp app = BaseGameApp.getApp()
 			
 			if parameters.has("settings.save")
 				app.saveSettings()
@@ -319,10 +332,18 @@ class GABehaviorStateMachine extends DefaultGABehavior
 				window.setVisible(value.equals("true"))
 			end
 			
+			value = parameters.getAt("enabled", null)
+			if value != null
+				window.setEnabled(value.equals("true"))
+			end
+			
 			value = parameters.getAt("cameraDirector", null)
 			if value != null
 				if value.equals("playerControlledActor")
 					runCameraDirectorPlayerControlledActor(window, parameters)
+					
+				elif value.equals("")
+					window.setCameraDirector(null)
 				end
 			end
 		end
@@ -395,14 +416,32 @@ class GABehaviorStateMachine extends DefaultGABehavior
 	end
 	
 	/** \brief Game world loaders sendings events to state machine. */
-	class GameWorldLoader extends WindowGameWorld.Loader
-		var GABehaviorStateMachine pInstance
+	class SMGameWorldLoader extends WindowGameWorld.Loader
+		class AddBehavior
+			public var String name, id
+			
+			func new(String name, String id)
+				this.name = name
+				this.id = id
+			end
+		end
 		
+		
+		var GABehaviorStateMachine pInstance
+		var String pBgStyle, pTextLoading, pTextFinished
+		var Array pAddBehaviors
+		
+		
+		/** \brief Create game world loader. */
 		func new() this(GABehaviorStateMachine.getBehaviorInApp(), BaseGameApp.getApp().getWindowGameWorld())
 		end
 		
+		/** \brief Create game world loader. */
 		func new(GABehaviorStateMachine instance, WindowGameWorld window) super(window)
 			pInstance = instance
+			pTextLoading = "@UI.WindowLoading.Loading"
+			pTextFinished = "@UI.WindowLoading.Finished"
+			pAddBehaviors = Array.new()
 		end
 		
 		func void dispose()
@@ -410,14 +449,111 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			pInstance = null
 		end
 		
+		
+		/** \brief Background style. */
+		func String getBgStyle()
+			return pBgStyle
+		end
+		
+		/** \brief Set background style. */
+		func void setBgStyle(String style)
+			pBgStyle = style
+		end
+		
+		/** \brief Loading text. */
+		func String getTextLoading()
+			return pTextLoading
+		end
+		
+		/** \brief Set loading text. */
+		func void setTextLoading(String text)
+			if text == null
+				throw ENullPointer.new("text")
+			end
+			pTextLoading = text
+		end
+		
+		/** \brief Finished text. */
+		func String getTextFinished()
+			return pTextFinished
+		end
+		
+		/** \brief Set finished text. */
+		func void setTextFinished(String text)
+			if text == null
+				throw ENullPointer.new("text")
+			end
+			pTextFinished = text
+		end
+		
+		/** \brief Behaviors to add as \ref Array of \ref AddBehavior. */
+		func Array getAddBehaviors()
+			return pAddBehaviors
+		end
+		
+		
+		protected func void createLoadingWindow()
+			super.createLoadingWindow()
+			var WindowLoading window = getWindowLoading()
+			if window != null
+				if pBgStyle != null
+					window.setBgStyle(pBgStyle)
+				end
+				window.getModelText().setText(pTextLoading)
+				window.getModelTextFinished().setText(pTextFinished)
+			end
+		end
+		
+		protected func GameWorld createGameWorld()
+			var GWBehaviorFactoryList factories = BaseGameApp.getApp().getGWBehaviorFactories()
+			var GameWorld gameWorld = super.createGameWorld()
+			pAddBehaviors.forEach(block AddBehavior each
+				factories.getWithId(each.name).addBehavior(gameWorld, each.id)
+			end)
+			return gameWorld
+		end
+		
 		func void onLoadWorldFinished()
 			super.onLoadWorldFinished()
 			pInstance.runEvent("windowGameWorld.loadWorld.finished")
+			BaseGameApp.getApp().finishLoadGameWorld()
 		end
 		
 		func void onLoadWorldFailed()
 			super.onLoadWorldFailed()
 			pInstance.runEvent("windowGameWorld.loadWorld.failed")
+			BaseGameApp.getApp().cancelLoadGameWorld()
+		end
+	end
+	
+	/**
+	 * \brief Action listener running event to state machine.
+	 * 
+	 * Action event source is used as run event parameter.
+	 */
+	class ActionRunEvent implements ActionListener
+		var GABehaviorStateMachine pInstance
+		var String pEvent
+		
+		/** \brief Create action listener. */
+		func new(String event) this(GABehaviorStateMachine.getBehaviorInApp(), event)
+		end
+		
+		/** \brief Create action listener. */
+		func new(GABehaviorStateMachine instance, String event)
+			if instance == null
+				throw ENullPointer.new("instance")
+			end
+			if event == null
+				throw ENullPointer.new("event")
+			end
+			
+			pInstance = instance
+			pEvent = event
+		end
+		
+		func void onAction(ActionEvent event)
+			pInstance.runEvent(pEvent, event.getSource())
 		end
 	end
 	
@@ -448,7 +584,7 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			
 			value = parameters.getAt("loadWorld", null)
 			if value != null
-				var GameWorldLoader gwl = GameWorldLoader.new(pInstance, window)
+				var SMGameWorldLoader gwl = SMGameWorldLoader.new(pInstance, window)
 				gwl.setPathWorld(value cast String)
 				
 				value = parameters.getAt("loadWorld.enableNetworking", null)
@@ -461,20 +597,56 @@ class GABehaviorStateMachine extends DefaultGABehavior
 					gwl.setIgnorePersistableElements(value.equals("true"))
 				end
 				
+				value = parameters.getAt("loadWorld.loadingWindow.bgStyle", null)
+				if value != null
+					gwl.setBgStyle(not value.equals("") if value cast String else null)
+				end
+				
+				value = parameters.getAt("loadWorld.loadingWindow.text", null)
+				if value != null
+					gwl.setTextLoading(value cast String)
+				end
+				
+				value = parameters.getAt("loadWorld.loadingWindow.textFinished", null)
+				if value != null
+					gwl.setTextFinished(value cast String)
+				end
+				
+				value = parameters.getAt("loadWorld.addBehaviors", null)
+				if value != null
+					var CodecPropertyString codec = ElementClass.getSharedCodecPropertyString()
+					var Array list = gwl.getAddBehaviors()
+					
+					codec.decodeStringList(value cast String).forEach(block String name
+						var int deli = name.find(codec.getKeyValueSeparator())
+						var String id = ""
+						if deli != -1
+							id = name.substring(deli + 1)
+							name = name.substring(0, deli)
+						end
+						list.add(SMGameWorldLoader.AddBehavior.new(name, id))
+					end)
+				end
+				
 				app.startLoadGameWorld(gwl)
 			end
 			
-			value = parameters.getAt("addBehavior", null)
+			value = parameters.getAt("addBehaviors", null)
 			if value != null
 				var GameWorld gameWorld = window.getGameWorld()
 				if gameWorld != null
-					var GWBehaviorFactory factory = BaseGameApp.getApp().\
-						getGWBehaviorFactories().getWithId(value cast String)
-					if factory == null
-						throw EInvalidParam.new("GWBehaviorFactory not found: " + value)
-					end
+					var GWBehaviorFactoryList factories = BaseGameApp.getApp().getGWBehaviorFactories()
+					var CodecPropertyString codec = ElementClass.getSharedCodecPropertyString()
 					
-					factory.addBehavior(gameWorld, parameters.getAt("addBehavior.id", "") cast String)
+					codec.decodeStringList(value cast String).forEach(block String name
+						var int deli = name.find(codec.getKeyValueSeparator())
+						var String id = ""
+						if deli != -1
+							id = name.substring(deli + 1)
+							name = name.substring(0, deli)
+						end
+						factories.getWithId(name).addBehavior(gameWorld, id)
+					end)
 				end
 			end
 			
@@ -491,6 +663,10 @@ class GABehaviorStateMachine extends DefaultGABehavior
 						element = stub.createElement()
 						gameWorld.getSpawnPoints().getNamed(parameters.getAt(\
 							"createElement.spawn") cast String).spawn(gameWorld, element)
+						
+						if parameters.has("createElement.playerTakeControl")
+							ECBehaviorPlayerControllable.getInstanceIn(element cast BehaviorElement).takeControl()
+						end
 						
 					catch Exception e
 						if element != null
@@ -572,7 +748,7 @@ class GABehaviorStateMachine extends DefaultGABehavior
 	
 	/** \brief Run event on state machine. */
 	func void runEvent(String event)
-		pContext.runEvent(event)
+		runEvent(event, null)
 	end
 	
 	/** \brief Run event with parameter on state machine. */
@@ -643,6 +819,7 @@ class GABehaviorStateMachine extends DefaultGABehavior
 		pContext.setAction("engine.update", SMAEngineUpdate.new(this))
 		pContext.setCondition("engine.check", SMCEngineCheck.new(this))
 		
+		pContext.setAction("app.set", SMAAppSet.new(this))
 		pContext.setAction("app.update", SMAAppUpdate.new(this))
 		pContext.setCondition("app.check", SMCAppCheck.new(this))
 		

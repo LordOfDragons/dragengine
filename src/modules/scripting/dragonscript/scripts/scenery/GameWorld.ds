@@ -181,7 +181,7 @@ class GameWorld
 	 */
 	func void addBehavior(GWBehavior behavior)
 		if behavior == null or pBehaviors.has(behavior)
-			throw EInvalidParam.new("duplicate behavior")
+			throw EInvalidParam.new("duplicate behavior " + behavior.className())
 		end
 		
 		pBehaviors.add(behavior)

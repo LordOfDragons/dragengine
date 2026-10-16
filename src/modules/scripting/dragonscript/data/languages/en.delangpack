@@ -212,4 +212,6 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagementReportMod.Enum.ReportType.illegalContent'>Illegal content</translation>
 	<translation name='UI.ModManagementReportMod.Enum.ReportType.other'>Other reason</translation>
 	<translation name='UI.Submit'>Submit</translation>
+	<translation name='UI.WindowLoading.Loading'>Loading...</translation>
+	<translation name='UI.WindowLoading.Finished'>Press any key to continue</translation>
 </languagePack>

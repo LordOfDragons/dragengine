@@ -159,6 +159,14 @@ class WindowGameWorld extends Window
 				pWindow.setGameWorld(null)
 			end
 		end
+		
+		protected func void cleanUp()
+			if getStubWorld() != null and getCleanUpStubWorld() and pWindow != null\
+			and pWindow.getGameWorld() == getStubWorld().getGameWorld()
+				pWindow.setGameWorld(null, false) // protect against dispose while in use
+			end
+			super.cleanUp()
+		end
 	end
 	
 	
@@ -280,11 +288,13 @@ class WindowGameWorld extends Window
 			end
 			
 			var World world = pGameWorld.getWorld()
-			if world.equals(pMicrophone.getParentWorld())
-				world.removeMicrophone(pMicrophone)
-			end
-			if world.equals(pCamera.getParentWorld())
-				world.removeCamera(pCamera)
+			if world != null // disposed protection
+				if world.equals(pMicrophone.getParentWorld())
+					world.removeMicrophone(pMicrophone)
+				end
+				if world.equals(pCamera.getParentWorld())
+					world.removeCamera(pCamera)
+				end
 			end
 			
 			if dispose
