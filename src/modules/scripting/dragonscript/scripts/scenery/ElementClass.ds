@@ -333,7 +333,7 @@ class ElementClass implements ResourceListener
 			element.init(stub)
 			
 		catch Exception e
-			element.dispose()
+			element.safeDispose()
 			throw
 		end
 		
@@ -361,8 +361,7 @@ class ElementClass implements ResourceListener
 			gameWorld.addElement(element)
 			
 		catch Exception e
-			element.removeFromGameWorldIfPresent()
-			element.dispose()
+			element.safeDispose()
 			throw
 		end
 	end
@@ -389,8 +388,7 @@ class ElementClass implements ResourceListener
 			element.readFromFile(env, reader)
 			
 		catch Exception e
-			element.removeFromGameWorldIfPresent()
-			element.dispose()
+			element.safeDispose()
 			throw
 		end
 		
@@ -419,8 +417,7 @@ class ElementClass implements ResourceListener
 			gameWorld.addElement(element)
 			
 		catch Exception e
-			element.removeFromGameWorldIfPresent()
-			element.dispose()
+			element.safeDispose()
 			throw
 		end
 	end

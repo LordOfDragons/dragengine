@@ -33,6 +33,7 @@ pin Dragengine.Gui.Events
 /**
  * \brief Game app behavior adding \ref InteractiveMainMenu to desktop.
  * \version 1.35
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:gabehavior_interactivemainmenu
  */
 class GABehaviorInteractiveMainMenu extends DefaultGABehavior
 	/** \brief Action "interactiveMainMenu.set". */

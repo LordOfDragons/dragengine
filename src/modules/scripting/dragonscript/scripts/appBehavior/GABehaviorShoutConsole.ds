@@ -30,6 +30,7 @@ pin Dragengine.Gui
 /**
  * \brief Game app behavior adding \ref ShoutConsole to \ref WindowGameWorld.
  * \version 1.35
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:gabehavior_shoutconsole
  */
 class GABehaviorShoutConsole extends DefaultGABehavior
 	/** \brief Action "shoutConsole.update". */

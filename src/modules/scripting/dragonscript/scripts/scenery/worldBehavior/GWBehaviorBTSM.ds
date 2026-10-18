@@ -36,6 +36,8 @@ pin Dragengine.Preloading
  * that can be used by behavior trees and state machines of behavior elements.
  * 
  * This behavior can be present only once in a GameWorld.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:gwbehavior_btsm
  */
 class GWBehaviorBTSM extends DefaultGWBehavior
 	/** \brief Action "app.btsm.runEvent". */

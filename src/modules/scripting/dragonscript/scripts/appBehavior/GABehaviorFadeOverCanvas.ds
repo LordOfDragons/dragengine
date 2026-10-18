@@ -38,6 +38,8 @@ pin Dragengine.Gui.Designers
  * 
  * Canvas is styled using \ref WidgetDesigner typically used to blend over black, white, an image
  * or a video.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:gabehavior_fadeovercanvas
  */
 class GABehaviorFadeOverCanvas extends DefaultGABehavior
 	/** \brief Action "fadeOverCanvas.set". */

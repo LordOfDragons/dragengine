@@ -36,6 +36,8 @@ pin Dragengine.Preloading
  * Parameter tree file is set using world property "parameterTree.path".
  * 
  * This behavior can be present only once in a GameWorld.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:gwbehavior_parametertree
  */
 class GWBehaviorParameterTree extends DefaultGWBehavior
 	var ParameterTree pParameterTree

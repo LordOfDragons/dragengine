@@ -38,6 +38,8 @@ pin Dragengine.Scenery
  * then self-destroy.
  * 
  * This behavior can be present only once in a GameWorld.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:gwbehavior_oneshotspeaker
  */
 class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	var LayerMask pLayerMask

@@ -51,6 +51,8 @@ pin Dragengine.Preloading
  *     <string path="appBehavior/stateMachine/debug">SM-Game</string>
  * </parameterTree>
  * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:gabehavior_statemachine
  */
 class GABehaviorStateMachine extends DefaultGABehavior
 	/** \brief Action "engine.update". */
@@ -654,15 +656,30 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			if value != null
 				var GameWorld gameWorld = window.getGameWorld()
 				if gameWorld != null
+					var CodecPropertyString codec = ElementClass.getSharedCodecPropertyString()
 					var BehaviorFactoryHelper bfh = BehaviorElementClass.sharedFactoryHelper
 					var StubElement stub = StubElement.new(bfh.defaultElementClassList().\
 						getNamed(value cast String), bfh.defaultIDGenerator().nextID())
 					
 					var Element element
 					try
+						value = parameters.getAt("createElement.properties", null)
+						if value != null
+							codec.decodeStringDictionary(value cast String).\
+								forEach(block String k, String v
+									stub.setPropertyValueFor(k, v)
+								end)
+						end
+						
 						element = stub.createElement()
-						gameWorld.getSpawnPoints().getNamed(parameters.getAt(\
-							"createElement.spawn") cast String).spawn(gameWorld, element)
+						
+						value = parameters.getAt("createElement.spawn", null)
+						if value != null
+							gameWorld.getSpawnPoints().getNamed(value cast String).spawn(gameWorld, element)
+							
+						else
+							gameWorld.addElement(element)
+						end
 						
 						if parameters.has("createElement.playerTakeControl")
 							ECBehaviorPlayerControllable.getInstanceIn(element cast BehaviorElement).takeControl()

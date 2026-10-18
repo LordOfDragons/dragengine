@@ -3068,6 +3068,10 @@
 			<description>Anchor name or empty string to not anchor.</description>
 			<type>string</type>
 		</property>
+		<property name='anchorGroupID'>
+			<description>Anchor group ID or empty string to not anchor.</description>
+			<type>string</type>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECABehaviorAnchorElement'>
@@ -3077,6 +3081,10 @@
 		<attachableBehavior>true</attachableBehavior>
 		<property name='anchorID'>
 			<description>Anchor name or empty string to not anchor.</description>
+			<type>string</type>
+		</property>
+		<property name='anchorGroupID'>
+			<description>Anchor group ID or empty string to not anchor.</description>
 			<type>string</type>
 		</property>
 		<category>Dragengine/Behavior/Attachable</category>
