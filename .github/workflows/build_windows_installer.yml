@@ -49,8 +49,9 @@ jobs:
         if: ${{ inputs.lfscache }}
         shell: pwsh
         run: |
-          git lfs pull 2>&1 | Tee-Object -FilePath lfs.log
-          if (Select-String -Path lfs.log -Pattern 'error:' -Quiet) {
+          $lfsOutput = git lfs pull 2>&1
+          $lfsOutput
+          if ($lfsOutput | Select-String -Pattern 'error:' -Quiet) {
             git lfs logs last
             exit 1
           }
