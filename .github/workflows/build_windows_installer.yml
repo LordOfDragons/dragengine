@@ -23,7 +23,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     
     steps:
       - uses: actions/checkout@v6
@@ -34,7 +34,8 @@ jobs:
       
       - name: Create LFS file hash list
         if: ${{ inputs.lfscache }}
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects-id
+        shell: pwsh
+        run: git lfs ls-files -l | ForEach-Object { ($_ -split ' ')[0] } | Sort-Object | Set-Content -Path .lfs-objects-id
 
       - name: Restore LFS Cache
         uses: actions/cache@v5
@@ -46,12 +47,13 @@ jobs:
 
       - name: Git LFS Pull
         if: ${{ inputs.lfscache }}
+        shell: pwsh
         run: |
-          git lfs pull 2>&1 | tee lfs.log
-          if grep -q "error:" "lfs.log" ; then
+          git lfs pull 2>&1 | Tee-Object -FilePath lfs.log
+          if (Select-String -Path lfs.log -Pattern 'error:' -Quiet) {
             git lfs logs last
             exit 1
-          fi
+          }
       
       - name: Get Windows Archives
         uses: actions/download-artifact@v8
@@ -59,44 +61,51 @@ jobs:
           name: ${{ inputs.artifactArchive }}
       
       - name: Update ISS files
+        shell: pwsh
+        working-directory: installer/windows
+        env:
+          RELEASE_VERSION: ${{ inputs.releaseVersion }}
         run: |
-          cd ${{ github.workspace }}/installer/windows
-          sed -e "s/%VERSION%/${{ inputs.releaseVersion }}/g" dragengine64.iss.in >dragengine64.iss
-          sed -e "s/%VERSION%/${{ inputs.releaseVersion }}/g" dragengine64-sdk.iss.in >dragengine64-sdk.iss
-          sed -e "s/%VERSION%/${{ inputs.releaseVersion }}/g" deigde64.iss.in >deigde64.iss
-          sed -e "s/%VERSION%/${{ inputs.releaseVersion }}/g" deigde64-sdk.iss.in >deigde64-sdk.iss
+          foreach ($name in 'dragengine64', 'dragengine64-sdk', 'deigde64', 'deigde64-sdk') {
+            (Get-Content -Raw "$name.iss.in") -replace '%VERSION%', $env:RELEASE_VERSION |
+              Set-Content -NoNewline -Path "$name.iss"
+          }
       
       - name: Unpack Windows Archives
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ inputs.releaseVersion }}
         run: |
-          sudo apt -y update
-          sudo apt install -y unzip
-          unzip dragengine-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
-          unzip dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
-          unzip deigde-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
-          unzip deigde-sdk-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
-          chmod -R g=u,o=u installer/windows/unpacked
-          mkdir installer/windows/build
-          chmod 777 installer/windows/build
+          foreach ($archive in 'dragengine', 'dragengine-sdk', 'deigde', 'deigde-sdk') {
+            Expand-Archive -Path "$archive-$env:RELEASE_VERSION-windows64.zip" -DestinationPath installer/windows/unpacked -Force
+          }
+          New-Item -ItemType Directory -Force -Path installer/windows/build | Out-Null
           
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --no-progress -y
+
       - name: Build Installers
+        shell: pwsh
+        working-directory: installer/windows
         run: |
-          docker run --rm \
-            -v ${{ github.workspace }}/installer/windows:/work \
-            -w /work \
-            --entrypoint /bin/sh \
-            amake/innosetup:latest \
-            -c "iscc dragengine64.iss && \
-                iscc dragengine64-sdk.iss && \
-                iscc deigde64.iss && \
-                iscc deigde64-sdk.iss"
+          $iscc = (Get-Command ISCC.exe -ErrorAction SilentlyContinue).Source
+          if (-not $iscc) { $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe' }
+          if (-not (Test-Path $iscc)) { throw "ISCC.exe not found" }
+          foreach ($script in 'dragengine64.iss', 'dragengine64-sdk.iss', 'deigde64.iss', 'deigde64-sdk.iss') {
+            & $iscc $script
+            if ($LASTEXITCODE -ne 0) { throw "ISCC failed for $script" }
+          }
       
       - name: Rename installers
+        shell: pwsh
+        working-directory: installer/windows/build
+        env:
+          RELEASE_VERSION: ${{ inputs.releaseVersion }}
         run: |
-          cd ${{ github.workspace }}/installer/windows/build
-          mv install-dragengine-windows64.exe install-dragengine-${{ inputs.releaseVersion }}-windows64.exe
-          mv install-dragengine-sdk-windows64.exe install-dragengine-sdk-${{ inputs.releaseVersion }}-windows64.exe
-          mv install-deigde-windows64.exe install-deigde-${{ inputs.releaseVersion }}-windows64.exe
-          mv install-deigde-sdk-windows64.exe install-deigde-sdk-${{ inputs.releaseVersion }}-windows64.exe
+          foreach ($name in 'dragengine', 'dragengine-sdk', 'deigde', 'deigde-sdk') {
+            Move-Item -Force -Path "install-$name-windows64.exe" -Destination "install-$name-$env:RELEASE_VERSION-windows64.exe"
+          }
         
       - name: Store Installers
         uses: actions/upload-artifact@v7
