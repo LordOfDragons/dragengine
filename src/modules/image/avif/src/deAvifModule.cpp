@@ -85,8 +85,6 @@ void deAvifModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImag
 	const int height = infos.GetHeight();
 	const int width = infos.GetWidth();
 	avifImage *decodedImage = nullptr;
-	bool isDataAllocated = false;
-	avifRGBImage rgbImage{};
 	
 	deAvifIO ioHandler(file);
 	
@@ -94,8 +92,6 @@ void deAvifModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImag
 	DEASSERT_NOTNULL(decoder)
 	
 	try{
-		int y, x;
-		
 		avifDecoderSetIO(decoder, &ioHandler.GetIO());
 		
 		decodedImage = avifImageCreateEmpty();
@@ -106,7 +102,11 @@ void deAvifModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImag
 			DETHROW_INFO(deeInvalidFileFormat, avifResultToString(result));
 		}
 		
-		// create RGB image for conversion
+		if((int)decodedImage->width != width || (int)decodedImage->height != height){
+			DETHROW_INFO(deeInvalidFileFormat, "Decoded image size differs from header information");
+		}
+		
+		avifRGBImage rgbImage{};
 		avifRGBImageSetDefaults(&rgbImage, decodedImage);
 		
 		if(componentCount == 1){
@@ -123,123 +123,18 @@ void deAvifModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImag
 		}
 		rgbImage.depth = bitCount;
 		
-		// allocate RGB buffer for conversion
-		result = avifRGBImageAllocatePixels(&rgbImage);
-		if(result != AVIF_RESULT_OK){
-			DETHROW(deeOutOfMemory);
-		}
-		isDataAllocated = true;
+		// convert directly into the image buffer. the buffer is already sized for the pixel layout
+		// matching the RGB format chosen above, so no intermediate buffer or copy is required
+		DEASSERT_NOTNULL(image.GetData())
+		rgbImage.pixels = static_cast<uint8_t*>(image.GetData());
+		rgbImage.rowBytes = (uint32_t)(width * componentCount * (bitCount / 8));
 		
 		result = avifImageYUVToRGB(decodedImage, &rgbImage);
 		if(result != AVIF_RESULT_OK){
 			DETHROW_INFO(deeInvalidFileFormat, avifResultToString(result));
 		}
 		
-		const int rgbRowBytes = (int)rgbImage.rowBytes;
-		const auto rgbData = rgbImage.pixels;
-		
-		// copy pixels to image
-		if(bitCount == 16){
-			if(componentCount == 1){
-				auto dest = image.GetDataGrayscale16();
-				for(y=0; y<height; y++){
-					auto srcRow = reinterpret_cast<const uint16_t*>(rgbData + rgbRowBytes * y);
-					auto destRow = dest + width * y;
-					for(x=0; x<width; x++){
-						destRow[x].value = (unsigned short)srcRow[x];
-					}
-				}
-				
-			}else if(componentCount == 2){
-				auto dest = image.GetDataGrayscaleAlpha16();
-				for(y=0; y<height; y++){
-					auto srcRow = reinterpret_cast<const uint16_t*>(rgbData + rgbRowBytes * y);
-					auto destRow = dest + width * y;
-					for(x=0; x<width; x++){
-						destRow[x].value = (unsigned short)*(srcRow++);
-						destRow[x].alpha = (unsigned short)*(srcRow++);
-					}
-				}
-				
-			}else if(componentCount == 3){
-				auto dest = image.GetDataRGB16();
-				for(y=0; y<height; y++){
-					auto srcRow = reinterpret_cast<const uint16_t*>(rgbData + rgbRowBytes * y);
-					auto destRow = dest + width * y;
-					for(x=0; x<width; x++){
-						destRow[x].red = (unsigned short)*(srcRow++);
-						destRow[x].green = (unsigned short)*(srcRow++);
-						destRow[x].blue = (unsigned short)*(srcRow++);
-					}
-				}
-				
-			}else if(componentCount == 4){
-				auto dest = image.GetDataRGBA16();
-				for(y=0; y<height; y++){
-					auto srcRow = reinterpret_cast<const uint16_t*>(rgbData + rgbRowBytes * y);
-					auto destRow = dest + width * y;
-					for(x=0; x<width; x++){
-						destRow[x].red = (unsigned short)*(srcRow++);
-						destRow[x].green = (unsigned short)*(srcRow++);
-						destRow[x].blue = (unsigned short)*(srcRow++);
-						destRow[x].alpha = (unsigned short)*(srcRow++);
-					}
-				}
-			}
-			
-		}else{
-			if(componentCount == 1){
-				auto dest = image.GetDataGrayscale8();
-				for(y=0; y<height; y++){
-					auto srcRow = rgbData + rgbRowBytes * y;
-					auto destRow = dest + width * y;
-					for(x=0; x<width; x++){
-						destRow[x].value = srcRow[x];
-					}
-				}
-				
-			}else if(componentCount == 2){
-				auto dest = image.GetDataGrayscaleAlpha8();
-				for(y=0; y<height; y++){
-					auto srcRow = rgbData + rgbRowBytes * y;
-					auto destRow = dest + width * y;
-					for(x=0; x<width; x++){
-						destRow[x].value = *(srcRow++);
-						destRow[x].alpha = *(srcRow++);
-					}
-				}
-				
-			}else if(componentCount == 3){
-				auto dest = image.GetDataRGB8();
-				for(y=0; y<height; y++){
-					auto srcRow = rgbData + rgbRowBytes * y;
-					auto destRow = dest + width * y;
-					for(x=0; x<width; x++){
-						destRow[x].red = *(srcRow++);
-						destRow[x].green = *(srcRow++);
-						destRow[x].blue = *(srcRow++);
-					}
-				}
-				
-			}else if(componentCount == 4){
-				auto dest = image.GetDataRGBA8();
-				for(y=0; y<height; y++){
-					auto srcRow = rgbData + rgbRowBytes * y;
-					auto destRow = dest + width * y;
-					for(x=0; x<width; x++){
-						destRow[x].red = *(srcRow++);
-						destRow[x].green = *(srcRow++);
-						destRow[x].blue = *(srcRow++);
-						destRow[x].alpha = *(srcRow++);
-					}
-				}
-			}
-		}
-		
 	}catch(const deException &){
-		if(isDataAllocated){
-			avifRGBImageFreePixels(&rgbImage);
-		}
 		if(decodedImage){
 			avifImageDestroy(decodedImage);
 		}
@@ -247,7 +142,6 @@ void deAvifModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImag
 		throw;
 	}
 	
-	avifRGBImageFreePixels(&rgbImage);
 	avifImageDestroy(decodedImage);
 	avifDecoderDestroy(decoder);
 }
@@ -312,116 +206,124 @@ void deAvifModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 		}
 		rgbImage.depth = bitCount;
 		
-		if(avifRGBImageAllocatePixels(&rgbImage) != AVIF_RESULT_OK){
-			DETHROW(deeOutOfMemory);
-		}
-		isDataAllocated = true;
-		
-		// write pixels to encode image
-		if(bitCount == 16){
-			if(componentCount == 1){
-				const auto src = image.GetDataGrayscale16();
-				for(int y=0; y<height; y++){
-					auto destRow = reinterpret_cast<uint16_t*>(
-						rgbImage.pixels + rgbImage.rowBytes * y);
-					auto srcRow = src + width * y;
-					
-					for(int x=0; x<width; x++){
-						destRow[x] = (uint16_t)srcRow[x].value;
-					}
-				}
-				
-			}else if(componentCount == 2){
-				const auto src = image.GetDataGrayscaleAlpha16();
-				for(int y=0; y<height; y++){
-					auto destRow = reinterpret_cast<uint16_t*>(
-						rgbImage.pixels + rgbImage.rowBytes * y);
-					auto srcRow = src + width * y;
-					
-					for(int x=0; x<width; x++){
-						*(destRow++) = (uint16_t)srcRow[x].value;
-						*(destRow++) = (uint16_t)srcRow[x].alpha;
-					}
-				}
-				
-			}else if(componentCount == 3){
-				const auto src = image.GetDataRGB16();
-				for(int y=0; y<height; y++){
-					auto destRow = reinterpret_cast<uint16_t*>(
-						rgbImage.pixels + rgbImage.rowBytes * y);
-					auto srcRow = src + width * y;
-					
-					for(int x=0; x<width; x++){
-						*(destRow++) = (uint16_t)srcRow[x].red;
-						*(destRow++) = (uint16_t)srcRow[x].green;
-						*(destRow++) = (uint16_t)srcRow[x].blue;
-					}
-				}
-				
-			}else if(componentCount == 4){
-				const auto src = image.GetDataRGBA16();
-				for(int y=0; y<height; y++){
-					auto destRow = reinterpret_cast<uint16_t*>(
-						rgbImage.pixels + rgbImage.rowBytes * y);
-					auto srcRow = src + width * y;
-					
-					for(int x=0; x<width; x++){
-						*(destRow++) = (uint16_t)srcRow[x].red;
-						*(destRow++) = (uint16_t)srcRow[x].green;
-						*(destRow++) = (uint16_t)srcRow[x].blue;
-						*(destRow++) = (uint16_t)srcRow[x].alpha;
-					}
-				}
-			}
+		if(encodeWidth == width && encodeHeight == height){
+			// libavif only reads the RGB source, so the deImage buffer is used directly
+			rgbImage.pixels = const_cast<uint8_t*>(static_cast<const uint8_t*>(image.GetData()));
+			rgbImage.rowBytes = width * componentCount * (bitCount >> 3);
 			
 		}else{
-			if(componentCount == 1){
-				const auto src = image.GetDataGrayscale8();
-				for(int y=0; y<height; y++){
-					auto destRow = rgbImage.pixels + rgbImage.rowBytes * y;
-					auto srcRow = src + width * y;
+			// padded encode size requires a copy into the allocated RGB buffer
+			if(avifRGBImageAllocatePixels(&rgbImage) != AVIF_RESULT_OK){
+				DETHROW(deeOutOfMemory);
+			}
+			isDataAllocated = true;
+			
+			// write pixels to encode image
+			if(bitCount == 16){
+				if(componentCount == 1){
+					const auto src = image.GetDataGrayscale16();
+					for(int y=0; y<height; y++){
+						auto destRow = reinterpret_cast<uint16_t*>(
+							rgbImage.pixels + rgbImage.rowBytes * y);
+						auto srcRow = src + width * y;
+						
+						for(int x=0; x<width; x++){
+							destRow[x] = (uint16_t)srcRow[x].value;
+						}
+					}
 					
-					for(int x=0; x<width; x++){
-						destRow[x] = (uint8_t)srcRow[x].value;
+				}else if(componentCount == 2){
+					const auto src = image.GetDataGrayscaleAlpha16();
+					for(int y=0; y<height; y++){
+						auto destRow = reinterpret_cast<uint16_t*>(
+							rgbImage.pixels + rgbImage.rowBytes * y);
+						auto srcRow = src + width * y;
+						
+						for(int x=0; x<width; x++){
+							*(destRow++) = (uint16_t)srcRow[x].value;
+							*(destRow++) = (uint16_t)srcRow[x].alpha;
+						}
+					}
+					
+				}else if(componentCount == 3){
+					const auto src = image.GetDataRGB16();
+					for(int y=0; y<height; y++){
+						auto destRow = reinterpret_cast<uint16_t*>(
+							rgbImage.pixels + rgbImage.rowBytes * y);
+						auto srcRow = src + width * y;
+						
+						for(int x=0; x<width; x++){
+							*(destRow++) = (uint16_t)srcRow[x].red;
+							*(destRow++) = (uint16_t)srcRow[x].green;
+							*(destRow++) = (uint16_t)srcRow[x].blue;
+						}
+					}
+					
+				}else if(componentCount == 4){
+					const auto src = image.GetDataRGBA16();
+					for(int y=0; y<height; y++){
+						auto destRow = reinterpret_cast<uint16_t*>(
+							rgbImage.pixels + rgbImage.rowBytes * y);
+						auto srcRow = src + width * y;
+						
+						for(int x=0; x<width; x++){
+							*(destRow++) = (uint16_t)srcRow[x].red;
+							*(destRow++) = (uint16_t)srcRow[x].green;
+							*(destRow++) = (uint16_t)srcRow[x].blue;
+							*(destRow++) = (uint16_t)srcRow[x].alpha;
+						}
 					}
 				}
 				
-			}else if(componentCount == 2){
-				const auto src = image.GetDataGrayscaleAlpha8();
-				for(int y=0; y<height; y++){
-					auto destRow = rgbImage.pixels + rgbImage.rowBytes * y;
-					auto srcRow = src + width * y;
-					
-					for(int x=0; x<width; x++){
-						*(destRow++) = (uint8_t)srcRow[x].value;
-						*(destRow++) = (uint8_t)srcRow[x].alpha;
+			}else{
+				if(componentCount == 1){
+					const auto src = image.GetDataGrayscale8();
+					for(int y=0; y<height; y++){
+						auto destRow = rgbImage.pixels + rgbImage.rowBytes * y;
+						auto srcRow = src + width * y;
+						
+						for(int x=0; x<width; x++){
+							destRow[x] = (uint8_t)srcRow[x].value;
+						}
 					}
-				}
-				
-			}else if(componentCount == 3){
-				const auto src = image.GetDataRGB8();
-				for(int y=0; y<height; y++){
-					auto destRow = rgbImage.pixels + rgbImage.rowBytes * y;
-					auto srcRow = src + width * y;
 					
-					for(int x=0; x<width; x++){
-						*(destRow++) = (uint8_t)srcRow[x].red;
-						*(destRow++) = (uint8_t)srcRow[x].green;
-						*(destRow++) = (uint8_t)srcRow[x].blue;
+				}else if(componentCount == 2){
+					const auto src = image.GetDataGrayscaleAlpha8();
+					for(int y=0; y<height; y++){
+						auto destRow = rgbImage.pixels + rgbImage.rowBytes * y;
+						auto srcRow = src + width * y;
+						
+						for(int x=0; x<width; x++){
+							*(destRow++) = (uint8_t)srcRow[x].value;
+							*(destRow++) = (uint8_t)srcRow[x].alpha;
+						}
 					}
-				}
-				
-			}else if(componentCount == 4){
-				const auto src = image.GetDataRGBA8();
-				for(int y=0; y<height; y++){
-					auto destRow = rgbImage.pixels + rgbImage.rowBytes * y;
-					auto srcRow = src + width * y;
 					
-					for(int x=0; x<width; x++){
-						*(destRow++) = (uint8_t)srcRow[x].red;
-						*(destRow++) = (uint8_t)srcRow[x].green;
-						*(destRow++) = (uint8_t)srcRow[x].blue;
-						*(destRow++) = (uint8_t)srcRow[x].alpha;
+				}else if(componentCount == 3){
+					const auto src = image.GetDataRGB8();
+					for(int y=0; y<height; y++){
+						auto destRow = rgbImage.pixels + rgbImage.rowBytes * y;
+						auto srcRow = src + width * y;
+						
+						for(int x=0; x<width; x++){
+							*(destRow++) = (uint8_t)srcRow[x].red;
+							*(destRow++) = (uint8_t)srcRow[x].green;
+							*(destRow++) = (uint8_t)srcRow[x].blue;
+						}
+					}
+					
+				}else if(componentCount == 4){
+					const auto src = image.GetDataRGBA8();
+					for(int y=0; y<height; y++){
+						auto destRow = rgbImage.pixels + rgbImage.rowBytes * y;
+						auto srcRow = src + width * y;
+						
+						for(int x=0; x<width; x++){
+							*(destRow++) = (uint8_t)srcRow[x].red;
+							*(destRow++) = (uint8_t)srcRow[x].green;
+							*(destRow++) = (uint8_t)srcRow[x].blue;
+							*(destRow++) = (uint8_t)srcRow[x].alpha;
+						}
 					}
 				}
 			}
@@ -474,7 +376,9 @@ void deAvifModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	}
 	
 	avifRWDataFree(&output);
-	avifRGBImageFreePixels(&rgbImage);
+	if(isDataAllocated){
+		avifRGBImageFreePixels(&rgbImage);
+	}
 	avifImageDestroy(encodeImage);
 	avifEncoderDestroy(encoder);
 }
