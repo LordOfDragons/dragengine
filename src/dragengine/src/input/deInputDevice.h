@@ -186,6 +186,9 @@ public:
 		 * 
 		 * Poses are relative to the parent bone inside chains and the device coordinate
 		 * frame for chain root bones.
+		 * 
+		 * Thumb 4 is not used and is only present for backwards compatibility. If queried it
+		 * will return identity pose.
 		 */
 		ebcHand,
 		
