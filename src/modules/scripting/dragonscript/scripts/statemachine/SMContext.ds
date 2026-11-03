@@ -301,6 +301,7 @@ class SMContext
 						Array.newWith(pLoggingName, state.getID(), state.getNextStateID())))
 				end
 				setCurrentStateByID(state.getNextStateID())
+				return
 			end
 		end
 		
@@ -420,8 +421,8 @@ class SMContext
 		
 		if pCurrentState == null or pTransitionInProgress
 			if doLog
-				pConsole.addMessage("{}: Event '{}' while in transition -> delayed"\
-					.format(Array.newWith(pLoggingName, event)))
+				pConsole.addMessage("{}: Event '{}' while in transition({}) -> delayed"\
+					.format(Array.newWith(pLoggingName, event, pTransitionInProgress)))
 			end
 			
 			if pDelayedEvents == null
