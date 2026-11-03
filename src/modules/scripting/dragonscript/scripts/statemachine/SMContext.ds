@@ -543,6 +543,7 @@ class SMContext
 		
 		var PersistencyFlags flags = PersistencyFlags.new(1)
 		flags.setAt(0, pCurrentState != null)
+		flags.writeToFile(writer)
 		
 		if pCurrentState != null
 			writer.writeString8(pCurrentState.getID())
