@@ -39,12 +39,10 @@ pin Dragengine.TriggerSystem
  */
 class ECComposeParticleEmitter
 	var ECPParticleEmitter pParticleEmitter
-	var ECPFloat pTimeScale
-	var ECPFloat pWarmUpTime
+	var ECPFloat pTimeScale, pWarmUpTime
 	var ECPBoolean pCasting
-	var LayerMask pLayerMask
+	var ECPLayerMask pLayerMask
 	var ECPCollisionFilter pCollisionFilter
-	
 	var String pPrefix
 	
 	
@@ -70,19 +68,13 @@ class ECComposeParticleEmitter
 			throw EInvalidParam.new()
 		end
 		
-		pParticleEmitter = ECPParticleEmitter.new(prefix + "path", loaders.getParticleEmitter())
-		ownerClass.addProperty(pParticleEmitter)
-		
-		pTimeScale = ECPFloat.new(prefix + "timeScale", 1)
-		ownerClass.addProperty(pTimeScale)
-		
-		pWarmUpTime = ECPFloat.new(prefix + "warmUpTime", 0)
-		ownerClass.addProperty(pWarmUpTime)
-		
-		pCasting = ECPBoolean.new(prefix + "casting", true)
-		ownerClass.addProperty(pCasting)
-		
-		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.default)
+		ownerClass.addProperty(pParticleEmitter = ECPParticleEmitter.new(prefix + "path", loaders.getParticleEmitter()))
+		ownerClass.addProperty(pTimeScale = ECPFloat.new(prefix + "timeScale", 1))
+		ownerClass.addProperty(pWarmUpTime = ECPFloat.new(prefix + "warmUpTime", 0))
+		ownerClass.addProperty(pCasting = ECPBoolean.new(prefix + "casting", true))
+		ownerClass.addProperty(pLayerMask = ECPLayerMask.new(prefix + "layerMask",\
+			ownerClass.getCodecPropertyString(), BaseGameApp.getApp().getWorldLayerMap(),\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.default)))
 		
 		var LayerMask lmCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.particle)
 		
@@ -122,17 +114,22 @@ class ECComposeParticleEmitter
 		return pCasting
 	end
 	
-	/** \brief Layer mask to set (basic layer mask). */
-	func LayerMask getLayerMask()
+	/**
+	 * \brief Layer mask to set (basic layer mask).
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
 		return pLayerMask
 	end
 	
-	/** \brief Set layer mask to set (basic layer mask). */
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
 	func void setLayerMask(LayerMask layerMask)
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		pLayerMask = layerMask
+		pLayerMask.setLayerMask(layerMask)
 	end
 	
 	/**
@@ -189,7 +186,7 @@ class ECComposeParticleEmitter
 		instance.setEmitter(emitter)
 		instance.setPosition(stub.getPosition())
 		instance.setOrientation(Quaternion.newFromEuler(stub.getRotation()))
-		instance.setLayerMask(pLayerMask)
+		instance.setLayerMask(pLayerMask.getLayerMask(stub))
 		instance.setCollisionFilter(pCollisionFilter.getCollisionFilter(stub))
 		instance.setTimeScale(pTimeScale.getValue(stub))
 		instance.setWarmUpTime(pWarmUpTime.getValue(stub))

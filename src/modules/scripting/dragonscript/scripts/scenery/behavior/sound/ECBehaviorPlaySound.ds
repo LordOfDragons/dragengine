@@ -303,7 +303,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 			speaker.setRollOff(pRollOff)
 			speaker.setDistanceOffset(pDistanceOffset)
 			speaker.setPlaySpeed(pPlaySpeed)
-			speaker.setLayerMask(pECBehavior.getLayerMask())
+			speaker.setLayerMask(pECBehavior.getLayerMaskProperty().getLayerMask(getElement().getStub()))
 			return speaker
 		end
 		
@@ -539,7 +539,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	var ECPVector pOrientation
 	var ECPString pBone
 	var ECBehaviorTriggered pTrigger
-	var LayerMask pLayerMask
+	var ECPLayerMask pLayerMask
 	var TSTriggerTable pTriggerTable
 	var ECBehaviorBehaviorTree pBehaviorTree
 	
@@ -593,8 +593,6 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		pPrefix = prefix
 		pTriggerTable = triggerTable
 		
-		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
-		
 		eclass.addProperty(pSpeakerType = ECPEnumeration.new(\
 			prefix + "type", SpeakerType.all(), SpeakerType.point))
 		eclass.addProperty(pSound = ECPSound.new(prefix + "sound"))
@@ -606,6 +604,9 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		eclass.addProperty(pPosition = ECPVector.new(prefix + "position", Vector.new()))
 		eclass.addProperty(pOrientation = ECPVector.new(prefix + "orientation", Vector.new()))
 		eclass.addProperty(pBone = ECPString.new(prefix + "bone", null))
+		eclass.addProperty(pLayerMask = ECPLayerMask.new(prefix + "layerMask",\
+			eclass.getCodecPropertyString(), BaseGameApp.getApp().getWorldLayerMap(),\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)))
 		
 		pTrigger = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
 		
@@ -699,17 +700,22 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		return pTrigger
 	end
 	
-	/** \brief Layer mask. */
-	func LayerMask getLayerMask()
+	/**
+	 * \brief Layer mask property.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
 		return pLayerMask
 	end
 	
-	/** \brief Set layer mask. */
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
 	func void setLayerMask(LayerMask layerMask)
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		pLayerMask = layerMask
+		pLayerMask.setLayerMask(layerMask)
 	end
 	
 	/** \brief Trigger table or \em null if not used. */

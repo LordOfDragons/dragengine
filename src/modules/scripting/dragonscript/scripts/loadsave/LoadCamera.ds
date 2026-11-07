@@ -35,7 +35,7 @@ pin Dragengine.XML
  * \version 1.21
  */
 class LoadCamera extends BaseXmlLoader
-	var Dictionary pCameras
+	var Dictionary pCameras, pCameraLayerMap
 	
 	
 	/** \brief Create camera loader. */
@@ -45,6 +45,21 @@ class LoadCamera extends BaseXmlLoader
 	/** \brief Create camera loader. */
 	func new(Console console, String name) super(console, name)
 		pCameras = Dictionary.new()
+		pCameraLayerMap = Dictionary.new()
+	end
+	
+	
+	/** \brief Get camera layer map. */
+	func Dictionary getCameraLayerMap()
+		return pCameraLayerMap
+	end
+	
+	/** \brief Set camera layer map. */
+	func void setCameraLayerMap(Dictionary layerMap)
+		if layerMap == null
+			throw ENullPointer.new()
+		end
+		pCameraLayerMap = layerMap
 	end
 	
 	
@@ -164,6 +179,10 @@ class LoadCamera extends BaseXmlLoader
 				
 			elif tagName.equals("toneMapCurve")
 				director.setToneMapCurve(readCurveBezier(element))
+				
+			elif tagName.equals("layerMask")
+				director.setLayerMask(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(element.getFirstCData(), pCameraLayerMap))
 			end
 		end)
 	end
@@ -171,6 +190,8 @@ class LoadCamera extends BaseXmlLoader
 	
 	/** \brief Write camera tag. */
 	protected func void writeCamera(EasyXMLElement root, CameraDirector director)
+		var CodecPropertyString codec = ElementClass.getSharedCodecPropertyString()
+		
 		root.addDataTag("fov", director.getFov())
 		root.addDataTag("fovRatio", director.getFovRatio())
 		root.addDataTag("imageDistance", director.getImageDistance())
@@ -186,6 +207,7 @@ class LoadCamera extends BaseXmlLoader
 		root.addDataTag("bloomStrength", director.getBloomStrength())
 		root.addDataTag("bloomBlend", director.getBloomBlend())
 		root.addDataTag("bloomSize", director.getBloomSize())
+		root.addDataTag("layerMask", codec.encodeLayerMask(director.getLayerMask(), pCameraLayerMap))
 		
 		var CurveBezier curve = director.getToneMapCurve()
 		if curve.getPointCount() > 0

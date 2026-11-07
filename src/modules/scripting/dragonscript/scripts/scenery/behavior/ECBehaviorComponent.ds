@@ -143,15 +143,18 @@ class ECBehaviorComponent extends DefaultECBehavior
 			getHelper().setPropertiesFromParameters(eclass, parameters, "component", id)
 			
 			if parameters.has("layerMask")
-				behavior.getComponent().setLayerMask(ElementClass.getSharedCodecPropertyString().\
+				behavior.getComponent().getLayerMaskProperty().setLayerMask(\
+					ElementClass.getSharedCodecPropertyString().\
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			if parameters.has("layerMaskRenderEnvMap")
-				behavior.getComponent().setLayerMaskRenderEnvMap(ElementClass.getSharedCodecPropertyString().\
+				behavior.getComponent().getLayerMaskRenderEnvMapProperty().setLayerMask(\
+					ElementClass.getSharedCodecPropertyString().\
 					decodeLayerMask(parameters.getAt("layerMaskRenderEnvMap") cast String))
 			end
 			if parameters.has("layerMaskAffectsAudio")
-				behavior.getComponent().setLayerMaskAffectsAudio(ElementClass.getSharedCodecPropertyString().\
+				behavior.getComponent().getLayerMaskAffectsAudioProperty().setLayerMask(\
+					ElementClass.getSharedCodecPropertyString().\
 					decodeLayerMask(parameters.getAt("layerMaskAffectsAudio") cast String))
 			end
 			

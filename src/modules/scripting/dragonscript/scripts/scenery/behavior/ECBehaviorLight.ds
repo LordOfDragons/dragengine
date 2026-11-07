@@ -219,12 +219,14 @@ class ECBehaviorLight extends DefaultECBehavior
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			if parameters.has("layerMask")
-				behavior.getLight().setLayerMask(ElementClass.getSharedCodecPropertyString().\
+				behavior.getLight().getLayerMaskProperty().setLayerMask(\
+					ElementClass.getSharedCodecPropertyString().\
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
 			if parameters.has("layerMaskShadow")
-				behavior.getLight().setLayerMaskShadow(ElementClass.getSharedCodecPropertyString().\
+				behavior.getLight().getLayerMaskShadowProperty().setLayerMask(\
+					ElementClass.getSharedCodecPropertyString().\
 					decodeLayerMask(parameters.getAt("layerMaskShadow") cast String))
 			end
 			

@@ -309,7 +309,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 			speaker.setType(pECBehavior.getSpeakerType().getEnumeration(stub) cast SpeakerType)
 			speaker.setVolume(pECBehavior.getVolume().getValue(stub))
 			speaker.setRange(pECBehavior.getRange().getValue(stub))
-			speaker.setLayerMask(pECBehavior.getLayerMask())
+			speaker.setLayerMask(pECBehavior.getLayerMaskProperty().getLayerMask(stub))
 			speaker.setRollOff(pECBehavior.getRollOff().getValue(stub))
 			speaker.setDistanceOffset(pECBehavior.getDistanceOffset().getValue(stub))
 			speaker.setShape(pECBehavior.getShape().getShapeList(stub))
@@ -482,7 +482,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 	var ECPFloat pRollOff
 	var ECPFloat pDistanceOffset
 	var ECPShapeList pShape
-	var LayerMask pLayerMask
+	var ECPLayerMask pLayerMask
 	
 	var ECComposeAttachResource pAttach
 	var ECPString pText
@@ -530,33 +530,20 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		pCollider = collider
 		pTriggerTable = triggerTable
 		pBTSMs = ECComposeBTSM.new(eclass, prefix)
-		
-		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
 		pListenerFactories = Array.new()
 		
-		pAnnouncer = ECPAnnouncer.new(prefix + "path", loaders.getAnnouncer())
-		eclass.addProperty(pAnnouncer)
+		eclass.addProperty(pAnnouncer = ECPAnnouncer.new(prefix + "path", loaders.getAnnouncer()))
+		eclass.addProperty(pSpeakerType = ECPEnumeration.new(prefix + "type", SpeakerType.all(), SpeakerType.point))
+		eclass.addProperty(pVolume = ECPFloat.new(prefix + "volume", 1, 0))
+		eclass.addProperty(pRange = ECPFloat.new(prefix + "range", 30, 0))
+		eclass.addProperty(pRollOff = ECPFloat.new(prefix + "rollOff", 1, 0))
+		eclass.addProperty(pDistanceOffset = ECPFloat.new(prefix + "distanceOffset", 0, 0))
+		eclass.addProperty(pShape = ECPShapeList.new(prefix + "shape", eclass.getSharedCodecPropertyString()))
+		eclass.addProperty(pText = ECPString.new(prefix + "text", ""))
 		
-		pSpeakerType = ECPEnumeration.new(prefix + "type", SpeakerType.all(), SpeakerType.point)
-		eclass.addProperty(pSpeakerType)
-		
-		pVolume = ECPFloat.new(prefix + "volume", 1, 0)
-		eclass.addProperty(pVolume)
-		
-		pRange = ECPFloat.new(prefix + "range", 30, 0)
-		eclass.addProperty(pRange)
-		
-		pRollOff = ECPFloat.new(prefix + "rollOff", 1, 0)
-		eclass.addProperty(pRollOff)
-		
-		pDistanceOffset = ECPFloat.new(prefix + "distanceOffset", 0, 0)
-		eclass.addProperty(pDistanceOffset)
-		
-		pShape = ECPShapeList.new(prefix + "shape", eclass.getSharedCodecPropertyString())
-		eclass.addProperty(pShape)
-		
-		pText = ECPString.new(prefix + "text", "")
-		eclass.addProperty(pText)
+		eclass.addProperty(pLayerMask = ECPLayerMask.new(prefix + "layerMask",\
+			eclass.getCodecPropertyString(), BaseGameApp.getApp().getWorldLayerMap(),\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)))
 		
 		pAttach = ECComposeAttachResource.new(eclass, prefix)
 		
@@ -625,17 +612,22 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		return pDistanceOffset
 	end
 	
-	/** \brief Layer mask. */
-	func LayerMask getLayerMask()
+	/**
+	 * \brief Layer mask property.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
 		return pLayerMask
 	end
 	
-	/** \brief Set layer mask. */
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
 	func void setLayerMask(LayerMask layerMask)
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		pLayerMask = layerMask
+		pLayerMask.setLayerMask(layerMask)
 	end
 	
 	/** \brief Speaker shape. */

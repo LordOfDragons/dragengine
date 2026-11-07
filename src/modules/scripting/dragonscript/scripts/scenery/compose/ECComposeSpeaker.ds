@@ -38,21 +38,14 @@ pin Dragengine.TriggerSystem
  * Provides speaker support to element class without subclassing from a specific class.
  */
 class ECComposeSpeaker
-	private var ECPEnumeration pSpeakerType
-	private var ECPSound pSound
-	private var ECPSynthesizer pSynthesizer
-	private var ECPFloat pVolume
-	private var ECPFloat pRange
-	private var ECPFloat pRollOff
-	private var ECPFloat pDistanceOffset
-	private var ECPFloat pPlaySpeed
-	private var ECPBoolean pMuted
-	private var ECPBoolean pLooping
-	private var ECPBoolean pPlaying
-	private var ECPShapeList pShape
-	private var LayerMask pLayerMask
-	
-	private var String pPrefix
+	var ECPEnumeration pSpeakerType
+	var ECPSound pSound
+	var ECPSynthesizer pSynthesizer
+	var ECPFloat pVolume, pRange, pRollOff, pDistanceOffset, pPlaySpeed
+	var ECPBoolean pMuted, pLooping, pPlaying
+	var ECPShapeList pShape
+	var ECPLayerMask pLayerMask
+	var String pPrefix
 	
 	
 	
@@ -62,7 +55,7 @@ class ECComposeSpeaker
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new(ElementClass ownerClass, Loaders loaders) this(ownerClass, loaders, "speaker.")
+	func new(ElementClass ownerClass, Loaders loaders) this(ownerClass, loaders, "speaker.")
 	end
 	
 	/**
@@ -71,44 +64,23 @@ class ECComposeSpeaker
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new(ElementClass ownerClass, Loaders loaders, String prefix)
-		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
+	func new(ElementClass ownerClass, Loaders loaders, String prefix)
+		ownerClass.addProperty(pSpeakerType = ECPEnumeration.new(prefix + "type", SpeakerType.all(), SpeakerType.point))
+		ownerClass.addProperty(pSound = ECPSound.new(prefix + "sound"))
+		ownerClass.addProperty(pSynthesizer = ECPSynthesizer.new(prefix + "synthesizer", loaders.getSynthesizer()))
+		ownerClass.addProperty(pVolume = ECPFloat.new(prefix + "volume", 1, 0))
+		ownerClass.addProperty(pRange = ECPFloat.new(prefix + "range", 30, 0))
+		ownerClass.addProperty(pRollOff = ECPFloat.new(prefix + "rollOff", 1, 0))
+		ownerClass.addProperty(pDistanceOffset = ECPFloat.new(prefix + "distanceOffset", 0, 0))
+		ownerClass.addProperty(pPlaySpeed = ECPFloat.new(prefix + "playSpeed", 1))
+		ownerClass.addProperty(pMuted = ECPBoolean.new(prefix + "muted", false))
+		ownerClass.addProperty(pLooping = ECPBoolean.new(prefix + "looping", true))
+		ownerClass.addProperty(pPlaying = ECPBoolean.new(prefix + "playing", true))
+		ownerClass.addProperty(pShape = ECPShapeList.new(prefix + "shape", ownerClass.getSharedCodecPropertyString()))
 		
-		pSpeakerType = ECPEnumeration.new(prefix + "type", SpeakerType.all(), SpeakerType.point)
-		ownerClass.addProperty(pSpeakerType)
-		
-		pSound = ECPSound.new(prefix + "sound")
-		ownerClass.addProperty(pSound)
-		
-		pSynthesizer = ECPSynthesizer.new(prefix + "synthesizer", loaders.getSynthesizer())
-		ownerClass.addProperty(pSynthesizer)
-		
-		pVolume = ECPFloat.new(prefix + "volume", 1, 0)
-		ownerClass.addProperty(pVolume)
-		
-		pRange = ECPFloat.new(prefix + "range", 30, 0)
-		ownerClass.addProperty(pRange)
-		
-		pRollOff = ECPFloat.new(prefix + "rollOff", 1, 0)
-		ownerClass.addProperty(pRollOff)
-		
-		pDistanceOffset = ECPFloat.new(prefix + "distanceOffset", 0, 0)
-		ownerClass.addProperty(pDistanceOffset)
-		
-		pPlaySpeed = ECPFloat.new(prefix + "playSpeed", 1)
-		ownerClass.addProperty(pPlaySpeed)
-		
-		pMuted = ECPBoolean.new(prefix + "muted", false)
-		ownerClass.addProperty(pMuted)
-		
-		pLooping = ECPBoolean.new(prefix + "looping", true)
-		ownerClass.addProperty(pLooping)
-		
-		pPlaying = ECPBoolean.new(prefix + "playing", true)
-		ownerClass.addProperty(pPlaying)
-		
-		pShape = ECPShapeList.new(prefix + "shape", ownerClass.getSharedCodecPropertyString())
-		ownerClass.addProperty(pShape)
+		ownerClass.addProperty(pLayerMask = ECPLayerMask.new(prefix + "layerMask",\
+			ownerClass.getSharedCodecPropertyString(), BaseGameApp.getApp().getWorldLayerMap(),\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)))
 		
 		pPrefix = prefix
 	end
@@ -116,94 +88,99 @@ class ECComposeSpeaker
 	
 	
 	/** \brief Speaker type. */
-	public func ECPEnumeration getSpeakerType()
+	func ECPEnumeration getSpeakerType()
 		return pSpeakerType
 	end
 	
 	/** \brief Speaker sound. */
-	public func ECPSound getSound()
+	func ECPSound getSound()
 		return pSound
 	end
 	
 	/** \brief Speaker synthesizer. */
-	public func ECPSynthesizer getSynthesizer()
+	func ECPSynthesizer getSynthesizer()
 		return pSynthesizer
 	end
 	
 	/** \brief Speaker volume. */
-	public func ECPFloat getVolume()
+	func ECPFloat getVolume()
 		return pVolume
 	end
 	
 	/** \brief Speaker range. */
-	public func ECPFloat getRange()
+	func ECPFloat getRange()
 		return pRange
 	end
 	
 	/** \brief Roll off. */
-	public func ECPFloat getRollOff()
+	func ECPFloat getRollOff()
 		return pRollOff
 	end
 	
 	/** \brief Distance offset. */
-	public func ECPFloat getDistanceOffset()
+	func ECPFloat getDistanceOffset()
 		return pDistanceOffset
 	end
 	
 	/** \brief Play speed. */
-	public func ECPFloat getPlaySpeed()
+	func ECPFloat getPlaySpeed()
 		return pPlaySpeed
 	end
 	
 	/** \brief Speaker is muted. */
-	public func ECPBoolean getMuted()
+	func ECPBoolean getMuted()
 		return pMuted
 	end
 	
 	/** \brief Speaker is looping. */
-	public func ECPBoolean getLooping()
+	func ECPBoolean getLooping()
 		return pLooping
 	end
 	
 	/** \brief Speaker is playing. */
-	public func ECPBoolean getPlaying()
+	func ECPBoolean getPlaying()
 		return pPlaying
 	end
 	
-	/** \brief Layer mask. */
-	public func LayerMask getLayerMask()
+	/**
+	 * \brief Layer mask.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
 		return pLayerMask
 	end
 	
-	/** \brief Set layer mask. */
-	public func void setLayerMask(LayerMask layerMask)
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		pLayerMask = layerMask
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func void setLayerMask(LayerMask layerMask)
+		pLayerMask.setLayerMask(layerMask)
 	end
 	
 	/** \brief Property prefix. */
-	public func String getPrefix()
+	func String getPrefix()
 		return pPrefix
 	end
 	
 	/** \brief Speaker shape. */
-	public func ECPShapeList getShape()
+	func ECPShapeList getShape()
 		return pShape
 	end
 	
 	
 	
 	/** \brief Create speaker. */
-	public func Speaker createSpeaker()
+	func Speaker createSpeaker()
 		var Speaker speaker = Speaker.new()
 		
 		speaker.setType(pSpeakerType.getEnumeration() cast SpeakerType)
 		speaker.setSound(pSound.getSound())
 		speaker.setVolume(pVolume.getValue())
 		speaker.setRange(pRange.getValue())
-		speaker.setLayerMask(pLayerMask)
+		speaker.setLayerMask(pLayerMask.getLayerMask())
 		speaker.setRollOff(pRollOff.getValue())
 		speaker.setDistanceOffset(pDistanceOffset.getValue())
 		speaker.setPlaySpeed(pPlaySpeed.getValue())
@@ -226,7 +203,7 @@ class ECComposeSpeaker
 	end
 	
 	/** \brief Initialize speaker for element from stub. */
-	public func Speaker createSpeaker(Element element, StubElement stub)
+	func Speaker createSpeaker(Element element, StubElement stub)
 		var ElementClass eclass = element.getClass()
 		var Speaker speaker = Speaker.new()
 		
@@ -236,7 +213,7 @@ class ECComposeSpeaker
 		speaker.setSound(pSound.getSound(stub, eclass))
 		speaker.setVolume(pVolume.getValue(stub))
 		speaker.setRange(pRange.getValue(stub))
-		speaker.setLayerMask(pLayerMask)
+		speaker.setLayerMask(pLayerMask.getLayerMask(stub))
 		speaker.setRollOff(pRollOff.getValue(stub))
 		speaker.setDistanceOffset(pDistanceOffset.getValue(stub))
 		speaker.setPlaySpeed(pPlaySpeed.getValue(stub))
@@ -259,12 +236,12 @@ class ECComposeSpeaker
 	end
 	
 	/** \brief Create muted speaker trigger expression from stub or \em null if not used. */
-	public func TSTriggerExpression createTriggerMuted(Element element, StubElement stub)
+	func TSTriggerExpression createTriggerMuted(Element element, StubElement stub)
 		return createTriggerMuted(element, stub, "")
 	end
 	
 	/** \brief Create muted speaker trigger expression from stub or \em null if not used. */
-	public func TSTriggerExpression createTriggerMuted(Element element, StubElement stub, String defaultValue)
+	func TSTriggerExpression createTriggerMuted(Element element, StubElement stub, String defaultValue)
 		var String value = stub.getPropertyValueFor(pPrefix + "trigger(muted)", defaultValue)
 		
 		if value.empty()
@@ -276,12 +253,12 @@ class ECComposeSpeaker
 	end
 	
 	/** \brief Create playing speaker trigger expression from stub or \em null if not used. */
-	public func TSTriggerExpression createTriggerPlaying(Element element, StubElement stub)
+	func TSTriggerExpression createTriggerPlaying(Element element, StubElement stub)
 		return createTriggerPlaying(element, stub, "")
 	end
 	
 	/** \brief Create playing speaker trigger expression from stub or \em null if not used. */
-	public func TSTriggerExpression createTriggerPlaying(Element element, StubElement stub, String defaultValue)
+	func TSTriggerExpression createTriggerPlaying(Element element, StubElement stub, String defaultValue)
 		var String value = stub.getPropertyValueFor(pPrefix + "trigger", defaultValue)
 		
 		if value.empty()

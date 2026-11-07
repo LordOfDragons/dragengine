@@ -41,17 +41,12 @@ class ECComposeComponent
 	var ECPOcclusionMesh pOcclusionMesh
 	var ECPModel pAudioModel
 	var ECPTextureReplacementList pTextureReplacements
-	var ECPBoolean pRenderEnvMap
-	var ECPBoolean pAffectsAudio
-	var LayerMask pLayerMask
-	var LayerMask pLayerMaskRenderEnvMap
-	var LayerMask pLayerMaskAffectsAudio
+	var ECPBoolean pRenderEnvMap, pAffectsAudio
+	var ECPLayerMask pLayerMask, pLayerMaskRenderEnvMap, pLayerMaskAffectsAudio
 	var ECPEnumeration pHintMovement
 	var ECPBoolean pEnableGI
 	var ECPInteger pHintGIImportance
-	
 	var String pPrefix
-	
 	
 	
 	/**
@@ -95,43 +90,33 @@ class ECComposeComponent
 			throw EInvalidParam.new()
 		end
 		
-		pModel = ECPModel.new(prefix + "model")
-		ownerClass.addProperty(pModel)
+		ownerClass.addProperty(pModel = ECPModel.new(prefix + "model"))
+		ownerClass.addProperty(pSkin = ECPSkin.new(prefix + "skin"))
+		ownerClass.addProperty(pRig = ECPRig.new(prefix + "rig"))
+		ownerClass.addProperty(pOcclusionMesh = ECPOcclusionMesh.new(prefix + "occlusionMesh"))
+		ownerClass.addProperty(pAudioModel = ECPModel.new(prefix + "audioModel"))
+		ownerClass.addProperty(pTextureReplacements = textureReplacement)
+		ownerClass.addProperty(pRenderEnvMap = ECPBoolean.new(prefix + "renderEnvMap", true))
+		ownerClass.addProperty(pAffectsAudio = ECPBoolean.new(prefix + "affectsAudio", true))
+		ownerClass.addProperty(pHintMovement = ECPEnumeration.new(prefix + "hintMovement",\
+			ComponentHintMovement.all(), ComponentHintMovement.stationary))
+		ownerClass.addProperty(pEnableGI = ECPBoolean.new(prefix + "enableGI", true))
+		ownerClass.addProperty(pHintGIImportance = ECPInteger.new(prefix + "hintGIImportance", 4, 0, 4))
 		
-		pSkin = ECPSkin.new(prefix + "skin")
-		ownerClass.addProperty(pSkin)
+		var CodecPropertyString codec = ownerClass.getCodecPropertyString()
+		var Dictionary layerMap = BaseGameApp.getApp().getWorldLayerMap()
 		
-		pRig = ECPRig.new(prefix + "rig")
-		ownerClass.addProperty(pRig)
+		ownerClass.addProperty(pLayerMask = ECPLayerMask.new(\
+			prefix + "layerMask", codec, layerMap,\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.default)))
 		
-		pOcclusionMesh = ECPOcclusionMesh.new(prefix + "occlusionMesh")
-		ownerClass.addProperty(pOcclusionMesh)
+		ownerClass.addProperty(pLayerMaskRenderEnvMap = ECPLayerMask.new(\
+			prefix + "layerMaskRenderEnvMap", codec, layerMap,\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.envmap)))
 		
-		pAudioModel = ECPModel.new(prefix + "audioModel")
-		ownerClass.addProperty(pAudioModel)
-		
-		pTextureReplacements = textureReplacement
-		ownerClass.addProperty(pTextureReplacements)
-		
-		pRenderEnvMap = ECPBoolean.new(prefix + "renderEnvMap", true)
-		ownerClass.addProperty(pRenderEnvMap)
-		
-		pAffectsAudio = ECPBoolean.new(prefix + "affectsAudio", true)
-		ownerClass.addProperty(pAffectsAudio)
-		
-		pHintMovement = ECPEnumeration.new(prefix + "hintMovement", \
-			ComponentHintMovement.all(), ComponentHintMovement.stationary)
-		ownerClass.addProperty(pHintMovement)
-		
-		pEnableGI = ECPBoolean.new(prefix + "enableGI", true)
-		ownerClass.addProperty(pEnableGI)
-		
-		pHintGIImportance = ECPInteger.new(prefix + "hintGIImportance", 4, 0, 4)
-		ownerClass.addProperty(pHintGIImportance)
-		
-		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.default)
-		pLayerMaskRenderEnvMap = LayerMask.newWith(BaseGameApp.WorldLayerBit.envmap)
-		pLayerMaskAffectsAudio = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
+		ownerClass.addProperty(pLayerMaskAffectsAudio = ECPLayerMask.new(\
+			prefix + "layerMaskAffectsAudio", codec, layerMap,\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)))
 		
 		pPrefix = prefix
 	end
@@ -178,43 +163,58 @@ class ECComposeComponent
 		return pAffectsAudio
 	end
 	
-	/** \brief Layer mask to set (basic layer mask). */
-	func LayerMask getLayerMask()
+	/**
+	 * \brief Layer mask to set (basic layer mask).
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
 		return pLayerMask
 	end
 	
-	/** \brief Set layer mask to set (basic layer mask). */
-	func void setLayerMask(LayerMask layerMask)
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		pLayerMask = layerMask
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
 	end
 	
-	/** \brief Layer mask to set if render environment map is true. */
-	func LayerMask getLayerMaskRenderEnvMap()
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func void setLayerMask(LayerMask layerMask)
+		pLayerMask.setLayerMask(layerMask)
+	end
+	
+	/**
+	 * \brief Layer mask to set if render environment map is true.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskRenderEnvMapProperty()
 		return pLayerMaskRenderEnvMap
 	end
 	
-	/** \brief Set layer mask to set if render environment map is true. */
-	func void setLayerMaskRenderEnvMap(LayerMask layerMask)
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		pLayerMaskRenderEnvMap = layerMask
+	/** \deprecated Use \ref #getLayerMaskRenderEnvMapProperty() instead. */
+	func LayerMask getLayerMaskRenderEnvMap()
+		return pLayerMaskRenderEnvMap.getLayerMask()
 	end
 	
-	/** \brief Layer mask to set if affects audio is true. */
-	func LayerMask getLayerMaskAffectsAudio()
+	/** \deprecated Use \ref #getLayerMaskRenderEnvMapProperty() instead. */
+	func void setLayerMaskRenderEnvMap(LayerMask layerMask)
+		pLayerMaskRenderEnvMap.setLayerMask(layerMask)
+	end
+	
+	/**
+	 * \brief Layer mask to set if affects audio is true.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskAffectsAudioProperty()
 		return pLayerMaskAffectsAudio
 	end
 	
-	/** \brief Set layer mask to set if affects audio is true. */
+	/** \deprecated Use \ref #getLayerMaskAffectsAudioProperty() instead. */
+	func LayerMask getLayerMaskAffectsAudio()
+		return pLayerMaskAffectsAudio.getLayerMask()
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskAffectsAudioProperty() instead. */
 	func void setLayerMaskAffectsAudio(LayerMask layerMask)
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		pLayerMaskAffectsAudio = layerMask
+		pLayerMaskAffectsAudio.setLayerMask(layerMask)
 	end
 	
 	/** \brief Hint movement. */
@@ -270,16 +270,13 @@ class ECComposeComponent
 	 * \brief Create component layer mask.
 	 */
 	func LayerMask createLayerMask(StubElement stub)
-		var LayerMask layerMask =  LayerMask.new(pLayerMask)
-		
+		var LayerMask layerMask = LayerMask.new(pLayerMask.getLayerMask(stub))
 		if stub.getPropertyBoolFor(pRenderEnvMap.getName(), pRenderEnvMap.getValue())
-			layerMask |= pLayerMaskRenderEnvMap
+			layerMask |= pLayerMaskRenderEnvMap.getLayerMask(stub)
 		end
-		
 		if stub.getPropertyBoolFor(pAffectsAudio.getName(), pAffectsAudio.getValue())
-			layerMask |= pLayerMaskAffectsAudio
+			layerMask |= pLayerMaskAffectsAudio.getLayerMask(stub)
 		end
-		
 		return layerMask
 	end
 	

@@ -670,7 +670,6 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			pECBehavior = ecbehavior
 			pConfigurations = Dictionary.new()
 			pElapsed = 0
-			pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
 			pListeners = Array.new()
 			
 			setAutoUpdate(ecbehavior.getAutoUpdate())
@@ -684,10 +683,10 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			super.dispose()
 		end
 		
-		
-		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
+			pLayerMask = pECBehavior.getLayerMask().getLayerMask(stub)
+			
 			var BehaviorElement element = getElement()
 			
 			if pECBehavior.getActorAnimated() != null
@@ -1093,6 +1092,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	var ECBehaviorConversationActor pConversationActor
 	var ECComposeBTSM pBTSMs
 	var String pPrefix
+	var ECPLayerMask pLayerMask
 	
 	
 	
@@ -1108,6 +1108,10 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		pPrefix = prefix
 		pAutoUpdate = true
 		pBTSMs = ECComposeBTSM.new()
+		
+		pLayerMask = ECPLayerMask.new(prefix + "layerMask", eclass.getCodecPropertyString(),\
+			BaseGameApp.getApp().getWorldLayerMap(), LayerMask.newWith(BaseGameApp.WorldLayerBit.audio))
+		eclass.addProperty(pLayerMask)
 		
 		eclass.addBehavior(this)
 	end
@@ -1170,6 +1174,14 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	/** \brief Set if update() is automatically called on postThink(). */
 	func void setAutoUpdate(bool autoUpdate)
 		pAutoUpdate = autoUpdate
+	end
+	
+	/**
+	 * \brief Layer mask.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMask()
+		return pLayerMask
 	end
 	
 	/**

@@ -190,7 +190,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 			camera.setHighestIntensity(pECBehavior.getHighestIntensity().getValue(stub))
 			camera.setAdaptionTime(pECBehavior.getAdaptionTime().getValue(stub))
 			camera.setEnableGI(pECBehavior.getEnableGI().getValue(stub))
-			camera.setLayerMask(pECBehavior.getLayerMask())
+			camera.setLayerMask(pECBehavior.getLayerMaskProperty().getLayerMask(stub))
 			
 			var String pathParameters = pECBehavior.getPathParameters().getValueOrNull(stub)
 			if pathParameters != null
@@ -270,7 +270,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 	var ECPFloat pHighestIntensity
 	var ECPFloat pAdaptionTime
 	var ECPBoolean pEnableGI
-	var LayerMask pLayerMask
+	var ECPLayerMask pLayerMask
 	var ECPString pPathParameters
 	var LoadCamera pLoadCamera
 	var Array pIgnoreComponents
@@ -294,43 +294,24 @@ class ECBehaviorCamera extends DefaultECBehavior
 	String prefix) super(eclass, id)
 		pCollider = collider
 		pIgnoreComponents = Array.new()
-		pLayerMask = LayerMask.new()
 		pLoadCamera = eclass.sharedFactoryHelper.defaultLoaders().getCamera()
 		
 		pAttach = ECComposeAttachResource.new(eclass, prefix)
 		
-		pFov = ECPFloat.new(prefix + "fov", 39.60, 0, 180)
-		eclass.addProperty(pFov)
-		
-		pFovRatio = ECPFloat.new(prefix + "fovRatio", 1, 0.01)
-		eclass.addProperty(pFovRatio)
-		
-		pImageDistance = ECPFloat.new(prefix + "imageDistance", 0.01, 0.001)
-		eclass.addProperty(pImageDistance)
-		
-		pViewDistance = ECPFloat.new(prefix + "viewDistance", 200, 0.01)
-		eclass.addProperty(pViewDistance)
-		
-		pEnableHDRR = ECPBoolean.new(prefix + "enableHDRR", true)
-		eclass.addProperty(pEnableHDRR)
-		
-		pExposure = ECPFloat.new(prefix + "exposure", 1, 0)
-		eclass.addProperty(pExposure)
-		
-		pLowestIntensity = ECPFloat.new(prefix + "lowestIntensity", 1, 0)
-		eclass.addProperty(pLowestIntensity)
-		
-		pHighestIntensity = ECPFloat.new(prefix + "highestIntensity", 20, 0)
-		eclass.addProperty(pHighestIntensity)
-		
-		pAdaptionTime = ECPFloat.new(prefix + "adaptionTime", 0.1, 0)
-		eclass.addProperty(pAdaptionTime)
-		
-		pEnableGI = ECPBoolean.new(prefix + "enableGI", Engine.getDefaultEnableGI())
-		eclass.addProperty(pEnableGI)
-		
-		pPathParameters = ECPString.new(prefix + "pathParameters", null)
-		eclass.addProperty(pPathParameters)
+		eclass.addProperty(pFov = ECPFloat.new(prefix + "fov", 39.60, 0, 180))
+		eclass.addProperty(pFovRatio = ECPFloat.new(prefix + "fovRatio", 1, 0.01))
+		eclass.addProperty(pImageDistance = ECPFloat.new(prefix + "imageDistance", 0.01, 0.001))
+		eclass.addProperty(pViewDistance = ECPFloat.new(prefix + "viewDistance", 200, 0.01))
+		eclass.addProperty(pEnableHDRR = ECPBoolean.new(prefix + "enableHDRR", true))
+		eclass.addProperty(pExposure = ECPFloat.new(prefix + "exposure", 1, 0))
+		eclass.addProperty(pLowestIntensity = ECPFloat.new(prefix + "lowestIntensity", 1, 0))
+		eclass.addProperty(pHighestIntensity = ECPFloat.new(prefix + "highestIntensity", 20, 0))
+		eclass.addProperty(pAdaptionTime = ECPFloat.new(prefix + "adaptionTime", 0.1, 0))
+		eclass.addProperty(pEnableGI = ECPBoolean.new(prefix + "enableGI", Engine.getDefaultEnableGI()))
+		eclass.addProperty(pPathParameters = ECPString.new(prefix + "pathParameters", null))
+		eclass.addProperty(pLayerMask = ECPLayerMask.new(prefix + "layerMask",\
+			eclass.getCodecPropertyString(), BaseGameApp.getApp().getWorldLayerMap(),\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.default, BaseGameApp.WorldLayerBit.envmap)))
 		
 		eclass.addBehavior(this)
 	end
@@ -404,17 +385,22 @@ class ECBehaviorCamera extends DefaultECBehavior
 		return pEnableGI
 	end
 	
-	/** \brief Layer mask. */
-	func LayerMask getLayerMask()
+	/**
+	 * \brief Layer mask property.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
 		return pLayerMask
 	end
 	
-	/** \brief Set layer mask. */
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
 	func void setLayerMask(LayerMask layerMask)
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		pLayerMask = layerMask
+		pLayerMask.setLayerMask(layerMask)
 	end
 	
 	/**

@@ -273,11 +273,14 @@ class ECBehaviorOutline extends DefaultECBehavior
 			
 			pComponent = Component.new(model, pSkin)
 			pComponent.setRig(rig)
-			pComponent.setLayerMask(component.getLayerMask())
 			pComponent.setVisible(pVisible)
 			pComponent.setPosition(component.getPosition())
 			pComponent.setOrientation(component.getOrientation())
 			pComponent.setScaling(component.getScaling())
+			
+			pComponent.setLayerMask((component.getLayerMask()\
+				& ~pECBehavior.getLayerMaskClear().getLayerMask(stub))\
+				| pECBehavior.getLayerMaskSet().getLayerMask(stub))
 			
 			pDynamicSkin = DynamicSkin.new()
 			pDynamicSkin.addRenderable("color", DynamicSkinRenderableType.color)
@@ -461,11 +464,10 @@ class ECBehaviorOutline extends DefaultECBehavior
 	var ECPModel pModel
 	var ECPRig pRig
 	var ECPColor pColor
-	var ECPFloat pIntensity
-	var ECPFloat pThickness
+	var ECPFloat pIntensity, pThickness
 	var ECComposeBTSM pBTSMs
 	var String pPrefix
-	
+	var ECPLayerMask pLayerMaskSet, pLayerMaskClear
 	
 	
 	/**
@@ -485,6 +487,8 @@ class ECBehaviorOutline extends DefaultECBehavior
 		end
 		
 		var String prefix = id.empty() if "outline." else "outline(" + id + ")."
+		var Dictionary layerMap = BaseGameApp.getApp().getWorldLayerMap()
+		var CodecPropertyString codec = eclass.getCodecPropertyString()
 		
 		pPrefix = prefix
 		pComponent = component
@@ -497,6 +501,8 @@ class ECBehaviorOutline extends DefaultECBehavior
 		eclass.addProperty(pColor = ECPColor.new(prefix + "color", Color.black))
 		eclass.addProperty(pIntensity = ECPFloat.new(prefix + "intensity", 0, 0))
 		eclass.addProperty(pThickness = ECPFloat.new(prefix + "thickness", 0.005, 0))
+		eclass.addProperty(pLayerMaskSet = ECPLayerMask.new(prefix + "layerMaskSet", codec, layerMap))
+		eclass.addProperty(pLayerMaskClear = ECPLayerMask.new(prefix + "layerMaskClear", codec, layerMap))
 		
 		eclass.addBehavior(this)
 	end
@@ -557,6 +563,26 @@ class ECBehaviorOutline extends DefaultECBehavior
 	/** \brief THickness property. */
 	func ECPFloat getThickness()
 		return pThickness
+	end
+	
+	/**
+	 * \brief Layer mask bit to set in addition to the component layer mask.
+	 * \version 1.35
+	 * 
+	 * Clearing layer mask bits is done before setting bits.
+	 */
+	func ECPLayerMask getLayerMaskSet()
+		return pLayerMaskSet
+	end
+	
+	/**
+	 * \brief Layer mask bit to clear in addition to the component layer mask.
+	 * \version 1.35
+	 * 
+	 * Clearing layer mask bits is done before setting bits.
+	 */
+	func ECPLayerMask getLayerMaskClear()
+		return pLayerMaskClear
 	end
 	
 	/**

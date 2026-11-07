@@ -403,7 +403,7 @@ class BaseGameApp extends Game
 	var GlobalEvents pGlobalEvents
 	var BaseGameServices pBaseGameServices
 	var SimpleConversationConverter pSimpleConversationConverter
-	var Dictionary pCollisionFilterMap
+	var Dictionary pCollisionFilterMap, pWorldLayerMap
 	var Array pBehaviors
 	var SafeArray pDefaultBindingUpdaters
 	
@@ -511,6 +511,7 @@ class BaseGameApp extends Game
 		pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
 		pSimpleConversationConverter = createSimpleConversationConverter()
 		pCollisionFilterMap = Dictionary.new()
+		pWorldLayerMap = Dictionary.new()
 		pDefaultBindingUpdaters = SafeArray.new()
 		
 		loadConfiguration()
@@ -529,6 +530,8 @@ class BaseGameApp extends Game
 		loadSettings()
 		
 		initCollisionFilterMap()
+		initWorldLayerMap()
+		pLoaders.getCamera().setCameraLayerMap(pWorldLayerMap)
 		
 		pTriggerTable = createTriggerTable()
 		pSkinAnnotations = createSkinAnnotations()
@@ -817,6 +820,17 @@ class BaseGameApp extends Game
 	 */
 	func Dictionary getCollisionFilterMap()
 		return pCollisionFilterMap
+	end
+	
+	/**
+	 * \brief World layer map.
+	 * \version 1.35
+	 * 
+	 * Returns \ref Dictionary mapping \ref String world layer names to \ref int world layer bits.
+	 * Used by various element class properties to allow defining world layers using well defined names.
+	 */
+	func Dictionary getWorldLayerMap()
+		return pWorldLayerMap
 	end
 	
 	
@@ -1330,6 +1344,25 @@ class BaseGameApp extends Game
 		pCollisionFilterMap.setAt("trigger", CollisionFilterBit.trigger)
 		pCollisionFilterMap.setAt("particle", CollisionFilterBit.particle)
 		pCollisionFilterMap.setAt("forceField", CollisionFilterBit.forceField)
+	end
+	
+	/**
+	 * \brief Initialize world layer map entries.
+	 * \version 1.35
+	 * 
+	 * Used by \ref ECPLayerMask and other element class properties to allow defining
+	 * layer masks using well defined names.
+	 * 
+	 * | Name | Bit |
+	 * | --- | --- |
+	 * | default | \ref WorldLayerBit#default |
+	 * | envmap | \ref WorldLayerBit#envmap |
+	 * | audio | \ref WorldLayerBit#audio |
+	 */
+	protected func void initWorldLayerMap()
+		pWorldLayerMap.setAt("default", WorldLayerBit.default)
+		pWorldLayerMap.setAt("envmap", WorldLayerBit.envmap)
+		pWorldLayerMap.setAt("audio", WorldLayerBit.audio)
 	end
 	
 	/** \brief Create and set desktop. */

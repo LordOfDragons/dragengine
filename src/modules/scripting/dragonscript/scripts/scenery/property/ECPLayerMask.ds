@@ -1,0 +1,152 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Layer mask class property for use with XML loading.
+ * \version 1.35
+ * 
+ * Layer mask bits are defined using a list of names mapped to collision filter bit indices
+ * using a dictionary like \ref BaseGameApp#getWorldLayerBits(). The format of the property
+ * value is a list of filter bit names separated by spaces:
+ * 
+ * \code "bit1 bit2 ... bitN" \endcode
+ * 
+ * Bit names are looked up using the layer bit map. Empty string creates an empty layer mask.
+ */
+class ECPLayerMask extends ElementClassProperty
+	var CodecPropertyString pCodec
+	var Dictionary pLayerBitMap
+	var LayerMask pLayerMask
+	
+	
+	/** \brief Create property. */
+	func new(String name, CodecPropertyString codec, Dictionary layerBitMap)\
+	this(name, codec, layerBitMap, LayerMask.new())
+	end
+	
+	/** \brief Create property. */
+	func new(String name, CodecPropertyString codec, Dictionary layerBitMap,\
+	LayerMask layerMask) super(name)
+		if codec == null
+			throw ENullPointer.new("codec")
+		end
+		if layerBitMap == null
+			throw ENullPointer.new("layerBitMap")
+		end
+		if layerMask == null
+			throw ENullPointer.new("layerMask")
+		end
+		
+		pCodec = codec
+		pLayerMask = layerMask
+		pLayerBitMap = layerBitMap
+	end
+	
+	
+	/** \brief Property string codec. */
+	func CodecPropertyString getCodec()
+		return pCodec
+	end
+	
+	/** \brief Set property string codec. */
+	func void setCodec(CodecPropertyString codec)
+		if codec == null
+			throw ENullPointer.new()
+		end
+		
+		pCodec = codec
+	end
+	
+	/**
+	 * \brief Layer bit map.
+	 * \warning Do not modify map since it can be potentially shared. To modify create a copy
+	 *          and use \ref #setLayerBitMap().
+	 */
+	func Dictionary getLayerBitMap()
+		return pLayerBitMap
+	end
+	
+	/** \brief Set layer bit map. */
+	func void setLayerBitMap(Dictionary layerBitMap)
+		if layerBitMap == null
+			throw ENullPointer.new()
+		end
+		pLayerBitMap = layerBitMap
+	end
+	
+	
+	/** \brief Layer mask. */
+	func LayerMask getLayerMask()
+		return pLayerMask
+	end
+	
+	/** \brief Set layer mask. */
+	func void setLayerMask(LayerMask layerMask)
+		if layerMask == null
+			throw ENullPointer.new()
+		end
+		pLayerMask = layerMask
+	end
+	
+	/** \brief Convience function setting layer bit. */
+	func void setBit(int bit)
+		pLayerMask.setBit(bit)
+	end
+	
+	/** \brief Convience function clearing layer bit. */
+	func void clearBit(int bit)
+		pLayerMask.clearBit(bit)
+	end
+	
+	
+	func void setValue(Object value)
+		pLayerMask = pCodec.decodeLayerMask(value cast String, pLayerBitMap)
+	end
+	
+	func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pLayerMask = (property cast ECPLayerMask).pLayerMask
+	end
+	
+	
+	/**
+	 * \brief Layer mask modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored layer mask is
+	 * returned. If the named stub property is present it is decoded using the rules described
+	 * in the class comment.
+	 */
+	func LayerMask getLayerMask(StubWithProperties stub)
+		var String value = stub.getPropertyValueFor(getName(), null)
+		if value == null
+			return pLayerMask
+		end
+		return pCodec.decodeLayerMask(value, pLayerBitMap)
+	end
+end

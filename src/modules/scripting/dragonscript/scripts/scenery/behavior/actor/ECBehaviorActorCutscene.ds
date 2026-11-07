@@ -313,6 +313,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		var AnimatorController pController, pElementController
 		var Component pElementComponent
 		var DMatrix pElementOriginMatrix
+		var LayerMask pAudioLayerMask
 		
 		var Array pListeners
 		
@@ -346,6 +347,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		/** \brief Initialize behavior from stub. */
 		func void init(StubElement stub)
 			pControllerName = pECBehavior.getControllerName().getValue(stub)
+			pAudioLayerMask = pECBehavior.getAudioLayerMask().getLayerMask(stub)
 			
 			pConversationActor.getActorAnimated().addListener(UpdateControllers.new(this))
 			
@@ -371,6 +373,25 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		/** \brief Conversation actor behavior. */
 		func ECBehaviorConversationActor.Instance getConversationActor()
 			return pConversationActor
+		end
+		
+		/**
+		 * \brief Audio layer mask.
+		 * \version 1.35
+		 */
+		func LayerMask getAudioLayerMask()
+			return pAudioLayerMask
+		end
+		
+		/**
+		 * \brief Set audio layer mask.
+		 * \version 1.35
+		 */
+		func void setAudioLayerMask(LayerMask layerMask)
+			if layerMask == null
+				throw ENullPointer.new("layerMask")
+			end
+			pAudioLayerMask = layerMask
 		end
 		
 		
@@ -632,7 +653,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			pSpeakerSynth.setLooping(false)
 			pSpeakerSynth.setVolume(1)
 			pSpeakerSynth.setRange(range)
-			pSpeakerSynth.setLayerMask(LayerMask.newWith(BaseGameApp.WorldLayerBit.audio))
+			pSpeakerSynth.setLayerMask(pAudioLayerMask)
 			
 			if bone != null
 				(pCollider.getCollider() cast ColliderRig).attachBone(\
@@ -739,7 +760,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 				pSpeakerSynth.setVolume(reader.readFloat())
 				pSpeakerSynth.setRange(reader.readFloat())
 				pSpeakerSynth.setRollOff(reader.readFloat())
-				pSpeakerSynth.setLayerMask(LayerMask.newWith(BaseGameApp.WorldLayerBit.audio))
+				pSpeakerSynth.setLayerMask(pAudioLayerMask)
 				
 				pSpeakerBone = env.readString8OrNullIfEmpty(reader)
 				pSpeakerPosition = Vector.readFromFile(reader)
@@ -845,6 +866,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	var ECBehaviorCollider pCollider
 	var ECBehaviorConversationActor pConversationActor
 	var ECPString pControllerName
+	var ECPLayerMask pAudioLayerMask
 	var Array pListenerFactories
 	
 	
@@ -876,6 +898,10 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		
 		pControllerName = ECPString.new(prefix + "controllerName", "cutscene")
 		eclass.addProperty(pControllerName)
+		
+		pAudioLayerMask = ECPLayerMask.new(prefix + "audioLayerMask", eclass.getCodecPropertyString(),\
+			BaseGameApp.getApp().getWorldLayerMap(), LayerMask.newWith(BaseGameApp.WorldLayerBit.audio))
+		eclass.addProperty(pAudioLayerMask)
 		
 		eclass.addBehavior(this)
 	end
@@ -909,6 +935,14 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	/** \brief Name of playback controller (default "cutscene"). */
 	func ECPString getControllerName()
 		return pControllerName
+	end
+	
+	/**
+	 * \brief Audio layer mask property.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getAudioLayerMask()
+		return pAudioLayerMask
 	end
 	
 	/** \brief Add listener factory. */

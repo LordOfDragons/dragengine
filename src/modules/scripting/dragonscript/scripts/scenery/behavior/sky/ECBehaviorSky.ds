@@ -114,7 +114,7 @@ class ECBehaviorSky extends DefaultECBehavior
 			pSkyInstance = SkyInstance.new()
 			pSkyInstance.setSky(sky)
 			pSkyInstance.setOrder(pECBehavior.getOrder().getValue(stub))
-			pSkyInstance.setLayerMask(pECBehavior.getLayerMask())
+			pSkyInstance.setLayerMask(pECBehavior.getLayerMaskProperty().getLayerMask(stub))
 			pSkyInstance.setPassthroughTransparency(pECBehavior.getPassthroughTransparency().getValue(stub))
 			
 			var String name = pECBehavior.getControllerPlayback().getValue(stub)
@@ -201,7 +201,7 @@ class ECBehaviorSky extends DefaultECBehavior
 	var ECPSky pSky
 	var ECPInteger pOrder
 	var ECPString pControllerPlayback
-	var LayerMask pLayerMask
+	var ECPLayerMask pLayerMask
 	var ECPFloat pPassthroughTransparency
 	
 	
@@ -220,12 +220,12 @@ class ECBehaviorSky extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, Loaders loaders, String prefix) super(eclass)
-		pLayerMask = LayerMask.new()
-		
 		eclass.addProperty(pSky = ECPSky.new(prefix + "path", loaders.getSky()))
 		eclass.addProperty(pOrder = ECPInteger.new(prefix + "order", 0))
 		eclass.addProperty(pControllerPlayback = ECPString.new(prefix + "controllerPlayback", ""))
 		eclass.addProperty(pPassthroughTransparency = ECPFloat.new(prefix + "passthroughTransparency", 0, 0, 1))
+		eclass.addProperty(pLayerMask = ECPLayerMask.new(prefix + "layerMask",\
+			eclass.getCodecPropertyString(), BaseGameApp.getApp().getWorldLayerMap(), LayerMask.new()))
 		
 		eclass.addBehavior(this)
 	end
@@ -246,17 +246,26 @@ class ECBehaviorSky extends DefaultECBehavior
 		return pControllerPlayback
 	end
 	
-	/** \brief Layer mask. */
-	func LayerMask getLayerMask()
+	/**
+	 * \brief Layer mask.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
 		return pLayerMask
 	end
 	
-	/** \brief Set layer mask. */
+	/**
+	 * \deprecated Use \ref #getLayerMaskProperty() instead.
+	 */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
+	end
+	
+	/**
+	 * \deprecated Use \ref #getLayerMaskProperty() instead.
+	 */
 	func void setLayerMask(LayerMask layerMask)
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		pLayerMask = layerMask
+		pLayerMask.setLayerMask(layerMask)
 	end
 	
 	/**

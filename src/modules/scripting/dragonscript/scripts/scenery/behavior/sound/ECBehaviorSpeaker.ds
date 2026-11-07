@@ -205,7 +205,8 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			if parameters.has("layerMask")
-				behavior.getSpeaker().setLayerMask(ElementClass.getSharedCodecPropertyString().\
+				behavior.getSpeaker().getLayerMaskProperty().setLayerMask(\
+					ElementClass.getSharedCodecPropertyString().\
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
