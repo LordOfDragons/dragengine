@@ -179,10 +179,14 @@ class ActionSlotHelper:
 			self.has_slots = True
 			if slot:
 				self.slot_id = slot.identifier[2:]
-				self.slot_type = slot.identifier[0:2]
+				if slot.identifier[0:2] == 'OB':
+					self.slot_type = 'OBJECT'
+				elif slot.identifier[0:2] == 'KE':
+					self.slot_type = 'KEY'
+				else:
+					raise ValueError("Unknown slot identifier prefix: {}".format(slot.identifier[0:2]))
 			else:
 				self.slot_id = object.name
-				self.slot_type = 'OBJECT'
 		except:
 			self.slot_id = None
 			self.slot_type = None
