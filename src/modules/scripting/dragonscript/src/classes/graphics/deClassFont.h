@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassFont(deScriptingDragonScript &ds);
+	explicit deClassFont(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	~deClassFont() override;

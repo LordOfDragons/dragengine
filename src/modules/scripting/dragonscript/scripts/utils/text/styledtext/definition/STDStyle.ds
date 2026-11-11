@@ -65,9 +65,7 @@ class STDStyle
 	var Color pTextColor
 	var Color pBackgroundColor
 	var RectArea pMargins
-	var int pFirstLineIndent
-	var int pLineSpacing
-	var int pCharacterSpacing
+	var int pFirstLineIndent, pLineSpacing, pCharacterSpacing
 	
 	
 	
@@ -77,9 +75,6 @@ class STDStyle
 		pAlignment = Align.left
 		pTextColor = Color.black
 		pMargins = RectArea.new()
-		pFirstLineIndent = 0
-		pLineSpacing = 0
-		pCharacterSpacing = 0
 	end
 	
 	/** \brief Create copy of style. */
@@ -111,31 +106,7 @@ class STDStyle
 	 */
 	func new(String name, DefaultWidgetDesigner.StateDesign design)
 		pName = name
-		pAlignment = Align.left
-		
-		pFont = design.getFont()
-		
-		if design.getTextColor() != null
-			pTextColor = design.getTextColor()
-			
-		else
-			pTextColor = Color.black
-		end
-		
-		pBackgroundColor = null
-		
-		var BorderSize padding = design.getPadding()
-		if padding != null
-			pMargins = RectArea.new(padding.getLeft(), padding.getTop(), \
-				padding.getRight(), padding.getBottom())
-			
-		else
-			pMargins = RectArea.new()
-		end
-		
-		pFirstLineIndent = 0
-		pLineSpacing = 0
-		pCharacterSpacing = 0
+		setFromDesignerState(design)
 	end
 	
 	/**
@@ -150,17 +121,8 @@ class STDStyle
 	 */
 	func new(String name, DefaultLabelDesigner.LabelStateDesign design)
 		pName = name
+		setFromDesignerState(design)
 		
-		pFont = design.getFont()
-		
-		if design.getTextColor() != null
-			pTextColor = design.getTextColor()
-			
-		else
-			pTextColor = Color.black
-		end
-		
-		pAlignment = Align.left
 		if design.getAlignment() != null
 			select design.getAlignment().value()
 			case Label.left
@@ -173,6 +135,17 @@ class STDStyle
 				pAlignment = Align.center
 			end
 		end
+	end
+	
+	private func void setFromDesignerState(DefaultWidgetDesigner.StateDesign design)
+		pAlignment = Align.left
+		
+		pFont = design.getFont()
+		
+		pTextColor = design.getTextColor()
+		if pTextColor == null
+			pTextColor = Color.black
+		end
 		
 		pBackgroundColor = null
 		
@@ -184,12 +157,7 @@ class STDStyle
 		else
 			pMargins = RectArea.new()
 		end
-		
-		pFirstLineIndent = 0
-		pLineSpacing = 0
-		pCharacterSpacing = 0
 	end
-	
 	
 	
 	/** \brief Name of style. */

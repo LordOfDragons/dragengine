@@ -20,7 +20,7 @@ class CanvasText extends Canvas
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create canvas text. */
-	public func new()
+	func new()
 	end
 	/*@}*/
 	
@@ -29,30 +29,30 @@ class CanvasText extends Canvas
 	/** \name Management */
 	/*@{*/
 	/** \brief Font or \em null if not set. */
-	public func Font getFont()
+	func Font getFont()
 		return null
 	end
 	
 	/** \brief Set font or \em null to unset. */
-	public func void setFont( Font font )
+	func void setFont(Font font)
 	end
 	
 	/** \brief Text. */
-	public func String getText()
+	func String getText()
 		return null
 	end
 	
 	/** \brief Set text. */
-	public func void setText( String text )
+	func void setText(String text)
 	end
 	
 	/** \brief Text color. */
-	public func Color getColor()
+	func Color getColor()
 		return null
 	end
 	
 	/** \brief Set text color. */
-	public func void setColor( Color color )
+	func void setColor(Color color)
 	end
 	
 	
@@ -62,7 +62,7 @@ class CanvasText extends Canvas
 	 * \details Implements Object.equals(Object).
 	 * \returns \em true if \em other is of type canvas and components are equal.
 	 */
-	public func bool equals( Object other )
+	func bool equals(Object other)
 		return false
 	end
 	
@@ -70,7 +70,7 @@ class CanvasText extends Canvas
 	 * \brief Hash code for use as dictionary keys.
 	 * \details Implements Object.hashCode().
 	 */
-	public func int hashCode()
+	func int hashCode()
 		return 0
 	end
 	/*@}*/

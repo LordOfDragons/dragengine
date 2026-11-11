@@ -38,53 +38,53 @@ pin Dragengine.Scenery
 class ShoutConsole extends Widget implements ConsoleListener
 	/** \brief Update timer. */
 	class UpdateTimer extends Timer
-		private var ShoutConsole pWidget
+		var ShoutConsole pWidget
 		
-		public func new( ShoutConsole widget ) super( 1.0, true )
-			this.pWidget = widget
+		func new(ShoutConsole widget) super(1.0, true)
+			pWidget = widget
 		end
 		
-		public func void fire()
-			this.pWidget.update()
+		func void fire()
+			pWidget.update()
 		end
 	end
 	
 	
 	
-	private var Console pConsole
-	private var Array pTextLayouts
-	private var Array pTimesToLive
-	private var int pMaxLines
-	private var float pNewMessageTTL
-	private var UpdateTimer pUpdateTimer
+	var Console pConsole
+	var Array pTextLayouts
+	var Array pTimesToLive
+	var int pMaxLines
+	var float pNewMessageTTL
+	var UpdateTimer pUpdateTimer
 	
 	
 	
 	/** \brief Create shout console. */
-	public func new( Console console )
-		this.pTextLayouts = Array.new( 10 )
-		this.pTimesToLive = Array.new( 10 )
-		this.pMaxLines = 5
-		this.pNewMessageTTL = 5 //3
+	func new(Console console)
+		pTextLayouts = Array.new(10)
+		pTimesToLive = Array.new(10)
+		pMaxLines = 5
+		pNewMessageTTL = 5 //3
 		
-		this.setDesignerSelector( "ShoutConsole" )
-		this.setMinimumSize( Point.new( 100, 100 ) )
+		setDesignerSelector("ShoutConsole")
+		setMinimumSize(Point.new(100, 100))
 		
-		this.setConsole( console )
+		setConsole(console)
 		
-		this.pUpdateTimer = UpdateTimer.new( this )
+		pUpdateTimer = UpdateTimer.new(this)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		if this.pUpdateTimer != null
-			this.pUpdateTimer.giveUp()
-			this.pUpdateTimer = null
+	func void dispose()
+		if pUpdateTimer != null
+			pUpdateTimer.giveUp()
+			pUpdateTimer = null
 		end
 		
-		if this.pConsole != null
-			this.pConsole.removeListener( this )
-			this.pConsole = null
+		if pConsole != null
+			pConsole.removeListener(this)
+			pConsole = null
 		end
 		
 		super.dispose()
@@ -93,24 +93,24 @@ class ShoutConsole extends Widget implements ConsoleListener
 	
 	
 	/** \brief Console to monitor. */
-	public func Console getConsole()
-		return this.pConsole
+	func Console getConsole()
+		return pConsole
 	end
 	
 	/** \brief Set console to monitor. */
-	public func void setConsole( Console console )
-		if console == this.pConsole
+	func void setConsole(Console console)
+		if console == pConsole
 			return
 		end
 		
-		if this.pConsole != null
-			this.pConsole.removeListener( this )
+		if pConsole != null
+			pConsole.removeListener(this)
 		end
 		
-		this.pConsole = console
+		pConsole = console
 		
 		if console != null
-			console.addListener( this )
+			console.addListener(this)
 		end
 	end
 	
@@ -123,18 +123,18 @@ class ShoutConsole extends Widget implements ConsoleListener
 	 * \param message Message added to console.
 	 * \param removedTop True if topmost message had to be removed to be able to add message.
 	 */
-	public func void messageAdded( Console console, ConsoleMessage message, bool removedTop )
+	func void messageAdded(Console console, ConsoleMessage message, bool removedTop)
 		// TODO change this to a list of Label with wrapping support to avoid depending
 		//      on the presence of a gui theme while building the text layouts
 		//      
-		var Color color = this.getTextColor()
-		var Font font = this.getFont()
+		var Color color = getTextColor()
+		var Font font = getFont()
 		if font == null or color == null
-			return  // no gui theme yet
+			return // no gui theme yet
 		end
 		
-		var int count = this.pTextLayouts.getCount()
-		var int width = this.getWidth()
+		var int count = pTextLayouts.getCount()
+		var int width = getWidth()
 		var String messageText = ""
 		
 		// build text to display from message
@@ -144,23 +144,23 @@ class ShoutConsole extends Widget implements ConsoleListener
 		messageText = messageText + message.getMessage()
 		
 		// create text layout for this message text
-		var TextLayout layout = TextLayout.new( messageText, font )
-		layout.setColor( color )
-		layout.setAlignment( TextLayout.Align.left )
-		layout.setMaximalWidth( DEMath.max( width - 10, 0 ) )
+		var TextLayout layout = TextLayout.new(messageText, font)
+		layout.setColor(color)
+		layout.setAlignment(TextLayout.Align.left)
+		layout.setMaximalWidth(DEMath.max(width - 10, 0))
 		layout.layoutText()
 		
 		// drop lines if buffer is full
-		if count == this.pMaxLines
-			this.pTextLayouts.removeFrom( 0 )
-			this.pTimesToLive.removeFrom( 0 )
+		if count == pMaxLines
+			pTextLayouts.removeFrom(0)
+			pTimesToLive.removeFrom(0)
 		end
 		
 		// add new message
-		this.pTextLayouts.add( layout )
-		this.pTimesToLive.add( this.pNewMessageTTL )
+		pTextLayouts.add(layout)
+		pTimesToLive.add(pNewMessageTTL)
 		
-		this.updateCanvasConsole()
+		updateCanvasConsole()
 	end
 	
 	/**
@@ -168,17 +168,17 @@ class ShoutConsole extends Widget implements ConsoleListener
 	 *
 	 * \param console Console sending notification.
 	 */
-	public func void consoleCleared( Console console )
-		this.clear()
+	func void consoleCleared(Console console)
+		clear()
 	end
 	
 	
 	
 	/** \brief Clear window. */
-	public func void clear()
-		this.pTextLayouts.removeAll()
-		this.pTimesToLive.removeAll()
-		this.updateCanvasConsole()
+	func void clear()
+		pTextLayouts.removeAll()
+		pTimesToLive.removeAll()
+		updateCanvasConsole()
 	end
 	
 	
@@ -187,30 +187,30 @@ class ShoutConsole extends Widget implements ConsoleListener
 	 * \brief Update console.
 	 * \details Remove timed out console logs.
 	 */
-	public func void update()
-		var float elapsed = this.pUpdateTimer.getTriggerTime()
-		var int i, count = this.pTextLayouts.getCount()
+	func void update()
+		var float elapsed = pUpdateTimer.getTriggerTime()
+		var int i, count = pTextLayouts.getCount()
 		var bool changed = false
 		
 		// update all time to live counters
 		for i = 0 to count
-			this.pTimesToLive.setAt( i, ( this.pTimesToLive.getAt( i ) cast float ) - elapsed )
+			pTimesToLive.setAt(i, (pTimesToLive.getAt(i) cast float) - elapsed)
 		end
 		
 		// remove all message which have died
 		while count > 0
-			if this.pTimesToLive.getAt( 0 ) cast float > 0
+			if pTimesToLive.getAt(0) cast float > 0
 				break
 			end
-			this.pTextLayouts.removeFrom( 0 )
-			this.pTimesToLive.removeFrom( 0 )
+			pTextLayouts.removeFrom(0)
+			pTimesToLive.removeFrom(0)
 			count--
 			changed = true
 		end
 		
 		// update if something changed
 		if changed
-			this.updateCanvasConsole()
+			updateCanvasConsole()
 		end
 	end
 	
@@ -223,39 +223,39 @@ class ShoutConsole extends Widget implements ConsoleListener
 	 * in mind if you try to call this method. It might not work. If you need original
 	 * getWidgetAt behavior from super class use realGetWidgetAt().
 	 */
-	public func Widget getWidgetAt( Point position )
+	func Widget getWidgetAt(Point position)
 		return null
 	end
 	
 	/** \brief Super class getWidgetAt without overwritten behavior. */
-	public func Widget realGetWidgetAt( Point position )
-		return super.getWidgetAt( position )
+	func Widget realGetWidgetAt(Point position)
+		return super.getWidgetAt(position)
 	end
 	
 	
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
+	func void onResize(WidgetEvent event)
+		super.onResize(event)
 		
 		// TODO: this has to be done more clever
-		this.pTextLayouts.removeAll()
-		this.pTimesToLive.removeAll()
-		this.updateCanvasConsole()
+		pTextLayouts.removeAll()
+		pTimesToLive.removeAll()
+		updateCanvasConsole()
 	end
 	
 	/** \brief Update console canvas. */
-	public func void updateCanvasConsole()
-		var CanvasView canvas = this.getCanvasContent()
+	func void updateCanvasConsole()
+		var CanvasView canvas = getCanvasContent()
 		canvas.removeAllCanvas()
 		
-		var int count = this.pTextLayouts.getCount()
+		var int count = pTextLayouts.getCount()
 		var int y = 0
 		var int i
 		
 		for i = 0 to count
-			var TextLayout layout = this.pTextLayouts.getAt( i ) cast TextLayout
-			layout.addToCanvas( canvas, 0, y )
+			var TextLayout layout = pTextLayouts.getAt(i) cast TextLayout
+			layout.addToCanvas(canvas, 0, y)
 			y += layout.getHeight()
 		end
 	end

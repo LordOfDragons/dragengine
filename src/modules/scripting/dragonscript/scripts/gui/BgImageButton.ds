@@ -175,15 +175,14 @@ class BgButton extends Button
 	
 	
 	
-	/** Set font of the button text. */
-	func void setFont(Font font)
-		super.setFont(font)
-		pLabel.setFont(font)
+	func void onSetFont()
+		super.onSetFont()
+		pLabel.setFont(getFont())
 	end
 	
-	/** Set foreground color of button text. */
-	func void setTextColor(Color color)
-		super.setTextColor(color)
+	func void onSetTextColor()
+		super.onSetTextColor()
+		pLabel.setTextColor(getTextColor())
 		pLabel.setTextColor(color)
 	end
 	

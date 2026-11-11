@@ -41,13 +41,13 @@ pin Dragengine.Commands
  * Supports designing using designer selector "Window.Console".
  */
 class WindowConsole extends Window implements ConsoleListener
-	private var Console pConsole
-	private var ConsoleCommandList pConsoleCommands
-	private var CommandManager pCommandManager
-	private var TextLayout pTextLayout
-	private var Widget pWidgetBufferLines
-	private var ConsoleInputField pEditInput
-	private var bool pHasChanged
+	var Console pConsole
+	var ConsoleCommandList pConsoleCommands
+	var CommandManager pCommandManager
+	var TextLayout pTextLayout
+	var Widget pWidgetBufferLines
+	var ConsoleInputField pEditInput
+	var bool pHasChanged
 	
 	
 	
@@ -58,7 +58,7 @@ class WindowConsole extends Window implements ConsoleListener
 	 * 
 	 * Window is initially hidden. Use CommandToggleConsole to show/hide the window.
 	 */
-	public func new() this( 0, 0, GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight() / 2 )
+	func new() this(0, 0, GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight() / 2)
 	end
 	
 	/**
@@ -66,35 +66,35 @@ class WindowConsole extends Window implements ConsoleListener
 	 * 
 	 * Window is initially hidden. Use CommandToggleConsole to show/hide the window.
 	 */
-	public func new( int x, int y, int width, int height ) super( x, y, width, height )
-		this.setLayout( BorderLayout.new( 2 ) )
-		this.setCanClose( false )
-		this.setVisible( false )
-		this.setCanMaximize( false )
-		this.setCanMinimize( false )
-		this.setDesignerSelector( "WindowConsole" )
+	func new(int x, int y, int width, int height) super(x, y, width, height)
+		setLayout(BorderLayout.new(2))
+		setCanClose(false)
+		setVisible(false)
+		setCanMaximize(false)
+		setCanMinimize(false)
+		setDesignerSelector("WindowConsole")
 		
-		this.pHasChanged = false
-		this.pConsoleCommands = ConsoleCommandList.new()
+		pHasChanged = false
+		pConsoleCommands = ConsoleCommandList.new()
 		
-		this.pWidgetBufferLines = Widget.new()
-		this.addWidget( this.pWidgetBufferLines, BorderLayout.Area.content )
+		pWidgetBufferLines = Widget.new()
+		addWidget(pWidgetBufferLines, BorderLayout.Area.content)
 		
-		this.pEditInput = ConsoleInputField.new()
-		this.addWidget( this.pEditInput, BorderLayout.Area.bottom )
+		pEditInput = ConsoleInputField.new()
+		addWidget(pEditInput, BorderLayout.Area.bottom)
 		
-		this.setActiveWidget( this.pEditInput )
+		setActiveWidget(pEditInput)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		if this.pConsole != null
-			this.pConsole.removeListener( this )
+	func void dispose()
+		if pConsole != null
+			pConsole.removeListener(this)
 		end
 		
-		this.pCommandManager = null
-		this.pConsoleCommands = null
-		this.pWidgetBufferLines = null
+		pCommandManager = null
+		pConsoleCommands = null
+		pWidgetBufferLines = null
 		
 		super.dispose()
 	end
@@ -102,137 +102,137 @@ class WindowConsole extends Window implements ConsoleListener
 	
 	
 	/** \brief Console to monitor. */
-	public func Console getConsole()
-		return this.pConsole
+	func Console getConsole()
+		return pConsole
 	end
 	
 	/** \brief Set console to monitor. */
-	public func void setConsole( Console console )
-		if console == this.pConsole
+	func void setConsole(Console console)
+		if console == pConsole
 			return
 		end
 		
-		if this.pConsole != null
-			this.pConsole.removeListener( this )
+		if pConsole != null
+			pConsole.removeListener(this)
 		end
 		
-		this.pConsole = console
+		pConsole = console
 		
 		if console != null
-			console.addListener( this )
+			console.addListener(this)
 		end
 		
-		this.pHasChanged = true
-		if this.getVisible()
-			this.updateCanvasConsole()
+		pHasChanged = true
+		if getVisible()
+			updateCanvasConsole()
 		end
 		
-		this.pEditInput.setConsole( console )
+		pEditInput.setConsole(console)
 	end
 	
 	/** \brief List of console commands users can enter into the input field. */
-	public func ConsoleCommandList getConsoleCommands()
-		return this.pConsoleCommands
+	func ConsoleCommandList getConsoleCommands()
+		return pConsoleCommands
 	end
 	
 	/** \brief Set list of console commands users can enter into the input field. */
-	public func void setConsoleCommands( ConsoleCommandList commands )
-		if commands == this.pConsoleCommands
+	func void setConsoleCommands(ConsoleCommandList commands)
+		if commands == pConsoleCommands
 			return
 		end
 		
-		this.pConsoleCommands = commands
-		this.pEditInput.setConsoleCommands( commands )
+		pConsoleCommands = commands
+		pEditInput.setConsoleCommands(commands)
 	end
 	
 	/** \brief Command manager for commands users can enter into the input field. */
-	public func CommandManager getCommandManager()
-		return this.pCommandManager
+	func CommandManager getCommandManager()
+		return pCommandManager
 	end
 	
 	/** \brief Set command manager for commands users can enter into the input field. */
-	public func void setCommandManager( CommandManager commandManager )
-		if commandManager == this.pCommandManager
+	func void setCommandManager(CommandManager commandManager)
+		if commandManager == pCommandManager
 			return
 		end
 		
-		this.pCommandManager = commandManager
+		pCommandManager = commandManager
 		
-		this.pEditInput.setCommands( commandManager )
+		pEditInput.setCommands(commandManager)
 	end
 	
 	/** \brief Edit field for entering console commands. */
-	public func ConsoleInputField getEditInput()
-		return this.pEditInput
+	func ConsoleInputField getEditInput()
+		return pEditInput
 	end
 	
 	/** \brief Set command for closing console. */
-	public func void setCommandCloseConsole( Command command )
-		this.pEditInput.setCommandCloseConsole( command )
+	func void setCommandCloseConsole(Command command)
+		pEditInput.setCommandCloseConsole(command)
 	end
 	
 	
 	
 	/** \brief Window is shown. */
-	public func void onShown( WidgetEvent event )
-		super.onShown( event )
-		this.updateCanvasConsole()
+	func void onShown(WidgetEvent event)
+		super.onShown(event)
+		updateCanvasConsole()
 	end
 	
 	/** \brief Gui theme changed. */
-	public func void onGuiThemeChanged()
+	func void onGuiThemeChanged()
 		super.onGuiThemeChanged()
-		this.updateCanvasConsole()
+		updateCanvasConsole()
 	end
 	
 	/** \brief Desktop size changed. */
-	public func void onDesktopResized()
-		this.setSize( Point.new( GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight() / 2 ) )
+	func void onDesktopResized()
+		setSize(Point.new(GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight() / 2))
 	end
 	
 	/** \brief Window has been resized. */
-	public func void onResize(WidgetEvent event)
+	func void onResize(WidgetEvent event)
 		super.onResize(event)
-		this.updateCanvasConsole()
+		updateCanvasConsole()
 	end
 	
 	
 	
 	/** \brief Update canvas console if required. */
-	public func void updateCanvasConsole()
-		if not this.pHasChanged
+	func void updateCanvasConsole()
+		if not pHasChanged
 			return
 		end
 		
-		var CanvasView canvas = this.pWidgetBufferLines.getCanvasContent()
+		var CanvasView canvas = pWidgetBufferLines.getCanvasContent()
 		canvas.removeAllCanvas()
 		
-		this.updateBuffer()
+		updateBuffer()
 		
-		if this.pTextLayout != null
-			this.pTextLayout.addToCanvas( canvas, 2, this.getHeight() - 3 \
-				- this.pEditInput.getHeight() - this.pEditInput.getBorderSize().getHeight() \
-				- this.pTextLayout.getHeight() )
+		if pTextLayout != null
+			pTextLayout.addToCanvas(canvas, 2, getHeight() - 3 \
+				- pEditInput.getHeight() - pEditInput.getBorderSize().getHeight() \
+				- pTextLayout.getHeight())
 		end
 		
-		this.pHasChanged = false
+		pHasChanged = false
 	end
 	
 	
 	
 	/** \brief Message added to console. */
-	public func void messageAdded( Console console, ConsoleMessage message, bool removedTop )
-		this.pHasChanged = true
-		if this.getVisible()
-			this.updateCanvasConsole()
+	func void messageAdded(Console console, ConsoleMessage message, bool removedTop)
+		pHasChanged = true
+		if getVisible()
+			updateCanvasConsole()
 		end
 	end
 	
 	/** \brief Console cleared. */
-	public func void consoleCleared( Console console )
-		this.pHasChanged = true
-		if this.getVisible()
-			this.updateCanvasConsole()
+	func void consoleCleared(Console console)
+		pHasChanged = true
+		if getVisible()
+			updateCanvasConsole()
 		end
 	end
 	
@@ -251,25 +251,25 @@ class WindowConsole extends Window implements ConsoleListener
 		// operates on smaller batches of text and messages can be added to the end
 		// and removed from the top. Layouting would then be automatic
 		
-		if this.pConsole == null
-			this.pTextLayout = null
+		if pConsole == null
+			pTextLayout = null
 			return
 		end
 		
-		var Font font = this.getFont()
-		var Color color = this.getTextColor()
+		var Font font = getFont()
+		var Color color = getTextColor()
 		if font == null or color == null
-			this.pTextLayout = null
+			pTextLayout = null
 			return
 		end
 		
-		var int i, count = this.pConsole.getMessageCount()
+		var int i, count = pConsole.getMessageCount()
 		var String buffer = ""
-		var int width = this.getWidth()
+		var int width = getWidth()
 		
 		// build buffer containing all text
 		for i = 0 to count
-			var ConsoleMessage message = this.pConsole.getMessage( i )
+			var ConsoleMessage message = pConsole.getMessage(i)
 			if i > 0
 				buffer = buffer + "\n"
 			end
@@ -282,14 +282,14 @@ class WindowConsole extends Window implements ConsoleListener
 		
 		// build layout
 		if count > 0
-			this.pTextLayout = TextLayout.new( buffer, font )
-			this.pTextLayout.setColor( color )
-			this.pTextLayout.setAlignment( TextLayout.Align.left )
-			this.pTextLayout.setMaximalWidth( DEMath.max( width - 10, 0 ) )
-			this.pTextLayout.layoutText()
+			pTextLayout = TextLayout.new(buffer, font)
+			pTextLayout.setColor(color)
+			pTextLayout.setAlignment(TextLayout.Align.left)
+			pTextLayout.setMaximalWidth(DEMath.max(width - 10, 0))
+			pTextLayout.layoutText()
 			
 		else
-			this.pTextLayout = null
+			pTextLayout = null
 		end
 	end
 end

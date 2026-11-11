@@ -431,6 +431,7 @@ class TextArea extends TextWidget implements RangeModelListener
 	
 	/** Notify about font change. */
 	public func void onSetFont()
+		super.onSetFont()
 		pTextLayout = null
 		pSelXOffsets = null
 		pCaret = null
@@ -441,6 +442,7 @@ class TextArea extends TextWidget implements RangeModelListener
 	
 	/** Foreground color changed. */
 	public func void onSetTextColor()
+		super.onSetTextColor()
 		updateCanvasText()
 	end
 	

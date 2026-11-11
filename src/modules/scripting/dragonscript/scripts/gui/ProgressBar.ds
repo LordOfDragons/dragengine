@@ -216,14 +216,14 @@ class ProgressBar extends Widget implements RangeModelListener
 	
 	
 	
-	/** \brief Widget font changed. */
 	func void onSetFont()
+		super.onSetFont()
 		updateLabelCanvasParams()
 		updateProgress()
 	end
 	
-	/** \brief Text color changed. */
 	func void onSetTextColor()
+		super.onSetTextColor()
 		updateLabelCanvasParams()
 		updateProgress()
 	end
@@ -234,7 +234,6 @@ class ProgressBar extends Widget implements RangeModelListener
 		updateProgress()
 	end
 	
-	/** \brief Gui theme changed. */
 	func void onGuiThemeChanged()
 		super.onGuiThemeChanged()
 		updateLabelCanvasParams()

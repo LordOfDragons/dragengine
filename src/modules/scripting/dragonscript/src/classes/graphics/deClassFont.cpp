@@ -24,11 +24,6 @@
 
 #include <new>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-
 #include <libdscript/libdscript.h>
 
 #include "deClassFont.h"
@@ -132,7 +127,7 @@ void deClassFont::nfNewSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 }
 
-// static public func void loadAsynchron(String filename, ResourceListener listener)
+// static func void loadAsynchron(String filename, ResourceListener listener)
 deClassFont::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) :
 dsFunction(init.clsFont, "loadAsynchron", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
@@ -164,7 +159,7 @@ void deClassFont::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 	dedsGetNativeData<sFntNatDat>(p_GetNativeData(myself)).~sFntNatDat();
 }
 
-// public func String getFilename()
+// func String getFilename()
 deClassFont::nfGetFilename::nfGetFilename(const sInitData &init) :
 dsFunction(init.clsFont, "getFilename", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
@@ -174,7 +169,7 @@ void deClassFont::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushString(nd.font->GetFilename());
 }
 
-// public func int getSize()
+// func int getSize()
 deClassFont::nfGetSize::nfGetSize(const sInitData &init) :
 dsFunction(init.clsFont, "getSize", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
@@ -196,7 +191,7 @@ void deClassFont::nfGetBaseLine::RunFunction(dsRunTime *rt, dsValue *myself){
 
 
 
-// public func Point getTextSize(String text)
+// func Point getTextSize(String text)
 deClassFont::nfGetTextSize::nfGetTextSize(const sInitData &init) :
 dsFunction(init.clsFont, "getTextSize", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint){
@@ -234,7 +229,7 @@ void deClassFont::nfGetTextSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	ds.GetClassPoint()->PushPoint(rt, decPoint((int)ceilf(textWidth), textHeight));
 }
 
-// public func float getCharWidth(int char)
+// func float getCharWidth(int char)
 deClassFont::nfGetCharWidth::nfGetCharWidth(const sInitData &init) :
 dsFunction(init.clsFont, "getCharWidth", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -252,7 +247,7 @@ void deClassFont::nfGetCharWidth::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 }
 
-// public func float getCharAdvance(int char)
+// func float getCharAdvance(int char)
 deClassFont::nfGetCharAdvance::nfGetCharAdvance(const sInitData &init) :
 dsFunction(init.clsFont, "getCharAdvance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -270,7 +265,7 @@ void deClassFont::nfGetCharAdvance::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 }
 
-// public func float getCharBearing(int char)
+// func float getCharBearing(int char)
 deClassFont::nfGetCharBearing::nfGetCharBearing(const sInitData &init) :
 dsFunction(init.clsFont, "getCharBearing", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -288,7 +283,7 @@ void deClassFont::nfGetCharBearing::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 }
 
-// public func float getMaxWidth()
+// func float getMaxWidth()
 deClassFont::nfGetMaxWidth::nfGetMaxWidth(const sInitData &init) :
 dsFunction(init.clsFont, "getMaxWidth", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -298,7 +293,7 @@ void deClassFont::nfGetMaxWidth::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushFloat((float)(nd.fontSize ? nd.fontSize->GetFontWidth() : nd.font->GetFontWidth()) * nd.scale);
 }
 
-// public func bool hasGlyph(int character)
+// func bool hasGlyph(int character)
 deClassFont::nfHasGlyph::nfHasGlyph(const sInitData &init) :
 dsFunction(init.clsFont, "hasGlyph", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsInteger); // char
@@ -311,7 +306,7 @@ void deClassFont::nfHasGlyph::RunFunction(dsRunTime *rt, dsValue *myself){
 
 
 
-// public func int hashCode()
+// func int hashCode()
 deClassFont::nfHashCode::nfHashCode(const sInitData &init) :
 dsFunction(init.clsFont, "hashCode", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
@@ -322,7 +317,7 @@ void deClassFont::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushInt((int)(intptr_t)nd.font);
 }
 
-// public func bool equals( Object obj )
+// func bool equals( Object obj )
 deClassFont::nfEquals::nfEquals(const sInitData &init) :
 dsFunction(init.clsFont, "equals", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){

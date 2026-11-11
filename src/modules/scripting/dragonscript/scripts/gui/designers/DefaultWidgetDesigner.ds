@@ -41,23 +41,22 @@ pin Dragengine.Scenery
  */
 class DefaultWidgetDesigner implements WidgetDesigner
 	/** \brief Design for a particular widget state. */
-	public class StateDesign
-		private var CanvasCreator pCanvasCreator
-		private var BorderFactory pBorderFactory
-		private var Font pFont
-		private var Color pTextColor
-		private var BorderSize pPadding
-		private var Point pMinimumSize
-		private var MousePointerFactory pMousePointerFactory
+	class StateDesign
+		var CanvasCreator pCanvasCreator
+		var BorderFactory pBorderFactory
+		var Font pFont
+		var BorderSize pPadding
+		var Point pMinimumSize
+		var MousePointerFactory pMousePointerFactory
 		
 		
 		
 		/** \brief Create state design. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Create copy of state design. */
-		public func new(StateDesign stateDesign)
+		func new(StateDesign stateDesign)
 			pCanvasCreator = stateDesign.pCanvasCreator
 			pBorderFactory = stateDesign.pBorderFactory
 			pFont = stateDesign.pFont
@@ -111,79 +110,79 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		
 		
 		/** \brief Canvas creator or null. */
-		public func CanvasCreator getCanvasCreator()
+		func CanvasCreator getCanvasCreator()
 			return pCanvasCreator
 		end
 		
 		/** \brief Set canvas creator or null. */
-		public func void setCanvasCreator(CanvasCreator creator)
+		func void setCanvasCreator(CanvasCreator creator)
 			pCanvasCreator = creator
 		end
 		
 		/** \brief Border factory or null. */
-		public func BorderFactory getBorderFactory()
+		func BorderFactory getBorderFactory()
 			return pBorderFactory
 		end
 		
 		/** \brief Set border factory or null. */
-		public func void setBorderFactory(BorderFactory borderFactory)
+		func void setBorderFactory(BorderFactory borderFactory)
 			pBorderFactory = borderFactory
 		end
 		
 		/** \brief Font or null. */
-		public func Font getFont()
+		func Font getFont()
 			return pFont
 		end
 		
 		/** \brief Set font or null. */
-		public func void setFont(Font font)
+		func void setFont(Font font)
 			pFont = font
 		end
 		
 		/** \brief Text color or null. */
-		public func Color getTextColor()
+		func Color getTextColor()
 			return pTextColor
 		end
 		
 		/** \brief Set text color or null. */
-		public func void setTextColor(Color color)
+		func void setTextColor(Color color)
 			pTextColor = color
 		end
 		
 		/** \brief Padding or null. */
-		public func BorderSize getPadding()
+		func BorderSize getPadding()
 			return pPadding
 		end
 		
 		/** \brief Set padding or null. */
-		public func void setPadding(BorderSize padding)
+		func void setPadding(BorderSize padding)
 			pPadding = padding
 		end
 		
 		/** \brief Minimum widget size or null. */
-		public func Point getMinimumSize()
+		func Point getMinimumSize()
 			return pMinimumSize
 		end
 		
 		/** \brief Set minimum widget size or null. */
-		public func void setMinimumSize(Point size)
+		func void setMinimumSize(Point size)
 			pMinimumSize = size
 		end
 		
 		/** \brief Mouse pointer factory or null. */
-		public func MousePointerFactory getMousePointerFactory()
+		func MousePointerFactory getMousePointerFactory()
 			return pMousePointerFactory
 		end
 		
 		/** \brief Mouse pointer factory or null. */
-		public func void setMousePointerFactory(MousePointerFactory factory)
+		func void setMousePointerFactory(MousePointerFactory factory)
 			pMousePointerFactory = factory
 		end
 		
 		
 		
 		/** \brief Create copy of state. */
-		public func StateDesign copyDesign()
+		func StateDesign copyDesign()
 			return StateDesign.new(this)
 		end
 		
@@ -193,7 +192,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		 * Updates state with parameters of this state if defined. Used to find the first
 		 * defined parameter for a series of states acting as fallback for each other.
 		 */
-		public func void merge(StateDesign state)
+		func void merge(StateDesign state)
 			if pCanvasCreator != null
 				state.pCanvasCreator = pCanvasCreator
 			end
@@ -222,7 +221,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		 * 
 		 * This is typically called on a merged design to find the first defined parameters.
 		 */
-		public func void apply(Widget widget)
+		func void apply(Widget widget)
 			if not widget.getProtectBackgroundCanvasCreator()
 				widget.setBackgroundCanvasCreator(pCanvasCreator)
 			end
@@ -265,16 +264,16 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	
 	
 	
-	private var StateDesign pDesignNormal
-	private var StateDesign pDesignDisabled
-	private var StateDesign pDesignFocused
-	private var StateDesign pDesignHover
-	private var StateDesign pDesignFocusedHover
+	var StateDesign pDesignNormal
+	var StateDesign pDesignDisabled
+	var StateDesign pDesignFocused
+	var StateDesign pDesignHover
+	var StateDesign pDesignFocusedHover
 	
 	
 	
 	/** \brief Create new widget designer. */
-	public func new()
+	func new()
 		pDesignNormal = StateDesign.new()
 		pDesignDisabled = StateDesign.new()
 		pDesignFocused = StateDesign.new()
@@ -283,7 +282,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	end
 	
 	/** \brief Create copy of widget designer. */
-	public func new(DefaultWidgetDesigner designer)
+	func new(DefaultWidgetDesigner designer)
 		pDesignNormal = designer.pDesignNormal.copyDesign()
 		pDesignDisabled = designer.pDesignDisabled.copyDesign()
 		pDesignFocused = designer.pDesignFocused.copyDesign()
@@ -294,7 +293,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	
 	
 	/** \brief Design for normal state. */
-	public func StateDesign getDesignNormal()
+	func StateDesign getDesignNormal()
 		return pDesignNormal
 	end
 	
@@ -307,7 +306,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	end
 	
 	/** \brief Design for disabled state. */
-	public func StateDesign getDesignDisabled()
+	func StateDesign getDesignDisabled()
 		return pDesignDisabled
 	end
 	
@@ -320,7 +319,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	end
 	
 	/** \brief Design for focused state. */
-	public func StateDesign getDesignFocused()
+	func StateDesign getDesignFocused()
 		return pDesignFocused
 	end
 	
@@ -333,7 +332,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	end
 	
 	/** \brief Design for hover state. */
-	public func StateDesign getDesignHover()
+	func StateDesign getDesignHover()
 		return pDesignHover
 	end
 	
@@ -346,7 +345,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	end
 	
 	/** \brief Design for focused hover state. */
-	public func StateDesign getDesignFocusedHover()
+	func StateDesign getDesignFocusedHover()
 		return pDesignFocusedHover
 	end
 	
@@ -382,7 +381,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	 * | hover | Mouse pointer hover over widget or children thereof |
 	 * | focusedHover | Mouse pointer hover over widget or children thereof while focused |
 	 */
-	public func void setParameter(String name, Object value)
+	func void setParameter(String name, Object value)
 		var int delimiter = name.find('.')
 		if delimiter == -1
 			throw EInvalidParam.new("unknown parameter: " + name)
@@ -419,14 +418,14 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	end
 	
 	/** \brief Create copy of designer. */
-	public func WidgetDesigner copyDesigner()
+	func WidgetDesigner copyDesigner()
 		return DefaultWidgetDesigner.new(this)
 	end
 	
 	
 	
 	/** \brief Design widget. */
-	public func void designWidget(Widget widget)
+	func void designWidget(Widget widget)
 		widgetStateFindDesign(widget).apply(widget)
 	end
 	
@@ -471,7 +470,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	 * Finds the widget highest up in the parent widget chain with getStateChangeNotifyChildren()
 	 * set to true. If not found returns \em widget.
 	 */
-	public func Widget getStateTrackWidget(Widget widget)
+	func Widget getStateTrackWidget(Widget widget)
 		var Container parent = widget.getParent()
 		
 		while true

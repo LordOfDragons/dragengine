@@ -396,26 +396,22 @@ class TextField extends TextWidget
 	
 	
 	
-	/** \brief Size changed. */
 	public func void onResize(WidgetEvent event)
 		super.onResize(event)
-		
 		pSelXOffsets = null
 		pNeedsUpdate = true
 		updateCanvasText()
 	end
 	
-	/** \brief Widget font changed. */
 	public func void onSetFont()
 		super.onSetFont()
-		
 		pSelXOffsets = null
 		pNeedsUpdate = true
 		updateCanvasText()
 	end
 	
-	/** \brief Foreground color changed. */
 	public func void onSetTextColor()
+		super.onSetTextColor()
 		updateCanvasText()
 	end
 	
@@ -426,7 +422,6 @@ class TextField extends TextWidget
 		updateCanvasText()
 	end
 	
-	/** \brief Widget lost focus. */
 	public func void onFocusLost(FocusEvent event)
 		super.onFocusLost(event)
 		setSelectionNone()

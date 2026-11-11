@@ -218,16 +218,18 @@ class ProgressGauge extends Widget implements RangeModelListener
 	
 	
 	func void onSetFont()
+		super.onSetFont()
 		updateLabelCanvasParams()
 		updateProgress()
 	end
 	
 	func void onSetTextColor()
+		super.onSetTextColor()
 		updateLabelCanvasParams()
 		updateProgress()
 	end
 	
-	 func void onResize(WidgetEvent event)
+	func void onResize(WidgetEvent event)
 		super.onResize(event)
 		updateProgress()
 	end
