@@ -1,0 +1,120 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'msdfgen-1.13'
+
+libLinkName = 'msdfgen-core'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}.dll'.format(libLinkName)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}{}'.format(libLinkName, envLibrary['SHLIBSUFFIX']))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}{}'.format(libLinkName, envLibrary['LIBSUFFIX']))
+
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'msdfgen', 'lib_msdfgen_fetch')
+
+# check if system msdfgen is present
+hasSystemMsdfgen = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_msdfgen'] != TernaryVariableNo:
+	hasSystemMsdfgen = conf.CheckLibWithHeader(libLinkName, 'msdfgen/msdfgen.h', 'c++',
+		call='msdfgen::Shape shape; (void)shape;')
+conf.Finish()
+
+if not hasSystemMsdfgen and envLibrary['with_system_msdfgen'] == TernaryVariableYes:
+	Exit('Requested to use system msdfgen but no usable msdfgen found.')
+
+libs = [libLinkName]
+
+parent_report['use system msdfgen'] = 'yes' if hasSystemMsdfgen else 'no'
+
+if hasSystemMsdfgen:
+	parent_targets['lib_msdfgen'] = {
+		'name' : 'Internal msdfgen library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build msdfgen
+def msdfgenBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	# Create build directory
+	script.append('mkdir -p build || exit 1')
+	script.append('cd build || exit 1')
+	
+	cmdline = ['cmake', '..', '-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath)]
+	cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	cmdline.append('-DCMAKE_POLICY_VERSION_MINIMUM=3.5')
+	cmdline.append('-DCMAKE_INSTALL_LIBDIR=lib')
+	cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=ON')
+	cmdline.append('-DBUILD_SHARED_LIBS=OFF')
+	cmdline.append('-DMSDFGEN_CORE_ONLY=ON')
+	cmdline.append('-DMSDFGEN_BUILD_STANDALONE=OFF')
+	cmdline.append('-DMSDFGEN_INSTALL=ON')
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	# core headers are not installed by the core-only build
+	srcCoreDir = buildDir.Dir(srcdir).Dir('core').abspath
+	incCoreDir = buildDir.Dir('include').Dir('msdfgen').Dir('core').abspath
+	script.append('mkdir -p "{}" || exit 1'.format(incCoreDir))
+	script.append('cp "{}"/*.h "{}"/*.hpp "{}"/ || exit 1'.format(srcCoreDir, srcCoreDir, incCoreDir))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building msdfgen')
+
+targets = [staticFileName if buildStaticLinking else libFileName]
+targets.extend([
+	'include/msdfgen/msdfgen.h',
+	'include/msdfgen/msdfgen-config.h'])
+
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(msdfgenBuild, 'Build msdfgen'))
+
+depends = envLibrary.Alias('lib_msdfgen', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'share', srcdir])
+
+cpppath = [envLibrary.Dir('include')]
+
+libpath = [envLibrary.Dir('lib')]
+
+if buildStaticLinking:
+	libs = library[0:1]
+	runtimelibs = []
+else:
+	runtimelibs = library[0:1]
+	libs = [libLinkName]
+
+parent_targets['lib_msdfgen'] = {
+	'name' : 'Internal msdfgen library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }
