@@ -34,8 +34,8 @@ pin Dragengine.Scenery
  */
 class STREText extends STRElement
 	var Font pFont
-	private var Color pTextColor
-	private var Color pBackgroundColor
+	var Color pTextColor, pTextBorderColor, pBackgroundColor
+	var float pTextBorderThickness, pTextDilation
 	var String pText
 	
 	
@@ -43,6 +43,7 @@ class STREText extends STRElement
 	/** \brief Create styled text render text element. */
 	func new()
 		pTextColor = Color.black
+		pTextBorderColor = Color.black
 		pText = ""
 	end
 	
@@ -72,6 +73,58 @@ class STREText extends STRElement
 			throw EInvalidParam.new()
 		end
 		pTextColor = color
+	end
+	
+	/**
+	 * \brief Text border color.
+	 * \version 1.35
+	 */
+	func Color getTextBorderColor()
+		return pTextBorderColor
+	end
+	
+	/**
+	 * \brief Set text border color.
+	 * \version 1.35
+	 */
+	func void setTextBorderColor(Color color)
+		pTextBorderColor = color
+	end
+	
+	/**
+	 * \brief Text border thickness in percentage of the font size or null.
+	 * \version 1.35
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	func float getTextBorderThickness()
+		return pTextBorderThickness
+	end
+	
+	/**
+	 * \brief Set text border thickness in percentage of the font size or null.
+	 * \version 1.35
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	func void setTextBorderThickness(float thickness)
+		pTextBorderThickness = thickness
+	end
+	
+	/**
+	 * \brief Text dilation in percentage of the font size.
+	 * \version 1.35
+	 */
+	func float getTextDilation()
+		return pTextDilation
+	end
+	
+	/**
+	 * \brief Set text dilation in percentage of the font size.
+	 * \version 1.35
+	 */
+	func void setTextDilation(float dilation)
+		pTextDilation = dilation
 	end
 	
 	/** \brief Background color. */
@@ -105,7 +158,7 @@ class STREText extends STRElement
 			return Point.new()
 			
 		else
-			return this.pFont.getTextSize( this.pText )
+			return pFont.getTextSize(pText, getTextDilation() + getTextBorderThickness())
 		end
 	end
 	
@@ -120,7 +173,7 @@ class STREText extends STRElement
 			return
 		end
 		
-		var Point textSize = this.pFont.getTextSize( this.pText )
+		var Point textSize = pFont.getTextSize(pText, getTextDilation() + getTextBorderThickness())
 		var Point textPosition = position + getPosition()
 		
 		// filled rectangle for background
@@ -139,6 +192,9 @@ class STREText extends STRElement
 		var CanvasText textCanvas = CanvasText.new()
 		textCanvas.setFont(pFont)
 		textCanvas.setColor(pTextColor)
+		textCanvas.setBorderColor(pTextBorderColor)
+		textCanvas.setBorderThickness(pTextBorderThickness)
+		textCanvas.setDilation(pTextDilation)
 		textCanvas.setText(pText)
 		textCanvas.setPosition(textPosition)
 		textCanvas.setSize(textSize)

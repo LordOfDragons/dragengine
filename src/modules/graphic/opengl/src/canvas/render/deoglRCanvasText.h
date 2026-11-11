@@ -41,9 +41,9 @@ public:
 private:
 	deoglRFont::Ref pFont;
 	deoglRFontSize::Ref pFontSize;
-	float pTextSize;
+	float pTextSize, pBorderThickness, pDilation;
 	decString pText;
-	decColor pColor;
+	decColor pColor, pBorderColor;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -88,9 +88,30 @@ public:
 	
 	/** Set text color. */
 	void SetColor(const decColor &color);
+	
+	/** Border color. */
+	inline const decColor &GetBorderColor() const{ return pBorderColor; }
+
+	/** Set border color. */
+	void SetBorderColor(const decColor &color);
+
+	/** Border thickness in percentage of the font size. */
+	inline float GetBorderThickness() const{ return pBorderThickness; }
+
+	/** Set border thickness. */
+	void SetBorderThickness(float thickness);
+
+	/** Dilation in percentage of the font size. */
+	inline float GetDilation() const{ return pDilation; }
+
+	/** Set dilation. */
+	void SetDilation(float dilation);
 	/*@}*/
 	
 	
+	
+	/** Prepare for rendering. */
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput) override;
 	
 	/** Render. */
 	void Render(const deoglRenderCanvasContext &context) override;

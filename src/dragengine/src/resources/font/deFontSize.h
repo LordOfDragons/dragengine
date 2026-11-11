@@ -49,6 +49,8 @@ private:
 	decString pImagePath;
 	deImage::Ref pImage;
 	deParallelTask::Ref pTaskLoad;
+	decTList<decColor> pSdfColors;
+	float pSdfPixelRange;
 	
 	
 public:
@@ -113,6 +115,17 @@ public:
 	
 	/** \brief Set load task or nullptr if finished. */
 	void SetTaskLoad(deParallelTask *task);
+	
+	
+	/** \brief SDF layer colors. */
+	inline decTList<decColor> &GetSdfColors(){ return pSdfColors; }
+	inline const decTList<decColor> &GetSdfColors() const{ return pSdfColors; }
+	
+	/** \brief SDF pixel range for the font. */
+	inline float GetSdfPixelRange() const{ return pSdfPixelRange; }
+	
+	/** \brief Set SDF pixel range for the font. */
+	void SetSdfPixelRange(float range);
 	/*@}*/
 };
 

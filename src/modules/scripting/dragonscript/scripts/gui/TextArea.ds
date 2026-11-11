@@ -440,9 +440,18 @@ class TextArea extends TextWidget implements RangeModelListener
 		updateCanvasText()
 	end
 	
-	/** Foreground color changed. */
 	public func void onSetTextColor()
 		super.onSetTextColor()
+		updateCanvasText()
+	end
+	
+	func void onSetTextDilation()
+		super.onSetTextDilation()
+		pTextLayout = null
+		pSelXOffsets = null
+		pCaret = null
+		pRefXPosDirty = true
+		pNeedsUpdate = true
 		updateCanvasText()
 	end
 	
@@ -991,6 +1000,7 @@ class TextArea extends TextWidget implements RangeModelListener
 		
 		pTextLayout.setFont(font)
 		pTextLayout.setColor(color)
+		pTextLayout.setBorderColor(getTextBorderColor())
 		pCaret = null
 		
 		var Point caret = getCaret()
@@ -1088,6 +1098,8 @@ class TextArea extends TextWidget implements RangeModelListener
 		pTextLayout.setMaximalWidth(DEMath.max(getWidth() - getPadding().getWidth(), 0))
 		pTextLayout.setAlignment(TextLayout.Align.left)
 		pTextLayout.setAtLeastOneLine(true)
+		pTextLayout.setBorderThickness(getTextBorderThickness())
+		pTextLayout.setDilation(getTextDilation())
 		
 		pTextLayout.layoutText()
 		

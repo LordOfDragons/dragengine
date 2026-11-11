@@ -102,6 +102,7 @@ private:
 	DEF_NATFUNC(nfGetBaseLine);
 	
 	DEF_NATFUNC(nfGetTextSize);
+	DEF_NATFUNC(nfGetTextSize2);
 	DEF_NATFUNC(nfGetCharWidth);
 	DEF_NATFUNC(nfGetCharAdvance);
 	DEF_NATFUNC(nfGetCharBearing);

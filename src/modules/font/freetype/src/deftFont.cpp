@@ -25,6 +25,8 @@
 #include "deftFont.h"
 #include "deftModule.h"
 
+#include <vector>
+
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
@@ -36,11 +38,86 @@
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
 
+#include "includeMsdfgen.h"
+
 
 /** Free type color in BGRS format. */
 struct sFTColorBGRA{
 	unsigned char blue, green, red, alpha;
 };
+
+/** Outline decomposition state used to build msdfgen shapes from FreeType outlines. */
+struct sFTOutlineData{
+	msdfgen::Shape &shape;
+	msdfgen::Point2 start, current;
+	bool contourOpen;
+	
+	sFTOutlineData(msdfgen::Shape &s) :
+	shape(s),
+	contourOpen(false){
+	}
+};
+
+static msdfgen::Point2 sFTPoint(const FT_Vector &v){
+	return msdfgen::Point2(v.x, v.y);
+}
+
+static bool sFTSamePoint(const msdfgen::Point2 &a, const msdfgen::Point2 &b){
+	return a.x == b.x && a.y == b.y;
+}
+
+static void sFTCloseContour(sFTOutlineData &data){
+	if(!data.contourOpen){
+		return;
+	}
+	if(!sFTSamePoint(data.current, data.start)){
+		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, data.start));
+	}
+	data.contourOpen = false;
+}
+
+static int sFTMoveTo(const FT_Vector *to, void *user){
+	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
+	sFTCloseContour(data);
+	data.shape.addContour();
+	data.start = sFTPoint(*to);
+	data.current = data.start;
+	data.contourOpen = true;
+	return 0;
+}
+
+static int sFTLineTo(const FT_Vector *to, void *user){
+	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
+	const msdfgen::Point2 p = sFTPoint(*to);
+	if(!sFTSamePoint(p, data.current)){
+		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, p));
+	}
+	data.current = p;
+	return 0;
+}
+
+static int sFTConicTo(const FT_Vector *control, const FT_Vector *to, void *user){
+	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
+	const msdfgen::Point2 c = sFTPoint(*control);
+	const msdfgen::Point2 p = sFTPoint(*to);
+	if(!sFTSamePoint(p, data.current)){
+		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, c, p));
+	}
+	data.current = p;
+	return 0;
+}
+
+static int sFTCubicTo(const FT_Vector *control1, const FT_Vector *control2, const FT_Vector *to, void *user){
+	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
+	const msdfgen::Point2 c1 = sFTPoint(*control1);
+	const msdfgen::Point2 c2 = sFTPoint(*control2);
+	const msdfgen::Point2 p = sFTPoint(*to);
+	if(!sFTSamePoint(p, data.current)){
+		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, c1, c2, p));
+	}
+	data.current = p;
+	return 0;
+}
 
 
 // Class deftFont
@@ -63,7 +140,8 @@ pRealFontSize(0),
 pBaseLine(0),
 pRealLineHeight(0),
 pComponentCount(2),
-pLoadFlags(FT_LOAD_DEFAULT)
+pLoadFlags(FT_LOAD_DEFAULT),
+pCreateSdfFont(true)
 {
 	pStreamRec.size = reader.GetLength();
 	pStreamRec.pos = reader.GetPosition();
@@ -87,6 +165,11 @@ deftFont::~deftFont(){
 // Management
 ///////////////
 
+void deftFont::SetCreateSdfFont(bool createSdf){
+	pCreateSdfFont = createSdf;
+}
+
+
 void deftFont::LoadFont(deFont &font){
 	pModule.AssertFT(FT_Set_Pixel_Sizes(pFace, 0, 16), "FT_Set_Pixel_Sizes");
 	
@@ -98,10 +181,16 @@ void deftFont::LoadFont(deFont &font){
 	font.SetIsColorFont(false);//FT_HAS_COLOR(pFace));
 	font.SetScalable(FT_IS_SCALABLE(pFace));
 	
-	if(FT_HAS_FIXED_SIZES(pFace)){
-		FT_Int i;
-		for(i=0; i<pFace->num_fixed_sizes; i++){
-			font.GetFixedSizes().Add((int)pFace->available_sizes[i].height);
+	if(font.GetScalable() && pCreateSdfFont){
+		font.SetIsSdf(true);
+		font.GetFixedSizes().Add(pBestSdfFixedSize(font));
+		
+	}else{
+		if(FT_HAS_FIXED_SIZES(pFace)){
+			FT_Int i;
+			for(i=0; i<pFace->num_fixed_sizes; i++){
+				font.GetFixedSizes().Add((int)pFace->available_sizes[i].height);
+			}
 		}
 	}
 	
@@ -110,33 +199,44 @@ void deftFont::LoadFont(deFont &font){
 
 deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	const char * const filename = font.GetFilename();
+	const bool isSdf = font.GetIsSdf();
 	deFontSize::Ref size;
 	
-	if(lineHeight > pLineHeightLimit){
-		pModule.LogInfoFormat("LoadFontSize[%s,%d]: Request font size too large. Using %d instead",
-			filename, lineHeight, pLineHeightLimit);
-		size = font.GetSizeWith(pLineHeightLimit);
-		if(size){
-			return size;
-		}
+	if(isSdf){
+		lineHeight = pBestSdfFixedSize(font);
 		
-		lineHeight = pLineHeightLimit;
+	}else{
+		if(lineHeight > pLineHeightLimit){
+			pModule.LogInfoFormat("LoadFontSize[%s,%d]: Request font size too large. Using %d instead",
+				filename, lineHeight, pLineHeightLimit);
+			size = font.GetSizeWith(pLineHeightLimit);
+			if(size){
+				return size;
+			}
+			
+			lineHeight = pLineHeightLimit;
+		}
 	}
 	
 	size = deFontSize::Ref::New(lineHeight, font.GetGlyphCount());
 	
-	pRealFontSize = pFindBestSize(font, size);
+	const auto measurements = pFindBestSize(font, size);
 	
-	pRealLineHeight = pBBox.y2 - pBBox.y1;
-	
-	// enlarge glyphs by a small margin to get some wiggle space if hinting enlarges font
-	pRealLineHeight += pHintingSafetyMargin;
+	pRealFontSize = measurements.lineHeight;
+	pRealLineHeight = (measurements.bbox.y2 - measurements.bbox.y1) + measurements.lineHeightMargin;
 	
 	pBearingOffset.x = 0;
 	pBearingOffset.y = (lineHeight - pRealLineHeight) / 2;
-	pBaseLine = pBBox.y2 + pBearingOffset.y;
+	pBaseLine = measurements.bbox.y2 + pBearingOffset.y + measurements.baseLineMargin;
 	
-	if(FT_HAS_COLOR(pFace)){
+	if(isSdf){
+		// FT_LOAD_NO_SCALE: ensure coordinates are in exact font design units (not 26.6 fixed-point)
+		// FT_LOAD_NO_BITMAP: do not load embedded bitmaps. just in case the font has them
+		// FT_LOAD_NO_HINTING: disable hinting to get raw font outlines
+		pLoadFlags = FT_LOAD_NO_SCALE | FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING;
+		pComponentCount = 4;
+		
+	}else if(FT_HAS_COLOR(pFace)){
 		pLoadFlags = FT_LOAD_DEFAULT | FT_LOAD_COLOR;
 		pComponentCount = 4;
 		
@@ -145,15 +245,39 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 		pComponentCount = 2;
 	}
 	
-	pModule.LogInfoFormat(
-		"LoadFontSize[%s,%d]: fs=%d bb=(%d,%d,%d,%d) h=%d gh=%d o=(%d,%d) bl=%d clr=%d",
-		filename, lineHeight, pRealFontSize, pBBox.x1, pBBox.y1, pBBox.x2, pBBox.y2,
-		(int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64),
-		pRealLineHeight, pBearingOffset.x, pBearingOffset.y, pBaseLine, FT_HAS_COLOR(pFace));
+	if(isSdf){
+		float pixelRange = decMath::linearStep((float)pRealLineHeight, 24.0f, 48.0f, 2.5f, 4.0f);
+		pixelRange += 8.0f;
+		size->SetSdfPixelRange(pixelRange);
+		// size->SetSdfPixelRange(4.0f);
+	}
 	
-	pInitGlyphs(size);
+	if(isSdf){
+		pModule.LogInfoFormat(
+			"LoadFontSize[%s,%d,sdf]: fs=%d bb=(%d,%d,%d,%d) h=%d gh=%d o=(%d,%d) bl=%d clr=%d m=(%g,%g) spr=%g",
+			filename, lineHeight, pRealLineHeight, measurements.bbox.x1,
+			measurements.bbox.y1, measurements.bbox.x2, measurements.bbox.y2,
+			(int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64),
+			pRealLineHeight, pBearingOffset.x, pBearingOffset.y, pBaseLine, FT_HAS_COLOR(pFace),
+			measurements.lineHeightMargin, measurements.baseLineMargin, size->GetSdfPixelRange());
+		
+	}else{
+		pModule.LogInfoFormat(
+			"LoadFontSize[%s,%d]: fs=%d bb=(%d,%d,%d,%d) h=%d gh=%d o=(%d,%d) bl=%d clr=%d",
+			filename, lineHeight, pRealLineHeight, measurements.bbox.x1,
+			measurements.bbox.y1, measurements.bbox.x2, measurements.bbox.y2,
+			(int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64),
+			pRealLineHeight, pBearingOffset.x, pBearingOffset.y, pBaseLine, FT_HAS_COLOR(pFace));
+	}
 	
-	decPoint3 imageSize(pCalcLayout(size));
+	if(isSdf){
+		pInitGlyphsSdf(size, measurements.sdfUnitScale);
+		
+	}else{
+		pInitGlyphs(size);
+	}
+	
+	decPoint3 imageSize(pCalcLayout(size, isSdf));
 	DEASSERT_FALSE(imageSize == decPoint3())
 	pModule.LogInfoFormat("LoadFontSize[%s,%d]: Layout calculated, %d glyphs, image size (%d,%d,%d)",
 		filename, lineHeight, size->GetGlyphs().GetCount(), imageSize.x, imageSize.y, imageSize.z);
@@ -161,9 +285,16 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	// pDebugPrintGlyphs(font, size);
 	
 	decTimer timer;
-	const deImage::Ref image(pModule.GetGameEngine()->GetImageManager()->
-		CreateImage(imageSize.x, imageSize.y, imageSize.z, pComponentCount, 8));
-	pRenderGlyphs(size, image);
+	auto image = pModule.GetGameEngine()->GetImageManager()->CreateImage(
+		imageSize.x, imageSize.y, imageSize.z, pComponentCount, 8);
+	
+	if(isSdf){
+		pRenderGlyphsSdf(size, image, measurements);
+		
+	}else{
+		pRenderGlyphs(size, image);
+	}
+	
 	image->NotifyImageDataChanged();
 	size->SetImage(image);
 	
@@ -223,45 +354,73 @@ void deftFont::pInitGlyphs(deFont &font){
 	}
 }
 
-int deftFont::pFindBestSize(const deFont &font, const deFontSize &size){
-	// const char * const filename = font.GetFilename();
-	const int reqLineHeight = size.GetLineHeight();
-	int prevHeight = 0, lineHeight = reqLineHeight;
+deftFont::sMeasurements deftFont::pFindBestSize(const deFont &font, const deFontSize &size){
+	sMeasurements measurements;
 	
-	while(true){
-		pModule.AssertFT(FT_Set_Pixel_Sizes(pFace, 0, lineHeight), "FT_Set_Pixel_Sizes");
+	if(font.GetIsSdf()){
+		const double targetLineHeight = (double)size.GetLineHeight();
+		measurements.sdfUnitScale = targetLineHeight / (double)pFace->height;
 		
-		pBBox.x1 = FT_MulFix(pFace->bbox.xMin, pFace->size->metrics.y_scale) / 64;
-		pBBox.y1 = FT_MulFix(pFace->bbox.yMin, pFace->size->metrics.y_scale) / 64;
-		pBBox.x2 = FT_MulFix(pFace->bbox.xMax, pFace->size->metrics.y_scale) / 64;
-		pBBox.y2 = FT_MulFix(pFace->bbox.yMax, pFace->size->metrics.y_scale) / 64;
+		measurements.bbox.x1 = (int)(std::floor(pFace->bbox.xMin * measurements.sdfUnitScale));
+		measurements.bbox.y1 = (int)(std::floor(pFace->bbox.yMin * measurements.sdfUnitScale));
+		measurements.bbox.x2 = (int)(std::ceil(pFace->bbox.xMax * measurements.sdfUnitScale));
+		measurements.bbox.y2 = (int)(std::ceil(pFace->bbox.yMax * measurements.sdfUnitScale));
 		
-		const int height = (int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64);
+		measurements.lineHeight = (int)(std::round(pFace->units_per_EM * measurements.sdfUnitScale));
 		
-		/*
-		pModule.LogInfoFormat(
-			"LoadFontSize[%s,%d]: lh=%d bbox=(%d,%d,%d,%d) height=%d gheight=%d",
-			filename, reqLineHeight, lineHeight, pBBox.x1, pBBox.y1, pBBox.x2, pBBox.y2,
-			height, pBBox.y2 - pBBox.y1);
-		*/
+		const double margin = (int)std::ceil(size.GetSdfPixelRange() * 0.5f);
+		measurements.baseLineMargin = margin;
+		measurements.lineHeightMargin = margin * 2.0;
 		
-		if(height == reqLineHeight){
-			return lineHeight;
-		}
+	}else{
+		// const char * const filename = font.GetFilename();
+		const int reqLineHeight = size.GetLineHeight();
+		int prevHeight = 0;
 		
-		if(height > reqLineHeight){
-			if(prevHeight != 0 && prevHeight < height){
-				return lineHeight;
+		measurements.lineHeight = reqLineHeight;
+		
+		measurements.sdfUnitScale = 1.0;
+		
+		// enlarge glyphs by a small margin to get some wiggle space if hinting enlarges font
+		measurements.lineHeightMargin = pHintingSafetyMargin;
+		
+		while(true){
+			pModule.AssertFT(FT_Set_Pixel_Sizes(pFace, 0, measurements.lineHeight), "FT_Set_Pixel_Sizes");
+			
+			measurements.bbox.x1 = FT_MulFix(pFace->bbox.xMin, pFace->size->metrics.y_scale) / 64;
+			measurements.bbox.y1 = FT_MulFix(pFace->bbox.yMin, pFace->size->metrics.y_scale) / 64;
+			measurements.bbox.x2 = FT_MulFix(pFace->bbox.xMax, pFace->size->metrics.y_scale) / 64;
+			measurements.bbox.y2 = FT_MulFix(pFace->bbox.yMax, pFace->size->metrics.y_scale) / 64;
+			
+			const int height = (int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64);
+			
+			/*
+			pModule.LogInfoFormat(
+				"LoadFontSize[%s,%d]: lh=%d bbox=(%d,%d,%d,%d) height=%d gheight=%d",
+				filename, reqLineHeight, lineHeight, pBBox.x1, pBBox.y1, pBBox.x2, pBBox.y2,
+				height, pBBox.y2 - pBBox.y1);
+			*/
+			
+			if(height == reqLineHeight){
+				return measurements;
 			}
 			
-			prevHeight = height;
-			lineHeight--;
-			
-		}else{
-			prevHeight = height;
-			lineHeight++;
+			if(height > reqLineHeight){
+				if(prevHeight != 0 && prevHeight < height){
+					return measurements;
+				}
+				
+				prevHeight = height;
+				measurements.lineHeight--;
+				
+			}else{
+				prevHeight = height;
+				measurements.lineHeight++;
+			}
 		}
 	}
+	
+	return measurements;
 }
 
 void deftFont::pInitGlyphs(deFontSize &size){
@@ -292,7 +451,49 @@ void deftFont::pInitGlyphs(deFontSize &size){
 	}
 }
 
-decPoint3 deftFont::pCalcLayout(deFontSize &size){
+void deftFont::pInitGlyphsSdf(deFontSize &size, double unitScale){
+	const int sdfMargin = (int)std::ceil(size.GetSdfPixelRange() * 0.5f);
+	int glyphIndex = 0;
+	FT_UInt gindex;
+	FT_ULong charcode = FT_Get_First_Char(pFace, &gindex);
+	
+	while(gindex != 0){
+		if(charcode < 0xffff){
+			pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
+			
+			const FT_GlyphSlot slot = pFace->glyph;
+			deFontGlyph &glyph = size.GetGlyphAt(glyphIndex++);
+			glyph.SetUnicode((int)charcode);
+			
+			int width = 0, height = 0, bearingX = 0, bearingY = 0;
+			if(slot->format == FT_GLYPH_FORMAT_OUTLINE && slot->outline.n_points > 0){
+				FT_BBox cbox;
+				FT_Outline_Get_CBox(&slot->outline, &cbox);
+				
+				const int left = (int)std::floor(cbox.xMin * unitScale);
+				const int right = (int)std::ceil(cbox.xMax * unitScale);
+				const int bottom = (int)std::floor(cbox.yMin * unitScale);
+				const int top = (int)std::ceil(cbox.yMax * unitScale);
+				
+				width = right - left + 2 * sdfMargin;
+				height = top - bottom + 2 * sdfMargin;
+				
+				// bearing in dragengine is positive to the left and bottom
+				bearingX = sdfMargin - left;
+				bearingY = top + sdfMargin - pBaseLine;
+			}
+			
+			glyph.SetWidth(width);
+			glyph.SetHeight(height);
+			glyph.SetBearing(bearingX);
+			glyph.SetBearingY(bearingY);
+			glyph.SetAdvance((int)std::round(slot->metrics.horiAdvance * unitScale));
+		}
+		charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
+	}
+}
+
+decPoint3 deftFont::pCalcLayout(deFontSize &size, bool sdf){
 	if(pRealLineHeight > pMaxImageWidth){
 		return decPoint3();
 	}
@@ -311,9 +512,15 @@ decPoint3 deftFont::pCalcLayout(deFontSize &size){
 			coords.y += pRealLineHeight + pGlyphSpacing;
 			
 			if(coords.y + pRealLineHeight > pMaxImageWidth){
-				imageSize.y = decMath::max(imageSize.y, coords.y - pGlyphSpacing);
-				coords.y = 0;
-				coords.z++;
+				if(sdf){
+					coords.y -= pRealLineHeight + pGlyphSpacing;
+					continue;
+					
+				}else{
+					imageSize.y = decMath::max(imageSize.y, coords.y - pGlyphSpacing);
+					coords.y = 0;
+					coords.z++;
+				}
 			}
 		}
 		
@@ -341,6 +548,150 @@ void deftFont::pDebugPrintGlyphs(const deFont &font, const deFontSize &size){
 			filename, lineHeight, g.GetUnicode(), g.GetWidth(), g.GetHeight(), g.GetBearing(),
 			g.GetBearingY(), g.GetAdvance(), g.GetX(), g.GetY(), g.GetZ());
 	});
+}
+
+void deftFont::pRenderGlyphsSdf(const deFontSize &size, deImage &image, const sMeasurements &measurements){
+	const int width = image.GetWidth();
+	const int height = image.GetHeight();
+	const int depth = image.GetDepth();
+	const int strideZ = width * height;
+	const int strideY = width;
+	const int pixelCount = strideZ * depth;
+	
+	sRGBA8 * const di = image.GetDataRGBA8();
+	int glyphIndex = 0;
+	for(int x=0; x<pixelCount; x++){
+		di[x] = {0, 0, 0, 0};
+	}
+	
+	const double unitScale = measurements.sdfUnitScale;
+	const msdfgen::Range range(size.GetSdfPixelRange() / unitScale);
+	const int sdfMargin = (int)(std::ceil(size.GetSdfPixelRange() * 0.5f));
+	
+	FT_UInt gindex;
+	FT_ULong charcode = FT_Get_First_Char(pFace, &gindex);
+	while(gindex != 0){
+		if(charcode < 0xffff){
+			pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
+			
+			const deFontGlyph &glyph = size.GetGlyphs()[glyphIndex++];
+			const int cellWidth = decMath::min(glyph.GetWidth(), width - glyph.GetX());
+			const int cellHeight = decMath::min(glyph.GetHeight(), height - glyph.GetY());
+			
+			do{
+				if(cellWidth <= 0 || cellHeight <= 0 || pFace->glyph->format != FT_GLYPH_FORMAT_OUTLINE){
+					break;
+				}
+				
+				FT_Outline &outline = pFace->glyph->outline;
+				
+				msdfgen::Shape shape;
+				sFTOutlineData data(shape);
+				FT_Outline_Funcs funcs{};
+				funcs.move_to = sFTMoveTo;
+				funcs.line_to = sFTLineTo;
+				funcs.conic_to = sFTConicTo;
+				funcs.cubic_to = sFTCubicTo;
+				pModule.AssertFT(FT_Outline_Decompose(&outline, &funcs, &data), "FT_Outline_Decompose");
+				sFTCloseContour(data);
+				if(shape.contours.empty()){
+					break;
+				}
+				
+				shape.normalize();
+				msdfgen::edgeColoringSimple(shape, 3.0);
+				
+				// compute exact pixel bounds from unscaled CBox and center inside sdfMargin
+				FT_BBox cbox;
+				FT_Outline_Get_CBox(&outline, &cbox);
+				const double left = std::floor(cbox.xMin * unitScale);
+				const double top = std::ceil(cbox.yMax * unitScale);
+				
+				// msdfgen::Projection applies: pixel = scale * (shapeCoord + translate)
+				const msdfgen::Projection projection(
+					msdfgen::Vector2(unitScale, unitScale),
+					msdfgen::Vector2((-left + sdfMargin) / unitScale,
+						(cellHeight - sdfMargin - top) / unitScale));
+				
+				std::vector<float> buffer((size_t)cellWidth * cellHeight * 3);
+				msdfgen::BitmapSection<float, 3> output(buffer.data(), cellWidth, cellHeight);
+				msdfgen::generateMSDF(output, shape, projection, range);
+				
+				const auto toByte = [](float v) -> unsigned char{
+					return (unsigned char)(decMath::clamp(v, 0.0f, 1.0f) * 255.0f + 0.5f);
+				};
+				
+				for(int y=0; y<cellHeight; y++){
+					const int row = cellHeight - 1 - y;
+					sRGBA8 *dg = di + strideZ * glyph.GetZ() + strideY * (glyph.GetY() + y) + glyph.GetX();
+					for(int x=0; x<cellWidth; x++){
+						const float * const sp = buffer.data() + ((size_t)row * cellWidth + x) * 3;
+						const float median = decMath::max(decMath::min(sp[0], sp[1]),
+							decMath::min(decMath::max(sp[0], sp[1]), sp[2]));
+						dg[x] = {toByte(sp[0]), toByte(sp[1]), toByte(sp[2]), toByte(median)};
+					}
+				}
+			}while(false);
+		}
+		charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
+	}
+}
+
+int deftFont::pBestSdfFixedSize(const deFont &font){
+	const int glyphCount = font.GetGlyphCount();
+	if(glyphCount == 0){
+		return 48.0f;
+	}
+	
+	// target pixel budget: 2048x2048 = 4,194,304
+	// multiply by 0.75 to account for rectangle packing gaps and SDF padding
+	const int targetImageSize = 2048;
+	const float usableArea = (float)(targetImageSize * targetImageSize) * 0.75f;
+	
+	float lineHeight = std::sqrt(usableArea / (float)glyphCount);
+	
+	// clamp line height to the range of 24 (minimum for dense Kanji) and 48 (no real improvement)
+	lineHeight = decMath::clamp(lineHeight, 24.0f, 48.0f);
+	
+	// test with a blown up font at 240px line height:
+	// - pixel range 2-4 does not make much difference in general
+	// - lineHeight=48, pixelRange=4:
+	//   works good but 'r' and 'p' have slight artifacts in the corners
+	// - lineHeight=64, pixelRange=4:
+	//   better than 48/4 but 'r' and 'p' are still slightly imperfect
+	// - lineHeight=64, pixelRange=6:
+	//   pretty much the same as 64/4
+	// - lineHeight=80, pixelRange=4:
+	//   'r' is now good but 'p' still has a slight imperfection
+	// - lineHeight=96, pixelRange=4:
+	//   nearly identical to 80/4
+	//
+	// facit:
+	// for blown up font 48 is good enough but 64 can give slightly better results but obviously
+	// takes a bit longer to generate and the image is somewhat larger.
+	//
+	// test with a font at common size of 15px line height:
+	// - lineHeight=48, pixelRange=4:
+	//   letter like 'r' and 'p' are not showing problems on that scale. a certain blurring
+	//   happens due to the smaller amount of pixels covered.
+	// - lineHeight=96, pixelRange=4:
+	//   similar to 48/4 but slightly less blurring
+	//
+	// facit:
+	// for common font size 48 is good enough but higher works too.
+	//
+	// test with a small font at 8px line height:
+	// - lineHeight=48, pixelRange=4:
+	//   difficult to read as the thickness tends to fade out.
+	// - lineHeight=96, pixelRange=4:
+	//   this actually makes the situation worse due to the stronger sharpening
+	//
+	// facit:
+	// with such small fonts reading text is hard anyway due to the limit amount of pixels
+	// available to reach glyph. 48 is a good value here but slghtly higher can be acceptable too.
+	
+	// lineHeight = 48.0f;
+	return std::floor(lineHeight * 0.5f) * 2.0f;
 }
 
 void deftFont::pRenderGlyphs(const deFontSize &size, deImage &image){

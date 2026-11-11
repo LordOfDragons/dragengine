@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include "deoglRFont.h"
 #include "deoglRFontGlyphs.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -44,7 +45,9 @@
 deoglRFontGlyphs::deoglRFontGlyphs(deoglRenderThread &renderThread, const deFont &font) :
 pRenderThread(renderThread),
 pLineHeight(font.GetLineHeight()),
-pDelayedImage(nullptr)
+pDelayedImage(nullptr),
+pIsSdf(false),
+pSdfPixelRange(1.0f)
 {
 	try{
 		pBuildGlyphs(font);
@@ -55,13 +58,23 @@ pDelayedImage(nullptr)
 	}
 }
 
-deoglRFontGlyphs::deoglRFontGlyphs(deoglRenderThread &renderThread, const deFontSize &size) :
+deoglRFontGlyphs::deoglRFontGlyphs(deoglRenderThread &renderThread,
+	const deoglRFont &font, const deFontSize &size) :
 pRenderThread(renderThread),
 pLineHeight(size.GetLineHeight()),
-pDelayedImage(nullptr)
+pDelayedImage(nullptr),
+pIsSdf(false),
+pSdfPixelRange(size.GetSdfPixelRange())
 {
 	try{
 		pBuildGlyphs(size);
+		
+		if(font.GetIsSdfFont() && size.GetImage()){
+			pIsSdf = true;
+			if(font.GetIsColorFont()){
+				pCreateSdfColorsPixBuf(font, size);
+			}
+		}
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -89,6 +102,19 @@ void deoglRFontGlyphs::FinalizeAsyncResLoading(){
 	
 	pImage = pDelayedImage->GetRImage();
 	pRenderThread.GetDelayedOperations().AddInitImage(pImage);
+}
+
+void deoglRFontGlyphs::PrepareForRender(){
+	if(pTextureSdfColors || !pPixelBufferSdfColors){
+		return;
+	}
+	
+	pTextureSdfColors = deTUniqueReference<deoglTexture>::New(pRenderThread);
+	pTextureSdfColors->SetSize(pPixelBufferSdfColors->GetWidth(), 1);
+	pTextureSdfColors->SetMapingFormat(4, true, false);
+	pTextureSdfColors->SetMipMapped(false);
+	pTextureSdfColors->SetPixels(pPixelBufferSdfColors);
+	pPixelBufferSdfColors.Clear();
 }
 
 const deoglRFontGlyphs::sGlyph &deoglRFontGlyphs::GetGlyphFor(int unicode) const{
@@ -190,4 +216,32 @@ void deoglRFontGlyphs::pSetGlyph(sGlyph &target, const deFontGlyph &source){
 	target.width = source.GetWidth();
 	target.height = source.GetHeight();
 	target.advance = source.GetAdvance();
+	
+	target.invTexWidth = target.x2 > target.x1 ? 1.0f / (target.x2 - target.x1) : 0.0f;
+	target.invTexHeight = target.y2 > target.y1 ? 1.0f / (target.y2 - target.y1) : 0.0f;
+}
+
+void deoglRFontGlyphs::pCreateSdfColorsPixBuf(const deoglRFont &font, const deFontSize &size){
+	const decTList<decColor> &colors = size.GetSdfColors();
+	
+	if(colors.IsNotEmpty()){
+		pPixelBufferSdfColors = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4, colors.GetCount(), 1, 1);
+		auto data = pPixelBufferSdfColors->GetPointerFloat4();
+		
+		colors.VisitIndexed([&](int i, const decColor &color){
+			deoglPixelBuffer::sFloat4 &pixel = data[i];
+			pixel.r = color.r;
+			pixel.g = color.g;
+			pixel.b = color.b;
+			pixel.a = color.a;
+		});
+		
+	}else{
+		pPixelBufferSdfColors = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4, 1, 1, 1);
+		auto &pixel = pPixelBufferSdfColors->GetPointerFloat4()[0];
+		pixel.r = 0.0f;
+		pixel.g = 0.0f;
+		pixel.b = 0.0f;
+		pixel.a = 1.0f;
+	}
 }

@@ -41,9 +41,9 @@ public:
 	
 private:
 	deFont::Ref pFont;
-	float pFontSize;
+	float pFontSize, pBorderThickness, pDilation;
 	decString pText;
-	decColor pColor;
+	decColor pColor, pBorderColor;
 	
 	
 	
@@ -95,6 +95,33 @@ public:
 	
 	/** \brief Set text color. */
 	void SetColor(const decColor &color);
+	
+	/** \brief Border color. */
+	inline const decColor &GetBorderColor() const{ return pBorderColor; }
+	
+	/** \brief Set border color. */
+	void SetBorderColor(const decColor &color);
+	
+	/**
+	 * \brief Border thickness in percentage of the font size.
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	inline float GetBorderThickness() const{ return pBorderThickness; }
+	
+	/**
+	 * \brief Set border thickness.
+	 * \param thickness Border thickness in percentage of the font size.
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	void SetBorderThickness(float thickness);
+	
+	/** \brief Dilation in percentage of the font size. */
+	inline float GetDilation() const{ return pDilation; }
+
+	/** \brief Set dilation. */
+	void SetDilation(float dilation);
 	/*@}*/
 	
 	

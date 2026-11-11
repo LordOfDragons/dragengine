@@ -284,6 +284,9 @@ class WindowConsole extends Window implements ConsoleListener
 		if count > 0
 			pTextLayout = TextLayout.new(buffer, font)
 			pTextLayout.setColor(color)
+			pTextLayout.setBorderColor(getTextBorderColor())
+			pTextLayout.setBorderThickness(getTextBorderThickness())
+			pTextLayout.setDilation(getTextDilation())
 			pTextLayout.setAlignment(TextLayout.Align.left)
 			pTextLayout.setMaximalWidth(DEMath.max(width - 10, 0))
 			pTextLayout.layoutText()

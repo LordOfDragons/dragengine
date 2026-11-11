@@ -27,6 +27,7 @@
 
 #include "../texture/deoglRImage.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTList.h>
 
 class deoglImage;
@@ -46,6 +47,7 @@ public:
 	struct sGlyph{
 		float x1, y1, x2, y2;
 		int z, bearing, bearingY, width, height, advance;
+		float invTexWidth, invTexHeight;
 	};
 	
 	
@@ -61,13 +63,18 @@ private:
 	deoglRImage::Ref pImage;
 	deoglImage *pDelayedImage;
 	
+	bool pIsSdf;
+	float pSdfPixelRange;
+	deTUniqueReference<deoglTexture> pTextureSdfColors;
+	deoglPixelBuffer::Ref pPixelBufferSdfColors;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render font size. */
 	deoglRFontGlyphs(deoglRenderThread &renderThread, const deFont &font);
-	deoglRFontGlyphs(deoglRenderThread &renderThread, const deFontSize &size);
+	deoglRFontGlyphs(deoglRenderThread &renderThread, const deoglRFont &font, const deFontSize &size);
 	
 	/** Clean up render font. */
 	~deoglRFontGlyphs();
@@ -82,6 +89,9 @@ public:
 	
 	/** Finalize after asynchronous resource loading. */
 	void FinalizeAsyncResLoading();
+	
+	/** Prepare for rendering. */
+	void PrepareForRender();
 	
 	
 	/** Undefined glyph. */
@@ -102,6 +112,15 @@ public:
 	/** Set render image or nullptr. */
 	void SetImage(const deImage *image);
 	
+	/** Is SDF font. */
+	inline bool GetIsSdf() const{ return pIsSdf; }
+	
+	/** SDF pixel range. */
+	inline float GetSdfPixelRange() const{ return pSdfPixelRange; }
+	
+	/** SDF layer colors texture or nullptr if font is not SDF. */
+	inline const deTUniqueReference<deoglTexture> &GetTextureSdfColors() const{ return pTextureSdfColors; }
+	
 	/** Debug print. */
 	void DebugPrint() const;
 	/*@}*/
@@ -112,6 +131,7 @@ private:
 	void pBuildGlyphs(const deFont &font);
 	void pBuildGlyphs(const deFontSize &size);
 	void pSetGlyph(sGlyph &target, const deFontGlyph &source);
+	void pCreateSdfColorsPixBuf(const deoglRFont &font, const deFontSize &size);
 };
 
 #endif

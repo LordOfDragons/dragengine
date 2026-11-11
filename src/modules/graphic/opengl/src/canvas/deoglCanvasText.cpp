@@ -81,6 +81,9 @@ void deoglCanvasText::SyncContentToRender(){
 	pRCanvasText->SetTextSize(pCanvasText.GetFontSize());
 	pRCanvasText->SetColor(pCanvasText.GetColor());
 	pRCanvasText->SetText(pCanvasText.GetText());
+	pRCanvasText->SetBorderColor(pCanvasText.GetBorderColor());
+	pRCanvasText->SetBorderThickness(pCanvasText.GetBorderThickness());
+	pRCanvasText->SetDilation(pCanvasText.GetDilation());
 }
 
 

@@ -27,8 +27,11 @@
 
 #include "deoglRFontSize.h"
 #include "deoglRFontGlyphs.h"
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+#include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
@@ -42,8 +45,9 @@ public:
 	
 	
 private:
+	deoglRenderThread &pRenderThread;
 	const decString pFilename;
-	bool pIsColorFont;
+	bool pIsColorFont, pIsSdfFont;
 	
 	deoglRFontGlyphs pGlyphs;
 	
@@ -71,6 +75,9 @@ public:
 	
 	/** Font is a colorable font. */
 	inline bool GetIsColorFont() const{ return pIsColorFont; }
+	
+	/** Font is an SDF font. */
+	inline bool GetIsSdfFont() const{ return pIsSdfFont; }
 	
 	/** Glyphs. */
 	inline deoglRFontGlyphs &GetGlyphs(){ return pGlyphs; }

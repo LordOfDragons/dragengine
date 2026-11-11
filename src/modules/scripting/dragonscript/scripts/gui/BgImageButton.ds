@@ -183,12 +183,15 @@ class BgButton extends Button
 	func void onSetTextColor()
 		super.onSetTextColor()
 		pLabel.setTextColor(getTextColor())
-		pLabel.setTextColor(color)
+		pLabel.setTextBorderColor(getTextBorderColor())
 	end
 	
+	func void onSetTextDilation()
+		super.onSetTextDilation()
+		pLabel.setTextBorderThickness(getTextBorderThickness())
+		pLabel.setTextDilation(getTextDilation())
+	end
 	
-	
-	/** \brief State changed. */
 	func void onStateChanged(StateChangeEvent event)
 		super.onStateChanged(event)
 		updateBackgroundImage()

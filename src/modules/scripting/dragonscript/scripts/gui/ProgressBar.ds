@@ -228,7 +228,12 @@ class ProgressBar extends Widget implements RangeModelListener
 		updateProgress()
 	end
 	
-	/** \brief Size changed. */
+	func void onSetTextDilation()
+		super.onSetTextDilation()
+		updateLabelCanvasParams()
+		updateProgress()
+	end
+	
 	func void onResize(WidgetEvent event)
 		super.onResize(event)
 		updateProgress()
@@ -292,7 +297,7 @@ class ProgressBar extends Widget implements RangeModelListener
 		var Font font = pCanvasText.getFont()
 		
 		if font != null
-			textSize = font.getTextSize(text)
+			textSize = font.getTextSize(text, getTextDilation() + getTextBorderThickness())
 		end
 		
 		var Point position = (getSize() - textSize) / 2
@@ -327,13 +332,21 @@ class ProgressBar extends Widget implements RangeModelListener
 		end
 		
 		pCanvasText.setColor(color)
+		pCanvasText.setBorderColor(getTextBorderColor())
+		pCanvasText.setBorderThickness(getTextBorderThickness())
+		pCanvasText.setDilation(getTextDilation())
 		
+		var Color borderColor = getTextBorderColor()
 		if pInvertColorOverBar
 			pCanvasTextOverBar.setColor(color.invert())
+			pCanvasTextOverBar.setBorderColor(borderColor.invert())
 			
 		else
 			pCanvasTextOverBar.setColor(color)
+			pCanvasTextOverBar.setBorderColor(borderColor)
 		end
+		pCanvasTextOverBar.setBorderThickness(getTextBorderThickness())
+		pCanvasTextOverBar.setDilation(getTextDilation())
 		
 		// visibility
 		pCanvasText.setVisible(pShowPercentage)

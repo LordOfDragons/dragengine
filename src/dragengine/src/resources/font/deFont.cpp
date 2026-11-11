@@ -82,6 +82,7 @@ pLineHeight(1),
 pBaseLine(1),
 pColorFont(false),
 pScalable(false),
+pSdf(false),
 pPeerGraphic(nullptr){
 }
 
@@ -255,6 +256,10 @@ void deFont::SetImage(deImage *image){
 	pImage = image;
 }
 
+void deFont::SetIsSdf(bool sdf){
+	pSdf = sdf;
+}
+
 
 int deFont::BestFixedSizeFor(int lineHeight) const{
 	const int count = pFixedSizes.GetCount();
@@ -399,7 +404,7 @@ void deFont::pCreateGlyphMap(){
 		}
 		
 		if(pGlyphMap[group] == 0){
-			pGlyphMap[group] = (unsigned short)(1 + pGlyphGroups.GetCount());
+			pGlyphMap[group] = (unsigned short)(1 + pGlyphGroups.GetCount() / 256);
 			pGlyphGroups.AddRange(256, 0);
 		}
 		

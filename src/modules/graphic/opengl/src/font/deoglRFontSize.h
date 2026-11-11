@@ -71,6 +71,9 @@ public:
 	
 	/** Finalize after asynchronous resource loading. */
 	void FinalizeAsyncResLoading();
+	
+	/** Prepare for rendering. */
+	void PrepareForRender();
 	/*@}*/
 };
 

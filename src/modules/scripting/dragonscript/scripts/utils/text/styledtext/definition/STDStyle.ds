@@ -62,8 +62,8 @@ class STDStyle
 	var String pName
 	var Font pFont
 	var Align pAlignment
-	var Color pTextColor
-	var Color pBackgroundColor
+	var Color pTextColor, pTextBorderColor, pBackgroundColor
+	var float pTextBorderThickness, pTextDilation
 	var RectArea pMargins
 	var int pFirstLineIndent, pLineSpacing, pCharacterSpacing
 	
@@ -74,6 +74,7 @@ class STDStyle
 		pName = name
 		pAlignment = Align.left
 		pTextColor = Color.black
+		pTextBorderColor = Color.black
 		pMargins = RectArea.new()
 	end
 	
@@ -87,6 +88,9 @@ class STDStyle
 		pFont = style.pFont
 		pAlignment = style.pAlignment
 		pTextColor = style.pTextColor
+		pTextBorderColor = style.pTextBorderColor
+		pTextBorderThickness = style.pTextBorderThickness
+		pTextDilation = style.pTextDilation
 		pBackgroundColor = style.pBackgroundColor
 		pMargins = RectArea.new(style.pMargins)
 		pFirstLineIndent = style.pFirstLineIndent
@@ -147,6 +151,21 @@ class STDStyle
 			pTextColor = Color.black
 		end
 		
+		pTextBorderColor = design.getTextBorderColor()
+		if pTextBorderColor == null
+			pTextBorderColor = Color.black
+		end
+		
+		var Float floatValue = design.getTextBorderThickness()
+		if floatValue != null
+			pTextBorderThickness = floatValue.value()
+		end
+		
+		floatValue = design.getTextDilation()
+		if floatValue != null
+			pTextDilation = floatValue.value()
+		end
+		
 		pBackgroundColor = null
 		
 		var BorderSize padding = design.getPadding()
@@ -199,6 +218,61 @@ class STDStyle
 			throw EInvalidParam.new()
 		end
 		pTextColor = color
+	end
+	
+	/**
+	 * \brief Text border color.
+	 * \version 1.35
+	 */
+	func Color getTextBorderColor()
+		return pTextBorderColor
+	end
+	
+	/**
+	 * \brief Set text border color.
+	 * \version 1.35
+	 */
+	func void setTextBorderColor(Color color)
+		if color == null
+			throw ENullPointer.new()
+		end
+		pTextBorderColor = color
+	end
+	
+	/**
+	 * \brief Text border thickness in percentage of the font size or null.
+	 * \version 1.35
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	func float getTextBorderThickness()
+		return pTextBorderThickness
+	end
+	
+	/**
+	 * \brief Set text border thickness in percentage of the font size or null.
+	 * \version 1.35
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	func void setTextBorderThickness(float thickness)
+		pTextBorderThickness = thickness
+	end
+	
+	/**
+	 * \brief Text dilation in percentage of the font size.
+	 * \version 1.35
+	 */
+	func float getTextDilation()
+		return pTextDilation
+	end
+	
+	/**
+	 * \brief Set text dilation in percentage of the font size.
+	 * \version 1.35
+	 */
+	func void setTextDilation(float dilation)
+		pTextDilation = dilation
 	end
 	
 	/** \brief Background color. */

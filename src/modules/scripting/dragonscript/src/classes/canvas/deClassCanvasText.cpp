@@ -161,6 +161,67 @@ void deClassCanvasText::nfSetColor::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.canvas->SetColor(color);
 }
 
+// func Color getBorderColor()
+deClassCanvasText::nfGetBorderColor::nfGetBorderColor(const sInitData &init) :
+dsFunction(init.clsCText, "getBorderColor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
+}
+void deClassCanvasText::nfGetBorderColor::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = dedsGetNativeData<sCTextNatDat>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassCanvasText*>(GetOwnerClass())->GetDS();
+	
+	ds.GetClassColor()->PushColor(rt, nd.canvas->GetBorderColor());
+}
+
+// func void setBorderColor(Color color)
+deClassCanvasText::nfSetBorderColor::nfSetBorderColor(const sInitData &init) :
+dsFunction(init.clsCText, "setBorderColor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColor); // color
+}
+void deClassCanvasText::nfSetBorderColor::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = dedsGetNativeData<sCTextNatDat>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassCanvasText*>(GetOwnerClass())->GetDS();
+	
+	nd.canvas->SetBorderColor(ds.GetClassColor()->GetColor(rt->GetValue(0)->GetRealObject()));
+}
+
+// func float getBorderThickness()
+deClassCanvasText::nfGetBorderThickness::nfGetBorderThickness(const sInitData &init) :
+dsFunction(init.clsCText, "getBorderThickness", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
+}
+void deClassCanvasText::nfGetBorderThickness::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = dedsGetNativeData<sCTextNatDat>(p_GetNativeData(myself));
+	rt->PushFloat(nd.canvas->GetBorderThickness());
+}
+
+// func void setBorderThickness(float thickness)
+deClassCanvasText::nfSetBorderThickness::nfSetBorderThickness(const sInitData &init) :
+dsFunction(init.clsCText, "setBorderThickness", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // thickness
+}
+void deClassCanvasText::nfSetBorderThickness::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = dedsGetNativeData<sCTextNatDat>(p_GetNativeData(myself));
+	nd.canvas->SetBorderThickness(rt->GetValue(0)->GetFloat());
+}
+
+// func float getDilation()
+deClassCanvasText::nfGetDilation::nfGetDilation(const sInitData &init) :
+dsFunction(init.clsCText, "getDilation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
+}
+void deClassCanvasText::nfGetDilation::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = dedsGetNativeData<sCTextNatDat>(p_GetNativeData(myself));
+	rt->PushFloat(nd.canvas->GetDilation());
+}
+
+// func void setDilation(float dilation)
+deClassCanvasText::nfSetDilation::nfSetDilation(const sInitData &init) :
+dsFunction(init.clsCText, "setDilation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // dilation
+}
+void deClassCanvasText::nfSetDilation::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = dedsGetNativeData<sCTextNatDat>(p_GetNativeData(myself));
+	nd.canvas->SetDilation(rt->GetValue(0)->GetFloat());
+}
+
 // func int hashCode()
 deClassCanvasText::nfHashCode::nfHashCode(const sInitData &init) :
 dsFunction(init.clsCText, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
@@ -240,6 +301,12 @@ void deClassCanvasText::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfSetText(init));
 	AddFunction(new nfGetColor(init));
 	AddFunction(new nfSetColor(init));
+	AddFunction(new nfGetBorderColor(init));
+	AddFunction(new nfSetBorderColor(init));
+	AddFunction(new nfGetBorderThickness(init));
+	AddFunction(new nfSetBorderThickness(init));
+	AddFunction(new nfGetDilation(init));
+	AddFunction(new nfSetDilation(init));
 	
 	AddFunction(new nfEquals(init));
 	AddFunction(new nfHashCode(init));

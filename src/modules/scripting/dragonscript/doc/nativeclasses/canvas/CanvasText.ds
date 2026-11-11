@@ -55,6 +55,55 @@ class CanvasText extends Canvas
 	func void setColor(Color color)
 	end
 	
+	/**
+	 * \brief Border color.
+	 * \version 1.35
+	 */
+	func Color getBorderColor()
+		return null
+	end
+	
+	/**
+	 * \brief Set border color.
+	 * \version 1.35
+	 */
+	func void setBorderColor(Color color)
+	end
+	
+	/**
+	 * \brief Border thickness in percentage of the font size.
+	 * \version 1.35
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	func float getBorderThickness()
+		return 0
+	end
+	
+	/**
+	 * \brief Set border thickness in percentage of the font size.
+	 * \version 1.35
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	func void setBorderThickness(float thickness)
+	end
+	
+	/**
+	 * \brief Dilation in percentage of the font size.
+	 * \version 1.35
+	 */
+	func float getDilation()
+		return 0
+	end
+	
+	/**
+	 * \brief Set dilation in percentage of the font size.
+	 * \version 1.35
+	 */
+	func void setDilation(float dilation)
+	end
+	
 	
 	
 	/**

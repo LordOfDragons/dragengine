@@ -2,7 +2,7 @@
 // #include "shared/interface/skin/samplers.glsl"
 
 #ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
-	#ifdef WITH_VARIATION
+	#ifdef WITH_VARIATIONS
 		#define DTNA(e)
 		#define DTA(e) e;
 	#else

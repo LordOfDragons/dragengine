@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglRenderCanvas.h"
 #include "deoglRenderCanvasContext.h"
 #include "defren/deoglDeferredRendering.h"
@@ -103,7 +100,11 @@ enum eSPCanvas{
 	spcTCClamp,
 	spcTCTransformMask,
 	spcTCLayer,
-	spcHdrOutput
+	spcHdrOutput,
+	spcSdfPixelRange,
+	spcSdfParams,
+	spcSdfFillColor,
+	spcSdfBorderColor
 };
 
 enum eSPFinalize{
@@ -179,6 +180,22 @@ pDebugCountCanvasCanvasView(0)
 		
 		defines.SetDefines("INPUT_ARRAY_TEXTURES");
 		pCreatePipelines(pPipelineCanvasImageArrayMask, pipconf, sources, defines);
+		
+		
+		defines = commonDefines;
+		defines.SetDefines("WITH_TEXTURE", "TEXTURE_COLOR_SDF");
+		pCreatePipelines(pPipelineCanvasSdf, pipconf, sources, defines);
+		
+		defines.SetDefines("WITH_MASK");
+		pCreatePipelines(pPipelineCanvasSdfMask, pipconf, sources, defines);
+		
+		
+		defines = commonDefines;
+		defines.SetDefines("WITH_TEXTURE", "INPUT_ARRAY_TEXTURES", "TEXTURE_COLOR_SDF");
+		pCreatePipelines(pPipelineCanvasSdfArray, pipconf, sources, defines);
+		
+		defines.SetDefines("WITH_MASK");
+		pCreatePipelines(pPipelineCanvasSdfArrayMask, pipconf, sources, defines);
 		
 		
 		defines = commonDefines;
@@ -631,26 +648,41 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 	const float factorV = 1.0f / (float)image->GetHeight();
 	const float offsetU = config.GetTextOffsetU() * factorU;
 	const float offsetV = config.GetTextOffsetV() * factorV;
+	const bool isSdf = glyphs.GetIsSdf();
 	
 	pActivateVAOShapes();
 	
-	const deoglPipeline &pipeline = arrayTexture
-		? (context.GetMask()
-			? *pPipelineCanvasImageArrayMask[canvas.GetBlendMode()]
-			: *pPipelineCanvasImageArray[canvas.GetBlendMode()])
-		: (context.GetMask()
-			? *pPipelineCanvasImageMask[canvas.GetBlendMode()]
-			: *pPipelineCanvasImage[canvas.GetBlendMode()]);
+	const deoglPipeline &pipeline = isSdf
+		? (arrayTexture
+			? (context.GetMask()
+				? *pPipelineCanvasSdfArrayMask[canvas.GetBlendMode()]
+				: *pPipelineCanvasSdfArray[canvas.GetBlendMode()])
+			: (context.GetMask()
+				? *pPipelineCanvasSdfMask[canvas.GetBlendMode()]
+				: *pPipelineCanvasSdf[canvas.GetBlendMode()]))
+		: (arrayTexture
+			? (context.GetMask()
+				? *pPipelineCanvasImageArrayMask[canvas.GetBlendMode()]
+				: *pPipelineCanvasImageArray[canvas.GetBlendMode()])
+			: (context.GetMask()
+				? *pPipelineCanvasImageMask[canvas.GetBlendMode()]
+				: *pPipelineCanvasImage[canvas.GetBlendMode()]));
 	pipeline.Activate();
 	
 	// set texture
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
+	deoglTexSamplerConfig &glyphSampler = isSdf ? GetSamplerClampLinear() : GetSamplerClampNearest();
 	if(arrayTexture){
-		tsmgr.EnableArrayTexture(0, *arrayTexture, GetSamplerClampNearest());
+		tsmgr.EnableArrayTexture(0, *arrayTexture, glyphSampler);
 		
 	}else{
-		tsmgr.EnableTexture(0, *texture, GetSamplerClampNearest());
+		tsmgr.EnableTexture(0, *texture, glyphSampler);
+	}
+	
+	if(isSdf){
+		tsmgr.EnableTexture(2, glyphs.GetTextureSdfColors() ? glyphs.GetTextureSdfColors()
+			: *renderThread.GetDefaultTextures().GetColor(), GetSamplerClampNearest());
 	}
 	
 	if(context.GetMask()){
@@ -663,7 +695,7 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 	// set color
 	const float transparency = context.GetTransparency();
 	
-	if(font->GetIsColorFont()){
+	if(font->GetIsColorFont() || isSdf){
 		const decColorMatrix colorTransform(
 			decColorMatrix::CreateScaling(1.0f, 1.0f, 1.0f, transparency)
 			* context.GetColorTransform());
@@ -696,8 +728,6 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 	
 	// render text
 	decUTF8Decoder utf8Decoder;
-	float curx = 0.0f;
-	float cury = 0.0f;
 	
 	utf8Decoder.SetString(canvas.GetText());
 	const int len = utf8Decoder.GetLength();
@@ -706,6 +736,38 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 	
 	const decTexMatrix2 &transform = context.GetTransform();
 	
+	const decPoint &viewportSize = context.GetViewportSize();
+	const float viewportHalfWidth = (float)viewportSize.x * 0.5f;
+	const float viewportHalfHeight = (float)viewportSize.y * 0.5f;
+	
+	const float sdfSharpen = 1.0f; //0.5f; //1.0f;
+	
+	const float sdfPixelRange = glyphs.GetSdfPixelRange() * sdfSharpen;
+	
+	const decColor sdfFillColor(font->GetIsColorFont() ? decColor(1.0f, 1.0f, 1.0f) : canvas.GetColor());
+	const decColor &sdfBorderColor = canvas.GetBorderColor();
+	const float sdfScaleFactor = (float)glyphs.GetLineHeight() / glyphs.GetSdfPixelRange();
+	float sdfDilation = canvas.GetDilation() * sdfScaleFactor;
+	sdfDilation = decMath::min(sdfDilation, 0.48f); // max allowed value is 0.5 with some gap
+	
+	float sdfBorderSize = canvas.GetBorderThickness() * sdfScaleFactor;
+	sdfBorderSize = decMath::min(sdfBorderSize, 0.48f - sdfDilation); // max allowed value is 0.5 with some gap
+	
+	shader.SetParameterFloat(spcSdfParams, sdfDilation, sdfBorderSize);
+	shader.SetParameterColor4(spcSdfFillColor, sdfFillColor);
+	shader.SetParameterColor4(spcSdfBorderColor, sdfBorderColor);
+	
+	if(!isSdf){
+		shader.SetParameterFloat(spcSdfPixelRange, 1.0f);
+	}
+	
+	float baseX = 0.0f, baseY = 0.0f;
+	if(isSdf){
+		baseY = baseX = decMath::max(sdfDilation + sdfBorderSize, 0.0f) * glyphs.GetSdfPixelRange();
+	}
+	
+	float curX = baseX, curY = baseY;
+	
 	while(utf8Decoder.GetPosition() < len){
 		const int character = utf8Decoder.DecodeNextCharacter();
 		if(character < 0){
@@ -713,23 +775,41 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 		}
 		
 		if(character == '\n'){
-			curx = 0.0f;
-			cury += textSize;
+			curX = baseX;
+			curY += textSize;
 			continue;
 		}
 		
 		const deoglRFontGlyphs::sGlyph &oglGlyph = glyphs.GetGlyphFor(character);
 		
 		// calculate positions
-		const float x1 = curx - (float)oglGlyph.bearing * fontScale;
-		const float y1 = cury - (float)oglGlyph.bearingY * fontScale;
+		const float x1 = curX - (float)oglGlyph.bearing * fontScale;
+		const float y1 = curY - (float)oglGlyph.bearingY * fontScale;
 		const float x2 = x1 + (float)oglGlyph.width * fontScale;
 		const float y2 = y1 + (float)oglGlyph.height * fontScale;
 		const float adv = (float)oglGlyph.advance * fontScale;
 		
 		// render char
 		const decTexMatrix2 rectTransform(decTexMatrix2::CreateST(x2 - x1, y2 - y1, x1, y1));
-		shader.SetParameterTexMatrix3x2(spcTransform, rectTransform * transform);
+		const decTexMatrix2 glyphTransform(rectTransform * transform);
+		shader.SetParameterTexMatrix3x2(spcTransform, glyphTransform);
+		
+		if(isSdf){
+			const float pixPerU = decVector2(glyphTransform.a11 * viewportHalfWidth,
+				glyphTransform.a21 * viewportHalfHeight).Length();
+			const float pixPerV = decVector2(glyphTransform.a12 * viewportHalfWidth,
+				glyphTransform.a22 * viewportHalfHeight).Length();
+			float screenPxRange = decMath::max(sdfPixelRange * 0.5f
+				* (pixPerU * oglGlyph.invTexWidth + pixPerV * oglGlyph.invTexHeight), 1.0f);
+			
+			// ensure the anti-aliasing transition zone doesn't cross below dist = 0
+			const float distToZero = 0.5f - sdfBorderSize - sdfDilation;
+			if(distToZero > 0.001f){
+				screenPxRange = decMath::max(screenPxRange, 0.5f / distToZero);
+			}
+			
+			shader.SetParameterFloat(spcSdfPixelRange, screenPxRange);
+		}
 		
 		const decTexMatrix2 tcTransform(decTexMatrix2::CreateST(
 			(oglGlyph.x2 - oglGlyph.x1) * factorU, (oglGlyph.y2 - oglGlyph.y1) * factorV,
@@ -741,7 +821,7 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 		OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLE_FAN, OFFSET_RECT, COUNT_RECT));
 		
 		// next round
-		curx += adv;
+		curX += adv;
 	}
 	
 	// clean up

@@ -43,6 +43,14 @@ class deImage;
  */
 class deftFont{
 private:
+	struct sMeasurements{
+		decBoundary bbox;
+		double sdfUnitScale = 0.0;
+		double lineHeightMargin = 0.0f;
+		double baseLineMargin = 0.0;
+		int lineHeight = 0;
+	};
+	
 	deftModule &pModule;
 	decBaseFileReader &pReader;
 	FT_Face pFace;
@@ -52,7 +60,8 @@ private:
 	int pRealFontSize, pBaseLine, pRealLineHeight, pComponentCount;
 	FT_Int32 pLoadFlags;
 	decPoint pBearingOffset;
-	decBoundary pBBox;
+	
+	bool pCreateSdfFont;
 	
 	
 public:
@@ -68,6 +77,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Create SDF fonts. */
+	inline bool CreateSdfFont() const { return pCreateSdfFont; }
+	
+	/** Set to create SDF fonts. */
+	void SetCreateSdfFont(bool createSdf);
+	
+	
 	/** Load font. */
 	void LoadFont(deFont &font);
 	
@@ -79,11 +95,14 @@ public:
 private:
 	int pCountUsableGlyphs() const;
 	void pInitGlyphs(deFont &font);
-	int pFindBestSize(const deFont &font, const deFontSize &size);
+	sMeasurements pFindBestSize(const deFont &font, const deFontSize &size);
 	void pInitGlyphs(deFontSize &size);
-	decPoint3 pCalcLayout(deFontSize &size);
+	void pInitGlyphsSdf(deFontSize &size, double unitScale);
+	decPoint3 pCalcLayout(deFontSize &size, bool sdf);
 	void pDebugPrintGlyphs(const deFont &font, const deFontSize &size);
 	void pRenderGlyphs(const deFontSize &size, deImage &image);
+	int pBestSdfFixedSize(const deFont &font);
+	void pRenderGlyphsSdf(const deFontSize &size, deImage &image, const sMeasurements &measurements);
 	
 	static unsigned long fStreamRead(FT_Stream stream, unsigned long offset,
 		unsigned char *buffer, unsigned long count);

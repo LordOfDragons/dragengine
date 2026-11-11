@@ -60,6 +60,17 @@ fixed class Font
 		return null
 	end
 	
+	/**
+	 * \brief Size of text in pixels using this font.
+	 * 
+	 * Same as \ref #getTextSize(String) but includes dilation as percentage of the font size.
+	 * Dilation can be all kinds of dilations like explicit dilation, text borders or similar
+	 * effects that result in enlarging a font.
+	 */
+	func Point getTextSize(String text, float dilation)
+		return null
+	end
+	
 	/** \brief Width of character in pixels using this font. */
 	func float getCharWidth(int char)
 		return 0.0

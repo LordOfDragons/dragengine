@@ -14,6 +14,7 @@ if not buildModule:
 
 libs = []
 appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
+appendLibrary(envModule, parent_targets['lib_msdfgen'], libs, internalModule=internalModule)
 appendLibrary(envModule, parent_targets['lib_freetype'], libs, internalModule=internalModule)
 appendLibrary(envModule, parent_targets['lib_libpng'], libs, internalModule=internalModule)
 
@@ -52,7 +53,7 @@ if internalModule:
 	install.extend(targetBuild)
 	
 	parent_targets['dragengine']['add internal module'](
-		envModule, library, ['lib_freetype', 'lib_libpng'], 'deftRegisterInternalModule')
+		envModule, library, ['lib_msdfgen', 'lib_freetype', 'lib_libpng'], 'deftRegisterInternalModule')
 	
 else:
 	objects = [envModule.SharedObject(s) for s in sources]
@@ -78,6 +79,11 @@ else:
 		{'action': 'filesize', 'file': library[0], 'keyword': 'FILESIZE'},
 		{'action': 'filehash', 'file': library[0], 'keyword': 'SHA1SUM'},
 		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	for l in reversed(parent_targets['lib_msdfgen']['runtimelibs']):
+		manifestUpdates.append({'action': 'preloadLibrary', 'library': l})
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
 	
 	for l in reversed(parent_targets['lib_freetype']['runtimelibs']):
 		manifestUpdates.append({'action': 'preloadLibrary', 'library': l})

@@ -295,6 +295,8 @@ class Label extends Widget implements TextModelListener
 			end
 		end
 		textLayout.setMaximalWidth(DEMath.max(maxWidth, 0))
+		textLayout.setBorderThickness(getTextBorderThickness())
+		textLayout.setDilation(getTextDilation())
 		
 		textLayout.layoutText()
 		
@@ -317,7 +319,11 @@ class Label extends Widget implements TextModelListener
 		updateCanvasText()
 	end
 	
-	/** \brief Size changed. */
+	func void onSetTextDilation()
+		updateCanvasText()
+		layoutParent()
+	end
+	
 	func void onResize(WidgetEvent event)
 		super.onResize(event)
 		updateCanvasText()
@@ -396,6 +402,7 @@ class Label extends Widget implements TextModelListener
 		if color != null
 			pTextLayout.setColor(color)
 		end
+		pTextLayout.setBorderColor(getTextBorderColor())
 		
 		if pAlignment & right == right
 			x = width - pTextLayout.getWidth()
@@ -436,6 +443,9 @@ class Label extends Widget implements TextModelListener
 		else
 			pTextLayout.setAlignment(TextLayout.Align.left)
 		end
+		
+		pTextLayout.setBorderThickness(getTextBorderThickness())
+		pTextLayout.setDilation(getTextDilation())
 		
 		pTextLayout.layoutText()
 		

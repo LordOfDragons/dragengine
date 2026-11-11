@@ -45,6 +45,8 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		var CanvasCreator pCanvasCreator
 		var BorderFactory pBorderFactory
 		var Font pFont
+		var Color pTextColor, pTextBorderColor
+		var Float pTextBorderThickness, pTextDilation
 		var BorderSize pPadding
 		var Point pMinimumSize
 		var MousePointerFactory pMousePointerFactory
@@ -61,6 +63,9 @@ class DefaultWidgetDesigner implements WidgetDesigner
 			pBorderFactory = stateDesign.pBorderFactory
 			pFont = stateDesign.pFont
 			pTextColor = stateDesign.pTextColor
+			pTextBorderColor = stateDesign.pTextBorderColor
+			pTextBorderThickness = stateDesign.pTextBorderThickness
+			pTextDilation = stateDesign.pTextDilation
 			pPadding = stateDesign.pPadding
 			pMinimumSize = stateDesign.pMinimumSize
 			pMousePointerFactory = stateDesign.pMousePointerFactory
@@ -76,11 +81,14 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		 * | border | BorderFactory | setBorderFactory |
 		 * | font | Font | setFont |
 		 * | textColor | Color | setTextColor |
+		 * | textBorderColor | Color | setTextBorderColor |
+		 * | textBorderThickness | float | setTextBorderThickness |
+		 * | textDilation | float | setTextDilation |
 		 * | padding | BorderSize | setPadding |
 		 * | minimumSize | Point | setMinimumSize |
 		 * | mousePointer | MousePointerFactory | setMousePointerFactory |
 		 */
-		public func void setParameter(String name, Object value)
+		func void setParameter(String name, Object value)
 			if name.equals("canvas")
 				setCanvasCreator(value cast CanvasCreator)
 				
@@ -101,6 +109,15 @@ class DefaultWidgetDesigner implements WidgetDesigner
 				
 			elif name.equals("mousePointer")
 				setMousePointerFactory(value cast MousePointerFactory)
+				
+			elif name.equals("textBorderColor")
+				setTextBorderColor(value cast Color)
+				
+			elif name.equals("textBorderThickness")
+				setTextBorderThickness(value != null if Float.new(value cast float) else null)
+				
+			elif name.equals("textDilation")
+				setTextDilation(value != null if Float.new(value cast float) else null)
 				
 			else
 				throw EInvalidParam.new("unknown state parameter: " + name)
@@ -147,6 +164,58 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		/** \brief Set text color or null. */
 		func void setTextColor(Color color)
 			pTextColor = color
+		end
+		
+		/**
+		 * \brief Text border color or null.
+		 * \version 1.35
+		 */
+		func Color getTextBorderColor()
+			return pTextBorderColor
+		end
+		
+		/**
+		 * \brief Set text border color or null.
+		 * \version 1.35
+		 */
+		func void setTextBorderColor(Color color)
+			pTextBorderColor = color
+		end
+		
+		/**
+		 * \brief Text border thickness in percentage of the font size or null.
+		 * \version 1.35
+		 * 
+		 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+		 */
+		func Float getTextBorderThickness()
+			return pTextBorderThickness
+		end
+
+		/**
+		 * \brief Set text border thickness in percentage of the font size or null.
+		 * \version 1.35
+		 * 
+		 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+		 */
+		func void setTextBorderThickness(Float thickness)
+			pTextBorderThickness = thickness
+		end
+		
+		/**
+		 * \brief Text dilation in percentage of the font size or null.
+		 * \version 1.35
+		 */
+		func Float getTextDilation()
+			return pTextDilation
+		end
+
+		/**
+		 * \brief Set text dilation in percentage of the font size or null.
+		 * \version 1.35
+		 */
+		func void setTextDilation(Float dilation)
+			pTextDilation = dilation
 		end
 		
 		/** \brief Padding or null. */
@@ -208,6 +277,15 @@ class DefaultWidgetDesigner implements WidgetDesigner
 			if pTextColor != null
 				state.pTextColor = pTextColor
 			end
+			if pTextBorderColor != null
+				state.pTextBorderColor = pTextBorderColor
+			end
+			if pTextBorderThickness != null
+				state.pTextBorderThickness = pTextBorderThickness
+			end
+			if pTextDilation != null
+				state.pTextDilation = pTextDilation
+			end
 			if pMinimumSize != null
 				state.pMinimumSize = pMinimumSize
 			end
@@ -250,6 +328,15 @@ class DefaultWidgetDesigner implements WidgetDesigner
 			
 			if not widget.getProtectTextColor()
 				widget.setTextColor(pTextColor)
+				if pTextBorderColor != null
+					widget.setTextBorderColor(pTextBorderColor)
+				end
+				if pTextBorderThickness != null
+					widget.setTextBorderThickness(pTextBorderThickness.value())
+				end
+				if pTextDilation != null
+					widget.setTextDilation(pTextDilation.value())
+				end
 			end
 			
 			if not widget.getProtectMinimumSize()

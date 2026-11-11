@@ -50,6 +50,8 @@ class TextLayout
 	var String pText
 	var Align pAlignment
 	var Font pFont
+	var Color pColor, pBorderColor
+	var float pBorderThickness, pDilation
 	var Array pLines
 	var int pWidth, pHeight, pMaxWidth
 	var bool pAtLeastOneLine
@@ -66,6 +68,7 @@ class TextLayout
 		pAlignment = Align.left
 		pFont = font
 		pColor = Color.black
+		pBorderColor = Color.black
 	end
 	
 	/**
@@ -82,9 +85,9 @@ class TextLayout
 		pAlignment = layout.pAlignment
 		pFont = layout.pFont
 		pColor = layout.pColor
-		this.pWidth = 0
-		this.pHeight = 0
-		this.pMaxWidth = width
+		pBorderColor = layout.pBorderColor
+		pBorderThickness = layout.pBorderThickness
+		pDilation = layout.pDilation
 		pMaxWidth = width
 	end
 	
@@ -137,6 +140,61 @@ class TextLayout
 			throw EInvalidParam.new()
 		end
 		pColor = color
+	end
+	
+	/**
+	 * \brief Border color.
+	 * \version 1.35
+	 */
+	func Color getBorderColor()
+		return pBorderColor
+	end
+	
+	/**
+	 * \brief Set border color.
+	 * \version 1.35
+	 */
+	func void setBorderColor(Color color)
+		if color == null
+			throw ENullPointer.new()
+		end
+		pBorderColor = color
+	end
+	
+	/**
+	 * \brief Border thickness in percentage of the font size or null.
+	 * \version 1.35
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	func float getBorderThickness()
+		return pBorderThickness
+	end
+	
+	/**
+	 * \brief Set border thickness in percentage of the font size or null.
+	 * \version 1.35
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	func void setBorderThickness(float thickness)
+		pBorderThickness = thickness
+	end
+	
+	/**
+	 * \brief Dilation in percentage of the font size.
+	 * \version 1.35
+	 */
+	func float getDilation()
+		return pDilation
+	end
+	
+	/**
+	 * \brief Set dilation in percentage of the font size.
+	 * \version 1.35
+	 */
+	func void setDilation(float dilation)
+		pDilation = dilation
 	end
 	
 	/** Maximal width of the layout text. */
@@ -201,6 +259,11 @@ class TextLayout
 		var int lineEnd, nextPosition, lastPosition
 		var int x, y, character
 		var bool hasLines
+		var float dilation = DEMath.max(pDilation + pBorderThickness, 0.0) * lineHeight * 2
+		var float ceilDilation = DEMath.ceil(dilation)
+		
+		lineHeight += ceilDilation cast int
+		fmaxWidth = DEMath.max(fmaxWidth - ceilDilation, 0.0)
 		
 		// loop through the text and create lines
 		pWidth = pHeight = 0
@@ -221,19 +284,20 @@ class TextLayout
 //" lw=" + lineWidth + " ww=" + wordWidth + " np=" + nextPosition + " lp=" + lastPosition + "\n")
 			
 			if character == '\n'
+				lineReach = DEMath.max(lineExtend, lineWidth + spacesWidth + wordExtend)
 				if wordCharacters == 0
 					if lineWidth == 0 // only spaces on line
 						textLine = TextLayoutLine.new(lineStart, lineEnd - lineStart, \
-							DEMath.ceil(spacesWidth) cast int, lineHeight)
+							DEMath.ceil(DEMath.max(spacesWidth, lineReach) + dilation) cast int, lineHeight)
 						
 					else
-						textLine = TextLayoutLine.new( lineStart, lineEnd - lineStart, \
-							DEMath.ceil( lineWidth ) cast int, lineHeight )
+						textLine = TextLayoutLine.new(lineStart, lineEnd - lineStart, \
+							DEMath.ceil(DEMath.max(lineWidth, lineReach) + dilation) cast int, lineHeight)
 					end
 					
 				else
-					textLine = TextLayoutLine.new( lineStart, lastPosition - lineStart, \
-						DEMath.ceil( lineWidth + spacesWidth + wordWidth ) cast int, lineHeight )
+					textLine = TextLayoutLine.new(lineStart, lastPosition - lineStart, \
+						DEMath.ceil(DEMath.max(lineWidth + spacesWidth + wordWidth, lineReach) + dilation) cast int, lineHeight)
 				end
 //BaseGameApp.getApp().getConsole().addMessage("new line: text='" + pText.substring(textLine.getFirstChar(),\
 //textLine.getFirstChar() + textLine.getCharCount()) + "' width=" + textLine.getWidth() + " height=" + textLine.getHeight() + "\n")
@@ -241,6 +305,7 @@ class TextLayout
 				wordStart = lineStart
 				lineEnd = lineStart
 				wordCharacters = wordCount = 0
+				wordWidth = wordExtend = lineWidth = lineExtend = spacesWidth = 0
 				
 			elif character != -1
 				characterAdvance = pFont.getCharAdvance(character)
@@ -250,9 +315,10 @@ class TextLayout
 				if pMaxWidth > 0 and wordCount > 1 and lineWidth + wordWidth + characterAdvance + characterExtend > fmaxWidth
 					// word break
 					//if wordCount > 1
-						textLine = TextLayoutLine.new( lineStart, lineEnd - lineStart, \
-							DEMath.ceil( lineWidth ) cast int, lineHeight )
+						textLine = TextLayoutLine.new(lineStart, lineEnd - lineStart, \
+							DEMath.ceil(DEMath.max(lineWidth, lineExtend) + dilation) cast int, lineHeight)
 						lineStart = wordStart
+						lineExtend = 0
 						if wordCharacters == 0
 							wordCount = 0 // same conditions bumps value up by one later
 						else
@@ -278,10 +344,11 @@ class TextLayout
 					if wordCount == 0 and hasLines
 						lineStart = nextPosition
 						lineEnd = nextPosition
-						spacesWidth = 0.0
+						lineExtend = spacesWidth = 0
 					else
 						if wordCharacters > 0
 							lineEnd = lastPosition
+							lineExtend = DEMath.max(lineExtend, lineWidth + spacesWidth + wordExtend)
 							lineWidth += spacesWidth + wordWidth
 							spacesWidth = 0
 						end
@@ -289,13 +356,14 @@ class TextLayout
 					end
 					wordStart = nextPosition
 					wordCharacters = 0
-					wordWidth = 0.0
+					wordWidth = wordExtend = 0
 				else
 					if wordCharacters == 0
 						wordCount++
 					end
 					wordCharacters++
 					wordWidth += characterAdvance
+					wordExtend = DEMath.max(wordExtend, wordWidth + characterExtend)
 				end
 			end
 			

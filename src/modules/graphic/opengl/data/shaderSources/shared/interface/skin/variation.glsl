@@ -47,7 +47,7 @@ vec4 textureVariationLod(in sampler2D tex2d, in ARG_SAMP_MEDP sampler2DArray tex
 
 
 #ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
-	#ifdef WITH_VARIATION
+	#ifdef WITH_VARIATIONS
 		#define TEXTURE(s,sarr,tc) texture(sarr, tcTexVar(tc, textureSize(sarr, 0).z))
 		#define TEXTURE_LOD(s,sarr,tc,l) textureLod(sarr, tcTexVar(tc, textureSize(sarr, 0).z), l)
 	#else

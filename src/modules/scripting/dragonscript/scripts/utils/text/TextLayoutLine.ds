@@ -109,8 +109,12 @@ class TextLayoutLine
 		var CanvasText lineCanvas = CanvasText.new()
 		lineCanvas.setFont(layout.getFont())
 		lineCanvas.setColor(layout.getColor())
+		lineCanvas.setBorderColor(layout.getBorderColor())
+		lineCanvas.setBorderThickness(layout.getBorderThickness())
+		lineCanvas.setDilation(layout.getDilation())
 		lineCanvas.setText(layout.getText().substring(pFirstChar, pFirstChar + pCharCount))
 		lineCanvas.setPosition(Point.new(x + pX, y + pY))
+		lineCanvas.setSize(Point.new(pWidth, pHeight))
 		
 		lineCanvas.setOrder(canvas.getCanvasCount() cast float)
 		canvas.addCanvas(lineCanvas)

@@ -415,7 +415,13 @@ class TextField extends TextWidget
 		updateCanvasText()
 	end
 	
-	/** \brief Widget received focus. */
+	public func void onSetTextDilation()
+		super.onSetTextDilation()
+		pSelXOffsets = null
+		pNeedsUpdate = true
+		updateCanvasText()
+	end
+	
 	public func void onFocusReceived(FocusEvent event)
 		super.onFocusReceived(event)
 		setSelectionAll()
@@ -970,9 +976,12 @@ class TextField extends TextWidget
 			var CanvasText textCanvas = CanvasText.new()
 			textCanvas.setFont(font)
 			textCanvas.setColor(color)
+			textCanvas.setBorderColor(getTextBorderColor())
+			textCanvas.setBorderThickness(getTextBorderThickness())
+			textCanvas.setDilation(getTextDilation())
 			textCanvas.setText(subString)
 			textCanvas.setPosition(Point.new(x + getPadding().getLeft(), y + getPadding().getTop()))
-			textCanvas.setSize(font.getTextSize(subString))
+			textCanvas.setSize(font.getTextSize(subString, getTextDilation() + getTextBorderThickness()))
 			
 			textCanvas.setOrder(canvas.getCanvasCount() cast float)
 			canvas.addCanvas(textCanvas)

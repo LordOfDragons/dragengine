@@ -39,7 +39,9 @@
 
 deoglRCanvasText::deoglRCanvasText(deoglRenderThread &renderThread) :
 deoglRCanvas(renderThread),
-pTextSize(1)
+pTextSize(1),
+pBorderThickness(0.0f),
+pDilation(0.0f)
 {
 	LEAK_CHECK_CREATE(renderThread, CanvasText);
 }
@@ -73,6 +75,24 @@ void deoglRCanvasText::SetColor(const decColor &color){
 	pColor = color;
 }
 
+void deoglRCanvasText::SetBorderColor(const decColor &color){
+	pBorderColor = color;
+}
+
+void deoglRCanvasText::SetBorderThickness(float thickness){
+	pBorderThickness = thickness;
+}
+
+void deoglRCanvasText::SetDilation(float dilation){
+	pDilation = dilation;
+}
+
+
+void deoglRCanvasText::PrepareForRender(const deoglRenderPlanMasked*, bool){
+	if(pFontSize){
+		pFontSize->PrepareForRender();
+	}
+}
 
 void deoglRCanvasText::Render(const deoglRenderCanvasContext &context){
 	if(!pFont || pText.IsEmpty()){

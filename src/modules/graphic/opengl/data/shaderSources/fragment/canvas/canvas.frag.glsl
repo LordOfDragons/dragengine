@@ -15,6 +15,16 @@ UNIFORM_BIND(8) uniform int pTCLayer;
 // HDR output flag (1 = HDR output active, 0 = SDR)
 UNIFORM_BIND(9) uniform int pHdrOutput;
 
+// TextureColorSdf
+UNIFORM_BIND(10) uniform float pSdfPixelRange;
+
+UNIFORM_BIND(11) uniform vec2 pSdfParams;
+#define pSdfDilation pSdfParams.x
+#define pSdfBorderSize pSdfParams.y
+
+UNIFORM_BIND(12) uniform vec4 pSdfFillColor;
+UNIFORM_BIND(13) uniform vec4 pSdfBorderColor;
+
 // WithTexture && !InputArrayTextures
 layout(binding=0) uniform lowp sampler2D texColor;
 
@@ -24,8 +34,12 @@ layout(binding=0) uniform lowp sampler2DArray texColorArray;
 // WithMask
 layout(binding=1) uniform lowp sampler2D texMask;
 
+// TextureColorSdf
+layout(binding=2) uniform lowp sampler2D texColorSdfColors;
+
 #include "shared/interface/2d/fragment.glsl"
 #include "shared/hdr_output.glsl"
+#include "shared/defren/skin/color_sdf.glsl"
 
 // vTexCoord: WithTexture || WithRenderWorld || InputArrayTextures
 
@@ -44,7 +58,22 @@ void main(void){
 	vec2 tc = clamp(vTexCoord, pTCClamp.xy, pTCClamp.zw);
 	
 	if(WithTexture){
-		if(InputArrayTextures){
+		if(TextureColorSdf){
+			SdfParams params;
+			params.fillColor = pSdfFillColor;
+			params.borderColor = pSdfBorderColor;
+			params.borderSize = pSdfBorderSize;
+			params.pixelRange = pSdfPixelRange;
+			params.dilation = pSdfDilation;
+			
+			if(InputArrayTextures){
+				outColor = getSdfColorArray(texColorArray, tc, params);
+				
+			}else{
+				outColor = getSdfColor(texColor, tc, params);
+			}
+			
+		}else if(InputArrayTextures){
 			outColor = texture(texColorArray, vec3(tc, pTCLayer));
 			
 		}else{

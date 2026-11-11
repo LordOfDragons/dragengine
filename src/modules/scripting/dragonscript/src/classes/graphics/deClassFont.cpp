@@ -57,6 +57,35 @@ struct sFntNatDat{
 	deFontSize::Ref fontSize;
 	int size = 0;
 	float scale = 1.0f;
+	
+	decVector2 GetTextSize(const char *text) const{
+		decUTF8Decoder utf8Decoder;
+		utf8Decoder.SetString(text);
+		
+		int textHeight = size;
+		float lineWidth = 0.0f;
+		float textWidth = 0.0f;
+		
+		while(!utf8Decoder.HasReachedEnd()){
+			const int character = utf8Decoder.DecodeNextCharacter();
+			
+			if(character == '\n'){
+				textHeight += size;
+				lineWidth = 0.0f;
+				
+			}else if(character >= 0){
+				const deFontGlyph &glyph = font->GetGlyph(character, fontSize);
+				const float extendEnd = (float)(glyph.GetWidth()
+					- glyph.GetAdvance() - glyph.GetBearing()) * scale;
+				lineWidth += (float)glyph.GetAdvance() * scale;
+				if(lineWidth + extendEnd > textWidth){
+					textWidth = lineWidth + extendEnd;
+				}
+			}
+		}
+		
+		return {textWidth, (float)textHeight};
+	}
 };
 
 
@@ -201,32 +230,25 @@ void deClassFont::nfGetTextSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScriptingDragonScript &ds = (static_cast<deClassFont*>(GetOwnerClass()))->GetDS();
 	const sFntNatDat &nd = dedsGetNativeData<sFntNatDat>(p_GetNativeData(myself));
 	
-	decUTF8Decoder utf8Decoder;
-	utf8Decoder.SetString(rt->GetValue(0)->GetString());
+	const auto size = nd.GetTextSize(rt->GetValue(0)->GetString());
+	ds.GetClassPoint()->PushPoint(rt, {(int)ceilf(size.x), (int)ceilf(size.y)});
+}
+
+// func Point getTextSize(String text, float dilation)
+deClassFont::nfGetTextSize2::nfGetTextSize2(const sInitData &init) :
+dsFunction(init.clsFont, "getTextSize", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint){
+	p_AddParameter(init.clsString); // text
+	p_AddParameter(init.clsFloat); // dilation
+}
+
+void deClassFont::nfGetTextSize2::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = (static_cast<deClassFont*>(GetOwnerClass()))->GetDS();
+	const sFntNatDat &nd = dedsGetNativeData<sFntNatDat>(p_GetNativeData(myself));
+	const float dilation = decMath::max(rt->GetValue(1)->GetFloat(), 0.0f) * (float)nd.size * 2.0f;
 	
-	int textHeight = nd.size;
-	float lineWidth = 0.0f;
-	float textWidth = 0.0f;
-	
-	while(!utf8Decoder.HasReachedEnd()){
-		const int character = utf8Decoder.DecodeNextCharacter();
-		
-		if(character == '\n'){
-			textHeight += nd.size;
-			lineWidth = 0.0f;
-			
-		}else if(character >= 0){
-			const deFontGlyph &glyph = nd.font->GetGlyph(character, nd.fontSize);
-			const float extendEnd = (float)(glyph.GetWidth()
-				- glyph.GetAdvance() - glyph.GetBearing()) * nd.scale;
-			lineWidth += (float)glyph.GetAdvance() * nd.scale;
-			if(lineWidth + extendEnd > textWidth){
-				textWidth = lineWidth + extendEnd;
-			}
-		}
-	}
-	
-	ds.GetClassPoint()->PushPoint(rt, decPoint((int)ceilf(textWidth), textHeight));
+	const auto size = nd.GetTextSize(rt->GetValue(0)->GetString());
+	ds.GetClassPoint()->PushPoint(rt, {(int)ceilf(size.x + dilation), (int)ceilf(size.y + dilation)});
 }
 
 // func float getCharWidth(int char)
@@ -393,6 +415,7 @@ void deClassFont::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetBaseLine(init));
 	
 	AddFunction(new nfGetTextSize(init));
+	AddFunction(new nfGetTextSize2(init));
 	AddFunction(new nfGetCharWidth(init));
 	AddFunction(new nfGetCharAdvance(init));
 	AddFunction(new nfGetCharBearing(init));

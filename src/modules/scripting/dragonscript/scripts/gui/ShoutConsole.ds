@@ -146,6 +146,9 @@ class ShoutConsole extends Widget implements ConsoleListener
 		// create text layout for this message text
 		var TextLayout layout = TextLayout.new(messageText, font)
 		layout.setColor(color)
+		layout.setBorderColor(getTextBorderColor())
+		layout.setBorderThickness(getTextBorderThickness())
+		layout.setDilation(getTextDilation())
 		layout.setAlignment(TextLayout.Align.left)
 		layout.setMaximalWidth(DEMath.max(width - 10, 0))
 		layout.layoutText()

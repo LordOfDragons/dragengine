@@ -95,6 +95,12 @@ private:
 	DEF_NATFUNC(nfSetText);
 	DEF_NATFUNC(nfGetColor);
 	DEF_NATFUNC(nfSetColor);
+	DEF_NATFUNC(nfGetBorderThickness);
+	DEF_NATFUNC(nfSetBorderThickness);
+	DEF_NATFUNC(nfGetBorderColor);
+	DEF_NATFUNC(nfSetBorderColor);
+	DEF_NATFUNC(nfGetDilation);
+	DEF_NATFUNC(nfSetDilation);
 	
 	DEF_NATFUNC(nfEquals);
 	DEF_NATFUNC(nfHashCode);

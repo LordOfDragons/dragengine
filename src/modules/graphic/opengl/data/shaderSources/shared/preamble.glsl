@@ -233,6 +233,7 @@ layout(constant_id=168) const bool SampleStereo = false;
 layout(constant_id=169) const bool WithReflection = false;
 layout(constant_id=170) const bool WithDitherTransparency = false;
 layout(constant_id=171) const bool HdrOutput = false;
+layout(constant_id=172) const bool TextureColorSdf = false;
 
 
 // OpenGL
