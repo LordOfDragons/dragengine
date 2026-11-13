@@ -46,9 +46,13 @@ private:
 	struct sMeasurements{
 		decBoundary bbox;
 		double sdfUnitScale = 0.0;
-		double lineHeightMargin = 0.0f;
-		double baseLineMargin = 0.0;
+		int lineHeightMargin = 0;
+		int baseLineMargin = 0;
 		int lineHeight = 0;
+		int realLineHeight = 0;
+		double pixelRange = 0.0f;
+		double sdfMinVal = 0.0;
+		double sdfMaxVal = 0.0;
 	};
 	
 	deftModule &pModule;

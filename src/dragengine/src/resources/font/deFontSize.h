@@ -51,6 +51,7 @@ private:
 	deParallelTask::Ref pTaskLoad;
 	decTList<decColor> pSdfColors;
 	float pSdfPixelRange;
+	decVector2 pSdfDistanceRange;
 	
 	
 public:
@@ -109,7 +110,6 @@ public:
 	/** \brief Set image or nullptr. */
 	void SetImage(deImage *image);
 	
-	
 	/** \brief Load task or nullptr if finished. */
 	inline const deParallelTask::Ref &GetTaskLoad() const{ return pTaskLoad; }
 	
@@ -126,6 +126,12 @@ public:
 	
 	/** \brief Set SDF pixel range for the font. */
 	void SetSdfPixelRange(float range);
+	
+	/** \brief SDF distance range. */
+	inline const decVector2 &GetSdfDistanceRange() const{ return pSdfDistanceRange; }
+	
+	/** \brief Set SDF distance range. */
+	void SetSdfDistanceRange(const decVector2 &range);
 	/*@}*/
 };
 

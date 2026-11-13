@@ -185,12 +185,10 @@ void deftFont::LoadFont(deFont &font){
 		font.SetIsSdf(true);
 		font.GetFixedSizes().Add(pBestSdfFixedSize(font));
 		
-	}else{
-		if(FT_HAS_FIXED_SIZES(pFace)){
-			FT_Int i;
-			for(i=0; i<pFace->num_fixed_sizes; i++){
-				font.GetFixedSizes().Add((int)pFace->available_sizes[i].height);
-			}
+	}else if(FT_HAS_FIXED_SIZES(pFace)){
+		FT_Int i;
+		for(i=0; i<pFace->num_fixed_sizes; i++){
+			font.GetFixedSizes().Add((int)pFace->available_sizes[i].height);
 		}
 	}
 	
@@ -201,21 +199,20 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	const char * const filename = font.GetFilename();
 	const bool isSdf = font.GetIsSdf();
 	deFontSize::Ref size;
+	int bitCount = 8;
 	
 	if(isSdf){
 		lineHeight = pBestSdfFixedSize(font);
 		
-	}else{
-		if(lineHeight > pLineHeightLimit){
-			pModule.LogInfoFormat("LoadFontSize[%s,%d]: Request font size too large. Using %d instead",
-				filename, lineHeight, pLineHeightLimit);
-			size = font.GetSizeWith(pLineHeightLimit);
-			if(size){
-				return size;
-			}
-			
-			lineHeight = pLineHeightLimit;
+	}else if(lineHeight > pLineHeightLimit){
+		pModule.LogInfoFormat("LoadFontSize[%s,%d]: Request font size too large. Using %d instead",
+			filename, lineHeight, pLineHeightLimit);
+		size = font.GetSizeWith(pLineHeightLimit);
+		if(size){
+			return size;
 		}
+		
+		lineHeight = pLineHeightLimit;
 	}
 	
 	size = deFontSize::Ref::New(lineHeight, font.GetGlyphCount());
@@ -223,7 +220,7 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	const auto measurements = pFindBestSize(font, size);
 	
 	pRealFontSize = measurements.lineHeight;
-	pRealLineHeight = (measurements.bbox.y2 - measurements.bbox.y1) + measurements.lineHeightMargin;
+	pRealLineHeight = measurements.realLineHeight;
 	
 	pBearingOffset.x = 0;
 	pBearingOffset.y = (lineHeight - pRealLineHeight) / 2;
@@ -235,6 +232,7 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 		// FT_LOAD_NO_HINTING: disable hinting to get raw font outlines
 		pLoadFlags = FT_LOAD_NO_SCALE | FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING;
 		pComponentCount = 4;
+		bitCount = 16;
 		
 	}else if(FT_HAS_COLOR(pFace)){
 		pLoadFlags = FT_LOAD_DEFAULT | FT_LOAD_COLOR;
@@ -246,20 +244,19 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	}
 	
 	if(isSdf){
-		float pixelRange = decMath::linearStep((float)pRealLineHeight, 24.0f, 48.0f, 2.5f, 4.0f);
-		pixelRange += 8.0f;
-		size->SetSdfPixelRange(pixelRange);
-		// size->SetSdfPixelRange(4.0f);
+		size->SetSdfPixelRange(measurements.pixelRange);
+		size->SetSdfDistanceRange({(float)measurements.sdfMinVal, (float)measurements.sdfMaxVal});
 	}
 	
 	if(isSdf){
 		pModule.LogInfoFormat(
-			"LoadFontSize[%s,%d,sdf]: fs=%d bb=(%d,%d,%d,%d) h=%d gh=%d o=(%d,%d) bl=%d clr=%d m=(%g,%g) spr=%g",
+			"LoadFontSize[%s,%d,sdf]: fs=%d bb=(%d,%d,%d,%d) h=%d gh=%d o=(%d,%d) bl=%d clr=%d m=(%d,%d) spr=%g svmin=%g svmax=%g",
 			filename, lineHeight, pRealLineHeight, measurements.bbox.x1,
 			measurements.bbox.y1, measurements.bbox.x2, measurements.bbox.y2,
 			(int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64),
 			pRealLineHeight, pBearingOffset.x, pBearingOffset.y, pBaseLine, FT_HAS_COLOR(pFace),
-			measurements.lineHeightMargin, measurements.baseLineMargin, size->GetSdfPixelRange());
+			measurements.lineHeightMargin, measurements.baseLineMargin, size->GetSdfPixelRange(),
+			measurements.sdfMinVal, measurements.sdfMaxVal);
 		
 	}else{
 		pModule.LogInfoFormat(
@@ -286,7 +283,7 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	
 	decTimer timer;
 	auto image = pModule.GetGameEngine()->GetImageManager()->CreateImage(
-		imageSize.x, imageSize.y, imageSize.z, pComponentCount, 8);
+		imageSize.x, imageSize.y, imageSize.z, pComponentCount, bitCount);
 	
 	if(isSdf){
 		pRenderGlyphsSdf(size, image, measurements);
@@ -368,9 +365,33 @@ deftFont::sMeasurements deftFont::pFindBestSize(const deFont &font, const deFont
 		
 		measurements.lineHeight = (int)(std::round(pFace->units_per_EM * measurements.sdfUnitScale));
 		
-		const double margin = (int)std::ceil(size.GetSdfPixelRange() * 0.5f);
+		const int margin = (int)std::ceil(size.GetSdfPixelRange() * 0.5f);
 		measurements.baseLineMargin = margin;
-		measurements.lineHeightMargin = margin * 2.0;
+		measurements.lineHeightMargin = margin * 2;
+		
+		measurements.realLineHeight = (measurements.bbox.y2 - measurements.bbox.y1)
+			+ measurements.lineHeightMargin;
+		measurements.pixelRange = decMath::linearStep(
+			(float)measurements.realLineHeight, 24.0f, 48.0f, 2.5f, 4.0f);
+		
+		// MTSDF images compose of the MSDF image in the RGB channels and the SDF in the alpha
+		// channel. for MSDF a bit depth of 8 is sufficient. for SDF though a bit depth of 8
+		// causes the distance values to floor at 0 causing issues with border type effects.
+		// to solve this the image has to be increased to 16 or 32 bit to store negative values
+		// doing this for the entire image wastes space since MSDF does not require high bit count.
+		// but using two images makes the situation more complicate and the graphic module can
+		// still decide to upload the image to the GPU in two images if this is better. 16 bit
+		// images store the data in the range from 0 to 1 similar to 8 bit images. for the MSDF
+		// part of the image this is fine. for the SDF part of the image the values can be negative
+		// and larger than 1. for this reason the SDF distances are mapped to the 0 to 1 range.
+		
+		// the calculation below determines the value range for the worst case situation where
+		// pixels all across the diagonal of the cell
+		const float maxOuter = measurements.realLineHeight * 1.675f;
+		const float maxInner = decMath::max(4.0f, measurements.realLineHeight * 0.05f);
+		
+		measurements.sdfMinVal = 0.5f - (maxOuter / measurements.pixelRange);
+		measurements.sdfMaxVal = 0.5f + (maxInner / measurements.pixelRange);
 		
 	}else{
 		// const char * const filename = font.GetFilename();
@@ -558,7 +579,7 @@ void deftFont::pRenderGlyphsSdf(const deFontSize &size, deImage &image, const sM
 	const int strideY = width;
 	const int pixelCount = strideZ * depth;
 	
-	sRGBA8 * const di = image.GetDataRGBA8();
+	sRGBA16 * const di = image.GetDataRGBA16();
 	int glyphIndex = 0;
 	for(int x=0; x<pixelCount; x++){
 		di[x] = {0, 0, 0, 0};
@@ -567,6 +588,13 @@ void deftFont::pRenderGlyphsSdf(const deFontSize &size, deImage &image, const sM
 	const double unitScale = measurements.sdfUnitScale;
 	const msdfgen::Range range(size.GetSdfPixelRange() / unitScale);
 	const int sdfMargin = (int)(std::ceil(size.GetSdfPixelRange() * 0.5f));
+	const double sdfValDiv = 1.0 / (measurements.sdfMaxVal - measurements.sdfMinVal);
+	const float sdfRemap1 = (float)sdfValDiv;
+	const float sdfRemap2 = (float)(sdfValDiv * -measurements.sdfMinVal);
+	
+	const auto toUShort = [](float v) -> unsigned short{
+		return (unsigned short)(decMath::clamp(v, 0.0f, 1.0f) * 65535.0f + 0.5f);
+	};
 	
 	FT_UInt gindex;
 	FT_ULong charcode = FT_Get_First_Char(pFace, &gindex);
@@ -613,22 +641,19 @@ void deftFont::pRenderGlyphsSdf(const deFontSize &size, deImage &image, const sM
 					msdfgen::Vector2((-left + sdfMargin) / unitScale,
 						(cellHeight - sdfMargin - top) / unitScale));
 				
-				std::vector<float> buffer((size_t)cellWidth * cellHeight * 3);
-				msdfgen::BitmapSection<float, 3> output(buffer.data(), cellWidth, cellHeight);
-				msdfgen::generateMSDF(output, shape, projection, range);
-				
-				const auto toByte = [](float v) -> unsigned char{
-					return (unsigned char)(decMath::clamp(v, 0.0f, 1.0f) * 255.0f + 0.5f);
-				};
+				std::vector<float> buffer((size_t)cellWidth * cellHeight * 4);
+				msdfgen::BitmapSection<float, 4> output(buffer.data(), cellWidth, cellHeight);
+				msdfgen::generateMTSDF(output, shape, projection, range);
 				
 				for(int y=0; y<cellHeight; y++){
 					const int row = cellHeight - 1 - y;
-					sRGBA8 *dg = di + strideZ * glyph.GetZ() + strideY * (glyph.GetY() + y) + glyph.GetX();
+					sRGBA16 *dg = di + strideZ * glyph.GetZ() + strideY * (glyph.GetY() + y) + glyph.GetX();
 					for(int x=0; x<cellWidth; x++){
-						const float * const sp = buffer.data() + ((size_t)row * cellWidth + x) * 3;
-						const float median = decMath::max(decMath::min(sp[0], sp[1]),
-							decMath::min(decMath::max(sp[0], sp[1]), sp[2]));
-						dg[x] = {toByte(sp[0]), toByte(sp[1]), toByte(sp[2]), toByte(median)};
+						const float * const sp = buffer.data() + ((size_t)row * cellWidth + x) * 4;
+						dg[x].red = toUShort(sp[0]);
+						dg[x].green = toUShort(sp[1]);
+						dg[x].blue = toUShort(sp[2]);
+						dg[x].alpha = toUShort(sp[3] * sdfRemap1 + sdfRemap2);
 					}
 				}
 			}while(false);

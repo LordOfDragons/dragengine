@@ -12,10 +12,12 @@
 	<parameter name='pTCTransformMask' location='2'/> <!-- 7 -->
 	<parameter name='pTCLayer' location='8'/> <!-- 8 -->
 	<parameter name='pHdrOutput' location='9'/> <!-- 9 -->
-	<parameter name='pSdfPixelRange' location='10'/> <!-- 10 -->
-	<parameter name='pSdfParams' location='11'/> <!-- 11 -->
-	<parameter name='pSdfFillColor' location='12'/> <!-- 12 -->
-	<parameter name='pSdfBorderColor' location='13'/> <!-- 13 -->
+	<parameter name='pSdfParams' location='10'/> <!-- 10 -->
+	<parameter name='pSdfParams2' location='11'/> <!-- 11 -->
+	<parameter name='pSdfTcClamp' location='12'/> <!-- 12 -->
+	<parameter name='pSdfFillColor' location='13'/> <!-- 13 -->
+	<parameter name='pSdfBorderColor' location='14'/> <!-- 14 -->
+	<parameter name='pSdfParamsDyn' location='15'/> <!-- 15 -->
 	
 	<sourceCode unit='vertex'>V Canvas</sourceCode>
 	<sourceCode unit='fragment'>F Canvas</sourceCode>

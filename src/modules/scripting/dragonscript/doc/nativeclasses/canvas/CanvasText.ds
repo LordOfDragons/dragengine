@@ -74,7 +74,7 @@ class CanvasText extends Canvas
 	 * \brief Border thickness in percentage of the font size.
 	 * \version 1.35
 	 * 
-	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 * A good starting value for balanced border size is 0.075 (7.5%) to 0.1 (10%).
 	 */
 	func float getBorderThickness()
 		return 0
@@ -84,7 +84,7 @@ class CanvasText extends Canvas
 	 * \brief Set border thickness in percentage of the font size.
 	 * \version 1.35
 	 * 
-	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 * A good starting value for balanced border size is 0.075 (7.5%) to 0.1 (10%).
 	 */
 	func void setBorderThickness(float thickness)
 	end

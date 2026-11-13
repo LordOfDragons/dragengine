@@ -47,7 +47,8 @@ pRenderThread(renderThread),
 pLineHeight(font.GetLineHeight()),
 pDelayedImage(nullptr),
 pIsSdf(false),
-pSdfPixelRange(1.0f)
+pSdfPixelRange(1.0f),
+pSdfDistanceRemap(0.0f, 1.0f)
 {
 	try{
 		pBuildGlyphs(font);
@@ -64,7 +65,8 @@ pRenderThread(renderThread),
 pLineHeight(size.GetLineHeight()),
 pDelayedImage(nullptr),
 pIsSdf(false),
-pSdfPixelRange(size.GetSdfPixelRange())
+pSdfPixelRange(size.GetSdfPixelRange()),
+pSdfDistanceRemap(size.GetSdfDistanceRange().y - size.GetSdfDistanceRange().x, size.GetSdfDistanceRange().x)
 {
 	try{
 		pBuildGlyphs(size);

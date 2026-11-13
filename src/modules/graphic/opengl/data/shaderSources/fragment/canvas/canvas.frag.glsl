@@ -16,14 +16,20 @@ UNIFORM_BIND(8) uniform int pTCLayer;
 UNIFORM_BIND(9) uniform int pHdrOutput;
 
 // TextureColorSdf
-UNIFORM_BIND(10) uniform float pSdfPixelRange;
+UNIFORM_BIND(10) uniform vec4 pSdfParams;
+#define pSdfTcToSdf (pSdfParams.xy)
+#define pSdfDistanceRemap (pSdfParams.zw)
 
-UNIFORM_BIND(11) uniform vec2 pSdfParams;
-#define pSdfDilation pSdfParams.x
-#define pSdfBorderSize pSdfParams.y
+UNIFORM_BIND(11) uniform vec2 pSdfParams2;
+#define pSdfDilation pSdfParams2.x
+#define pSdfBorderSize pSdfParams2.y
 
-UNIFORM_BIND(12) uniform vec4 pSdfFillColor;
-UNIFORM_BIND(13) uniform vec4 pSdfBorderColor;
+UNIFORM_BIND(12) uniform vec4 pSdfTcClamp;
+UNIFORM_BIND(13) uniform vec4 pSdfFillColor;
+UNIFORM_BIND(14) uniform vec4 pSdfBorderColor;
+
+UNIFORM_BIND(15) uniform float pSdfParamsDyn;
+#define pSdfPixelRange pSdfParamsDyn
 
 // WithTexture && !InputArrayTextures
 layout(binding=0) uniform lowp sampler2D texColor;
@@ -65,12 +71,15 @@ void main(void){
 			params.borderSize = pSdfBorderSize;
 			params.pixelRange = pSdfPixelRange;
 			params.dilation = pSdfDilation;
+			params.tcClamp = pSdfTcClamp;
+			params.tcToSdf = pSdfTcToSdf;
+			params.distanceRemap = pSdfDistanceRemap;
 			
 			if(InputArrayTextures){
-				outColor = getSdfColorArray(texColorArray, tc, params);
+				outColor = getSdfColorArray(texColorArray, vTexCoord, params);
 				
 			}else{
-				outColor = getSdfColor(texColor, tc, params);
+				outColor = getSdfColor(texColor, vTexCoord, params);
 			}
 			
 		}else if(InputArrayTextures){

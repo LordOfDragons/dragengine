@@ -243,7 +243,7 @@ class STDStyle
 	 * \brief Text border thickness in percentage of the font size or null.
 	 * \version 1.35
 	 * 
-	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 * A good starting value for balanced border size is 0.075 (7.5%) to 0.1 (10%).
 	 */
 	func float getTextBorderThickness()
 		return pTextBorderThickness
@@ -253,7 +253,7 @@ class STDStyle
 	 * \brief Set text border thickness in percentage of the font size or null.
 	 * \version 1.35
 	 * 
-	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 * A good starting value for balanced border size is 0.075 (7.5%) to 0.1 (10%).
 	 */
 	func void setTextBorderThickness(float thickness)
 		pTextBorderThickness = thickness

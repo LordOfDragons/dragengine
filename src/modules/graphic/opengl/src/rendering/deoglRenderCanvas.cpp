@@ -101,10 +101,12 @@ enum eSPCanvas{
 	spcTCTransformMask,
 	spcTCLayer,
 	spcHdrOutput,
-	spcSdfPixelRange,
 	spcSdfParams,
+	spcSdfParams2,
+	spcSdfTcClamp,
 	spcSdfFillColor,
-	spcSdfBorderColor
+	spcSdfBorderColor,
+	spcSdfParamsDyn
 };
 
 enum eSPFinalize{
@@ -646,6 +648,8 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const float factorU = 1.0f / (float)image->GetWidth();
 	const float factorV = 1.0f / (float)image->GetHeight();
+	const float halfPixelU = 0.5f * factorU;
+	const float halfPixelV = 0.5f * factorV;
 	const float offsetU = config.GetTextOffsetU() * factorU;
 	const float offsetV = config.GetTextOffsetV() * factorV;
 	const bool isSdf = glyphs.GetIsSdf();
@@ -751,19 +755,28 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 	sdfDilation = decMath::min(sdfDilation, 0.48f); // max allowed value is 0.5 with some gap
 	
 	float sdfBorderSize = canvas.GetBorderThickness() * sdfScaleFactor;
-	sdfBorderSize = decMath::min(sdfBorderSize, 0.48f - sdfDilation); // max allowed value is 0.5 with some gap
 	
-	shader.SetParameterFloat(spcSdfParams, sdfDilation, sdfBorderSize);
+	const float sdfEnlarge = textSize * decMath::max(0.0f,
+		canvas.GetDilation() + canvas.GetBorderThickness());
+	const float sdfTcEnlarge = sdfEnlarge / fontScale;
+	
+	const float sdfTcToSdfX = (float)image->GetWidth() / glyphs.GetSdfPixelRange();
+	const float sdfTcToSdfY = (float)image->GetHeight() / glyphs.GetSdfPixelRange();
+	
+	shader.SetParameterFloat(spcSdfParams, sdfTcToSdfX, sdfTcToSdfY,
+		glyphs.GetSdfDistanceRemap().x, glyphs.GetSdfDistanceRemap().y);
+	shader.SetParameterFloat(spcSdfParams2, sdfDilation, sdfBorderSize);
 	shader.SetParameterColor4(spcSdfFillColor, sdfFillColor);
 	shader.SetParameterColor4(spcSdfBorderColor, sdfBorderColor);
 	
 	if(!isSdf){
-		shader.SetParameterFloat(spcSdfPixelRange, 1.0f);
+		shader.SetParameterFloat(spcSdfTcClamp, 0.0f, 0.0f, 1.0f, 1.0f);
+		shader.SetParameterFloat(spcSdfParamsDyn, 1.0f);
 	}
 	
 	float baseX = 0.0f, baseY = 0.0f;
 	if(isSdf){
-		baseY = baseX = decMath::max(sdfDilation + sdfBorderSize, 0.0f) * glyphs.GetSdfPixelRange();
+		baseY = baseX = sdfEnlarge;
 	}
 	
 	float curX = baseX, curY = baseY;
@@ -783,11 +796,33 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 		const deoglRFontGlyphs::sGlyph &oglGlyph = glyphs.GetGlyphFor(character);
 		
 		// calculate positions
-		const float x1 = curX - (float)oglGlyph.bearing * fontScale;
-		const float y1 = curY - (float)oglGlyph.bearingY * fontScale;
-		const float x2 = x1 + (float)oglGlyph.width * fontScale;
-		const float y2 = y1 + (float)oglGlyph.height * fontScale;
+		float x1 = curX - (float)oglGlyph.bearing * fontScale;
+		float y1 = curY - (float)oglGlyph.bearingY * fontScale;
+		float x2 = x1 + (float)oglGlyph.width * fontScale;
+		float y2 = y1 + (float)oglGlyph.height * fontScale;
 		const float adv = (float)oglGlyph.advance * fontScale;
+		float tcpX1 = oglGlyph.x1;
+		float tcpY1 = oglGlyph.y1;
+		float tcpX2 = oglGlyph.x2;
+		float tcpY2 = oglGlyph.y2;
+		
+		if(isSdf){
+			shader.SetParameterFloat(spcSdfTcClamp,
+				tcpX1 * factorU + halfPixelU, tcpY1 * factorV + halfPixelV,
+				tcpX2 * factorU - halfPixelU, tcpY2 * factorV - halfPixelV);
+			
+			if(sdfEnlarge > 0.5f){
+				x1 -= sdfEnlarge;
+				y1 -= sdfEnlarge;
+				x2 += sdfEnlarge;
+				y2 += sdfEnlarge;
+				
+				tcpX1 -= sdfTcEnlarge;
+				tcpY1 -= sdfTcEnlarge;
+				tcpX2 += sdfTcEnlarge;
+				tcpY2 += sdfTcEnlarge;
+			}
+		}
 		
 		// render char
 		const decTexMatrix2 rectTransform(decTexMatrix2::CreateST(x2 - x1, y2 - y1, x1, y1));
@@ -808,13 +843,12 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 				screenPxRange = decMath::max(screenPxRange, 0.5f / distToZero);
 			}
 			
-			shader.SetParameterFloat(spcSdfPixelRange, screenPxRange);
+			shader.SetParameterFloat(spcSdfParamsDyn, screenPxRange);
 		}
 		
-		const decTexMatrix2 tcTransform(decTexMatrix2::CreateST(
-			(oglGlyph.x2 - oglGlyph.x1) * factorU, (oglGlyph.y2 - oglGlyph.y1) * factorV,
-			oglGlyph.x1 * factorU + offsetU, oglGlyph.y1 * factorV + offsetV));
-		shader.SetParameterTexMatrix3x2(spcTCTransform, tcTransform);
+		shader.SetParameterTexMatrix3x2(spcTCTransform, decTexMatrix2::CreateST(
+			(tcpX2 - tcpX1) * factorU, (tcpY2 - tcpY1) * factorV,
+			tcpX1 * factorU + offsetU, tcpY1 * factorV + offsetV));
 		
 		shader.SetParameterInt(spcTCLayer, oglGlyph.z);
 		

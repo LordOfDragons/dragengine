@@ -37,7 +37,8 @@ pUndefinedGlyph{},
 pLineHeight(lineHeight),
 pFontWidth(0),
 pBaseLine(lineHeight * 3 / 4),
-pSdfPixelRange(4.0f)
+pSdfPixelRange(4.0f),
+pSdfDistanceRange(0.0f, 1.0f)
 {
 	DEASSERT_TRUE(lineHeight > 0)
 	DEASSERT_TRUE(glyphCount >= 0)
@@ -87,3 +88,8 @@ void deFontSize::SetTaskLoad(deParallelTask *task){
 void deFontSize::SetSdfPixelRange(float range){
 	pSdfPixelRange = decMath::max(range, 2.0f);
 }
+
+void deFontSize::SetSdfDistanceRange(const decVector2 &range){
+	pSdfDistanceRange = range;
+}
+

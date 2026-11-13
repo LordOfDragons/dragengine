@@ -105,7 +105,7 @@ public:
 	/**
 	 * \brief Border thickness in percentage of the font size.
 	 * 
-	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 * A good starting value for balanced border size is 0.075 (7.5%) to 0.1 (10%).
 	 */
 	inline float GetBorderThickness() const{ return pBorderThickness; }
 	
@@ -113,7 +113,7 @@ public:
 	 * \brief Set border thickness.
 	 * \param thickness Border thickness in percentage of the font size.
 	 * 
-	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 * A good starting value for balanced border size is 0.075 (7.5%) to 0.1 (10%).
 	 */
 	void SetBorderThickness(float thickness);
 	

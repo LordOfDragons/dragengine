@@ -65,6 +65,7 @@ private:
 	
 	bool pIsSdf;
 	float pSdfPixelRange;
+	decVector2 pSdfDistanceRemap;
 	deTUniqueReference<deoglTexture> pTextureSdfColors;
 	deoglPixelBuffer::Ref pPixelBufferSdfColors;
 	
@@ -117,6 +118,9 @@ public:
 	
 	/** SDF pixel range. */
 	inline float GetSdfPixelRange() const{ return pSdfPixelRange; }
+	
+	/** SDF distance remap. */
+	inline const decVector2 &GetSdfDistanceRemap() const{ return pSdfDistanceRemap; }
 	
 	/** SDF layer colors texture or nullptr if font is not SDF. */
 	inline const deTUniqueReference<deoglTexture> &GetTextureSdfColors() const{ return pTextureSdfColors; }
