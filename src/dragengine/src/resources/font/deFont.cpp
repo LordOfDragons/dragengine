@@ -136,14 +136,11 @@ void deFont::UpdateGlyphs(){
 
 bool deFont::Verify(){
 	if(!pImage){
-		GetEngine()->GetLogger()->LogErrorFormat("Dragengine",
-			"deFont::Verify(%s): Image missing (path %s)",
-			GetFilename().GetString(), pImagePath.GetString());
-		return false;
+		return true;
 	}
 	
 	switch(pImage->GetComponentCount()){
-	case 1: // todo, taintable font
+	case 1: // todo, tintable font
 	case 2: // we can't use this format at all (or maybe taintable + alpha?)
 		GetEngine()->GetLogger()->LogErrorFormat("Dragengine",
 			"deFont::Verify(%s): Unsupported image component found %d (path %s)",

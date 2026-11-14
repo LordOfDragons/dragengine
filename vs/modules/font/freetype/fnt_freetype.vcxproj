@@ -422,11 +422,28 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCachedFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCachedFontSize.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCaches.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\deftFont.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\deftModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayout.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayouter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayouterSdf.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\renderer\deftRenderer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\renderer\deftRendererSdf.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCachedFont.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCachedFontSize.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCaches.h" />
     <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\deftFont.h" />
     <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\deftModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\includeMsdfgen.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayout.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayouter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayouterSdf.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\renderer\deftRenderer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\renderer\deftRendererSdf.h" />
   </ItemGroup>
 </Project>

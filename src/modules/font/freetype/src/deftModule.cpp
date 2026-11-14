@@ -66,7 +66,13 @@ deBaseModule *DEFreeTypeCreateModule(deLoadableModule *loadableModule){
 
 deftModule::deftModule(deLoadableModule &loadableModule) :
 deBaseFontModule(loadableModule),
-pFTLib(nullptr)
+pFTLib(nullptr),
+pCaches(deftCaches::Ref::New(*this)),
+pCreateSdfFont(true),
+pMaxImageSize(2048),
+pLineHeightLimit(128),
+pGlyphSpacing(1),
+pSdfLogic(0)
 {
 	AssertFT(FT_Init_FreeType(&pFTLib), "FT_Init_FreeType");
 }
@@ -92,14 +98,35 @@ void deftModule::AssertFT(FT_Error error, const char *function){
 	DETHROW_INFO(deeInvalidAction, message);
 }
 
+void deftModule::SetCreateSdfFont(bool createSdf){
+	pCreateSdfFont = createSdf;
+}
+
+void deftModule::SetMaxImageSize(int maxImageSize){
+	pMaxImageSize = decMath::clamp(maxImageSize, 256, 8192);
+}
+
+void deftModule::SetLineHeightLimit(int lineHeightLimit){
+	pLineHeightLimit = decMath::clamp(lineHeightLimit, 16, 255);
+}
+
+void deftModule::SetGlyphSpacing(int glyphSpacing){
+	pGlyphSpacing = decMath::clamp(glyphSpacing, 0, 255);
+}
+
+void deftModule::SetSdfLogic(int logic){
+	pSdfLogic = logic;
+}
+
+
 void deftModule::LoadFont(decBaseFileReader &file, deFont &font){
-	deftFont(*this, file).LoadFont(font);
+	deftFont(*this, file, deFont::Ref(&font)).LoadFont();
 }
 
 deFontSize::Ref deftModule::LoadFontSize(const decBaseFileReader::Ref &reader,
 const deFont::Ref &font, int lineHeight){
 	// when using a parallel task the task has to hold reader, font, size and deftFont instance
-	return deftFont(*this, reader).LoadFontSize(font, lineHeight);
+	return deftFont(*this, reader, font).LoadFontSize(lineHeight);
 }
 
 void deftModule::SaveFont(decBaseFileWriter &file, const deFont &font){
