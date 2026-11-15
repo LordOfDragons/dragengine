@@ -52,6 +52,7 @@ private:
 	decTList<decColor> pSdfColors;
 	float pSdfPixelRange;
 	decVector2 pSdfDistanceRange;
+	int pSdfTintLayer;
 	
 	
 public:
@@ -132,6 +133,12 @@ public:
 	
 	/** \brief Set SDF distance range. */
 	void SetSdfDistanceRange(const decVector2 &range);
+	
+	/** \brief SDF tint layer or -1 if no layer is tintable. */
+	inline int GetSdfTintLayer() const{ return pSdfTintLayer; }
+	
+	/** \brief Set SDF tint layer or -1 if no layer is tintable. */
+	void SetSdfTintLayer(int layer);
 	/*@}*/
 };
 

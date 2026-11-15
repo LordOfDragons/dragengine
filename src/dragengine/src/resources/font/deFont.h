@@ -42,8 +42,8 @@ class cFontSize;
 /**
  * \brief Font for use by text output.
  * 
- * Fonts are image based and can be colored or not colored in which case they can be
- * colorized. Colored fonts can not be colorized.
+ * Fonts are image based and can be colored or not colored in which case they can be colorized.
+ * Colored fonts can not be colorized.
  * 
  * \ref MSDF Support
  * 

@@ -38,7 +38,8 @@ pLineHeight(lineHeight),
 pFontWidth(0),
 pBaseLine(lineHeight * 3 / 4),
 pSdfPixelRange(4.0f),
-pSdfDistanceRange(0.0f, 1.0f)
+pSdfDistanceRange(0.0f, 1.0f),
+pSdfTintLayer(-1)
 {
 	DEASSERT_TRUE(lineHeight > 0)
 	DEASSERT_TRUE(glyphCount >= 0)
@@ -93,3 +94,7 @@ void deFontSize::SetSdfDistanceRange(const decVector2 &range){
 	pSdfDistanceRange = range;
 }
 
+void deFontSize::SetSdfTintLayer(int layer){
+	DEASSERT_TRUE(layer >= -1)
+	pSdfTintLayer = layer;
+}
