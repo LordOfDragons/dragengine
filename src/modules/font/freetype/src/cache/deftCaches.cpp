@@ -184,7 +184,6 @@ void deftCaches::WriteModuleConfig(decBaseFileWriter &writer) const{
 	writer.WriteUShort((uint16_t)pModule.GetMaxImageSize());
 	writer.WriteByte((uint16_t)pModule.GetLineHeightLimit());
 	writer.WriteByte((uint16_t)pModule.GetGlyphSpacing());
-	writer.WriteVarUInt((uint32_t)pModule.GetSdfLogic());
 }
 
 
@@ -208,9 +207,6 @@ bool deftCaches::pReadVerifyModuleConfigV0(decBaseFileReader &reader) const{
 		return false;
 	}
 	if((int)reader.ReadByte() != pModule.GetGlyphSpacing()){
-		return false;
-	}
-	if((int)reader.ReadVarUInt() != pModule.GetSdfLogic()){
 		return false;
 	}
 	

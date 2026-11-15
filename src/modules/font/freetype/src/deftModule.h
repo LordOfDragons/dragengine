@@ -43,7 +43,7 @@ private:
 	FT_Library pFTLib;
 	deftCaches::Ref pCaches;
 	bool pCreateSdfFont;
-	int pMaxImageSize, pLineHeightLimit, pGlyphSpacing, pSdfLogic;
+	int pMaxImageSize, pLineHeightLimit, pGlyphSpacing;
 	
 	
 public:
@@ -91,12 +91,6 @@ public:
 
 	/** Set glyph spacing. */
 	void SetGlyphSpacing(int glyphSpacing);
-	
-	/** SDF logic. */
-	inline int GetSdfLogic() const { return pSdfLogic; }
-	
-	/** Set SDF logic. */
-	void SetSdfLogic(int sdfLogic);
 	
 	
 	/** Load font. */

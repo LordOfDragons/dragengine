@@ -106,7 +106,7 @@ void deftFont::LoadFont(){
 
 deFontSize::Ref deftFont::LoadFontSize(int lineHeight){
 	if(pFont->GetIsSdf()){
-		return pLoadFontSizeSdf(lineHeight);
+		return pLoadFontSizeSdf();
 		
 	}else{
 		return pLoadFontSizeBitmap(lineHeight);
@@ -207,7 +207,7 @@ deFontSize::Ref deftFont::pLoadFontSizeBitmap(int lineHeight){
 	return fontSize;
 }
 
-deFontSize::Ref deftFont::pLoadFontSizeSdf(int lineHeight){
+deFontSize::Ref deftFont::pLoadFontSizeSdf(){
 	// return first font size if existing. works since SDF requires only one font size.
 	// if font file changes the font object itself becomes invalid and we create a new one
 	if(pFont->GetSizeCount() > 0){
@@ -215,6 +215,10 @@ deFontSize::Ref deftFont::pLoadFontSizeSdf(int lineHeight){
 	}
 	
 	const char * const filename = pFont->GetFilename();
+	
+	deTUniqueReference<deftLayouterSdf> layouter;
+	deftLayout::Ref layout;
+	int sdfSize = 0;
 	
 	// determine the best SDF line height to use
 	{
@@ -226,79 +230,95 @@ deFontSize::Ref deftFont::pLoadFontSizeSdf(int lineHeight){
 	}
 	
 	const deMutexGuard guard(pCachedFont->GetMutex());
-	lineHeight = pCachedFont->GetSdfLineHeight();
-	if(lineHeight == 0){
-		// we have not determined the best SDF line height yet.
-		// TODO use layouter to find the best layout instead of guessing. and yes, this is done
-		//      inside a mutex lock to ensure the we get exactly one solution
-		lineHeight = pBestSdfFixedSize();
-		
-		pCachedFont->SetSdfLineHeight(lineHeight);
-		pModule.GetCaches()->SaveFont(pCachedFont);
+	sdfSize = pCachedFont->GetSdfSize();
+	
+	if(sdfSize == 0){
+		// we have not determined the best SDF parameters yet so find the best size
+		sdfSize = pSdfFindBestLayout(layouter, layout);
 	}
 	}
 	
 	// try loading the cached font size data
-	auto fontSize = deFontSize::Ref::New(lineHeight, pFont->GetGlyphCount());
+	auto fontSize = deFontSize::Ref::New(sdfSize, pFont->GetGlyphCount());
 	
 	pCachedFontSize = pModule.GetCaches()->LoadFontSize(pFont, fontSize);
 	if(pCachedFontSize){
 		// loading the cache has initialized the font size data already
-		pModule.LogInfoFormat("LoadFontSize[%s,%d,sdf]: Loaded from cache, %d glyphs, image size (%d,%d,%d)",
-			filename, lineHeight, fontSize->GetGlyphs().GetCount(), fontSize->GetImage()->GetWidth(),
-			fontSize->GetImage()->GetHeight(), fontSize->GetImage()->GetDepth());
+		pModule.LogInfoFormat("LoadFontSize[%s,sdf]: Loaded from cache, %d glyphs, "
+				"image size (%d,%d,%d), SDF size %d",
+			filename, fontSize->GetGlyphs().GetCount(), fontSize->GetImage()->GetWidth(),
+			fontSize->GetImage()->GetHeight(), fontSize->GetImage()->GetDepth(), sdfSize);
 		
 		return fontSize;
 	}
 	
 	// no valid cache found. build font size and save new cache
-	pOpenFontFile();
+	if(!layouter){
+		// best layout known but cache is invalid. find best layout
+		const deMutexGuard guard(pCachedFont->GetMutex());
+		sdfSize = pSdfFindBestLayout(layouter, layout);
+	}
 	
-	// FT_LOAD_NO_SCALE: ensure coordinates are in exact font design units (not 26.6 fixed-point)
-	// FT_LOAD_NO_BITMAP: do not load embedded bitmaps. just in case the font has them
-	// FT_LOAD_NO_HINTING: disable hinting to get raw font outlines
-	FT_Int32 loadFlags = FT_LOAD_NO_SCALE | FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING;
-	
-	// find best layout
-	deftLayouterSdf layouter(pModule, pFont, fontSize, pFace);
-	layouter.SetLoadFlags(loadFlags);
-	layouter.SetMaxImageWidth(pModule.GetMaxImageSize());
-	layouter.SetGlyphSpacing(pModule.GetGlyphSpacing());
-	
-	int sdfPixelRange = decMath::linearStep((float)lineHeight, 24.0f, 48.0f, 2.5f, 4.0f);
-	
-	layouter.SetSdfSize(lineHeight);
-	layouter.SetSdfPixelRange(sdfPixelRange);
-	
-	deftLayout::Ref layout = layouter.Layout();
 	layout->Apply(fontSize);
-	fontSize->SetSdfPixelRange(sdfPixelRange);
-	fontSize->SetSdfDistanceRange(layouter.GetSdfDistanceRange());
+	fontSize->SetSdfPixelRange(layouter->GetSdfPixelRange());
+	fontSize->SetSdfDistanceRange(layouter->GetSdfDistanceRange());
 	
-	pModule.LogInfoFormat("LoadFontSize[%s,%d,sdf]: Layout calculated, %d glyphs, image size (%d,%d,%d)",
-		filename, lineHeight, layout->GetGlyphs().GetCount(),
-		layout->GetImageSize().x, layout->GetImageSize().y, layout->GetImageSize().z);
+	pModule.LogInfoFormat("LoadFontSize[%s,sdf]: Layout calculated, %d glyphs, "
+			"image size (%d,%d,%d), SDF size %d, SDF pixel range %g",
+		filename, layout->GetGlyphs().GetCount(), layout->GetImageSize().x,
+		layout->GetImageSize().y, layout->GetImageSize().z, sdfSize, layouter->GetSdfPixelRange());
 	
 	// pDebugPrintGlyphs(size, layout);
 	
 	// render layout
+	{
 	decTimer timer;
 	
 	deftRendererSdf renderer(pModule, pFace);
-	renderer.SetLoadFlags(loadFlags);
-	renderer.SetPixelRange(sdfPixelRange);
-	renderer.SetUnitScale(layouter.GetSdfUnitScale());
-	renderer.SetSdfDistanceRange(layouter.GetSdfMinVal(), layouter.GetSdfMaxVal());
+	renderer.SetLoadFlags(layouter->GetLoadFlags());
+	renderer.SetPixelRange(layouter->GetSdfPixelRange());
+	renderer.SetUnitScale(layouter->GetSdfUnitScale());
+	renderer.SetSdfDistanceRange(layouter->GetSdfMinVal(), layouter->GetSdfMaxVal());
 	renderer.Render(layout, fontSize);
 	
-	pModule.LogInfoFormat("LoadFontSize[%s,%d]: Image rendered in %dms",
-		filename, lineHeight, (int)(timer.GetElapsedTime() * 1e3f));
+	pModule.LogInfoFormat("LoadFontSize[%s,sdf]: Image rendered in %dms",
+		filename, (int)(timer.GetElapsedTime() * 1e3f));
+	}
 	
 	// write cache
 	pCachedFontSize = deftCachedFontSize::Ref::New(pModule, pFont, fontSize);
 	pModule.GetCaches()->SaveFontSize(pCachedFontSize);
 	
 	return fontSize;
+}
+
+int deftFont::pSdfFindBestLayout(deTUniqueReference<deftLayouterSdf> &layouter, deftLayout::Ref &layout){
+	// FT_LOAD_NO_SCALE: ensure coordinates are in exact font design units (not 26.6 fixed-point)
+	// FT_LOAD_NO_BITMAP: do not load embedded bitmaps. just in case the font has them
+	// FT_LOAD_NO_HINTING: disable hinting to get raw font outlines
+	const FT_Int32 loadFlags = FT_LOAD_NO_SCALE | FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING;
+	
+	pOpenFontFile();
+	
+	layouter = deTUniqueReference<deftLayouterSdf>::New(pModule, pFont, pFace);
+	layouter->SetLoadFlags(loadFlags);
+	layouter->SetMaxImageWidth(pModule.GetMaxImageSize());
+	layouter->SetGlyphSpacing(pModule.GetGlyphSpacing());
+	
+	{
+	decTimer timer;
+	
+	layout = layouter->FindBestLayout();
+	DEASSERT_NOTNULL(layout)
+	
+	pModule.LogInfoFormat("LoadFontSize[%s,sdf]: Layout calculated in %dms",
+		pFont->GetFilename().GetString(), (int)(timer.GetElapsedTime() * 1e3f));
+	}
+	
+	pCachedFont->SetSdfSize(layouter->GetSdfSize());
+	pModule.GetCaches()->SaveFont(pCachedFont);
+	
+	return layouter->GetSdfSize();
 }
 
 void deftFont::pOpenFontFile(){
@@ -410,8 +430,8 @@ int deftFont::pBestSdfFixedSize(){
 	//   this actually makes the situation worse due to the stronger sharpening
 	//
 	// facit:
-	// with such small fonts reading text is hard anyway due to the limit amount of pixels
-	// available to reach glyph. 48 is a good value here but slghtly higher can be acceptable too.
+	// with such small fonts reading text is hard anyway due to the limited amount of pixels
+	// available to reach glyph. 48 is a good value here but slightly higher can be acceptable too.
 	
 	// lineHeight = 48.0f;
 	return std::floor(lineHeight * 0.5f) * 2.0f;

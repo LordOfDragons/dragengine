@@ -27,6 +27,8 @@
 
 #include "deftLayouter.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * \brief Glyph layout calculation for SDF font images.
@@ -41,12 +43,14 @@ protected:
 	int pBaseLineMargin;
 	double pUnitScale, pSdfMinVal, pSdfMaxVal;
 	
+	decTList<int> pTestSdfSizes;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create layouter. */
-	deftLayouterSdf(deftModule &module, const deFont &font, const deFontSize &fontSize, FT_Face face);
+	deftLayouterSdf(deftModule &module, const deFont &font, FT_Face face);
 	
 	/** Clean up layouter. */
 	~deftLayouterSdf() override;
@@ -67,6 +71,19 @@ public:
 	/** Set Sdf pixel range. */
 	void SetSdfPixelRange(double range);
 	
+	/** Test SDF sizes for layout. */
+	inline const decTList<int> &GetTestSdfSizes() const{ return pTestSdfSizes; }
+	
+	/** Set test SDF sizes for layout. */
+	void SetTestSdfSizes(const decTList<int> &sizes);
+	
+	
+	/**
+	 * Find best layout. Tries different SDF size to find the highest which still fits into
+	 * the image. After the result is found, GetSdfSize() and GetSdfPixelRange() contain the
+	 * parameters used for the best layout.
+	 */
+	deftLayout::Ref FindBestLayout();
 	
 	/** Calculate glyph layout. If layout failed nullptr is returned. */
 	deftLayout::Ref Layout() override;
@@ -120,10 +137,8 @@ protected:
 	 */
 	void pInitGlyphs(deftLayout &layout) override;
 	
-	/**
-	 * Layout glyphs in the given layout. Returns true if layout succeeded.
-	 */
-	bool pLayoutGlyphs(deftLayout &layout) override;
+	/** Verify if the glyph layout is valid. Returns true if layout is valid. */
+	bool pVerifyGlyphLayout(const deftLayout &layout) override;
 };
 
 #endif

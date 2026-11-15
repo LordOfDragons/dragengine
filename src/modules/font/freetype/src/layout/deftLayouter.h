@@ -33,7 +33,6 @@
 class deftFont;
 class deftModule;
 class deFont;
-class deFontSize;
 
 
 /**
@@ -43,7 +42,7 @@ class deftLayouter{
 protected:
 	deftModule &pModule;
 	const deFont &pFont;
-	const deFontSize &pFontSize;
+	int pFontSizeLineHeight;
 	FT_Face pFace;
 	
 	FT_Int32 pLoadFlags;
@@ -59,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create layouter. */
-	deftLayouter(deftModule &module, const deFont &font, const deFontSize &fontSize, FT_Face face);
+	deftLayouter(deftModule &module, const deFont &font, int fontSizeLineHeight, FT_Face face);
 	
 	/** Clean up layouter. */
 	virtual ~deftLayouter();
@@ -68,6 +67,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Font size requested for the layouter. */
+	inline int GetFontSizeLineHeight() const{ return pFontSizeLineHeight; }
+	
 	/** Load flags for FreeType glyph loading. */
 	inline FT_Int32 GetLoadFlags() const{ return pLoadFlags; }
 	
@@ -150,6 +152,12 @@ protected:
 	 * Layout glyphs in the given layout. Returns true if layout succeeded.
 	 */
 	virtual bool pLayoutGlyphs(deftLayout &layout);
+
+	/** Layout glyphs in shelves with tight packing. Returns true if layout succeeded. */
+	virtual bool pLayoutGlyphsTight(deftLayout &layout);
+	
+	/** Verify if the glyph layout is valid. Returns true if layout is valid. */
+	virtual bool pVerifyGlyphLayout(const deftLayout &layout);
 };
 
 #endif

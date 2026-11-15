@@ -46,7 +46,7 @@ public:
 private:
 	deftModule &pModule;
 	deFont::Ref pFont;
-	int pSdfLineHeight;
+	int pSdfSize;
 	deMutex pMutex;
 	
 	
@@ -68,11 +68,11 @@ public:
 	/** Font. */
 	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
-	/** SDF line height. */
-	inline int GetSdfLineHeight() const{ return pSdfLineHeight; }
+	/** SDF size. */
+	inline int GetSdfSize() const{ return pSdfSize; }
 	
-	/** Set SDF line height. */
-	void SetSdfLineHeight(int lineHeight);
+	/** Set SDF size. */
+	void SetSdfSize(int size);
 	
 	/** Mutex. */
 	inline deMutex &GetMutex(){ return pMutex; }

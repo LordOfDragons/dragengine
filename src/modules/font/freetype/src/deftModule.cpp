@@ -71,8 +71,7 @@ pCaches(deftCaches::Ref::New(*this)),
 pCreateSdfFont(true),
 pMaxImageSize(2048),
 pLineHeightLimit(128),
-pGlyphSpacing(1),
-pSdfLogic(0)
+pGlyphSpacing(1)
 {
 	AssertFT(FT_Init_FreeType(&pFTLib), "FT_Init_FreeType");
 }
@@ -112,10 +111,6 @@ void deftModule::SetLineHeightLimit(int lineHeightLimit){
 
 void deftModule::SetGlyphSpacing(int glyphSpacing){
 	pGlyphSpacing = decMath::clamp(glyphSpacing, 0, 255);
-}
-
-void deftModule::SetSdfLogic(int logic){
-	pSdfLogic = logic;
 }
 
 

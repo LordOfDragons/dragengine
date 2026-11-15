@@ -35,11 +35,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deftLayouter::deftLayouter(deftModule &module, const deFont &font,
-	const deFontSize &fontSize, FT_Face face) :
+deftLayouter::deftLayouter(deftModule &module, const deFont &font, int fontSizeLineHeight, FT_Face face) :
 pModule(module),
 pFont(font),
-pFontSize(fontSize),
+pFontSizeLineHeight(fontSizeLineHeight),
 pFace(face),
 pLoadFlags(FT_LOAD_DEFAULT),
 pMaxImageWidth(2048),
@@ -77,7 +76,7 @@ void deftLayouter::SetHintingSafetyMargin(int margin){
 
 
 deftLayout::Ref deftLayouter::Layout(){
-	if(pFontSize.GetLineHeight() > pMaxImageWidth){
+	if(pFontSizeLineHeight > pMaxImageWidth){
 		return {};
 	}
 	
@@ -93,7 +92,7 @@ deftLayout::Ref deftLayouter::Layout(){
 
 void deftLayouter::pFindBestFontSizeForLineHeight(){
 	// const char * const filename = pFont.GetFilename();
-	const int reqLineHeight = pFontSize.GetLineHeight();
+	const int reqLineHeight = pFontSizeLineHeight;
 	int prevHeight = 0;
 	
 	pLineHeight = reqLineHeight;
@@ -139,7 +138,7 @@ void deftLayouter::pFindBestFontSizeForLineHeight(){
 
 void deftLayouter::pCalcBearingOffsetAndBaseLine(){
 	pBearingOffset.x = 0;
-	pBearingOffset.y = (pFontSize.GetLineHeight() - pLineHeight) / 2;
+	pBearingOffset.y = (pFontSizeLineHeight - pLineHeight) / 2;
 	pBaseLine = pBoundaryBox.y2 + pBearingOffset.y;
 }
 
@@ -177,7 +176,7 @@ void deftLayouter::pInitGlyphs(deftLayout &layout){
 void deftLayouter::pDebugPrintLayout() const{
 	pModule.LogInfoFormat(
 		"LoadFontSize[%s,%d]: fs=%d bb=(%d,%d,%d,%d) h=%d o=(%d,%d) bl=%d clr=%d",
-		pFont.GetFilename().GetString(), pFontSize.GetLineHeight(), pLineHeight,
+		pFont.GetFilename().GetString(), pFontSizeLineHeight, pLineHeight,
 		pBoundaryBox.x1, pBoundaryBox.y1, pBoundaryBox.x2, pBoundaryBox.y2,
 		(int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64),
 		pBearingOffset.x, pBearingOffset.y, pBaseLine, FT_HAS_COLOR(pFace));
@@ -186,7 +185,7 @@ void deftLayouter::pDebugPrintLayout() const{
 deftLayout::Ref deftLayouter::pCreateLayout(){
 	auto layout = deftLayout::Ref::New();
 	pInitGlyphs(layout);
-	if(!pLayoutGlyphs(layout)){
+	if(!pLayoutGlyphsTight(layout) || !pVerifyGlyphLayout(layout)){
 		return {};
 	}
 	
@@ -221,5 +220,53 @@ bool deftLayouter::pLayoutGlyphs(deftLayout &layout){
 	pImageSize.y = decMath::max(pImageSize.y, coords.y + pLineHeight);
 	pImageSize.z = coords.z + 1;
 	
+	return true;
+}
+
+bool deftLayouter::pLayoutGlyphsTight(deftLayout &layout){
+	decTList<deftLayout::Glyph*> glyphs(layout.GetGlyphs().GetCount());
+	layout.GetGlyphs().Visit([&](deftLayout::Glyph &glyph){
+		glyphs.Add(&glyph);
+	});
+	
+	// tallest glyphs first so every shelf is as high as its first glyph (stable insertion sort)
+	glyphs.Sort([](const deftLayout::Glyph *a, const deftLayout::Glyph *b){
+		return b->size.y - a->size.y;
+	});
+	
+	int shelfHeight = 0;
+	decPoint3 coords;
+	pImageSize = {};
+	
+	glyphs.Visit([&](deftLayout::Glyph *glyph){
+		if(coords.x > 0 && coords.x + glyph->size.x > pMaxImageWidth){
+			coords.y += shelfHeight + pGlyphSpacing;
+			coords.x = 0;
+		}
+		
+		if(coords.x == 0){
+			shelfHeight = glyph->size.y;
+			
+			if(coords.y > 0 && coords.y + shelfHeight > pMaxImageWidth){
+				pImageSize.y = decMath::max(pImageSize.y, coords.y - pGlyphSpacing);
+				coords.y = 0;
+				coords.z++;
+			}
+		}
+		
+		glyph->position = coords;
+		glyph->position.y += (shelfHeight - glyph->size.y) / 2;
+		
+		coords.x += glyph->size.x + pGlyphSpacing;
+		pImageSize.x = decMath::max(pImageSize.x, coords.x - pGlyphSpacing);
+		pImageSize.y = decMath::max(pImageSize.y, coords.y + shelfHeight);
+	});
+	
+	pImageSize.z = coords.z + 1;
+	
+	return true;
+}
+
+bool deftLayouter::pVerifyGlyphLayout(const deftLayout &){
 	return true;
 }

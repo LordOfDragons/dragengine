@@ -91,6 +91,7 @@ public:
 	
 private:
 	void pRenderSdf(const deftLayout &layout, deImage &image);
+	void pRenderSdfParallel(const deftLayout &layout, deImage &image);
 };
 
 #endif

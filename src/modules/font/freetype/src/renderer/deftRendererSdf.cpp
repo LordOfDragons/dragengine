@@ -32,6 +32,11 @@
 #include <dragengine/resources/font/deFontSize.h>
 #include <dragengine/resources/image/deImageManager.h>
 
+#include <algorithm>
+#include <future>
+#include <thread>
+#include <vector>
+
 
 struct sFTColorBGRA{
 	unsigned char blue, green, red, alpha;
@@ -109,6 +114,13 @@ static int sFTCubicTo(const FT_Vector *control1, const FT_Vector *control2, cons
 	return 0;
 }
 
+// Glyph job for parallel SDF generation. Shape extraction uses FreeType on the calling thread.
+struct sSdfJob{
+	msdfgen::Shape shape;
+	msdfgen::Projection projection;
+	int cellWidth, cellHeight, posX, posY, posZ;
+};
+
 
 // Class deftRendererSdf
 ///////////////////////
@@ -155,7 +167,13 @@ void deftRendererSdf::Render(const deftLayout &layout, deFontSize &fontSize){
 	const auto image = pModule.GetGameEngine()->GetImageManager()->CreateImage(
 		imageSize.x, imageSize.y, imageSize.z, 4, 16);
 	
-	pRenderSdf(layout, image);
+	// rendering using single threaded approach requires roughly 4.5s for a full 2048 image.
+	// using multi threaded approach the render time is roughly 0.7s for a full 2048 image.
+	// this is best effort since this over-commits CPU resources when competing with
+	// deParallelProcessing spawned threads. But games and applications rarely load more than
+	// a few fonts and the loaded fonts are cached. unless this really shows to be a problem
+	// the multi-threaded approach is used
+	pRenderSdfParallel(layout, image);
 	
 	image->NotifyImageDataChanged();
 	fontSize.SetImage(image);
@@ -237,15 +255,16 @@ void deftRendererSdf::pRenderSdf(const deftLayout &layout, deImage &image){
 					msdfgen::Vector2((-left + sdfMargin) / unitScale,
 						(cellHeight - sdfMargin - top) / unitScale));
 				
-				std::vector<float> buffer((size_t)cellWidth * cellHeight * 4);
-				msdfgen::BitmapSection<float, 4> output(buffer.data(), cellWidth, cellHeight);
+				decTList<float> buffer(cellWidth * cellHeight * 4);
+				float * const bufferPtr = buffer.GetArrayPointer();
+				msdfgen::BitmapSection<float, 4> output(bufferPtr, cellWidth, cellHeight);
 				msdfgen::generateMTSDF(output, shape, projection, range);
 				
 				for(int y=0; y<cellHeight; y++){
 					const int row = cellHeight - 1 - y;
 					sRGBA16 *dg = di + strideZ * glyph.position.z + strideY * (glyph.position.y + y) + glyph.position.x;
 					for(int x=0; x<cellWidth; x++){
-						const float * const sp = buffer.data() + ((size_t)row * cellWidth + x) * 4;
+						const float * const sp = bufferPtr + ((size_t)row * cellWidth + x) * 4;
 						dg[x].red = toUShort(sp[0]);
 						dg[x].green = toUShort(sp[1]);
 						dg[x].blue = toUShort(sp[2]);
@@ -255,5 +274,126 @@ void deftRendererSdf::pRenderSdf(const deftLayout &layout, deImage &image){
 			}while(false);
 		}
 		charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
+	}
+}
+
+void deftRendererSdf::pRenderSdfParallel(const deftLayout &layout, deImage &image){
+	const auto &glyphs = layout.GetGlyphs();
+	
+	const int width = image.GetWidth();
+	const int height = image.GetHeight();
+	const int depth = image.GetDepth();
+	const int strideZ = width * height;
+	const int strideY = width;
+	const int pixelCount = strideZ * depth;
+	
+	sRGBA16 * const di = image.GetDataRGBA16();
+	int glyphIndex = 0;
+	for(int x=0; x<pixelCount; x++){
+		di[x] = {0, 0, 0, 0};
+	}
+	
+	const double unitScale = pUnitScale;
+	const msdfgen::Range range(pPixelRange / unitScale);
+	const int sdfMargin = (int)(std::ceil(pPixelRange * 0.5f));
+	const double sdfValDiv = 1.0 / (pSdfMaxVal - pSdfMinVal);
+	const float sdfRemap1 = (float)sdfValDiv;
+	const float sdfRemap2 = (float)(sdfValDiv * -pSdfMinVal);
+	
+	const auto toUShort = [](float v) -> unsigned short{
+		return (unsigned short)(decMath::clamp(v, 0.0f, 1.0f) * 65535.0f + 0.5f);
+	};
+	
+	// FreeType is not thread safe. load glyphs and extract shapes.
+	decTList<sSdfJob> jobs(glyphs.GetCount());
+	FT_UInt gindex;
+	FT_ULong charcode = FT_Get_First_Char(pFace, &gindex);
+	while(gindex != 0){
+		if(charcode < 0xffff){
+			pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
+			
+			const auto &glyph = glyphs[glyphIndex++];
+			const int cellWidth = decMath::min(glyph.size.x, width - glyph.position.x);
+			const int cellHeight = decMath::min(glyph.size.y, height - glyph.position.y);
+			
+			do{
+				if(cellWidth <= 0 || cellHeight <= 0 || pFace->glyph->format != FT_GLYPH_FORMAT_OUTLINE){
+					break;
+				}
+				
+				FT_Outline &outline = pFace->glyph->outline;
+				
+				msdfgen::Shape shape;
+				sFTOutlineData data(shape);
+				FT_Outline_Funcs funcs{};
+				funcs.move_to = sFTMoveTo;
+				funcs.line_to = sFTLineTo;
+				funcs.conic_to = sFTConicTo;
+				funcs.cubic_to = sFTCubicTo;
+				pModule.AssertFT(FT_Outline_Decompose(&outline, &funcs, &data), "FT_Outline_Decompose");
+				sFTCloseContour(data);
+				if(shape.contours.empty()){
+					break;
+				}
+				
+				FT_BBox cbox;
+				FT_Outline_Get_CBox(&outline, &cbox);
+				const double left = std::floor(cbox.xMin * unitScale);
+				const double top = std::ceil(cbox.yMax * unitScale);
+				
+				// msdfgen::Projection applies: pixel = scale * (shapeCoord + translate)
+				const msdfgen::Projection projection(
+					msdfgen::Vector2(unitScale, unitScale),
+					msdfgen::Vector2((-left + sdfMargin) / unitScale,
+						(cellHeight - sdfMargin - top) / unitScale));
+				
+				jobs.Add({std::move(shape), projection, cellWidth, cellHeight,
+					glyph.position.x, glyph.position.y, glyph.position.z});
+			}while(false);
+		}
+		charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
+	}
+	
+	if(jobs.IsEmpty()){
+		return;
+	}
+	
+	// msdfgen is thread safe. each job writes to its own glyph cell.
+	const auto renderJob = [&](sSdfJob &job, decTList<float> &buffer){
+		job.shape.normalize();
+		msdfgen::edgeColoringSimple(job.shape, 3.0);
+		
+		buffer.SetCountDiscard(job.cellWidth * job.cellHeight * 4);
+		float * const bufferPtr = buffer.GetArrayPointer();
+		msdfgen::BitmapSection<float, 4> output(bufferPtr, job.cellWidth, job.cellHeight);
+		msdfgen::generateMTSDF(output, job.shape, job.projection, range);
+		
+		for(int y=0; y<job.cellHeight; y++){
+			const int row = job.cellHeight - 1 - y;
+			sRGBA16 *dg = di + strideZ * job.posZ + strideY * (job.posY + y) + job.posX;
+			for(int x=0; x<job.cellWidth; x++){
+				const float * const sp = bufferPtr + ((size_t)row * job.cellWidth + x) * 4;
+				dg[x].red = toUShort(sp[0]);
+				dg[x].green = toUShort(sp[1]);
+				dg[x].blue = toUShort(sp[2]);
+				dg[x].alpha = toUShort(sp[3] * sdfRemap1 + sdfRemap2);
+			}
+		}
+	};
+	
+	const int threadCount = std::min(jobs.GetCount(),
+		(int)std::max(1u, std::thread::hardware_concurrency()));
+	
+	decTList<std::future<void>> futures(threadCount);
+	for(int t=0; t<threadCount; t++){
+		futures.Add(std::async(std::launch::async, [&, t](){
+			decTList<float> buffer;
+			jobs.Visit(t, jobs.GetCount(), threadCount, [&](sSdfJob &job){
+				renderJob(job, buffer);
+			});
+		}));
+	}
+	for(auto &future : futures){
+		future.get();
 	}
 }

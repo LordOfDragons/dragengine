@@ -30,17 +30,17 @@
 
 #include "cache/deftCachedFont.h"
 #include "cache/deftCachedFontSize.h"
+#include "layout/deftLayout.h"
 
-#include <dragengine/common/math/decMath.h>
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
 
 class decBaseFileReader;
 class deftModule;
-class deftLayout;
+class deftLayouterSdf;
 class deImage;
-
 
 /**
  * FreeType Font module.
@@ -81,7 +81,8 @@ public:
 	
 private:
 	deFontSize::Ref pLoadFontSizeBitmap(int lineHeight);
-	deFontSize::Ref pLoadFontSizeSdf(int lineHeight);
+	deFontSize::Ref pLoadFontSizeSdf();
+	int pSdfFindBestLayout(deTUniqueReference<deftLayouterSdf> &layouter, deftLayout::Ref &layout);
 	
 	void pOpenFontFile();
 	int pCountUsableGlyphs() const;

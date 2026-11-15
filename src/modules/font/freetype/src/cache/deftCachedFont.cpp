@@ -47,7 +47,7 @@ static const int vCacheVersion = 0;
 deftCachedFont::deftCachedFont(deftModule &module, const deFont::Ref &font) :
 pModule(module),
 pFont(font),
-pSdfLineHeight(0){
+pSdfSize(0){
 }
 
 deftCachedFont::~deftCachedFont() = default;
@@ -56,13 +56,12 @@ deftCachedFont::~deftCachedFont() = default;
 // Management
 ///////////////
 
-void deftCachedFont::SetSdfLineHeight(int lineHeight){
+void deftCachedFont::SetSdfSize(int lineHeight){
 	DEASSERT_TRUE(lineHeight >= 0)
 	DEASSERT_TRUE(lineHeight <= 255)
 	
-	pSdfLineHeight = lineHeight;
+	pSdfSize = lineHeight;
 }
-
 
 bool deftCachedFont::ReadFromCache(decBaseFileReader &reader){
 	const auto &filename = pFont->GetFilename();
@@ -106,7 +105,7 @@ bool deftCachedFont::ReadFromCache(decBaseFileReader &reader){
 			pFont->GetGlyphAt(i).SetUnicode((int)reader.ReadUInt());
 		}
 		
-		pSdfLineHeight = (int)reader.ReadByte();
+		pSdfSize = (int)reader.ReadByte();
 		
 	}catch(const deException &e){
 		pModule.LogException(e);
@@ -155,5 +154,5 @@ void deftCachedFont::WriteToCache(decBaseFileWriter &writer) const{
 		writer.WriteUInt((uint32_t)pFont->GetGlyphAt(i).GetUnicode());
 	}
 	
-	writer.WriteByte((uint8_t)pSdfLineHeight);
+	writer.WriteByte((uint8_t)pSdfSize);
 }
