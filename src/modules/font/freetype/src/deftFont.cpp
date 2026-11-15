@@ -260,7 +260,7 @@ deFontSize::Ref deftFont::pLoadFontSizeSdf(){
 	}
 	
 	layout->Apply(fontSize);
-	fontSize->SetSdfPixelRange(layouter->GetSdfPixelRange());
+	fontSize->SetSdfPixelRange((float)layouter->GetSdfPixelRange());
 	fontSize->SetSdfDistanceRange(layouter->GetSdfDistanceRange());
 	
 	pModule.LogInfoFormat("LoadFontSize[%s,sdf]: Layout calculated, %d glyphs, "
@@ -378,63 +378,6 @@ void deftFont::pDebugPrintGlyphs(const deFontSize &size, const deftLayout &layou
 			filename, lineHeight, g.unicode, g.size.x, g.size.y, g.bearing.x, g.bearing.y,
 			g.advance, g.position.x, g.position.y, g.position.z);
 	});
-}
-
-int deftFont::pBestSdfFixedSize(){
-	const int glyphCount = pFont->GetGlyphCount();
-	if(glyphCount == 0){
-		return 48.0f;
-	}
-	
-	// target pixel budget: 2048x2048 = 4,194,304
-	// multiply by 0.75 to account for rectangle packing gaps and SDF padding
-	const int targetImageSize = 2048;
-	const float usableArea = (float)(targetImageSize * targetImageSize) * 0.75f;
-	
-	float lineHeight = std::sqrt(usableArea / (float)glyphCount);
-	
-	// clamp line height to the range of 24 (minimum for dense Kanji) and 48 (no real improvement)
-	lineHeight = decMath::clamp(lineHeight, 24.0f, 48.0f);
-	
-	// test with a blown up font at 240px line height:
-	// - pixel range 2-4 does not make much difference in general
-	// - lineHeight=48, pixelRange=4:
-	//   works good but 'r' and 'p' have slight artifacts in the corners
-	// - lineHeight=64, pixelRange=4:
-	//   better than 48/4 but 'r' and 'p' are still slightly imperfect
-	// - lineHeight=64, pixelRange=6:
-	//   pretty much the same as 64/4
-	// - lineHeight=80, pixelRange=4:
-	//   'r' is now good but 'p' still has a slight imperfection
-	// - lineHeight=96, pixelRange=4:
-	//   nearly identical to 80/4
-	//
-	// facit:
-	// for blown up font 48 is good enough but 64 can give slightly better results but obviously
-	// takes a bit longer to generate and the image is somewhat larger.
-	//
-	// test with a font at common size of 15px line height:
-	// - lineHeight=48, pixelRange=4:
-	//   letter like 'r' and 'p' are not showing problems on that scale. a certain blurring
-	//   happens due to the smaller amount of pixels covered.
-	// - lineHeight=96, pixelRange=4:
-	//   similar to 48/4 but slightly less blurring
-	//
-	// facit:
-	// for common font size 48 is good enough but higher works too.
-	//
-	// test with a small font at 8px line height:
-	// - lineHeight=48, pixelRange=4:
-	//   difficult to read as the thickness tends to fade out.
-	// - lineHeight=96, pixelRange=4:
-	//   this actually makes the situation worse due to the stronger sharpening
-	//
-	// facit:
-	// with such small fonts reading text is hard anyway due to the limited amount of pixels
-	// available to reach glyph. 48 is a good value here but slightly higher can be acceptable too.
-	
-	// lineHeight = 48.0f;
-	return std::floor(lineHeight * 0.5f) * 2.0f;
 }
 
 unsigned long deftFont::fStreamRead(FT_Stream stream, unsigned long offset,

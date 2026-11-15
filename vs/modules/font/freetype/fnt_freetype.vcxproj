@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -51,6 +51,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\..\extern\freetype\extern_freetype.vcxproj">
       <Project>{45273658-2f93-41ba-9add-f9589d47a1cb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\msdfgen\extern_msdfgen.vcxproj">
+      <Project>{7e4a2c15-8b3f-4d91-a625-c9f8e2d4b1a9}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

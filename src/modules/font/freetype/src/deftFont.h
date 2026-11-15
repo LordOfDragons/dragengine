@@ -89,8 +89,6 @@ private:
 	void pInitGlyphs() const;
 	void pDebugPrintGlyphs(const deFontSize &size, const deftLayout &layout) const;
 	
-	int pBestSdfFixedSize();
-	
 	static unsigned long fStreamRead(FT_Stream stream, unsigned long offset,
 		unsigned char *buffer, unsigned long count);
 	
