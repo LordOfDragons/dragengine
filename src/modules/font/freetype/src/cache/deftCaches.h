@@ -50,11 +50,18 @@ public:
 	
 	
 private:
+	struct UseCache{
+		deCacheHelper *cache;
+		decString filename;
+	};
+	
 	deftModule &pModule;
 	deMutex pMutex;
 	decTThreadSafeObjectOrderedSet<deftCachedFont> pFonts;
 	decTThreadSafeObjectOrderedSet<deftCachedFontSize> pFontSizes;
 	CacheHelperRef pCacheHelperFont, pCacheHelperFontSize;
+	CacheHelperRef pCacheHelperFontGlobal, pCacheHelperFontSizeGlobal;
+	decString pScriptSharedDir, pScriptSharedCachePrefix;
 	
 	
 public:
@@ -102,6 +109,9 @@ public:
 private:
 	decString pGetFontSizeCacheId(const deFont &font, const deFontSize &fontSize) const;
 	bool pReadVerifyModuleConfigV0(decBaseFileReader &reader) const;
+	bool pIsFilenameUnderSharedDir(const char *filename);
+	UseCache pUseCacheFont(const char *filename);
+	UseCache pUseCacheFontSize(const char *filename);
 };
 
 #endif

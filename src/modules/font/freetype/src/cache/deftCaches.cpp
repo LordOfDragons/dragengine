@@ -29,6 +29,8 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
 #include <dragengine/threading/deMutexGuard.h>
 
 
@@ -44,6 +46,8 @@ pModule(module)
 	auto vfs = &module.GetVFS();
 	pCacheHelperFont = CacheHelperRef::New(vfs, decPath::CreatePathUnix("/cache/local/font"));
 	pCacheHelperFontSize = CacheHelperRef::New(vfs, decPath::CreatePathUnix("/cache/local/fontsize"));
+	pCacheHelperFontGlobal = CacheHelperRef::New(vfs, decPath::CreatePathUnix("/cache/global/font"));
+	pCacheHelperFontSizeGlobal = CacheHelperRef::New(vfs, decPath::CreatePathUnix("/cache/global/fontsize"));
 }
 
 deftCaches::~deftCaches() = default;
@@ -76,7 +80,8 @@ deftCachedFont::Ref deftCaches::LoadFont(const deFont::Ref &font){
 	});
 	
 	// try loading font from cache if present. can potentially invalidate cache file
-	auto reader = pCacheHelperFont->Read(filename);
+	const auto useCache = pUseCacheFont(filename);
+	auto reader = useCache.cache->Read(useCache.filename);
 	if(reader){
 		cached = deftCachedFont::Ref::New(pModule, font);
 		if(cached->ReadFromCache(*reader)){
@@ -85,7 +90,7 @@ deftCachedFont::Ref deftCaches::LoadFont(const deFont::Ref &font){
 		}
 		
 		// cache file is invalid so delete it
-		pCacheHelperFont->Delete(filename);
+		useCache.cache->Delete(useCache.filename);
 	}
 	
 	// no valid cache exists for this font
@@ -102,7 +107,8 @@ void deftCaches::SaveFont(const deftCachedFont::Ref &cached){
 	});
 	
 	// write cache file
-	auto writer = pCacheHelperFont->Write(filename);
+	const auto useCache = pUseCacheFont(filename);
+	auto writer = useCache.cache->Write(useCache.filename);
 	cached->WriteToCache(writer);
 	
 	// add to list of cached fonts
@@ -125,8 +131,9 @@ deftCachedFontSize::Ref deftCaches::LoadFontSize(const deFont::Ref &font, const 
 	}
 	
 	// try loading font size from cache if present. can potentially invalidate cache file
+	const auto useCache = pUseCacheFontSize(font->GetFilename());
 	const auto id = pGetFontSizeCacheId(font, fontSize);
-	auto reader = pCacheHelperFontSize->Read(id);
+	auto reader = useCache.cache->Read(useCache.filename);
 	if(reader){
 		cached = deftCachedFontSize::Ref::New(pModule, font, fontSize);
 		if(cached->ReadFromCache(*reader)){
@@ -135,7 +142,7 @@ deftCachedFontSize::Ref deftCaches::LoadFontSize(const deFont::Ref &font, const 
 		}
 		
 		// cache file is invalid so delete it
-		pCacheHelperFontSize->Delete(id);
+		useCache.cache->Delete(useCache.filename);
 	}
 
 	// no valid cache exists for this font size
@@ -154,7 +161,8 @@ void deftCaches::SaveFontSize(const deftCachedFontSize::Ref &cached){
 	});
 	
 	// write cache file
-	auto writer = pCacheHelperFontSize->Write(pGetFontSizeCacheId(cached->GetFont(), cached->GetFontSize()));
+	const auto useCache = pUseCacheFontSize(filename);
+	auto writer = useCache.cache->Write(useCache.filename);
 	cached->WriteToCache(writer);
 	
 	// add to list of cached font sizes
@@ -211,4 +219,38 @@ bool deftCaches::pReadVerifyModuleConfigV0(decBaseFileReader &reader) const{
 	}
 	
 	return true;
+}
+
+bool deftCaches::pIsFilenameUnderSharedDir(const char *filename){
+	if(pScriptSharedDir.IsEmpty()){
+		auto module = pModule.GetGameEngine()->GetScriptingSystem()->GetActiveModule();
+		DEASSERT_NOTNULL(module)
+		
+		pScriptSharedCachePrefix = module->GetLoadableModule().GetDirectoryName() + ",";
+		
+		pScriptSharedDir = module->GetVFSSharedDataDir();
+		if(!pScriptSharedDir.EndsWith("/")){
+			pScriptSharedDir += "/";
+		}
+	}
+	
+	return decString(filename).BeginsWith(pScriptSharedDir);
+}
+
+deftCaches::UseCache deftCaches::pUseCacheFont(const char *filename){
+	if(pIsFilenameUnderSharedDir(filename)){
+		return UseCache{pCacheHelperFontGlobal, pScriptSharedCachePrefix + filename};
+		
+	}else{
+		return UseCache{pCacheHelperFont, filename};
+	}
+}
+
+deftCaches::UseCache deftCaches::pUseCacheFontSize(const char *filename){
+	if(pIsFilenameUnderSharedDir(filename)){
+		return UseCache{pCacheHelperFontSizeGlobal, pScriptSharedCachePrefix + filename};
+		
+	}else{
+		return UseCache{pCacheHelperFontSize, filename};
+	}
 }
