@@ -302,7 +302,8 @@ deadArchiveDirectory::Ref deadContextUnpack::ReadFileTable(){
 				DETHROW_INFO(deeReadFile, filename);
 			}
 			
-			directory->AddFile(deadArchiveFile::Ref::New(pModule, archivePath.GetLastComponent(), info, archivePosition));
+			directory->AddFile(deadArchiveFile::Ref::New(pModule,
+				archivePath.GetLastComponent(), filename, info, archivePosition));
 		}
 		
 		error = unzGoToNextFile(pZipFile);
