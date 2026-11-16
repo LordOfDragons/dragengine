@@ -73,8 +73,7 @@ bool deftCachedFont::ReadFromCache(decBaseFileReader &reader){
 	}
 	
 	const auto checkTime = (TIME_SYSTEM)reader.ReadUInt();
-	if(pModule.GetGameEngine()->GetVirtualFileSystem()->
-	GetFileModificationTime(decPath::CreatePathUnix(filename)) != checkTime){
+	if(pFont->GetVirtualFileSystem()->GetFileModificationTime(decPath::CreatePathUnix(filename)) != checkTime){
 		pModule.LogInfoFormat("Font[%s]: Modification time changed. Cache discarded", filename.GetString());
 		return false;
 	}
@@ -123,7 +122,7 @@ void deftCachedFont::WriteToCache(decBaseFileWriter &writer) const{
 	
 	// valid cache checks
 	writer.WriteVarUInt((uint32_t)vCacheVersion);
-	writer.WriteUInt((uint32_t)pModule.GetGameEngine()->GetVirtualFileSystem()->
+	writer.WriteUInt((uint32_t)pFont->GetVirtualFileSystem()->
 		GetFileModificationTime(decPath::CreatePathUnix(filename)));
 	pModule.GetCaches()->WriteModuleConfig(writer);
 	

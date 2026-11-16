@@ -62,6 +62,7 @@ private:
 	CacheHelperRef pCacheHelperFont, pCacheHelperFontSize;
 	CacheHelperRef pCacheHelperFontGlobal, pCacheHelperFontSizeGlobal;
 	decString pScriptSharedDir, pScriptSharedCachePrefix;
+	bool pHasSharedDir;
 	
 	
 public:
@@ -103,6 +104,10 @@ public:
 	
 	/** Write module configuration to cache file. */
 	void WriteModuleConfig(decBaseFileWriter &writer) const;
+	
+	
+	/** Clear caches. */
+	void Clear();
 	/*@}*/
 	
 	
@@ -110,8 +115,8 @@ private:
 	decString pGetFontSizeCacheId(const deFont &font, const deFontSize &fontSize) const;
 	bool pReadVerifyModuleConfigV0(decBaseFileReader &reader) const;
 	bool pIsFilenameUnderSharedDir(const char *filename);
-	UseCache pUseCacheFont(const char *filename);
-	UseCache pUseCacheFontSize(const char *filename);
+	UseCache pUseCacheFont(const deFont &font);
+	UseCache pUseCacheFontSize(const deFont &font);
 };
 
 #endif

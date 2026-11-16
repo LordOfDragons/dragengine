@@ -140,7 +140,8 @@ deFontSize::Ref deftFont::pLoadFontSizeBitmap(int lineHeight){
 	
 	const int lineHeightLimit = pModule.GetLineHeightLimit();
 	if(lineHeight > lineHeightLimit){
-		pModule.LogInfoFormat("LoadFontSize[%s,%d]: Request font size too large. Using %d instead",
+		pModule.LogInfoFormat("LoadFontSize[%s,%s,%d]: Request font size too large. Using %d instead",
+			pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 			filename, lineHeight, lineHeightLimit);
 		fontSize = pFont->GetSizeWith(lineHeightLimit);
 		if(fontSize){
@@ -156,7 +157,8 @@ deFontSize::Ref deftFont::pLoadFontSizeBitmap(int lineHeight){
 	pCachedFontSize = pModule.GetCaches()->LoadFontSize(pFont, fontSize);
 	if(pCachedFontSize){
 		// loading the cache has initialized the font size data already
-		pModule.LogInfoFormat("LoadFontSize[%s,%d]: Loaded from cache, %d glyphs, image size (%d,%d,%d)",
+		pModule.LogInfoFormat("LoadFontSize[%s,%s,%d]: Loaded from cache, %d glyphs, image size (%d,%d,%d)",
+			pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 			filename, lineHeight, fontSize->GetGlyphs().GetCount(), fontSize->GetImage()->GetWidth(),
 			fontSize->GetImage()->GetHeight(), fontSize->GetImage()->GetDepth());
 		
@@ -185,7 +187,8 @@ deFontSize::Ref deftFont::pLoadFontSizeBitmap(int lineHeight){
 	deftLayout::Ref layout = layouter.Layout();
 	layout->Apply(fontSize);
 	
-	pModule.LogInfoFormat("LoadFontSize[%s,%d]: Layout calculated, %d glyphs, image size (%d,%d,%d)",
+	pModule.LogInfoFormat("LoadFontSize[%s,%s,%d]: Layout calculated, %d glyphs, image size (%d,%d,%d)",
+		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 		filename, lineHeight, layout->GetGlyphs().GetCount(),
 		layout->GetImageSize().x, layout->GetImageSize().y, layout->GetImageSize().z);
 	
@@ -197,7 +200,8 @@ deFontSize::Ref deftFont::pLoadFontSizeBitmap(int lineHeight){
 	renderer.SetComponentCount(componentCount);
 	renderer.Render(layout, fontSize);
 	
-	pModule.LogInfoFormat("LoadFontSize[%s,%d]: Image rendered in %dms",
+	pModule.LogInfoFormat("LoadFontSize[%s,%s,%d]: Image rendered in %dms",
+		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 		filename, lineHeight, (int)(timer.GetElapsedTime() * 1e3f));
 	
 	// write cache
@@ -244,8 +248,9 @@ deFontSize::Ref deftFont::pLoadFontSizeSdf(){
 	pCachedFontSize = pModule.GetCaches()->LoadFontSize(pFont, fontSize);
 	if(pCachedFontSize){
 		// loading the cache has initialized the font size data already
-		pModule.LogInfoFormat("LoadFontSize[%s,sdf]: Loaded from cache, %d glyphs, "
+		pModule.LogInfoFormat("LoadFontSize[%s,%s,sdf]: Loaded from cache, %d glyphs, "
 				"image size (%d,%d,%d), SDF size %d",
+			pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 			filename, fontSize->GetGlyphs().GetCount(), fontSize->GetImage()->GetWidth(),
 			fontSize->GetImage()->GetHeight(), fontSize->GetImage()->GetDepth(), sdfSize);
 		
@@ -263,8 +268,9 @@ deFontSize::Ref deftFont::pLoadFontSizeSdf(){
 	fontSize->SetSdfPixelRange((float)layouter->GetSdfPixelRange());
 	fontSize->SetSdfDistanceRange(layouter->GetSdfDistanceRange());
 	
-	pModule.LogInfoFormat("LoadFontSize[%s,sdf]: Layout calculated, %d glyphs, "
+	pModule.LogInfoFormat("LoadFontSize[%s,%s,sdf]: Layout calculated, %d glyphs, "
 			"image size (%d,%d,%d), SDF size %d, SDF pixel range %g",
+		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 		filename, layout->GetGlyphs().GetCount(), layout->GetImageSize().x,
 		layout->GetImageSize().y, layout->GetImageSize().z, sdfSize, layouter->GetSdfPixelRange());
 	
@@ -281,7 +287,8 @@ deFontSize::Ref deftFont::pLoadFontSizeSdf(){
 	renderer.SetSdfDistanceRange(layouter->GetSdfMinVal(), layouter->GetSdfMaxVal());
 	renderer.Render(layout, fontSize);
 	
-	pModule.LogInfoFormat("LoadFontSize[%s,sdf]: Image rendered in %dms",
+	pModule.LogInfoFormat("LoadFontSize[%s,%s,sdf]: Image rendered in %dms",
+		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 		filename, (int)(timer.GetElapsedTime() * 1e3f));
 	}
 	
@@ -311,7 +318,8 @@ int deftFont::pSdfFindBestLayout(deTUniqueReference<deftLayouterSdf> &layouter, 
 	layout = layouter->FindBestLayout();
 	DEASSERT_NOTNULL(layout)
 	
-	pModule.LogInfoFormat("LoadFontSize[%s,sdf]: Layout calculated in %dms",
+	pModule.LogInfoFormat("LoadFontSize[%s,%s,sdf]: Layout calculated in %dms",
+		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 		pFont->GetFilename().GetString(), (int)(timer.GetElapsedTime() * 1e3f));
 	}
 	
@@ -374,7 +382,8 @@ void deftFont::pDebugPrintGlyphs(const deFontSize &size, const deftLayout &layou
 	
 	layout.GetGlyphs().Visit([&](const deftLayout::Glyph &g){
 		pModule.LogInfoFormat(
-			"LoadFontSize[%s,%d].Glyph: u=0x%x s=(%d,%d) b=(%d,%d) a=%d tc=(%d,%d,%d)",
+			"LoadFontSize[%s,%s,%d].Glyph: u=0x%x s=(%d,%d) b=(%d,%d) a=%d tc=(%d,%d,%d)",
+			pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 			filename, lineHeight, g.unicode, g.size.x, g.size.y, g.bearing.x, g.bearing.y,
 			g.advance, g.position.x, g.position.y, g.position.z);
 	});

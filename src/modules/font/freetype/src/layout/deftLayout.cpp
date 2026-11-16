@@ -56,5 +56,11 @@ void deftLayout::Apply(deFontSize &fontSize) const{
 		fg.SetBearing(glyph.bearing.x);
 		fg.SetBearingY(glyph.bearing.y);
 		fg.SetAdvance(glyph.advance);
+		
+		if(glyph.unicode == 0){
+			fontSize.GetUndefinedGlyph() = fg;
+		}
 	});
+	
+	fontSize.UpdateGlyphs();
 }

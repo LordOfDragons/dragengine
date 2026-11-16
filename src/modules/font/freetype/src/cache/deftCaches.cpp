@@ -41,7 +41,8 @@
 ////////////////////////////
 
 deftCaches::deftCaches(deftModule &module) :
-pModule(module)
+pModule(module),
+pHasSharedDir(true)
 {
 	auto vfs = &module.GetVFS();
 	pCacheHelperFont = CacheHelperRef::New(vfs, decPath::CreatePathUnix("/cache/local/font"));
@@ -58,6 +59,11 @@ deftCaches::~deftCaches() = default;
 
 deftCachedFont::Ref deftCaches::LoadFont(const deFont::Ref &font){
 	DEASSERT_NOTNULL(font)
+	
+	if(!font->GetVirtualFileSystem()){
+		return {};
+	}
+	
 	const deMutexGuard guard(pMutex);
 	
 	// find cached font matching font resource. if the font file changed we get a
@@ -72,15 +78,19 @@ deftCachedFont::Ref deftCaches::LoadFont(const deFont::Ref &font){
 	// drop cached font and font sizes with matching filenames if present. this happens if the
 	// font file changed while the matching font and font size caches are loaded
 	const auto &filename = font->GetFilename();
+	const auto &vfs = font->GetVirtualFileSystem();
+	
 	pFonts.RemoveIf([&](const deftCachedFont &each){
-		return each.GetFont()->GetFilename() == filename;
+		const auto &f = each.GetFont();
+		return f->GetVirtualFileSystem() == vfs && f->GetFilename() == filename;
 	});
 	pFontSizes.RemoveIf([&](const deftCachedFontSize &each){
-		return each.GetFont()->GetFilename() == filename;
+		const auto &f = each.GetFont();
+		return f->GetVirtualFileSystem() == vfs && f->GetFilename() == filename;
 	});
 	
 	// try loading font from cache if present. can potentially invalidate cache file
-	const auto useCache = pUseCacheFont(filename);
+	const auto useCache = pUseCacheFont(font);
 	auto reader = useCache.cache->Read(useCache.filename);
 	if(reader){
 		cached = deftCachedFont::Ref::New(pModule, font);
@@ -98,16 +108,23 @@ deftCachedFont::Ref deftCaches::LoadFont(const deFont::Ref &font){
 }
 
 void deftCaches::SaveFont(const deftCachedFont::Ref &cached){
+	if(!cached->GetFont()->GetVirtualFileSystem()){
+		return;
+	}
+	
 	const deMutexGuard guard(pMutex);
 	const auto &filename = cached->GetFont()->GetFilename();
 	
 	// drop cached font with the same filename if present
+	const auto &vfs = cached->GetFont()->GetVirtualFileSystem();
+	
 	pFonts.RemoveIf([&](const deftCachedFont &each){
-		return each.GetFont()->GetFilename() == filename;
+		const auto &f = each.GetFont();
+		return f->GetVirtualFileSystem() == vfs && f->GetFilename() == filename;
 	});
 	
 	// write cache file
-	const auto useCache = pUseCacheFont(filename);
+	const auto useCache = pUseCacheFont(cached->GetFont());
 	auto writer = useCache.cache->Write(useCache.filename);
 	cached->WriteToCache(writer);
 	
@@ -119,6 +136,11 @@ void deftCaches::SaveFont(const deftCachedFont::Ref &cached){
 deftCachedFontSize::Ref deftCaches::LoadFontSize(const deFont::Ref &font, const deFontSize::Ref &fontSize){
 	DEASSERT_NOTNULL(font)
 	DEASSERT_NOTNULL(fontSize)
+	
+	if(!font->GetVirtualFileSystem()){
+		return {};
+	}
+	
 	const deMutexGuard guard(pMutex);
 	
 	// find cached font size matching font size resource. if the font file changed we get a
@@ -131,7 +153,7 @@ deftCachedFontSize::Ref deftCaches::LoadFontSize(const deFont::Ref &font, const 
 	}
 	
 	// try loading font size from cache if present. can potentially invalidate cache file
-	const auto useCache = pUseCacheFontSize(font->GetFilename());
+	const auto useCache = pUseCacheFontSize(font);
 	const auto id = pGetFontSizeCacheId(font, fontSize);
 	auto reader = useCache.cache->Read(useCache.filename);
 	if(reader){
@@ -150,18 +172,25 @@ deftCachedFontSize::Ref deftCaches::LoadFontSize(const deFont::Ref &font, const 
 }
 
 void deftCaches::SaveFontSize(const deftCachedFontSize::Ref &cached){
+	if(!cached->GetFont()->GetVirtualFileSystem()){
+		return;
+	}
+	
 	const deMutexGuard guard(pMutex);
 	const auto &filename = cached->GetFont()->GetFilename();
 	const int lineHeight = cached->GetFontSize()->GetLineHeight();
 	
 	// drop cached font size with the same filename and line height if present
+	const auto &vfs = cached->GetFont()->GetVirtualFileSystem();
+	
 	pFontSizes.RemoveIf([&](const deftCachedFontSize &each){
-		return each.GetFont()->GetFilename() == filename
+		const auto &f = each.GetFont();
+		return f->GetVirtualFileSystem() == vfs && f->GetFilename() == filename
 			&& each.GetFontSize()->GetLineHeight() == lineHeight;
 	});
 	
 	// write cache file
-	const auto useCache = pUseCacheFontSize(filename);
+	const auto useCache = pUseCacheFontSize(cached->GetFont());
 	auto writer = useCache.cache->Write(useCache.filename);
 	cached->WriteToCache(writer);
 	
@@ -195,6 +224,13 @@ void deftCaches::WriteModuleConfig(decBaseFileWriter &writer) const{
 }
 
 
+void deftCaches::Clear(){
+	const deMutexGuard guard(pMutex);
+	pFonts.RemoveAll();
+	pFontSizes.RemoveAll();
+}
+
+
 // Private Functions
 //////////////////////
 
@@ -222,13 +258,27 @@ bool deftCaches::pReadVerifyModuleConfigV0(decBaseFileReader &reader) const{
 }
 
 bool deftCaches::pIsFilenameUnderSharedDir(const char *filename){
+	if(!pHasSharedDir){
+		return false;
+	}
+	
 	if(pScriptSharedDir.IsEmpty()){
 		auto module = pModule.GetGameEngine()->GetScriptingSystem()->GetActiveModule();
-		DEASSERT_NOTNULL(module)
+		if(!module){
+			pHasSharedDir = false;
+			return false;
+		}
 		
-		pScriptSharedCachePrefix = module->GetLoadableModule().GetDirectoryName() + ",";
+		auto sharedDataDir = module->GetVFSSharedDataDir();
+		if(!sharedDataDir){
+			pHasSharedDir = false;
+			return false;
+		}
 		
-		pScriptSharedDir = module->GetVFSSharedDataDir();
+		pScriptSharedCachePrefix.FormatSafe("sharedDataDir:{}:",
+			module->GetLoadableModule().GetDirectoryName());
+		
+		pScriptSharedDir = sharedDataDir;
 		if(!pScriptSharedDir.EndsWith("/")){
 			pScriptSharedDir += "/";
 		}
@@ -237,20 +287,48 @@ bool deftCaches::pIsFilenameUnderSharedDir(const char *filename){
 	return decString(filename).BeginsWith(pScriptSharedDir);
 }
 
-deftCaches::UseCache deftCaches::pUseCacheFont(const char *filename){
-	if(pIsFilenameUnderSharedDir(filename)){
-		return UseCache{pCacheHelperFontGlobal, pScriptSharedCachePrefix + filename};
+deftCaches::UseCache deftCaches::pUseCacheFont(const deFont &font){
+	const char * const filename = font.GetFilename();
+	const auto &vfs = font.GetVirtualFileSystem();
+	
+	if(vfs == pModule.GetGameEngine()->GetVirtualFileSystem()){
+		if(pIsFilenameUnderSharedDir(filename)){
+			return UseCache{pCacheHelperFontGlobal, pScriptSharedCachePrefix + filename};
+			
+		}else{
+			return UseCache{pCacheHelperFont, filename};
+		}
 		
 	}else{
-		return UseCache{pCacheHelperFont, filename};
+		const auto &id = vfs->GetIdentifier();
+		if(id.BeginsWith("module:")){
+			return UseCache{pCacheHelperFontGlobal, id + ":" + filename};
+			
+		}else{
+			return UseCache{pCacheHelperFont, filename};
+		}
 	}
 }
 
-deftCaches::UseCache deftCaches::pUseCacheFontSize(const char *filename){
-	if(pIsFilenameUnderSharedDir(filename)){
-		return UseCache{pCacheHelperFontSizeGlobal, pScriptSharedCachePrefix + filename};
+deftCaches::UseCache deftCaches::pUseCacheFontSize(const deFont &font){
+	const char * const filename = font.GetFilename();
+	const auto &vfs = font.GetVirtualFileSystem();
+	
+	if(vfs == pModule.GetGameEngine()->GetVirtualFileSystem()){
+		if(pIsFilenameUnderSharedDir(filename)){
+			return UseCache{pCacheHelperFontSizeGlobal, pScriptSharedCachePrefix + filename};
+			
+		}else{
+			return UseCache{pCacheHelperFontSize, filename};
+		}
 		
 	}else{
-		return UseCache{pCacheHelperFontSize, filename};
+		const auto &id = vfs->GetIdentifier();
+		if(id.BeginsWith("module:")){
+			return UseCache{pCacheHelperFontSizeGlobal, id + ":" + filename};
+			
+		}else{
+			return UseCache{pCacheHelperFontSize, filename};
+		}
 	}
 }

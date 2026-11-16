@@ -141,7 +141,9 @@ deftLayout::Ref deftLayouterSdf::FindBestLayout(){
 		const int mid = (low + high) / 2;
 		const int testSize = pTestSdfSizes.GetAt(mid);
 		
-		pModule.LogInfoFormat("LoadFontSize[%s,sdf].FindBestSdfSize: Test size %d", filename, testSize);
+		pModule.LogInfoFormat("LoadFontSize[%s,%s,sdf].FindBestSdfSize: Test size %d",
+			pFont.GetVirtualFileSystem() ? pFont.GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
+			filename, testSize);
 		
 		SetSdfSize(testSize);
 		
@@ -215,7 +217,8 @@ void deftLayouterSdf::pCalcBearingOffsetAndBaseLine(){
 
 void deftLayouterSdf::pDebugPrintLayout() const{
 	pModule.LogInfoFormat(
-		"LoadFontSize[%s,sdf]: bb=(%d,%d,%d,%d) h=%d us=%g o=(%d,%d) bl=%d clr=%d m=(%d,%d) spr=%g svmin=%g svmax=%g",
+		"LoadFontSize[%s,%s,sdf]: bb=(%d,%d,%d,%d) h=%d us=%g o=(%d,%d) bl=%d clr=%d m=(%d,%d) spr=%g svmin=%g svmax=%g",
+		pFont.GetVirtualFileSystem() ? pFont.GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 		pFont.GetFilename().GetString(), pBoundaryBox.x1, pBoundaryBox.y1, pBoundaryBox.x2,
 		pBoundaryBox.y2, pFace->height, pUnitScale, pBearingOffset.x, pBearingOffset.y, pBaseLine,
 		FT_HAS_COLOR(pFace), pLineHeightMargin, pBaseLineMargin, pSdfPixelRange, pSdfMinVal, pSdfMaxVal);

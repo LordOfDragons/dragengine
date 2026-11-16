@@ -175,7 +175,8 @@ void deftLayouter::pInitGlyphs(deftLayout &layout){
 
 void deftLayouter::pDebugPrintLayout() const{
 	pModule.LogInfoFormat(
-		"LoadFontSize[%s,%d]: fs=%d bb=(%d,%d,%d,%d) h=%d o=(%d,%d) bl=%d clr=%d",
+		"LoadFontSize[%s,%s,%d]: fs=%d bb=(%d,%d,%d,%d) h=%d o=(%d,%d) bl=%d clr=%d",
+		pFont.GetVirtualFileSystem() ? pFont.GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
 		pFont.GetFilename().GetString(), pFontSizeLineHeight, pLineHeight,
 		pBoundaryBox.x1, pBoundaryBox.y1, pBoundaryBox.x2, pBoundaryBox.y2,
 		(int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64),
