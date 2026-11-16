@@ -28,8 +28,6 @@
 #include "deoglRenderBase.h"
 #include "../skin/state/node/deoglSkinStateConstructedNode.h"
 
-#include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
-
 
 class deoglRenderCanvasContext;
 class deoglSkinStateCNImage;
@@ -53,6 +51,10 @@ private:
 	const deoglPipeline *pPipelineCanvasImageMask[2];
 	const deoglPipeline *pPipelineCanvasImageArray[2];
 	const deoglPipeline *pPipelineCanvasImageMaskArray[2];
+	const deoglPipeline *pPipelineCanvasSdf[2];
+	const deoglPipeline *pPipelineCanvasSdfMask[2];
+	const deoglPipeline *pPipelineCanvasSdfArray[2];
+	const deoglPipeline *pPipelineCanvasSdfArrayMask[2];
 	
 	
 	

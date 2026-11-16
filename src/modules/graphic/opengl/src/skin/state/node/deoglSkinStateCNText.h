@@ -42,9 +42,9 @@ public:
 private:
 	deoglRFont::Ref pFont;
 	deoglRFontSize::Ref pFontSize;
-	float pTextSize;
+	float pTextSize, pBorderThickness, pDilation;
 	const decString pText;
-	decColor pColor;
+	decColor pColor, pBorderColor;
 	
 	int pTextMapped[deSkinPropertyNodeText::TextMappedCount];
 	
@@ -83,6 +83,15 @@ public:
 	
 	/** Color. */
 	inline const decColor &GetColor() const{ return pColor; }
+	
+	/** Border color. */
+	inline const decColor &GetBorderColor() const{ return pBorderColor; }
+	
+	/** Border thickness. */
+	inline float GetBorderThickness() const{ return pBorderThickness; }
+	
+	/** Dilation. */
+	inline float GetDilation() const{ return pDilation; }
 	
 	/** Mapped for type. */
 	int GetTextMappedFor(deSkinPropertyNodeText::eTextMapped type) const;
