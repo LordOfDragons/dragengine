@@ -444,7 +444,7 @@ class TextField extends TextWidget
 			return Point.new()
 		end
 		
-		return Point.new((DEMath.ceil(font.getMaxWidth() * \
+		return Point.new((DEMath.ceil(font.getAvgCharWidth() * \
 			(pDispCharCount cast float)) cast int) + getPadding().getWidth(), \
 			font.getSize() + getPadding().getHeight())
 	end

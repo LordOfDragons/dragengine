@@ -45,7 +45,7 @@ private:
 	deFontGlyph pUndefinedGlyph;
 	decTList<deFontGlyph> pGlyphs;
 	const int pLineHeight;
-	int pFontWidth, pBaseLine;
+	int pFontWidth, pBaseLine, pAverageCharacterWidth;
 	decString pImagePath;
 	deImage::Ref pImage;
 	deParallelTask::Ref pTaskLoad;
@@ -83,6 +83,12 @@ public:
 	
 	/** \brief Set base line position in pixels from top. */
 	void SetBaseLine(int baseLine);
+	
+	/** \brief Average character width in pixels. */
+	inline int GetAvgCharWidth() const{ return pAverageCharacterWidth; }
+	
+	/** \brief Set average character width in pixels. */
+	void SetAvgCharWidth(int averageCharacterWidth);
 	
 	
 	/** \brief Undefined glyph. */

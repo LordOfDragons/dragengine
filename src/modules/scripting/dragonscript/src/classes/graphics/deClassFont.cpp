@@ -312,7 +312,20 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassFont::nfGetMaxWidth::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sFntNatDat &nd = dedsGetNativeData<sFntNatDat>(p_GetNativeData(myself));
-	rt->PushFloat((float)(nd.fontSize ? nd.fontSize->GetFontWidth() : nd.font->GetFontWidth()) * nd.scale);
+	rt->PushFloat((float)(nd.fontSize ? nd.fontSize->GetFontWidth()
+		: nd.font->GetFontWidth()) * nd.scale);
+}
+
+// func float getAvgCharWidth()
+deClassFont::nfGetAvgCharWidth::nfGetAvgCharWidth(const sInitData &init) :
+dsFunction(init.clsFont, "getAvgCharWidth", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+}
+
+void deClassFont::nfGetAvgCharWidth::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sFntNatDat &nd = dedsGetNativeData<sFntNatDat>(p_GetNativeData(myself));
+	rt->PushFloat((float)(nd.fontSize ? nd.fontSize->GetAvgCharWidth()
+		: nd.font->GetAvgCharWidth()) * nd.scale);
 }
 
 // func bool hasGlyph(int character)
@@ -420,6 +433,7 @@ void deClassFont::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetCharAdvance(init));
 	AddFunction(new nfGetCharBearing(init));
 	AddFunction(new nfGetMaxWidth(init));
+	AddFunction(new nfGetAvgCharWidth(init));
 	AddFunction(new nfHasGlyph(init));
 	
 	AddFunction(new nfEquals(init));

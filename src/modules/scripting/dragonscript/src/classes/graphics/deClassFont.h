@@ -107,6 +107,7 @@ private:
 	DEF_NATFUNC(nfGetCharAdvance);
 	DEF_NATFUNC(nfGetCharBearing);
 	DEF_NATFUNC(nfGetMaxWidth);
+	DEF_NATFUNC(nfGetAvgCharWidth);
 	DEF_NATFUNC(nfHasGlyph);
 	
 	DEF_NATFUNC(nfEquals);

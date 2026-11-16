@@ -46,7 +46,8 @@ pGlyphSpacing(1),
 pHintingSafetyMargin(1),
 pLineHeight(16),
 pBaseLine(0),
-pLineHeightMargin(0){
+pLineHeightMargin(0),
+pAvgCharWidth(0){
 }
 
 deftLayouter::~deftLayouter() = default;
@@ -190,6 +191,7 @@ deftLayout::Ref deftLayouter::pCreateLayout(){
 		return {};
 	}
 	
+	pCalcAvgCharWidth();
 	layout->SetImageSize(pImageSize);
 	return layout;
 }
@@ -270,4 +272,14 @@ bool deftLayouter::pLayoutGlyphsTight(deftLayout &layout){
 
 bool deftLayouter::pVerifyGlyphLayout(const deftLayout &){
 	return true;
+}
+
+void deftLayouter::pCalcAvgCharWidth(){
+	auto const os2 = (TT_OS2*)FT_Get_Sfnt_Table(pFace, FT_SFNT_OS2);
+	if(os2 && os2->xAvgCharWidth > 0){
+		pAvgCharWidth = FT_MulFix(os2->xAvgCharWidth, pFace->size->metrics.x_scale) >> 6;
+		
+	}else{
+		pAvgCharWidth = (int)(pFace->size->metrics.x_ppem * 0.55f);
+	}
 }

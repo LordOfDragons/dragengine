@@ -116,6 +116,12 @@ fixed class Font
 		return 0.0
 	end
 	
+	/**
+	 * \brief Average character width in pixels using this font.
+	 */
+	func float getAvgCharWidth()
+		return 0.0
+	end
 	
 	
 	/**

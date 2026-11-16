@@ -62,7 +62,7 @@ private:
 	deFontGlyph pUndefinedGlyph;
 	decTList<deFontGlyph> pGlyphs;
 	decTList<unsigned short> pGlyphGroups, pGlyphMap;
-	int pFontWidth, pLineHeight, pBaseLine;
+	int pFontWidth, pLineHeight, pBaseLine, pAvrCharWidth;
 	bool pColorFont, pScalable, pSdf;
 	
 	decString pImagePath;
@@ -113,6 +113,12 @@ public:
 	
 	/** \brief Maximum width of all glyphs in pixels. */
 	inline int GetFontWidth() const{ return pFontWidth; }
+	
+	/** \brief Average character width in pixels. */
+	inline int GetAvgCharWidth() const{ return pAvrCharWidth; }
+	
+	/** \brief Set average character width in pixels. */
+	void SetAvgCharWidth(int averageCharacterWidth);
 	
 	/** \brief Font is scalable. */
 	inline bool GetScalable() const{ return pScalable; }

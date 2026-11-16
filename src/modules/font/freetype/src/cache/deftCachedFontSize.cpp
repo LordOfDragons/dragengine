@@ -81,6 +81,9 @@ bool deftCachedFontSize::ReadFromCache(decBaseFileReader &reader){
 	
 	// cached content
 	try{
+		pFontSize->SetBaseLine((int)reader.ReadUShort());
+		pFontSize->SetAvgCharWidth((int)reader.ReadUShort());
+		
 		const int glyphCount = (int)reader.ReadUShort();
 		DEASSERT_TRUE(pFontSize->GetGlyphs().GetCount() == glyphCount)
 		for(int i=0; i<glyphCount; i++){
@@ -137,6 +140,9 @@ void deftCachedFontSize::WriteToCache(decBaseFileWriter &writer) const{
 	pModule.GetCaches()->WriteModuleConfig(writer);
 	
 	// cached content
+	writer.WriteUShort((uint16_t)pFontSize->GetBaseLine());
+	writer.WriteUShort((uint16_t)pFontSize->GetAvgCharWidth());
+	
 	writer.WriteUShort((uint16_t)pFontSize->GetGlyphs().GetCount());
 	pFontSize->GetGlyphs().Visit([&](const deFontGlyph &glyph){
 		writer.WriteUShort((uint16_t)glyph.GetUnicode());

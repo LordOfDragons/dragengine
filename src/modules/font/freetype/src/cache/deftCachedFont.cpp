@@ -90,8 +90,9 @@ bool deftCachedFont::ReadFromCache(decBaseFileReader &reader){
 		pFont->SetScalable((flags & 0x2) == 0x2);
 		pFont->SetIsSdf((flags & 0x4) == 0x4);
 		
-		pFont->SetLineHeight((int)reader.ReadUInt());
-		pFont->SetBaseLine((int)reader.ReadUInt());
+		pFont->SetLineHeight((int)reader.ReadUShort());
+		pFont->SetBaseLine((int)reader.ReadUShort());
+		pFont->SetAvgCharWidth((int)reader.ReadUShort());
 		
 		const int fixedSizeCount = (int)reader.ReadUInt();
 		for(int i=0; i<fixedSizeCount; i++){
@@ -139,8 +140,9 @@ void deftCachedFont::WriteToCache(decBaseFileWriter &writer) const{
 	}
 	writer.WriteByte(flags);
 	
-	writer.WriteUInt((uint32_t)pFont->GetLineHeight());
-	writer.WriteUInt((uint32_t)pFont->GetBaseLine());
+	writer.WriteUShort((uint16_t)pFont->GetLineHeight());
+	writer.WriteUShort((uint16_t)pFont->GetBaseLine());
+	writer.WriteUShort((uint16_t)pFont->GetAvgCharWidth());
 	
 	writer.WriteUInt((uint32_t)pFont->GetFixedSizes().GetCount());
 	pFont->GetFixedSizes().Visit([&](int size){

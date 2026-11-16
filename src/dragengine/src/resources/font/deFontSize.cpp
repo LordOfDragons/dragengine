@@ -37,6 +37,7 @@ pUndefinedGlyph{},
 pLineHeight(lineHeight),
 pFontWidth(0),
 pBaseLine(lineHeight * 3 / 4),
+pAverageCharacterWidth(lineHeight / 2),
 pSdfPixelRange(4.0f),
 pSdfDistanceRange(0.0f, 1.0f),
 pSdfTintLayer(-1)
@@ -58,6 +59,12 @@ void deFontSize::SetBaseLine(int baseLine){
 	DEASSERT_TRUE(baseLine >= 0)
 	
 	pBaseLine = baseLine;
+}
+
+void deFontSize::SetAvgCharWidth(int averageCharacterWidth){
+	DEASSERT_TRUE(averageCharacterWidth >= 0)
+	
+	pAverageCharacterWidth = averageCharacterWidth;
 }
 
 void deFontSize::UpdateGlyphs(){

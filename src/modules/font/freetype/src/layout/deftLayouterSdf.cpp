@@ -268,3 +268,17 @@ void deftLayouterSdf::pInitGlyphs(deftLayout &layout){
 bool deftLayouterSdf::pVerifyGlyphLayout(const deftLayout &layout){
 	return pImageSize.z <= 1;
 }
+
+void deftLayouterSdf::pCalcAvgCharWidth(){
+	float ratio;
+	
+	auto const os2 = (TT_OS2*)FT_Get_Sfnt_Table(pFace, FT_SFNT_OS2);
+	if(os2 && os2->xAvgCharWidth > 0 && pFace->units_per_EM > 0){
+		ratio = (float)os2->xAvgCharWidth / (float)pFace->units_per_EM;
+		
+	}else{
+		ratio = 0.55f;
+	}
+	
+	pAvgCharWidth = (int)ceilf(ratio * (float)pSdfSize);
+}

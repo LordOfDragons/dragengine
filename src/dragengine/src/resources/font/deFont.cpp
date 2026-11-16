@@ -80,6 +80,7 @@ deFileResource(manager, vfs, filename, modificationTime),
 pFontWidth(0),
 pLineHeight(1),
 pBaseLine(1),
+pAvrCharWidth(0),
 pColorFont(false),
 pScalable(false),
 pSdf(false),
@@ -114,6 +115,12 @@ void deFont::SetBaseLine(int baseLine){
 	DEASSERT_TRUE(baseLine >= 0)
 	
 	pBaseLine = baseLine;
+}
+
+void deFont::SetAvgCharWidth(int averageCharacterWidth){
+	DEASSERT_TRUE(averageCharacterWidth >= 0)
+	
+	pAvrCharWidth = averageCharacterWidth;
 }
 
 

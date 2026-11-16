@@ -139,6 +139,9 @@ protected:
 	
 	/** Verify if the glyph layout is valid. Returns true if layout is valid. */
 	bool pVerifyGlyphLayout(const deftLayout &layout) override;
+	
+	/** Calculate average character width. */
+	void pCalcAvgCharWidth() override;
 };
 
 #endif

@@ -27,6 +27,7 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include FT_TRUETYPE_TABLES_H
 
 #include "deftLayout.h"
 
@@ -49,7 +50,7 @@ protected:
 	int pMaxImageWidth, pGlyphSpacing, pHintingSafetyMargin;
 	
 	decBoundary pBoundaryBox;
-	int pLineHeight, pBaseLine, pLineHeightMargin;
+	int pLineHeight, pBaseLine, pLineHeightMargin, pAvgCharWidth;
 	decPoint3 pImageSize;
 	decPoint pBearingOffset;
 	
@@ -104,6 +105,12 @@ public:
 	
 	/** Height of a line of glyphs. */
 	inline int GetLineHeight() const{ return pLineHeight; }
+	
+	/** Base line of the glyphs. */
+	inline int GetBaseLine() const{ return pBaseLine; }
+	
+	/** Average character width. */
+	inline int GetAvgCharWidth() const{ return pAvgCharWidth; }
 	/*@}*/
 	
 	
@@ -158,6 +165,9 @@ protected:
 	
 	/** Verify if the glyph layout is valid. Returns true if layout is valid. */
 	virtual bool pVerifyGlyphLayout(const deftLayout &layout);
+	
+	/** Calculate average character width. */
+	virtual void pCalcAvgCharWidth();
 };
 
 #endif

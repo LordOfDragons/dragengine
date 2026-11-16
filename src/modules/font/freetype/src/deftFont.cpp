@@ -86,6 +86,7 @@ void deftFont::LoadFont(){
 	
 	pFont->SetLineHeight(16);
 	pFont->SetBaseLine(16 * 3 / 4);
+	pFont->SetAvgCharWidth(8);
 	pFont->SetIsColorFont(false);//FT_HAS_COLOR(pFace));
 	pFont->SetScalable(FT_IS_SCALABLE(pFace));
 	
@@ -179,13 +180,15 @@ deFontSize::Ref deftFont::pLoadFontSizeBitmap(int lineHeight){
 		componentCount = 2;
 	}
 	
-	deftLayouter layouter(pModule, pFont, fontSize, pFace);
+	deftLayouter layouter(pModule, pFont, lineHeight, pFace);
 	layouter.SetLoadFlags(loadFlags);
 	layouter.SetMaxImageWidth(pModule.GetMaxImageSize());
 	layouter.SetGlyphSpacing(pModule.GetGlyphSpacing());
 	
 	deftLayout::Ref layout = layouter.Layout();
 	layout->Apply(fontSize);
+	fontSize->SetBaseLine(layouter.GetBaseLine());
+	fontSize->SetAvgCharWidth(layouter.GetAvgCharWidth());
 	
 	pModule.LogInfoFormat("LoadFontSize[%s,%s,%d]: Layout calculated, %d glyphs, image size (%d,%d,%d)",
 		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
@@ -265,6 +268,8 @@ deFontSize::Ref deftFont::pLoadFontSizeSdf(){
 	}
 	
 	layout->Apply(fontSize);
+	fontSize->SetBaseLine(layouter->GetBaseLine());
+	fontSize->SetAvgCharWidth(layouter->GetAvgCharWidth());
 	fontSize->SetSdfPixelRange((float)layouter->GetSdfPixelRange());
 	fontSize->SetSdfDistanceRange(layouter->GetSdfDistanceRange());
 	
