@@ -530,6 +530,7 @@ void deoglSCBuildConstructed::VisitText(deSkinPropertyNodeText &node){
 		
 		const deFontGlyph &glyph = font->GetGlyph(character, size);
 		if(glyph.GetWidth() == 0 || glyph.GetHeight() == 0){
+			glyphPosition += (float)glyph.GetAdvance() * fontScale;
 			continue;
 		}
 		
