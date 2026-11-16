@@ -115,9 +115,7 @@ public:
 	
 	
 	void BuildFont(deFont *engFont) override{
-		if(!engFont){
-			DETHROW(deeInvalidParam);
-		}
+		DEASSERT_NOTNULL(engFont)
 		
 		engFont->SetIsColorFont(false);
 		engFont->SetLineHeight(pLineHeight);
@@ -125,8 +123,7 @@ public:
 		engFont->SetGlyphCount(pGlyphs.GetCount());
 		
 		pGlyphs.VisitIndexed([&](int i, const sGlyph &glyph){
-			deFontGlyph &engGlyph = engFont->GetGlyphAt(i);
-			
+			auto &engGlyph = engFont->GetGlyphAt(i);
 			engGlyph.SetUnicode(glyph.code);
 			engGlyph.SetX(glyph.x);
 			engGlyph.SetY(glyph.y);
@@ -136,6 +133,8 @@ public:
 			engGlyph.SetBearing(glyph.bearing);
 			engGlyph.SetAdvance(glyph.advance);
 		});
+		
+		pCreateFontSize(*engFont);
 	}
 	
 	
@@ -411,6 +410,27 @@ private:
 			if(foxImage) delete foxImage;
 			throw;
 		}
+	}
+	
+	void pCreateFontSize(deFont &engFont){
+		auto fontSize = deFontSize::Ref::New(pLineHeight, engFont.GetGlyphCount());
+		pGlyphs.VisitIndexed([&](int i, const sGlyph &glyph){
+			auto &engGlyph = fontSize->GetGlyphAt(i);
+			engGlyph.SetUnicode(glyph.code);
+			engGlyph.SetX(glyph.x);
+			engGlyph.SetY(glyph.y);
+			engGlyph.SetZ(0);
+			engGlyph.SetWidth(glyph.width);
+			engGlyph.SetHeight(pLineHeight);
+			engGlyph.SetBearing(glyph.bearing);
+			engGlyph.SetAdvance(glyph.advance);
+		});
+		fontSize->GetUndefinedGlyph() = engFont.GetUndefinedGlyph();
+		fontSize->SetBaseLine(engFont.GetBaseLine());
+		fontSize->SetImagePath(engFont.GetImagePath());
+		fontSize->SetImage(engFont.GetImage());
+		fontSize->UpdateGlyphs();
+		engFont.AddSize(pLineHeight, fontSize);
 	}
 };
 

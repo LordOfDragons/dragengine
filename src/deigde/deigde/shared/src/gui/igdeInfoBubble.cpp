@@ -193,7 +193,9 @@ void igdeInfoBubble::Hide(){
 ////////////////////////
 
 void igdeInfoBubble::pResize(){
-	const decPoint textSize(pText->GetFont()->TextSize(pText->GetText()));
+	const auto &font = pFont->GetEngineFont();
+	const auto &fontSize = pFont->GetEngineFontSize();
+	const auto textSize = font->TextSize(pText->GetText(), fontSize, font->GetLineHeight());
 	pText->SetSize(textSize);
 	pCanvasContent->SetSize(textSize);
 	

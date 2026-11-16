@@ -111,11 +111,12 @@ void mePreviewCameraCamera::pCreateContent(){
 	
 	const decPoint &renderWorldSize = pPreviewCamera.GetRenderWorldSize();
 	const auto &font = pPreviewCamera.GetFontLabel()->GetEngineFont();
+	const auto &fontSize = pPreviewCamera.GetFontLabel()->GetEngineFontSize();
 	const meCamera &camera = *pObject->GetCamera();
 	const decBoundary borderSize(1, 1, 1, 1);
 	
 	const decString &label = camera.GetName();
-	const decPoint labelSize(font->TextSize(label));
+	const decPoint labelSize(font->TextSize(label, fontSize, font->GetLineHeight()));
 	
 	pCanvasPanel = canvasMgr.CreateCanvasView();
 	pCanvasPanel->SetOrder((float)parentPanel.GetCanvasCount());

@@ -53,10 +53,9 @@ private:
 	deFontSize::Ref pEngFontSize;
 	
 	decString pPathFont;
-	decColor pBackgroundColor;
-	decColor pTextColor;
-	decColor pSelectedBackgroundColor;
-	decColor pSelectedTextColor;
+	decColor pBackgroundColor, pTextColor, pBorderColor;
+	decColor pSelectedBackgroundColor, pSelectedTextColor;
+	float pBorderThickness;
 	int pTextSize;
 	int pPadding;
 	int pPlaybackStackDepth;
@@ -112,6 +111,12 @@ public:
 	/** \brief Set text color. */
 	void SetTextColor(const decColor &color);
 	
+	/** \brief Border color. */
+	inline const decColor &GetBorderColor() const{ return pBorderColor; }
+
+	/** \brief Set border color. */
+	void SetBorderColor(const decColor &color);
+	
 	/** \brief Selected background color. */
 	inline const decColor &GetSelectedBackgroundColor() const{ return pSelectedBackgroundColor; }
 	
@@ -123,6 +128,12 @@ public:
 	
 	/** \brief Set selected text color. */
 	void SetSelectedTextColor(const decColor &color);
+	
+	/** \brief Border thickness. */
+	inline float GetBorderThickness() const{ return pBorderThickness; }
+
+	/** \brief Set border thickness. */
+	void SetBorderThickness(float thickness);
 	
 	/** \brief Text size. */
 	inline int GetTextSize() const{ return pTextSize; }
