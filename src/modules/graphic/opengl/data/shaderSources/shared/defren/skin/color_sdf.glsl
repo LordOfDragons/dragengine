@@ -49,26 +49,15 @@ float sdfCoverage(const in float sdf, const in float pixelRange, const in float 
 
 /** Apply SDF border. */
 vec4 sdfApplyBorder(const in vec4 fillColor, const in float fillCoverage, const in float borderSdf, const in SdfParams params){
+	if(params.borderSize < 0.01){
+		return fillColor;
+	}
+	
 	float borderCoverage = sdfCoverage(borderSdf, params.pixelRange, params.dilation + params.borderSize);
 	
-	
-	// works for regular text but with border creates white halo
 	vec4 borderColor = params.borderColor;
 	borderColor.a *= borderCoverage;
-	
-	return mix(fillColor, borderColor, clamp(borderCoverage - fillCoverage, 0.0, 1.0));
-	
-	/*
-	// porter-duff 'source over' compositing (fill over border). works better
-	float srcA = fillColor.a * fillCoverage;
-	float dstA = params.borderColor.a * borderCoverage;
-	
-	float outA = srcA + dstA * (1.0 - srcA);
-	
-	vec3 outRGB = outA > 0.0 ? (fillColor.rgb * srcA + params.borderColor.rgb * dstA * (1.0 - srcA)) / outA : vec3(0);
-	
-	return vec4(outRGB, outA);
-	*/
+	return mix(borderColor, fillColor, fillColor.a);
 }
 
 
