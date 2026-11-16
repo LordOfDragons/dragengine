@@ -20,7 +20,7 @@ struct SdfParams{
  * Clamp texture coordinates to the SDF rectangle. Returns clamped coordinates with distance of
  * clamped coordinates to unclamped coordinates.
  */
-vec3 sdfClampTexCoord(const in sampler2D sdfTex, const in vec2 tc, const in SdfParams params){
+vec3 sdfClampTexCoord(const in mediump sampler2D sdfTex, const in vec2 tc, const in SdfParams params){
 	vec2 tcClamped = clamp(tc, params.tcClamp.xy, params.tcClamp.zw);
 	float sdfDist = length((tcClamped - tc) * params.tcToSdf);
 	return vec3(tcClamped, sdfDist);
@@ -62,7 +62,7 @@ vec4 sdfApplyBorder(const in vec4 fillColor, const in float fillCoverage, const 
 
 
 /** Signed distance field color. */
-vec4 getSdfColor(const in sampler2D sdfTex, const in vec2 tc, const in SdfParams params){
+vec4 getSdfColor(const in mediump sampler2D sdfTex, const in vec2 tc, const in SdfParams params){
 	vec3 tcClamped = sdfClampTexCoord(sdfTex, tc, params);
 	vec4 sdf = textureLod(sdfTex, tcClamped.xy, 0.0);
 	
@@ -80,7 +80,7 @@ vec4 getSdfColor(const in sampler2D sdfTex, const in vec2 tc, const in SdfParams
  * one colorized SDF layer. Distance is sampled using MSDF approach. The layer colors are defined
  * by the SDF layer color texture. Pixel with coordinate U defines colors of layer U.
  */
-vec4 getSdfColorArray(const in sampler2DArray sdfTex, const in vec2 tc, const in SdfParams params){
+vec4 getSdfColorArray(const in mediump sampler2DArray sdfTex, const in vec2 tc, const in SdfParams params){
 	vec3 tcClamped = sdfClampTexCoord(texColorSdfColors, tc, params);
 	int clampTcCols = textureSize(texColorSdfColors, 0).x - 1;
 	float pixelRange = params.pixelRange;
