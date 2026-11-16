@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deVFSContainer.h"
 #include "deContainerFileSearch.h"
 #include "deFileSearchVisitor.h"
@@ -86,16 +82,17 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-deVirtualFileSystem::deVirtualFileSystem(){
-}
-
-deVirtualFileSystem::~deVirtualFileSystem(){
-}
-
+deVirtualFileSystem::deVirtualFileSystem() = default;
+deVirtualFileSystem::~deVirtualFileSystem() = default;
 
 
 // Management
 ///////////////
+
+void deVirtualFileSystem::SetIdentifier(const decString &identifier){
+	pIdentifier = identifier;
+}
+
 
 bool deVirtualFileSystem::ExistsFile(const decPath &path) const{
 	const int count = pContainers.GetCount();

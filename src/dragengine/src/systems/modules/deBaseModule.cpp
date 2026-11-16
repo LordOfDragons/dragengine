@@ -298,6 +298,7 @@ void deBaseModule::pCreateVFS(){
 	decPath pathRoot;
 	
 	pVFS = deVirtualFileSystem::Ref::New();
+	pVFS->SetIdentifier(decString::Formatted("module:{}:{}", typeDirectory, directoryName));
 	
 	if(osFileSystem){
 		// config directory (read-write, per module version)
