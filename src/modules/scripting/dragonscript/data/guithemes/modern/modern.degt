@@ -55,13 +55,13 @@
 	<designer name='WindowToolTip' type='Window'>
 		<canvasCreator parameter='normal.canvas' extend='framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>
-				<scale r='0' g='0' b='0' a='0.65'/>
+				<scale r='0.95' g='0.95' b='0.95' a='0.95'/>
 			</colorMatrix>
 		</canvasCreator>
 		<border parameter='normal.border' type='CanvasCreator'>
 			<canvasCreator parameter='canvasCreator' extend='framed/normal.decc'>
 				<colorMatrix parameter='colorMatrix'>
-					<scale r='0.75' g='0.75' b='0.75' a='0.85'/>
+					<scale r='0.75' g='0.75' b='0.75' a='0.75'/>
 				</colorMatrix>
 			</canvasCreator>
 			<borderSize parameter='size' all='2'/>
@@ -71,7 +71,7 @@
 	
 	<designer name='Label.WindowToolTip' type='Label'>
 		<string parameter='normal.alignment'>left,top</string>
-		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>fonts/liberation/sans/regular.ttf</font>
 	</designer>
 	
@@ -282,13 +282,12 @@
 	
 	<designer name='Label.ListRenderer.Selected' extendNamed='Label'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
-			<color parameter='colorFill' r='0.2' g='0.2' b='0.5'/>
+			<color parameter='colorFill' r='0.85' g='0.85' b='1'/>
 		</canvasCreator>
-		<color parameter='normal.textColor' r='1' g='1' b='1'/>
 		<borderSize parameter='normal.padding' left='2' top='0' right='2' bottom='0'/>
 		
 		<canvasCreator parameter='hover.canvas' type='Rectangle'>
-			<color parameter='colorFill' r='0.3' g='0.3' b='0.5'/>
+			<color parameter='colorFill' r='0.9' g='0.9' b='1'/>
 		</canvasCreator>
 	</designer>
 	
