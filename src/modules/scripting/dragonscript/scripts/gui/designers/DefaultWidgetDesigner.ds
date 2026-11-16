@@ -558,8 +558,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	 * set to true. If not found returns \em widget.
 	 */
 	func Widget getStateTrackWidget(Widget widget)
-		var Container parent = widget.getParent()
-		
+		var Container parent
 		while true
 			parent = widget.getParent()
 			if parent == null or not parent.getStateChangeNotifyChildren()
