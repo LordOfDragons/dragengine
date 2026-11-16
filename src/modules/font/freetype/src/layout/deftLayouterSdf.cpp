@@ -136,6 +136,7 @@ deftLayout::Ref deftLayouterSdf::FindBestLayout(){
 	const char * const filename = pFont.GetFilename();
 	int low = 0, high = pTestSdfSizes.GetCount() - 1;
 	deftLayout::Ref bestLayout;
+	int bestSize = 0;
 	
 	while(low <= high){
 		const int mid = (low + high) / 2;
@@ -150,11 +151,18 @@ deftLayout::Ref deftLayouterSdf::FindBestLayout(){
 		auto layout = Layout();
 		if(layout){
 			bestLayout = layout;
+			bestSize = testSize;
 			high = mid - 1; // try larger sizes
 			
 		}else{
 			low = mid + 1; // try smaller sizes
 		}
+	}
+	
+	// last tested size may be larger than the best size. restore the state matching the layout
+	if(bestLayout && pSdfSize != bestSize){
+		SetSdfSize(bestSize);
+		bestLayout = Layout();
 	}
 	
 	return bestLayout;
@@ -265,7 +273,7 @@ void deftLayouterSdf::pInitGlyphs(deftLayout &layout){
 	}
 }
 
-bool deftLayouterSdf::pVerifyGlyphLayout(const deftLayout &layout){
+bool deftLayouterSdf::pVerifyGlyphLayout(const deftLayout&){
 	return pImageSize.z <= 1;
 }
 

@@ -32,7 +32,7 @@
 #include <dragengine/resources/image/deImageManager.h>
 
 
-struct sFTColorBGRA{
+struct fFTColorBGRA{
 	unsigned char blue, green, red, alpha;
 };
 
@@ -236,7 +236,7 @@ void deftRenderer::pRenderColor(const deftLayout &layout, deImage &image){
 				int padLeft = realWidth - 1;
 				
 				for(y=0; y<safeRows; y++){
-					const sFTColorBGRA * const bg = (sFTColorBGRA*)bd;
+					const fFTColorBGRA * const bg = (fFTColorBGRA*)bd;
 					for(x=0; x<realWidth; x++){
 						if(bg[x].alpha > 0){
 							padLeft = decMath::min(padLeft, x);
@@ -255,10 +255,10 @@ void deftRenderer::pRenderColor(const deftLayout &layout, deImage &image){
 				*/
 				
 				auto dg = di + strideZ * glyph.position.z + strideY * glyph.position.y + glyph.position.x;
-				bd = bdBase + sizeof(sFTColorBGRA) * padLeft;
+				bd = bdBase + sizeof(fFTColorBGRA) * padLeft;
 				
 				for(y=0; y<safeRows; y++){
-					const sFTColorBGRA * const bg = (sFTColorBGRA*)bd;
+					const fFTColorBGRA * const bg = (fFTColorBGRA*)bd;
 					for(x=0; x<width; x++){
 						dg[x].red = bg[x].red;
 						dg[x].green = bg[x].green;

@@ -53,29 +53,52 @@ struct sFTOutlineData{
 	}
 };
 
-static msdfgen::Point2 sFTPoint(const FT_Vector &v){
+static msdfgen::Point2 fFTPoint(const FT_Vector &v){
 	return msdfgen::Point2(v.x, v.y);
 }
 
-static bool sFTSamePoint(const msdfgen::Point2 &a, const msdfgen::Point2 &b){
+static bool fFTSamePoint(const msdfgen::Point2 &a, const msdfgen::Point2 &b){
 	return a.x == b.x && a.y == b.y;
 }
 
-static void sFTCloseContour(sFTOutlineData &data){
+static void fFTCloseContour(sFTOutlineData &data){
 	if(!data.contourOpen){
 		return;
 	}
-	if(!sFTSamePoint(data.current, data.start)){
+	if(!fFTSamePoint(data.current, data.start)){
 		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, data.start));
 	}
 	data.contourOpen = false;
+	if(data.shape.contours.back().edges.empty()){
+		data.shape.contours.pop_back();
+	}
+}
+
+// mirror scanline pass of msdfgen standalone tool (main.cpp)
+static void fFTGenerateMtsdf(const msdfgen::BitmapSection<float, 4> &output,
+const msdfgen::Shape &shape, const msdfgen::Projection &projection, const msdfgen::Range &range){
+	msdfgen::generateMTSDF(output, shape, projection, range,
+		msdfgen::MSDFGeneratorConfig(true,
+			msdfgen::ErrorCorrectionConfig(
+				msdfgen::ErrorCorrectionConfig::DISABLED)));
+	
+	const float sdfZeroValue = range.lower != range.upper
+		? float(range.lower / (range.lower - range.upper)) : 0.5f;
+	
+	msdfgen::distanceSignCorrection(output, shape, projection, sdfZeroValue, msdfgen::FILL_NONZERO);
+	
+	msdfgen::msdfErrorCorrection(output, shape, projection, range,
+		msdfgen::MSDFGeneratorConfig(true,
+			msdfgen::ErrorCorrectionConfig(
+				msdfgen::ErrorCorrectionConfig::EDGE_PRIORITY,
+				msdfgen::ErrorCorrectionConfig::DO_NOT_CHECK_DISTANCE)));
 }
 
 static int sFTMoveTo(const FT_Vector *to, void *user){
 	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
-	sFTCloseContour(data);
+	fFTCloseContour(data);
 	data.shape.addContour();
-	data.start = sFTPoint(*to);
+	data.start = fFTPoint(*to);
 	data.current = data.start;
 	data.contourOpen = true;
 	return 0;
@@ -83,8 +106,8 @@ static int sFTMoveTo(const FT_Vector *to, void *user){
 
 static int sFTLineTo(const FT_Vector *to, void *user){
 	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
-	const msdfgen::Point2 p = sFTPoint(*to);
-	if(!sFTSamePoint(p, data.current)){
+	const msdfgen::Point2 p = fFTPoint(*to);
+	if(!fFTSamePoint(p, data.current)){
 		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, p));
 	}
 	data.current = p;
@@ -93,9 +116,9 @@ static int sFTLineTo(const FT_Vector *to, void *user){
 
 static int sFTConicTo(const FT_Vector *control, const FT_Vector *to, void *user){
 	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
-	const msdfgen::Point2 c = sFTPoint(*control);
-	const msdfgen::Point2 p = sFTPoint(*to);
-	if(!sFTSamePoint(p, data.current)){
+	const msdfgen::Point2 c = fFTPoint(*control);
+	const msdfgen::Point2 p = fFTPoint(*to);
+	if(!fFTSamePoint(p, data.current)){
 		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, c, p));
 	}
 	data.current = p;
@@ -104,10 +127,10 @@ static int sFTConicTo(const FT_Vector *control, const FT_Vector *to, void *user)
 
 static int sFTCubicTo(const FT_Vector *control1, const FT_Vector *control2, const FT_Vector *to, void *user){
 	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
-	const msdfgen::Point2 c1 = sFTPoint(*control1);
-	const msdfgen::Point2 c2 = sFTPoint(*control2);
-	const msdfgen::Point2 p = sFTPoint(*to);
-	if(!sFTSamePoint(p, data.current)){
+	const msdfgen::Point2 c1 = fFTPoint(*control1);
+	const msdfgen::Point2 c2 = fFTPoint(*control2);
+	const msdfgen::Point2 p = fFTPoint(*to);
+	if(!fFTSamePoint(p, data.current) || msdfgen::crossProduct(c1 - p, c2 - p) != 0.0){
 		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, c1, c2, p));
 	}
 	data.current = p;
@@ -235,7 +258,7 @@ void deftRendererSdf::pRenderSdf(const deftLayout &layout, deImage &image){
 				funcs.conic_to = sFTConicTo;
 				funcs.cubic_to = sFTCubicTo;
 				pModule.AssertFT(FT_Outline_Decompose(&outline, &funcs, &data), "FT_Outline_Decompose");
-				sFTCloseContour(data);
+				fFTCloseContour(data);
 				if(shape.contours.empty()){
 					break;
 				}
@@ -258,7 +281,7 @@ void deftRendererSdf::pRenderSdf(const deftLayout &layout, deImage &image){
 				decTList<float> buffer(cellWidth * cellHeight * 4);
 				float * const bufferPtr = buffer.GetArrayPointer();
 				msdfgen::BitmapSection<float, 4> output(bufferPtr, cellWidth, cellHeight);
-				msdfgen::generateMTSDF(output, shape, projection, range);
+				fFTGenerateMtsdf(output, shape, projection, range);
 				
 				for(int y=0; y<cellHeight; y++){
 					const int row = cellHeight - 1 - y;
@@ -331,7 +354,7 @@ void deftRendererSdf::pRenderSdfParallel(const deftLayout &layout, deImage &imag
 				funcs.conic_to = sFTConicTo;
 				funcs.cubic_to = sFTCubicTo;
 				pModule.AssertFT(FT_Outline_Decompose(&outline, &funcs, &data), "FT_Outline_Decompose");
-				sFTCloseContour(data);
+				fFTCloseContour(data);
 				if(shape.contours.empty()){
 					break;
 				}
@@ -366,7 +389,7 @@ void deftRendererSdf::pRenderSdfParallel(const deftLayout &layout, deImage &imag
 		buffer.SetCountDiscard(job.cellWidth * job.cellHeight * 4);
 		float * const bufferPtr = buffer.GetArrayPointer();
 		msdfgen::BitmapSection<float, 4> output(bufferPtr, job.cellWidth, job.cellHeight);
-		msdfgen::generateMTSDF(output, job.shape, job.projection, range);
+		fFTGenerateMtsdf(output, job.shape, job.projection, range);
 		
 		for(int y=0; y<job.cellHeight; y++){
 			const int row = job.cellHeight - 1 - y;
