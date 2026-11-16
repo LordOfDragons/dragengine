@@ -116,6 +116,13 @@ public:
 	
 	/** Save font. */
 	void SaveFont(decBaseFileWriter &writer, const deFont &font) override;
+	
+	
+	/**
+	 * \brief Drop all resource references held, for example in caches.
+	 * \version 1.35
+	 */
+	void DropResourceReferences() override;
 	/*@}*/
 };
 

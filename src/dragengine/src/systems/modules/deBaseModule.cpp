@@ -182,6 +182,8 @@ decString deBaseModule::GetNativePathShare() const{
 	return path.GetPathNative();
 }
 
+void deBaseModule::DropResourceReferences(){
+}
 
 
 // Debugging

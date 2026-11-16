@@ -129,6 +129,11 @@ void deftModule::SaveFont(decBaseFileWriter &file, const deFont &font){
 }
 
 
+void deftModule::DropResourceReferences(){
+	pCaches->Clear();
+}
+
+
 // Private functions
 //////////////////////
 
