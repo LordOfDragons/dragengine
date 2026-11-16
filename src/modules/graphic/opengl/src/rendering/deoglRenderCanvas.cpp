@@ -752,7 +752,7 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 	const decColor &sdfBorderColor = canvas.GetBorderColor();
 	const float sdfScaleFactor = (float)glyphs.GetLineHeight() / glyphs.GetSdfPixelRange();
 	float sdfDilation = canvas.GetDilation() * sdfScaleFactor;
-	sdfDilation = decMath::min(sdfDilation, 0.48f); // max allowed value is 0.5 with some gap
+	sdfDilation = decMath::clamp(sdfDilation, -0.48f, 0.48f); // max allowed value is 0.5 with some gap
 	
 	float sdfBorderSize = canvas.GetBorderThickness() * sdfScaleFactor;
 	

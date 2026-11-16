@@ -35,16 +35,39 @@ float sdfDistance(const in vec3 sdf){
 float sdfCoverage(const in float sdf, const in float pixelRange, const in float dilation){
 	float threshold = 0.5 - dilation;
 	return clamp(pixelRange * (sdf - threshold) + 0.5, 0.0, 1.0);
+	
+	// inwards dilation can cause color darkening if too strong.
+	// to avoid this contrast is boosted on negative dilation
+	/*
+	float erosion = max(-dilation, 0.0);
+	float erosionBoost = 1.0 + (erosion * erosion) * 16.0;
+	float effectiveRange = pixelRange * erosionBoost;
+	
+	return clamp(effectiveRange * (sdf - threshold) + 0.5, 0.0, 1.0);
+	*/
 }
 
 /** Apply SDF border. */
 vec4 sdfApplyBorder(const in vec4 fillColor, const in float fillCoverage, const in float borderSdf, const in SdfParams params){
 	float borderCoverage = sdfCoverage(borderSdf, params.pixelRange, params.dilation + params.borderSize);
 	
+	/*
+	// works for regular text but with border creates white halo
 	vec4 borderColor = params.borderColor;
 	borderColor.a *= borderCoverage;
 	
 	return mix(fillColor, borderColor, max(borderCoverage - fillCoverage, 0.0));
+	*/
+	
+	// porter-duff 'source over' compositing (fill over border). works better
+	float srcA = fillColor.a * fillCoverage;
+	float dstA = params.borderColor.a * borderCoverage;
+	
+	float outA = srcA + dstA * (1.0 - srcA);
+	
+	vec3 outRGB = outA > 0.0 ? (fillColor.rgb * srcA + params.borderColor.rgb * dstA * (1.0 - srcA)) / outA : vec3(0);
+	
+	return vec4(outRGB, outA);
 }
 
 
