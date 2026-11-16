@@ -373,7 +373,10 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetLineColor.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetThickness.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetType.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetBorderColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetBorderThickness.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetDilation.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetPath.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetSize.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetText.cpp" />
@@ -499,7 +502,10 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetLineColor.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetThickness.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetType.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetBorderColor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetBorderThickness.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetColor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetDilation.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetPath.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetSize.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetText.h" />
