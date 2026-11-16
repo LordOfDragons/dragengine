@@ -278,6 +278,12 @@
 	<translation name="Skin.WPNode.Text.ToolTip">Text</translation>
 	<translation name="Skin.WPNode.TextColor">Color:</translation>
 	<translation name="Skin.WPNode.TextColor.ToolTip">Text color</translation>
+	<translation name="Skin.WPNode.BorderColor">Border Color:</translation>
+	<translation name="Skin.WPNode.BorderColor.ToolTip">Border color</translation>
+	<translation name="Skin.WPNode.BorderThickness">Border Thickness:</translation>
+	<translation name="Skin.WPNode.BorderThickness.ToolTip">Border thickness in pixels</translation>
+	<translation name="Skin.WPNode.Dilation">Dilation:</translation>
+	<translation name="Skin.WPNode.Dilation.ToolTip">Text dilation</translation>
 	
 	<translation name="Skin.WPNode.GroupGroup">Group:</translation>
 	
@@ -428,6 +434,9 @@
 	<translation name="Skin.Undo.NodeTextSetFontSize">Node text set font size</translation>
 	<translation name="Skin.Undo.NodeTextSetPath">Node text set path</translation>
 	<translation name="Skin.Undo.NodeTextSetText">Node text set text</translation>
+	<translation name="Skin.Undo.NodeTextSetBorderColor">Node text set border color</translation>
+	<translation name="Skin.Undo.NodeTextSetBorderThickness">Node text set border thickness</translation>
+	<translation name="Skin.Undo.NodeTextSetDilation">Node text set dilation</translation>
 	
 	<translation name="Skin.Undo.NodeGroupAddNode">Node group add node</translation>
 	<translation name="Skin.Undo.NodeGroupPasteNodes">Node group paste nodes</translation>

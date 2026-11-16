@@ -142,6 +142,9 @@ deSkinPropertyNode::Ref seTextureSkinBuilder::CreateNode(const sePropertyNode &n
 		engNodeText->SetFontSize(nodeText.GetTextSize());
 		engNodeText->SetText(nodeText.GetText());
 		engNodeText->SetColor(nodeText.GetColor());
+		engNodeText->SetBorderColor(nodeText.GetBorderColor());
+		engNodeText->SetBorderThickness(nodeText.GetBorderThickness());
+		engNodeText->SetDilation(nodeText.GetDilation());
 		
 		const struct sMappedText{
 			sePropertyNodeText::eTextMapped from;

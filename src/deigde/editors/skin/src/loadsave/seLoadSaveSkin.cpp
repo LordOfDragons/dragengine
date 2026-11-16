@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "seLoadSaveSkin.h"
 #include "../skin/seSkin.h"
 #include "../skin/mapped/seMapped.h"
@@ -62,7 +58,6 @@
 #include <dragengine/systems/modules/skin/deBaseSkinModule.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 #include <dragengine/deEngine.h>
-#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/math/decMath.h>
@@ -310,6 +305,9 @@ sePropertyNode::Ref seLoadSaveSkin::LoadPropertyNode(seSkin &skin, deSkinPropert
 		childText->SetTextSize(engNodeText.GetFontSize());
 		childText->SetText(engNodeText.GetText());
 		childText->SetColor(engNodeText.GetColor());
+		childText->SetBorderColor(engNodeText.GetBorderColor());
+		childText->SetBorderThickness(engNodeText.GetBorderThickness());
+		childText->SetDilation(engNodeText.GetDilation());
 		
 		const struct sMappedText{
 			sePropertyNodeText::eTextMapped to;

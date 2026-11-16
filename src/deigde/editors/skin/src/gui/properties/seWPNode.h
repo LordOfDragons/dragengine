@@ -94,6 +94,9 @@ private:
 	igdeTextField::Ref pTextEditFontSize;
 	igdeTextField::Ref pTextEditText;
 	igdeColorBox::Ref pTextClrColor;
+	igdeColorBox::Ref pTextClrBorder;
+	igdeTextField::Ref pTextEditBorderThickness;
+	igdeTextField::Ref pTextEditDilation;
 	
 	igdeComboBox::Ref pCBMappedType;
 	igdeComboBox::Ref pCBMappedTarget;
