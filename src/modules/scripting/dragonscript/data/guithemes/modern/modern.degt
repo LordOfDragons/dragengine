@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <guiTheme>
 	<!-- Default widget parameters. -->
-	<font for='widget' size='15'>fonts/sans15.defont</font>
+	<font for='widget' size='15'>fonts/liberation/sans/regular.ttf</font>
 	
 	<!-- Widget designers -->
 	<designer name='Desktop' type='Desktop'>
@@ -22,7 +22,7 @@
 	<designer name='Window' extendNamed='WindowUndecorated'>
 		<decoration parameter='decoration' type='CanvasCreator'>
 			<borderSize parameter='decorationSize' left='8' top='25' right='8' bottom='14'/>
-			<font parameter='active.title.font' size='15'>fonts/sans15.defont</font>
+			<font parameter='active.title.font' size='15'>fonts/liberation/sans/regular.ttf</font>
 			<color parameter='active.title.textColor' r='1' g='1' b='1'/>
 			<color parameter='inactive.title.textColor' r='0.75' g='0.75' b='0.75'/>
 			<canvasCreator parameter='active.canvas' extend='window/normal.decc'/>
@@ -72,7 +72,7 @@
 	<designer name='Label.WindowToolTip' type='Label'>
 		<string parameter='normal.alignment'>left,top</string>
 		<color parameter='normal.textColor' r='1' g='1' b='1'/>
-		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>fonts/liberation/sans/regular.ttf</font>
 	</designer>
 	
 	<designer name='WindowFullScreen' type='Window'>
@@ -94,14 +94,14 @@
 			<color parameter='colorHighlight' r='1' g='1' b='1'/>
 			<color parameter='colorShadow' r='0.5' g='0.5' b='0.5'/>
 			<color parameter='textColor' r='0' g='0' b='0'/>
-			<font parameter='font' size='15'>fonts/sans15.defont</font>
+			<font parameter='font' size='15'>fonts/liberation/sans/regular.ttf</font>
 		</border>
 		<borderSize parameter='normal.padding' all='2'/>
 	</designer>
 	
 	<designer name='Label' type='Label'>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>fonts/liberation/sans/regular.ttf</font>
 		<color parameter='disabled.textColor' r='0.5' g='0.5' b='0.5'/>
 	</designer>
 	
@@ -197,7 +197,7 @@
 		</border>
 		<borderSize parameter='normal.padding' all='2'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>fonts/liberation/sans/regular.ttf</font>
 		
 		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.decc'/>
 		<border parameter='disabled.border' type='CanvasCreator'>
@@ -225,7 +225,7 @@
 		</border>
 		<borderSize parameter='normal.padding' all='2'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>fonts/liberation/sans/regular.ttf</font>
 		
 		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.decc'/>
 		<border parameter='disabled.border' type='CanvasCreator'>
@@ -320,7 +320,7 @@
 			<color parameter='colorFill' r='1' g='1' b='1'/>
 		</canvasCreator>-->
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>fonts/liberation/sans/regular.ttf</font>
 		<borderSize parameter='normal.padding' left='2' top='0' right='2' bottom='0'/>
 	</designer>
 	
@@ -358,7 +358,7 @@
 		</border>
 		<borderSize parameter='normal.padding' left='8' top='4' right='8' bottom='4'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>fonts/liberation/sans/regular.ttf</font>
 		
 		<canvasCreator parameter='bar' extend='framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>

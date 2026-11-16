@@ -62,7 +62,7 @@
 	
 	<designer name='Label.EMPSystem.CycleValue.Value' type='Label'>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 	</designer>
 	
 	<designer name='Button.EMPSystem.Reset' extendNamed='Button'>

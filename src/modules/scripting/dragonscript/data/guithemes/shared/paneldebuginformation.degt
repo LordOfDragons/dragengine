@@ -15,7 +15,7 @@
 	
 	<designer name='Label.PanelDebugInformation' type='Label'>
 		<color parameter='normal.textColor' r='1' g='1' b='1'/>
-		<font parameter='normal.font' size='13'>../modern/fonts/fixed9.defont</font>
+		<font parameter='normal.font' size='13'>../modern/fonts/liberation/mono/regular.ttf</font>
 		<string parameter='normal.alignment'>left,middle</string>
 	</designer>
 	
