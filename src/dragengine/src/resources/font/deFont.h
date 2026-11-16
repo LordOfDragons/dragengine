@@ -262,11 +262,13 @@ public:
 	deFontSize *EnsureSizePrepared(int lineHeight);
 	
 	
-	/** \brief Measure size of text. */
-	decPoint TextSize(const decUnicodeString &text, const deFontSize *size = nullptr) const;
+	/** \brief Measure size of text scaled to line height. */
+	decPoint TextSize(const decUnicodeString &text, const deFontSize &fontSize,
+		int lineHeight, float dilation = 0.0f) const;
 	
-	/** \brief Measure size of text. */
-	decPoint TextSize(const char *text, const deFontSize *size = nullptr) const;
+	/** \brief Measure size of text scaled to line height. */
+	decPoint TextSize(const char *text, const deFontSize &fontSize,
+		int lineHeight, float dilation = 0.0f) const;
 	/*@}*/
 	
 	

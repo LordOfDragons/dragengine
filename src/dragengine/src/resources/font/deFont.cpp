@@ -336,34 +336,40 @@ deFontSize *deFont::EnsureSizePrepared(int lineHeight){
 }
 
 
-decPoint deFont::TextSize(const decUnicodeString &text, const deFontSize *size) const{
-	const int lineHeight = size ? size->GetLineHeight() : pLineHeight;
+decPoint deFont::TextSize(const decUnicodeString &text, const deFontSize &size,
+int lineHeight, float dilation) const{
+	const float scale = (float)lineHeight / (float)size.GetLineHeight();
 	const int count = text.GetLength();
-	decPoint textSize(0, lineHeight);
-	int i, lineWidth = 0;
+	int textHeight = lineHeight;
+	float lineWidth = 0.0f;
+	float textWidth = 0.0f;
+	int i;
 	
 	for(i=0; i<count; i++){
 		const int character = text.GetAt(i);
 		
 		if(character == '\n'){
-			textSize.y += lineHeight;
-			lineWidth = 0;
+			textHeight += lineHeight;
+			lineWidth = 0.0f;
 			
-		}else{
-			const deFontGlyph &glyph = GetGlyph(character, size);
-			const int extendEnd = glyph.GetWidth() - glyph.GetAdvance() - glyph.GetBearing();
-			lineWidth += glyph.GetAdvance();
-			if(lineWidth + extendEnd > textSize.x){
-				textSize.x = lineWidth + extendEnd;
+		}else if(character >= 0){
+			const auto &glyph = GetGlyph(character, &size);
+			const float extendEnd = (float)(glyph.GetWidth() - glyph.GetAdvance()
+				- glyph.GetBearing()) * scale;
+			lineWidth += (float)glyph.GetAdvance() * scale;
+			if(lineWidth + extendEnd > textWidth){
+				textWidth = lineWidth + extendEnd;
 			}
 		}
 	}
 	
-	return textSize;
+	dilation = decMath::max(dilation, 0.0f) * (float)lineHeight * 2.0f;
+	return {(int)ceilf(textWidth + dilation), textHeight + (int)ceilf(dilation)};
 }
 
-decPoint deFont::TextSize(const char *text, const deFontSize *size) const{
-	return TextSize(decUnicodeString::NewFromUTF8(text), size);
+decPoint deFont::TextSize(const char *text, const deFontSize &fontSize,
+int lineHeight, float dilation) const{
+	return TextSize(decUnicodeString::NewFromUTF8(text), fontSize, lineHeight, dilation);
 }
 
 
