@@ -699,8 +699,10 @@ class ComboBox extends Container implements ListModelListener
 		var int count = pListBox.getModel().getCount()
 		var int newSelection = selection
 		
-		if selection == -1 and count > 0
-			newSelection = 0
+		if selection == -1
+			if count > 0
+				newSelection = 0
+			end
 			
 		else
 			newSelection = DEMath.clamp(selection - y, 0, count - 1)
