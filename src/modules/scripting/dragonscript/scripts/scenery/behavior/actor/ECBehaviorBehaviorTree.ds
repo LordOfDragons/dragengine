@@ -308,6 +308,31 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		private class BTASelf implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value = parameters.getAt("debug.name", null)
+				if value != null
+					pInstance.getContext().setLoggingName(value cast String)
+				end
+				
+				value = parameters.getAt("debug.targets", null)
+				if value != null
+					var Array t = (value cast String).split(" \t\n")
+					var BTContext c = pInstance.getContext()
+					c.setLogRuleChanges(t.has("ruleChanges"))
+					c.setLogSteps(t.has("steps"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
 		/** \brief Behavior tree action and condition "gameWorld". */
 		private class BTACGameWorld implements BTAction, BTCondition
 			var Instance pInstance
@@ -548,6 +573,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 			pContext.setConsole(BehaviorElementClass.sharedFactoryHelper.defaultConsole())
 			
 			var BTACGameWorld btac = BTACGameWorld.new(this)
+			pContext.setAction("self", BTASelf.new(this))
 			pContext.setAction("element.set", BTACElementSet.new(this))
 			pContext.setAction("element.update", BTACElementUpdate.new(this))
 			pContext.setAction("gameWorld", btac)
@@ -761,12 +787,11 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	end
 	
 	
-	
 	var ECPBehaviorTree pBehaviorTree
 	var ECPBoolean pRun
 	var Array pActionConditionFactories
 	var Array pListenerFactories
-	
+	var String pPrefix
 	
 	
 	/** \brief Create behavior element class. */
@@ -798,8 +823,9 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	
 	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID,\
 	String prefix) super(eclass, id)
-		eclass.addProperty(pBehaviorTree = ECPBehaviorTree.new(\
-			prefix + "path", loaders.getBehaviorTree()))
+		pPrefix = prefix
+		
+		eclass.addProperty(pBehaviorTree = ECPBehaviorTree.new(prefix + "path", loaders.getBehaviorTree()))
 		eclass.addProperty(pRun = ECPBoolean.new(prefix + "run", false))
 		
 		pActionConditionFactories = Array.new()
@@ -825,6 +851,14 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	/** \brief Run behavior tree during element thinking. */
 	func ECPBoolean getRun()
 		return pRun
+	end
+	
+	/**
+	 * \brief Element property prefix.
+	 * \version 1.35
+	 */
+	func String getPrefix()
+		return pPrefix
 	end
 	
 	/** \brief Add action and condition factory. */

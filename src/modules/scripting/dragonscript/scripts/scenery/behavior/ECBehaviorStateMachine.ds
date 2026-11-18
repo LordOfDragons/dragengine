@@ -241,6 +241,32 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements BehaviorPostInit
+		private class SMASelf implements SMAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void runAction(SMContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("debug.name", null)
+				if value != null
+					pInstance.getContext().setLoggingName(value cast String)
+				end
+				
+				value = parameters.getAt("debug.targets", null)
+				if value != null
+					var Array t = (value cast String).split(" \t\n")
+					var SMContext c = pInstance.getContext()
+					c.setLogActions(t.has("actions"))
+					c.setLogTransitions(t.has("transitions"))
+					c.setLogStateChanges(t.has("stateChanges"))
+				end
+			end
+		end
+		
 		private class BTASet implements BTAction
 			var Instance pInstance
 			
@@ -666,6 +692,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 			
 			var SMACGameWorld smacGameWorld = SMACGameWorld.new(this)
+			pContext.setAction("self", SMASelf.new(this))
 			pContext.setAction("element.set", SMAElementSet.new(this))
 			pContext.setAction("element.update", SMAElementUpdate.new(this))
 			pContext.setAction("eventElement.update", SMAEventElementUpdate.new(this))
@@ -679,13 +706,13 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			var BehaviorElement element = getElement()
 			
 			if pECBehavior.getBehaviorTree() != null
-				var String pnp = pECBehavior.getPrefix()
+				var String prefix = pECBehavior.getPrefix()
 				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
-				c.setAction(pnp + "set", BTASet.new(this))
-				c.setAction(pnp + "event", BTAEvent.new(this))
+				c.setAction(prefix + "set", BTASet.new(this))
+				c.setAction(prefix + "event", BTAEvent.new(this))
 				
-				var String name = pnp + "check"
-				var BTACheck btacheck = BTACheck.new(this, pnp)
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
 			end

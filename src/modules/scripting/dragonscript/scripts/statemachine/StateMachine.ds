@@ -47,8 +47,7 @@ class StateMachine
 	static func StateMachine newEmpty()
 		var StateMachine sm = new()
 		sm.pInitialState = "empty"
-		var SMState state = SMState.new(sm.pInitialState)
-		sm.pStates.setAt(sm.pInitialState, state)
+		sm.pStates.setAt(sm.pInitialState, SMState.new(sm.pInitialState))
 		return sm
 	end
 	
