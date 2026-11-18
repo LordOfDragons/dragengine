@@ -324,6 +324,7 @@ pHasUniqueId(false)
 	}
 	
 	// relative and absolute axes
+	/*
 	int countAxes = 0;
 	
 	if(hasRelativeAxes){
@@ -341,6 +342,7 @@ pHasUniqueId(false)
 			}
 		}
 	}
+	*/
 	
 	if(hasRelativeAxes){
 		pEvdevMapRelAxis.AddRange(REL_MAX, -1);
@@ -472,13 +474,14 @@ pHasUniqueId(false)
 	
 	// keys and buttons
 	if(hasKeys){
+		/*
 		int countButtons = 0;
-		
 		for(i=BTN_MISC; i<KEY_MAX; i++){
 			if(libevdev_has_event_code(pEvdevDevice, EV_KEY, i)){
 				countButtons++;
 			}
 		}
+		*/
 		
 		pEvdevMapKeys.AddRange(KEY_MAX - BTN_MISC, -1);
 		
