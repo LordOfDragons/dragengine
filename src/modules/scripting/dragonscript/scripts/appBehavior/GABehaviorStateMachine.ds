@@ -572,6 +572,19 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			var WindowGameWorld window = app.getWindowGameWorld()
 			var Object value
 			
+			value = parameters.getAt("action", null) cast String
+			if value != null
+				var GameWorld gameWorld = window.getGameWorld()
+				if gameWorld != null
+					var SMAction action = gameWorld.getBehaviorBTSM().getSMAction(value cast String)
+					if action != null
+						var Dictionary nparams = Dictionary.new(parameters)
+						nparams.remove("action")
+						action.runAction(context, nparams)
+					end
+				end
+			end
+			
 			value = parameters.getAt("runEvent", null)
 			if value != null
 				var GameWorld gameWorld = window.getGameWorld()
@@ -708,9 +721,24 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			var WindowGameWorld window = BaseGameApp.getApp().getWindowGameWorld()
 			var bool result = true
 			
-			var Object value = parameters.getAt("visible", null)
+			var Object value = parameters.getAt("windowGameWorld.visible", null)
 			if value != null
 				result &= window.getVisible() == value.equals("true")
+			end
+			
+			value = parameters.getAt("windowGameWorld.condition", null) cast String
+			if value != null
+				var GameWorld gameWorld = window.getGameWorld()
+				var bool subResult
+				if gameWorld != null
+					var SMCondition condition = gameWorld.getBehaviorBTSM().getSMCondition(value cast String)
+					if condition != null
+						var Dictionary nparams = Dictionary.new(parameters)
+						nparams.remove("windowGameWorld.condition")
+						subResult = condition.evaluateCondition(context, nparams)
+					end
+				end
+				result &= subResult
 			end
 			
 			return result
