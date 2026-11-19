@@ -56,11 +56,9 @@ pin Dragengine.Utils
 class BehaviorElement extends Element
 	var Array pInstances, pThinkingInstances, pPostInitInstances
 	var Array pAttachableBehaviors, pThinkingAttachableBehaviors
-	var bool pRequiresEnterFrame
-	var bool pRequiresThink
-	var bool pRequiresAttachToParent
-	var bool pIsChangingGameWorld
-	var bool pIsThinker
+	var bool pRequiresEnterFrame, pRequiresThink, pRequiresAttachToParent
+	var bool pIsChangingGameWorld, pIsThinker
+	var float pTimeScale
 	
 	
 	
@@ -69,9 +67,8 @@ class BehaviorElement extends Element
 		pInstances = Array.new()
 		pAttachableBehaviors = Array.new()
 		pPostInitInstances = Array.new()
-		pRequiresEnterFrame = false
-		pRequiresThink = false
 		pRequiresAttachToParent = true
+		pTimeScale = 1
 		
 		eclass.forEachBehaviorDirect(block ECBehavior each
 			pInstances.add(each.createInstance(this))
@@ -327,6 +324,21 @@ class BehaviorElement extends Element
 		pRequiresAttachToParent = requiresAttachToParent
 	end
 	
+	/**
+	 * \brief Time scale applied to elapsed time.
+	 * \version 1.35
+	 */
+	func float getTimeScale()
+		return pTimeScale
+	end
+	
+	/**
+	 * \brief Set time scale applied to elapsed time.
+	 * \version 1.35
+	 */
+	func void setTimeScale(float scale)
+		pTimeScale = DEMath.max(scale, 0.0)
+	end
 	
 	
 	/**
@@ -578,6 +590,7 @@ class BehaviorElement extends Element
 	
 	/** \brief Think about what the element is going to do in this frame. */
 	func void think(float elapsed)
+		elapsed *= pTimeScale
 		if pThinkingInstances != null
 			pThinkingInstances.forEach(block ECBehaviorInstance each
 				each.think(elapsed)
@@ -592,6 +605,7 @@ class BehaviorElement extends Element
 	
 	/** \brief Post thinking after physics processing is finished. */
 	func void postThink(float elapsed)
+		elapsed *= pTimeScale
 		if pThinkingInstances != null
 			pThinkingInstances.forEach(block ECBehaviorInstance each
 				each.postThink(elapsed)
