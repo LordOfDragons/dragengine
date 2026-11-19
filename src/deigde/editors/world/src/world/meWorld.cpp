@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "meCamera.h"
 #include "meLumimeter.h"
 #include "meWorld.h"
@@ -550,6 +546,26 @@ void meWorld::RemoveAllNavSpaces(){
 	SetChanged(true);
 }
 
+
+// World Behaviors
+////////////////////
+
+void meWorld::SetWorldBehaviors(const meWorldBehavior::List &behaviors){
+	pWorldBehaviors.Visit([](meWorldBehavior &b){
+		b.SetWorld(nullptr);
+	});
+	
+	pWorldBehaviors = behaviors;
+	
+	pWorldBehaviors.Visit([&](meWorldBehavior &b){
+		b.SetWorld(this);
+	});
+	
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.WorldBehaviorsChanged(this);
+	});
+	SetChanged(true);
+}
 
 
 // World Parameters
@@ -1482,6 +1498,13 @@ void meWorld::NotifyCameraChanged(meCamera *camera){
 	});
 }
 
+void meWorld::NotifyWorldBehaviorChanged(meWorldBehavior *behavior){
+	DEASSERT_NOTNULL(behavior)
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.WorldBehaviorChanged(this, behavior);
+	});
+	SetChanged(true);
+}
 
 
 // Private Functions

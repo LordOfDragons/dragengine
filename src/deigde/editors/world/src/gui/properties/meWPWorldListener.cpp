@@ -65,6 +65,14 @@ void meWPWorldListener::MusicChanged(meWorld*){
 	pPanel.UpdateMusic();
 }
 
+void meWPWorldListener::WorldBehaviorsChanged(meWorld*){
+	pPanel.UpdateWorldBehaviors();
+}
+
+void meWPWorldListener::WorldBehaviorChanged(meWorld*, meWorldBehavior*){
+	pPanel.UpdateWorldBehaviors();
+}
+
 void meWPWorldListener::PropertiesChanged(meWorld*){
 	pPanel.UpdateProperties();
 }

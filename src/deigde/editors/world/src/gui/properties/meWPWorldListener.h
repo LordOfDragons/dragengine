@@ -72,6 +72,12 @@ public:
 	/** Music changed. */
 	void MusicChanged(meWorld *world) override;
 	
+	/** World behaviors changed. */
+	void WorldBehaviorsChanged(meWorld *world) override;
+	
+	/** World behavior changed. */
+	void WorldBehaviorChanged(meWorld *world, meWorldBehavior *behavior) override;
+	
 	/** World properties changed. */
 	void PropertiesChanged(meWorld *world) override;
 	

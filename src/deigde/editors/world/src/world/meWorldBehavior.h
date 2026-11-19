@@ -1,0 +1,94 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#ifndef _MEWORLDBEHAVIOR_H_
+#define _MEWORLDBEHAVIOR_H_
+
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
+
+class igdeEnvironment;
+class meWorld;
+
+
+/**
+ * World behavior.
+ */
+class meWorldBehavior : public deObject{
+public:
+	using Ref = deTObjectReference<meWorldBehavior>;
+	using List = decTObjectOrderedSet<meWorldBehavior>;
+	
+	
+private:
+	igdeEnvironment &pEnvironment;
+	meWorld *pWorld;
+	decString pName, pId;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create world behavior. */
+	meWorldBehavior(igdeEnvironment &environment);
+	
+	/** Create world behavior. */
+	meWorldBehavior(igdeEnvironment &environment, const decString &name, const decString &id);
+	
+	
+protected:
+	/** Cleans up the world behavior. */
+	~meWorldBehavior() override;
+	
+public:
+	/*@}*/
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** World or nullptr. */
+	inline meWorld *GetWorld() const{ return pWorld; }
+	
+	/** Set world or nullptr. */
+	void SetWorld(meWorld *world);
+	
+	/** Name. */
+	inline const decString &GetName() const{ return pName; }
+	
+	/** Set name. */
+	void SetName(const decString &name);
+	
+	/** Identifier. */
+	inline const decString &GetId() const{ return pId; }
+	
+	/** Set identifier. */
+	void SetId(const decString &id);
+	
+	/** \brief Notify listeners world behavior changed. */
+	void NotifyChanged();
+	/*@}*/
+};
+
+#endif

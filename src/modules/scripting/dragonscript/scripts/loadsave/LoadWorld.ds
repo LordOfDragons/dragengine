@@ -42,6 +42,7 @@ pin Dragengine.XML
 class LoadWorld extends BaseXmlLoader
 	var LoadHeightTerrain pLoadHeightTerrain
 	var ElementClassList pElementClassList
+	var GWBehaviorFactoryList pBehaviorFactories
 	var Dictionary pWorlds
 	
 	
@@ -65,23 +66,39 @@ class LoadWorld extends BaseXmlLoader
 	 * \version 1.26
 	 */
 	func void dispose()
-		pWorlds.forEach(block StubGameWorld each
-			
-		end)
 	end
 	
 	
-	/** Retrieves the element class manager. */
+	/** \brief Element class manager. */
 	func ElementClassList getElementClassList()
 		return pElementClassList
 	end
 	
-	/** Sets the element class manager. */
+	/** \brief Set element class manager. */
 	func void setElementClassList(ElementClassList list)
 		if list == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new()
 		end
 		pElementClassList = list
+	end
+	
+	/**
+	 * \brief Behavior factory list.
+	 * \version 1.35
+	 */
+	func GWBehaviorFactoryList getBehaviorFactories()
+		return pBehaviorFactories
+	end
+	
+	/**
+	 * \brief Set behavior factory list.
+	 * \version 1.35
+	 */
+	func void setBehaviorFactories(GWBehaviorFactoryList list)
+		if list == null
+			throw ENullPointer.new()
+		end
+		pBehaviorFactories = list
 	end
 	
 	
@@ -183,6 +200,9 @@ class LoadWorld extends BaseXmlLoader
 					
 				elif tagName.equals("navigationSpace")
 					pParseNavigationSpace(element, stubWorld)
+					
+				elif tagName.equals("behavior")
+					pReadBehavior(element, world)
 				end
 			end)
 			
@@ -434,5 +454,18 @@ class LoadWorld extends BaseXmlLoader
 			navspace.setOrientation(orientation)
 			stubWorld.addNavigationSpace(navspace)
 		end
+	end
+	
+	private func void pReadBehavior(EasyXMLElement root, GameWorld world)
+		var String type = root.getFirstCData()
+		
+		var GWBehaviorFactory factory = pBehaviorFactories.getWithId(type)
+		if factory == null
+			var String message = "Behavior factory absent: " + type
+			printOnConsole(root, message)
+			throw EInvalidParam.new(message)
+		end
+		
+		factory.addBehavior(world, root.hasAttributeNamed("id") if root.getAttributeNamed("id") else "")
 	end
 end

@@ -50,7 +50,7 @@ class meHTVegetationLayer;
 class meHTVVariation;
 class mePropField;
 class mePropFieldType;
-
+class meWorldBehavior;
 
 
 /**
@@ -296,6 +296,13 @@ public:
 	virtual void ActiveCameraChanged(meWorld *world);
 	/** Camera changed. */
 	virtual void CameraChanged(meWorld *world, meCamera *camera);
+	
+	
+	/** World behaviors changed. */
+	virtual void WorldBehaviorsChanged(meWorld *world);
+	
+	/** World behavior changed. */
+	virtual void WorldBehaviorChanged(meWorld *world, meWorldBehavior *behavior);
 	/*@}*/
 };
 

@@ -38,6 +38,9 @@
 #include "../../undosys/properties/world/property/meUWorldRemoveProperty.h"
 #include "../../undosys/properties/world/property/meUWorldSetProperty.h"
 #include "../../undosys/properties/world/property/meUWorldSetProperties.h"
+#include "../../undosys/properties/worldbehavior/meUSetWorldBehaviors.h"
+#include "../../undosys/properties/worldbehavior/meUWorldBehaviorSetId.h"
+#include "../../undosys/properties/worldbehavior/meUWorldBehaviorSetName.h"
 
 #include <deigde/codec/igdeCodecPropertyString.h>
 #include <deigde/environment/igdeEnvironment.h>
@@ -50,6 +53,7 @@
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/composed/igdeEditDVector.h>
 #include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
@@ -193,6 +197,165 @@ public:
 	}
 	
 	virtual igdeUndo::Ref OnChanged(const decDVector &vector, meWorld *world) = 0;
+};
+
+
+class cActionWorldBehaviorAdd : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionWorldBehaviorAdd> Ref;
+	cActionWorldBehaviorAdd(meWPWorld &panel) : cBaseAction(panel,
+		"@World.WPWorld.Action.WorldBehaviorAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@World.WPWorld.Action.WorldBehaviorAdd.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(meWorld *world) override{
+		decString name, id;
+		
+		if(!igdeCommonDialogs::GetString(pPanel, "@World.WPWorld.Action.WorldBehaviorAdd",
+		"@World.WPWorld.Dialog.AddWorldBehavior.Name", name)){
+			return {};
+		}
+		if(!igdeCommonDialogs::GetString(pPanel, "@World.WPWorld.Action.WorldBehaviorAdd",
+			"@World.WPWorld.Dialog.AddWorldBehavior.Id", id)){
+			return {};
+		}
+		
+		auto list = world->GetWorldBehaviors();
+		const auto behavior = meWorldBehavior::Ref::New(pPanel.GetEnvironment(), name, id);
+		list.Add(behavior);
+		world->GetUndoSystem()->Add(meUSetWorldBehaviors::Ref::New(world, list));
+		pPanel.SelectWorldBehavior(behavior);
+		return {};
+	}
+};
+
+class cActionWorldBehaviorRemove : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionWorldBehaviorRemove> Ref;
+	cActionWorldBehaviorRemove(meWPWorld &panel) : cBaseAction(panel,
+		"@World.WPWorld.Action.WorldBehaviorRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@World.WPWorld.Action.WorldBehaviorRemove.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(meWorld *world) override{
+		const auto behavior = pPanel.GetActiveWorldBehavior();
+		if(!behavior){
+			return {};
+		}
+		
+		auto list = world->GetWorldBehaviors();
+		list.Remove(behavior);
+		return meUSetWorldBehaviors::Ref::New(world, list);
+	}
+	
+	void Update() override{
+		SetEnabled(pPanel.GetActiveWorldBehavior().IsNotNull());
+	}
+};
+
+class cActionWorldBehaviorRemoveAll : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionWorldBehaviorRemoveAll> Ref;
+	cActionWorldBehaviorRemoveAll(meWPWorld &panel) : cBaseAction(panel,
+		"@World.WPWorld.Action.WorldBehaviorRemoveAll",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
+		"@World.WPWorld.Action.WorldBehaviorRemoveAll.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(meWorld *world) override{
+		return world->GetWorldBehaviors().IsNotEmpty()
+			? meUSetWorldBehaviors::Ref::New(world, meWorldBehavior::List()) : igdeUndo::Ref();
+	}
+	
+	void Update() override{
+		SetEnabled(pPanel.GetWorld() && !pPanel.GetWorld()->GetWorldBehaviors().IsEmpty());
+	}
+};
+
+class cActionWorldBehaviorUp : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionWorldBehaviorUp> Ref;
+	cActionWorldBehaviorUp(meWPWorld &panel) : cBaseAction(panel,
+		"@World.WPWorld.Action.WorldBehaviorUp",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@World.WPWorld.Action.WorldBehaviorUp.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(meWorld *world) override{
+		const auto behavior = pPanel.GetActiveWorldBehavior();
+		if(!behavior){
+			return {};
+		}
+		
+		auto list = world->GetWorldBehaviors();
+		const int index = list.IndexOf(behavior);
+		if(index <= 0){
+			return {};
+		}
+		list.MoveIndex(index, index - 1);
+		world->GetUndoSystem()->Add(meUSetWorldBehaviors::Ref::New(world, list));
+		pPanel.SelectWorldBehavior(behavior);
+		return {};
+	}
+	
+	void Update() override{
+		const auto behavior = pPanel.GetActiveWorldBehavior();
+		SetEnabled(behavior && pPanel.GetWorld()->GetWorldBehaviors().First() != behavior);
+	}
+};
+
+class cActionWorldBehaviorDown : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionWorldBehaviorDown> Ref;
+	cActionWorldBehaviorDown(meWPWorld &panel) : cBaseAction(panel,
+		"@World.WPWorld.Action.WorldBehaviorDown",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@World.WPWorld.Action.WorldBehaviorDown.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(meWorld *world) override{
+		const auto behavior = pPanel.GetActiveWorldBehavior();
+		if(!behavior){
+			return {};
+		}
+		
+		auto list = world->GetWorldBehaviors();
+		const int index = list.IndexOf(behavior);
+		if(index < 0 || index >= list.GetCount() - 1){
+			return {};
+		}
+		list.MoveIndex(index, index + 1);
+		world->GetUndoSystem()->Add(meUSetWorldBehaviors::Ref::New(world, list));
+		pPanel.SelectWorldBehavior(behavior);
+		return {};
+	}
+	
+	void Update() override{
+		const auto behavior = pPanel.GetActiveWorldBehavior();
+		SetEnabled(behavior && pPanel.GetWorld()->GetWorldBehaviors().Last() != behavior);
+	}
+};
+
+class cEditWorldBehaviors : public igdeListBoxListener{
+protected:
+	meWPWorld &pPanel;
+	
+public:
+	typedef deTObjectReference<cEditWorldBehaviors> Ref;
+	cEditWorldBehaviors(meWPWorld &panel) : pPanel(panel){}
+	
+	void AddContextMenuEntries(igdeListBox *listBox, igdeMenuCascade &menu) override{
+		meWorld * const world = pPanel.GetWorld();
+		if(!world){
+			return;
+		}
+		
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand(menu, cActionWorldBehaviorAdd::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionWorldBehaviorRemove::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionWorldBehaviorRemoveAll::Ref::New(pPanel));
+		helper.Separator(menu);
+		
+		helper.MenuCommand(menu, cActionWorldBehaviorUp::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionWorldBehaviorDown::Ref::New(pPanel));
+	}
 };
 
 
@@ -662,6 +825,13 @@ pWindowProperties(windowProperties)
 	helper.EditVector(groupBox, "@World.WPWorld.Gravity", "@World.WPWorld.WorldGravity.ToolTip", pEditGravity, cEditGravity::Ref::New(*this));
 	
 	
+	// behaviors
+	helper.GroupBoxFlow(content, groupBox, "@World.WPWorld.WorldBehaviors", false, false);
+	
+	helper.ListBox(groupBox, 4, "@World.WPWorld.WorldBehaviors.ToolTip",
+		pListBehaviors, cEditWorldBehaviors::Ref::New(*this));
+	
+	
 	// properties
 	helper.GroupBoxFlow(content, groupBox, "@World.WPWorld.WorldProperties", false, false);
 	
@@ -770,6 +940,7 @@ void meWPWorld::SetWorld(meWorld *world){
 
 
 void meWPWorld::UpdateWorld(){
+	UpdateWorldBehaviors();
 	UpdateWorldParameters();
 	UpdatePathFindTestTypeList();
 	UpdatePathFindTest();
@@ -888,6 +1059,32 @@ void meWPWorld::UpdateMusic(){
 	pActionMusicPlay->Update();
 	pActionMusicPause->Update();
 	pActionMusicStop->Update();
+}
+
+
+void meWPWorld::UpdateWorldBehaviors(){
+	pListBehaviors->UpdateRestoreSelection([&](){
+		pListBehaviors->RemoveAllItems();
+		if(pWorld){
+			pWorld->GetWorldBehaviors().Visit([&](const meWorldBehavior::Ref &behavior){
+				if(behavior->GetId().IsEmpty()){
+					pListBehaviors->AddItemRef(behavior->GetName(), nullptr, behavior);
+					
+				}else{
+					pListBehaviors->AddItemRef(decString::Formatted("{}: {}",
+						behavior->GetName(), behavior->GetId()), nullptr, behavior);
+				}
+			});
+		}
+	}, 0);
+}
+
+meWorldBehavior::Ref meWPWorld::GetActiveWorldBehavior() const{
+	return pListBehaviors->GetSelectedItemRefData().DynamicCast<meWorldBehavior>();
+}
+
+void meWPWorld::SelectWorldBehavior(const meWorldBehavior::Ref &behavior){
+	pListBehaviors->SetSelectionWithRefData(behavior);
 }
 
 

@@ -138,6 +138,7 @@ class InteractiveMainMenu extends Window
 	var Camera pCamera
 	var Microphone pMicrophone
 	var ElementClassList pElementClasses
+	var GWBehaviorFactoryList pGWBehaviorFactories
 	var MutableID pIDGenerator
 	var WorldRenderer pWorldRenderer
 	var Dictionary pActions
@@ -173,6 +174,7 @@ class InteractiveMainMenu extends Window
 		pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
 		pAnimateCamera = IMMAnimateCamera.new(this)
 		pElementClasses = ElementClassList.new()
+		pGWBehaviorFactories = GWBehaviorFactoryList.new()
 		pIDGenerator = MutableID.new(1)
 		pActions = Dictionary.new()
 		pMainCameraSpot = "main"
@@ -182,6 +184,7 @@ class InteractiveMainMenu extends Window
 		
 		pLoaders = Loaders.new(console)
 		pLoaders.getWorld().setElementClassList(pElementClasses)
+		pLoaders.getWorld().setBehaviorFactories(pGWBehaviorFactories)
 		
 		setTitle("") // no title
 		setWindowState(Window.WindowState.maximized)
@@ -203,6 +206,7 @@ class InteractiveMainMenu extends Window
 		pInteract = IMMInteract.new(this)
 		
 		addElementClasses()
+		addGWBehaviorFactories()
 		
 		pCamera = createCamera()
 		pMicrophone = Microphone.new()
@@ -225,6 +229,9 @@ class InteractiveMainMenu extends Window
 			pWorld = null
 		end
 		
+		if pGWBehaviorFactories != null
+			pGWBehaviorFactories = null
+		end
 		if pElementClasses != null
 			pElementClasses.dispose()
 			pElementClasses = null
@@ -395,6 +402,14 @@ class InteractiveMainMenu extends Window
 	/** \brief Element classes. */
 	func ElementClassList getElementClasses()
 		return pElementClasses
+	end
+	
+	/**
+	 * \brief Game world behavior factory list.
+	 * \version 1.35
+	 */
+	func GWBehaviorFactoryList getGWBehaviorFactories()
+		return pGWBehaviorFactories
 	end
 	
 	/**
@@ -838,6 +853,14 @@ class InteractiveMainMenu extends Window
 		
 		BehaviorElementClass.sharedFactoryHelper = restoreHelper
 	end
+	
+	/**
+	 * \brief Add game world behavior factories.
+	 * \version 1.35
+	 */
+	func void addGWBehaviorFactories()
+	end
+	
 	
 	/** \brief Loading world failed. */
 	protected func void loadWorldFailed(Exception e)

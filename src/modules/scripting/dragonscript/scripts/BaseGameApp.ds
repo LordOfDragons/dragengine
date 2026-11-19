@@ -570,6 +570,7 @@ class BaseGameApp extends Game
 		
 		pElementClassList = ElementClassList.new()
 		pLoaders.getWorld().setElementClassList(pElementClassList)
+		pLoaders.getWorld().setBehaviorFactories(pGWBehaviorFactories)
 		createAndAddElementClasses()
 		
 		loadBindings()

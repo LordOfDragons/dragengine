@@ -203,6 +203,15 @@ bool meLoadXMLWorldTask::Step(){
 		}else if(strcmp(tag->GetName(), "property") == 0){
 			pWorld->SetProperty(GetAttributeString(*tag, "key"), ReadMultilineString(*tag));
 			
+		}else if(tag->GetName() == "behavior"){
+			auto list = pWorld->GetWorldBehaviors();
+			decString id;
+			if(HasAttribute(*tag, "id")){
+				id = GetAttributeString(*tag, "id");
+			}
+			list.Add(meWorldBehavior::Ref::New(pWorld->GetEnvironment(), GetCDataString(*tag), id));
+			pWorld->SetWorldBehaviors(list);
+			
 		}else{
 			pLSSys->GetWindowMain()->GetLogger()->LogWarnFormat(LOGSOURCE,
 				"world.sector(%i:%i): Unknown Tag %s, ignoring",

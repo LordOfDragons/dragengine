@@ -28,6 +28,7 @@
 #include "meMusic.h"
 #include "meLumimeter.h"
 #include "meCamera.h"
+#include "meWorldBehavior.h"
 #include "object/meObject.h"
 #include "object/meObjectSelection.h"
 #include "idgroup/meIDGroupID.h"
@@ -151,6 +152,7 @@ public:
 		elmAudio
 	};
 	
+	
 private:
 	meWindowMain &pWindowMain;
 	
@@ -172,6 +174,7 @@ private:
 	meNavigationSpace::List pNavSpaces;
 	decStringDictionary pProperties;
 	decString pActiveProperty;
+	meWorldBehavior::List pWorldBehaviors;
 	
 	decTObjectDictionary<meObject> pObjectIDMap;
 	
@@ -184,9 +187,7 @@ private:
 	meDecalSelection pSelectionDecal;
 	meNavigationSpaceSelection pSelectionNavigationSpace;
 	
-	meCamera::Ref pFreeRoamCamera;
-	meCamera::Ref pPlayerCamera;
-	meCamera::Ref pActiveCamera;
+	meCamera::Ref pFreeRoamCamera, pPlayerCamera, pActiveCamera;
 	
 	meLumimeter::Ref pLumimeter;
 	mePathFindTest::Ref pPathFindTest;
@@ -392,6 +393,17 @@ public:
 	
 	/** Remove all navigation spaces. */
 	void RemoveAllNavSpaces();
+	/*@}*/
+	
+	
+	
+	/** \name World behaviors */
+	/*@{*/
+	/** World behaviors. */
+	inline const meWorldBehavior::List &GetWorldBehaviors() const{ return pWorldBehaviors; }
+	
+	/** Set world behaviors. */
+	void SetWorldBehaviors(const meWorldBehavior::List &behaviors);
 	/*@}*/
 	
 	
@@ -720,6 +732,9 @@ public:
 	void NotifyActiveCameraChanged();
 	/** Notifies all that the camera parameters changed. */
 	void NotifyCameraChanged(meCamera *camera);
+	
+	/** Notify all world behavior changed. */
+	void NotifyWorldBehaviorChanged(meWorldBehavior *behavior);
 	/*@}*/
 	
 private:
