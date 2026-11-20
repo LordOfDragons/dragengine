@@ -266,8 +266,8 @@ void debpTouchSensor::ApplyChanges(){
 			collider->SetTouchSensorMarked(false);
 		});
 		
-		int i;
-		for(i=0; i<count; i++){
+		pNotifyEnterColliders.RemoveAll();
+		for(int i=0; i<count; i++){
 			const btCollisionObject * const btColObj = ghostObject.getOverlappingObject(i);
 			const debpCollisionObject &colObj = *((debpCollisionObject*)btColObj->getUserPointer());
 			
@@ -292,13 +292,8 @@ void debpTouchSensor::ApplyChanges(){
 							collider->GetTrackingTouchSensors().Add(this);
 						}
 						
-						pTouchSensor.NotifyColliderEntered(&collider->GetCollider());
-						// at this point we might have been removed from the parent world
-						// by the user. in this case pParentWorld is NULL and all further
-						// actions are invalid. we need to quit the loop
-						if(!pParentWorld){
-							break;
-						}
+						// delay notification to avoid changing overlapping object list
+						pNotifyEnterColliders.Add(&collider->GetCollider());
 					}
 					
 				}else{
@@ -313,26 +308,33 @@ void debpTouchSensor::ApplyChanges(){
 			}
 		}
 		
-	// add all non-marked colliders to leaving list
-	pTouchingColliders.VisitReverse([&](debpCollider *collider){
-		if(!collider->GetTouchSensorMarked()){
-			pTouchingColliders.Remove(collider);
-			pLeavingColliders.Add(collider);
-		}
-	});
-	
-	// send a notification for all leaving colliders. if we have been removed from the
-	// parent world in the mean time pLeavingColliders is empty so no need to check
-	// if pParentWorld is NULL
-	while(pLeavingColliders.IsNotEmpty()){
-		const int index = pLeavingColliders.GetCount() - 1;
-		debpCollider * const collider = pLeavingColliders.GetAt(index);
-		pLeavingColliders.RemoveFrom(index);
-		collider->GetTrackingTouchSensors().Remove(this);
+		// notify enter colliders. this can remove or add colliders which in turn modify the
+		// ghost overlapping object list. doing this in the loop above can result in segfaults
+		pNotifyEnterColliders.Visit([&](deCollider *collider){
+			pTouchSensor.NotifyColliderEntered(collider);
+		});
+		pNotifyEnterColliders.RemoveAll();
 		
-		pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
-	}
-	
+		// add all non-marked colliders to leaving list
+		pTouchingColliders.VisitReverse([&](debpCollider *collider){
+			if(!collider->GetTouchSensorMarked()){
+				pTouchingColliders.Remove(collider);
+				pLeavingColliders.Add(collider);
+			}
+		});
+		
+		// send a notification for all leaving colliders. if we have been removed from the
+		// parent world in the mean time pLeavingColliders is empty so no need to check
+		// if pParentWorld is NULL
+		while(pLeavingColliders.IsNotEmpty()){
+			const int index = pLeavingColliders.GetCount() - 1;
+			debpCollider * const collider = pLeavingColliders.GetAt(index);
+			pLeavingColliders.RemoveFrom(index);
+			collider->GetTrackingTouchSensors().Remove(this);
+			
+			pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
+		}
+		
 	}else{
 		// all colliders left the shape
 		while(pTouchingColliders.GetCount() > 0){
