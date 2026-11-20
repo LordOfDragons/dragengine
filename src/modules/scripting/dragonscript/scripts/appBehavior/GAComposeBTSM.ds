@@ -35,9 +35,11 @@ pin Dragengine.Utils
  */
 class GAComposeBTSM
 	private class EntrySM
+		public var GABehaviorStateMachine behavior
 		public var SMContext context
 		
 		func new(GABehaviorStateMachine behavior)
+			this.behavior = behavior
 			context = behavior.getContext()
 		end
 		
@@ -108,6 +110,18 @@ class GAComposeBTSM
 	func void runEvent(String prefix, String event, Object parameter)
 		pSMContexts.forEach(block EntrySM each
 			each.context.runEvent(prefix + event, parameter)
+		end)
+	end
+	
+	
+	/**
+	 * \brief Visit state machine instances with block.
+	 * 
+	 * Block receives as argument \ref GABehaviorStateMachine.
+	 */
+	func void forEachStateMachine(Block visitor)
+		pSMContexts.forEach(block EntrySM each
+			visitor.run(each.behavior)
 		end)
 	end
 end

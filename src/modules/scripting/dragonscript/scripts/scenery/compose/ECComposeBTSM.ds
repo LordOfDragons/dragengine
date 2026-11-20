@@ -41,11 +41,13 @@ class ECComposeBTSM
 	/** \brief Instance helper. */
 	class Instance
 		private class EntryBT
+			public var ECBehaviorBehaviorTree.Instance instance
 			public var BTContext context
 			public var String alias
 			
 			func new(ECBehaviorBehaviorTree behavior, BehaviorElement element, ECPStringMap aliasMap)
-				context = behavior.instance(element).getContext()
+				instance = behavior.instance(element)
+				context = instance.getContext()
 				if aliasMap != null
 					alias = aliasMap.map(behavior.getID())
 				end
@@ -76,11 +78,13 @@ class ECComposeBTSM
 		end
 		
 		private class EntrySM
+			public var ECBehaviorStateMachine.Instance instance
 			public var SMContext context
 			public var String alias
 			
 			func new(ECBehaviorStateMachine behavior, BehaviorElement element, ECPStringMap aliasMap)
-				context = behavior.instance(element).getContext()
+				instance = behavior.instance(element)
+				context = instance.getContext()
 				if aliasMap != null
 					alias = aliasMap.map(behavior.getID())
 				end
@@ -184,6 +188,31 @@ class ECComposeBTSM
 				else
 					each.context.runEvent(prefix + event, parameter)
 				end
+			end)
+		end
+		
+		
+		/**
+		 * \brief Visit state machine instances with block.
+		 * \version 1.35
+		 * 
+		 * Block receives as argument \ref ECBehaviorStateMachine.Instance.
+		 */
+		func void forEachStateMachine(Block visitor)
+			pSMContexts.forEach(block EntrySM each
+				visitor.run(each.instance)
+			end)
+		end
+		
+		/**
+		 * \brief Visit behavior tree instances with block.
+		 * \version 1.35
+		 * 
+		 * Block receives as argument \ref ECBehaviorBehaviorTree.Instance.
+		 */
+		func void forEachBehaviorTree(Block visitor)
+			pBTContexts.forEach(block EntryBT each
+				visitor.run(each.instance)
 			end)
 		end
 	end

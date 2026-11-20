@@ -160,7 +160,7 @@ class SMContext
 		return pConditions.has(name)
 	end
 	
-	/** \brief Visit conditions using block with parameters String (name and SMCondition (condition). */
+	/** \brief Visit conditions using block with parameters String (name) and SMCondition (condition). */
 	func void forEachCondition(Block ablock)
 		pConditions.forEach(ablock)
 	end
@@ -191,6 +191,16 @@ class SMContext
 		pConditions.removeAll()
 	end
 	
+	/**
+	 * \brief Add conditions from another context.
+	 * \version 1.35
+	 * */
+	func void addConditionsFromContext(SMContext context)
+		context.forEachCondition(block String name, SMCondition condition
+			pConditions.setAt(name, condition)
+		end)
+	end
+	
 	
 	/** \brief Count of actions. */
 	func int getActionCount()
@@ -207,7 +217,7 @@ class SMContext
 		return pActions.has(name)
 	end
 	
-	/** \brief Visit actions using block with parameters String (name and SMAction (action). */
+	/** \brief Visit actions using block with parameters String (name) and SMAction (action). */
 	func void forEachAction(Block ablock)
 		pActions.forEach(ablock)
 	end
@@ -236,6 +246,26 @@ class SMContext
 	/** \brief Remove all actions. */
 	func void removeAllActions()
 		pActions.removeAll()
+	end
+	
+	/**
+	 * \brief Add actions from another context.
+	 * \version 1.35
+	 */
+	func void addActionsFromContext(SMContext context)
+		context.forEachAction(block String name, SMAction action
+			pActions.setAt(name, action)
+		end)
+	end
+	
+	
+	/**
+	 * \brief Add actions and conditions from another context.
+	 * \version 1.35
+	 */
+	func void addActionsAndConditionsFromContext(SMContext context)
+		addActionsFromContext(context)
+		addConditionsFromContext(context)
 	end
 	
 	

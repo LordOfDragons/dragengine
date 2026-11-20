@@ -56,6 +56,33 @@ pin Dragengine.BehaviorTreeSystem
  * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:gabehavior_statemachine
  */
 class GABehaviorStateMachine extends DefaultGABehavior
+	/** \brief Action "self". */
+	private class SMASelf implements SMAction
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func void runAction(SMContext context, Dictionary parameters)
+			var Object value
+			
+			value = parameters.getAt("debug.name", null)
+			if value != null
+				pInstance.getContext().setLoggingName(value cast String)
+			end
+			
+			value = parameters.getAt("debug.targets", null)
+			if value != null
+				var Array t = (value cast String).split(" \t\n")
+				var SMContext c = pInstance.getContext()
+				c.setLogActions(t.has("actions"))
+				c.setLogTransitions(t.has("transitions"))
+				c.setLogStateChanges(t.has("stateChanges"))
+			end
+		end
+	end
+	
 	/** \brief Action "engine.update". */
 	private class SMAEngineUpdate implements SMAction
 		var GABehaviorStateMachine pInstance
@@ -773,6 +800,20 @@ class GABehaviorStateMachine extends DefaultGABehavior
 				pInstance.getContext().setCurrentState(state)
 			end
 			
+			value = parameters.getAt("debug.name", null)
+			if value != null
+				pInstance.getContext().setLoggingName(value cast String)
+			end
+			
+			value = parameters.getAt("debug.targets", null)
+			if value != null
+				var Array t = (value cast String).split(" \t\n")
+				var SMContext c = pInstance.getContext()
+				c.setLogActions(t.has("actions"))
+				c.setLogTransitions(t.has("transitions"))
+				c.setLogStateChanges(t.has("stateChanges"))
+			end
+			
 			return BTResult.success
 		end
 	end
@@ -996,6 +1037,13 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			pContext.setLogStateChanges(true)
 			pContext.setLogActions(true)
 		end
+		
+		pBTSMs = GAComposeBTSM.new()
+		pBTSMs.forEachStateMachine(block GABehaviorStateMachine each
+			pContext.addActionsAndConditionsFromContext(each.getContext())
+		end)
+		
+		pContext.setAction("self", SMASelf.new(this))
 		
 		pContext.setAction("engine.update", SMAEngineUpdate.new(this))
 		pContext.setCondition("engine.check", SMCEngineCheck.new(this))
