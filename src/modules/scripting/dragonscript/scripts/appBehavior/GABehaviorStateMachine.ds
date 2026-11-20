@@ -1014,6 +1014,9 @@ class GABehaviorStateMachine extends DefaultGABehavior
 	
 	
 	func void initGame()
+		// has to come before pContext is created, so we are not included
+		pBTSMs = GAComposeBTSM.new()
+		
 		var String basePath = getID().empty() if "appBehavior/stateMachine/"\
 			else "appBehavior/stateMachine(" + getID() + ")/"
 		
@@ -1038,10 +1041,17 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			pContext.setLogActions(true)
 		end
 		
-		pBTSMs = GAComposeBTSM.new()
-		pBTSMs.forEachStateMachine(block GABehaviorStateMachine each
-			pContext.addActionsAndConditionsFromContext(each.getContext())
-		end)
+		if pBTSMs.hasAny()
+			// the first state machine knows all possible actions and conditions
+			var GABehaviorStateMachine basesm = pBTSMs.getStateMachineAt(0)
+			pContext.addActionsAndConditionsFromContext(basesm.pContext)
+			
+			// it has though not added management actions and conditions to the previous
+			// state machine since there is none
+			pContext.setAction(basesm.pPrefix + "set", BTSMSet.new(basesm))
+			pContext.setAction(basesm.pPrefix + "event", BTSMEvent.new(basesm))
+			pContext.setCondition(basesm.pPrefix + "check", BTSMCheck.new(basesm, basesm.pPrefix))
+		end
 		
 		pContext.setAction("self", SMASelf.new(this))
 		
@@ -1058,8 +1068,7 @@ class GABehaviorStateMachine extends DefaultGABehavior
 		pContext.setAction("windowGameWorld.update", SMAWindowGameWorldUpdate.new(this))
 		pContext.setCondition("windowGameWorld.check", SMCWindowGameWorldCheck.new(this))
 		
-		// make state machine available to previously added state machines
-		pBTSMs = GAComposeBTSM.new()
+		// make state machine available to state machines added before us
 		if pBTSMs.hasAny()
 			pBTSMs.addAllAction(pPrefix, "set", BTSMSet.new(this))
 			pBTSMs.addAllAction(pPrefix, "event", BTSMEvent.new(this))

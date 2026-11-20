@@ -64,12 +64,16 @@ class GAComposeBTSM
 	/**
 	 * \brief Create composable application behavior.
 	 * 
-	 * Find state machine behaviors and store contexts. Call this during \ref GABehavior#initGame().
+	 * Find initialized state machine behaviors and store contexts. Call this during
+	 * \ref GABehavior#initGame(). Only state machines added before will be initialized by now.
 	 */
 	func new()
 		pSMContexts = Array.new()
 		BaseGameApp.getApp().forEachBehavior(block GABehaviorStateMachine each
-			pSMContexts.add(EntrySM.new(each))
+			var EntrySM entry = EntrySM.new(each)
+			if entry.context != null
+				pSMContexts.add(entry)
+			end
 		end)
 	end
 	
@@ -113,6 +117,16 @@ class GAComposeBTSM
 		end)
 	end
 	
+	
+	/** \brief Count of state machines. */
+	func int getStateMachineCount()
+		return pSMContexts.getCount()
+	end
+	
+	/** \brief Get state machine at index. */
+	func GABehaviorStateMachine getStateMachineAt(int index)
+		return (pSMContexts.getAt(index) cast EntrySM).behavior
+	end
 	
 	/**
 	 * \brief Visit state machine instances with block.

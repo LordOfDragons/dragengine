@@ -193,6 +193,22 @@ class ECComposeBTSM
 		
 		
 		/**
+		 * \brief Count of state machines.
+		 * \version 1.35
+		 */
+		func int getStateMachineCount()
+			return pSMContexts.getCount()
+		end
+		
+		/**
+		 * \brief State machine at index.
+		 * \version 1.35
+		 */
+		func ECBehaviorStateMachine.Instance getStateMachineAt(int index)
+			return (pSMContexts.getAt(index) cast EntrySM).instance
+		end
+		
+		/**
 		 * \brief Visit state machine instances with block.
 		 * \version 1.35
 		 * 
@@ -202,6 +218,23 @@ class ECComposeBTSM
 			pSMContexts.forEach(block EntrySM each
 				visitor.run(each.instance)
 			end)
+		end
+		
+		
+		/**
+		 * \brief Count of behavior trees.
+		 * \version 1.35
+		 */
+		func int getBehaviorTreeCount()
+			return pBTContexts.getCount()
+		end
+		
+		/**
+		 * \brief Behavior tree at index.
+		 * \version 1.35
+		 */
+		func ECBehaviorBehaviorTree.Instance getBehaviorTreeAt(int index)
+			return (pBTContexts.getAt(index) cast EntryBT).instance
 		end
 		
 		/**

@@ -811,9 +811,17 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			var BehaviorElement element = getElement()
 			if pECBehavior.getBTSMs().hasAny()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.forEachStateMachine(block ECBehaviorStateMachine.Instance each
-					pContext.addActionsAndConditionsFromContext(each.getContext())
-				end)
+				
+				// the first state machine knows all possible actions and conditions
+				var Instance basesm = pBTSMs.getStateMachineAt(0)
+				pContext.addActionsAndConditionsFromContext(basesm.pContext)
+				
+				// it has though not added management actions and conditions to the previous
+				// state machine since there is none
+				var String prefix = basesm.pECBehavior.getPrefix()
+				pContext.setAction(prefix + "set", BTSMSet.new(basesm))
+				pContext.setAction(prefix + "event", BTSMEvent.new(basesm))
+				pContext.setCondition(prefix + "check", BTSMCheck.new(basesm, prefix))
 			end
 			
 			var SMACGameWorld smacGameWorld = SMACGameWorld.new(this)
