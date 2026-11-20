@@ -30,6 +30,7 @@ pin Dragengine.Gui.Events
 pin Dragengine.Scenery
 pin Dragengine.CameraDirectors
 pin Dragengine.Preloading
+pin Dragengine.BehaviorTreeSystem
 
 /**
  * \brief Game app behavior adding state machine support.
@@ -745,11 +746,115 @@ class GABehaviorStateMachine extends DefaultGABehavior
 		end
 	end
 	
+	/** \brief Action "stateMachine{(id)}.set". */
+	private class BTSMSet extends BTSMActionCondition
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func BTResult runActionShared(Object context, Dictionary parameters)
+			var Object value = parameters.getAt("stateMachine", null)
+			if value != null
+				pInstance.setStateMachine(value cast String)
+			end
+			
+			if parameters.has("reset")
+				pInstance.getContext().reset()
+			end
+			
+			value = parameters.getAt("state", null)
+			if value != null
+				var SMState state = pInstance.getStateMachine().getStateAt(value cast String)
+				if state == null
+					return BTResult.failure
+				end
+				pInstance.getContext().setCurrentState(state)
+			end
+			
+			return BTResult.success
+		end
+	end
 	
-	var String pPath
+	/** \brief Action "stateMachine{(id)}.event". */
+	private class BTSMEvent extends BTSMActionCondition
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance)
+			pInstance = instance
+		end
+		
+		func BTResult runActionShared(Object context, Dictionary parameters)
+			pInstance.runEvent(parameters.getAt("id") cast String)
+			return BTResult.success
+		end
+	end
+	
+	/** \brief Condition "stateMachine{(id)}.check". */
+	private class BTSMCheck extends BTSMCondition
+		var GABehaviorStateMachine pInstance
+		
+		func new(GABehaviorStateMachine instance, String prefix) super(prefix)
+			pInstance = instance
+		end
+		
+		func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+			var SMState state = pInstance.getContext().getCurrentState()
+			var String stateid = state.getID()
+			var bool result = true
+			var Object value
+			
+			value = parameters.getAt(prefix + "state", null)
+			if value != null
+				result &= stateid.equals(value cast String)
+			end
+			
+			value = parameters.getAt(prefix + "state.not", null)
+			if value != null
+				result &= not stateid.equals(value cast String)
+			end
+			
+			value = parameters.getAt(prefix + "state.starts", null)
+			if value != null
+				result &= stateid.startsWith(value cast String)
+			end
+			
+			value = parameters.getAt(prefix + "state.starts.not", null)
+			if value != null
+				result &= not stateid.startsWith(value cast String)
+			end
+			
+			value = parameters.getAt(prefix + "state.ends", null)
+			if value != null
+				result &= stateid.endsWith(value cast String)
+			end
+			
+			value = parameters.getAt(prefix + "state.ends.not", null)
+			if value != null
+				result &= not stateid.endsWith(value cast String)
+			end
+			
+			value = parameters.getAt(prefix + "state.contains", null)
+			if value != null
+				result &= stateid.findString(value cast String) != -1
+			end
+			
+			value = parameters.getAt(prefix + "state.contains.not", null)
+			if value != null
+				result &= stateid.findString(value cast String) == -1
+			end
+			
+			return result
+		end
+	end
+	
+	
+	var String pPrefix, pPath
 	var StateMachine pStateMachine
 	var SMContext pContext
 	var bool pServicesInitializedEventPending
+	var GAComposeBTSM pBTSMs
 	
 	
 	/** \brief Create behavior with empty identifier. */
@@ -767,8 +872,14 @@ class GABehaviorStateMachine extends DefaultGABehavior
 			throw ENullPointer.new("id")
 		end
 		pPath = path
+		pPrefix = id.empty() if "stateMachine." else "stateMachine(" + id + ")."
 	end
 	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief State machine path or null. */
 	func String getPath()
@@ -788,6 +899,11 @@ class GABehaviorStateMachine extends DefaultGABehavior
 	/** \brief Context. */
 	func SMContext getContext()
 		return pContext
+	end
+	
+	/** \brief Composable component for state machines. */
+	func GAComposeBTSM getBTSM()
+		return pBTSMs
 	end
 	
 	
@@ -836,6 +952,26 @@ class GABehaviorStateMachine extends DefaultGABehavior
 	end
 	
 	
+	/** \brief Set state machine, reset to initial state and send "initGame" event. */
+	func void setStateMachine(StateMachine stateMachine)
+		pContext.setStateMachine(stateMachine)
+		reset()
+		runEvent("initGame")
+	end
+	
+	/** \brief Set state machine, reset to initial state and send "initGame" event. */
+	func void setStateMachine(String path)
+		var StateMachine stateMachine
+		if not path.empty()
+			stateMachine = loadStateMachine(path)
+		end
+		if stateMachine == null
+			stateMachine = StateMachine.newEmpty()
+		end
+		setStateMachine(stateMachine)
+	end
+	
+	
 	func void initGame()
 		var String basePath = getID().empty() if "appBehavior/stateMachine/"\
 			else "appBehavior/stateMachine(" + getID() + ")/"
@@ -873,6 +1009,14 @@ class GABehaviorStateMachine extends DefaultGABehavior
 		pContext.setAction("windowGameWorld.set", SMAWindowGameWorldSet.new(this))
 		pContext.setAction("windowGameWorld.update", SMAWindowGameWorldUpdate.new(this))
 		pContext.setCondition("windowGameWorld.check", SMCWindowGameWorldCheck.new(this))
+		
+		// make state machine available to previously added state machines
+		pBTSMs = GAComposeBTSM.new()
+		if pBTSMs.hasAny()
+			pBTSMs.addAllAction(pPrefix, "set", BTSMSet.new(this))
+			pBTSMs.addAllAction(pPrefix, "event", BTSMEvent.new(this))
+			pBTSMs.addAllActionCondition(pPrefix, "check", BTSMCheck.new(this, pPrefix))
+		end
 	end
 	
 	func void postInitGame()
@@ -880,6 +1024,7 @@ class GABehaviorStateMachine extends DefaultGABehavior
 	end
 	
 	func void cleanUp()
+		pBTSMs = null
 		pContext = null
 	end
 	
@@ -899,7 +1044,7 @@ class GABehaviorStateMachine extends DefaultGABehavior
 	
 	
 	/** \brief Load state machine. */
-	protected func StateMachine loadStateMachine(String path)
+	func StateMachine loadStateMachine(String path)
 		return BaseGameApp.getApp().getLoaders().getStateMachine().loadFromFile(path)
 	end
 	

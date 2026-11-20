@@ -230,9 +230,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorStateMachine behavior = ECBehaviorStateMachine.new(eclass, id)
-			
-			behavior.setBehaviorTree(getHelper().defaultBehaviorTree(eclass, parameters))
-			
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			getHelper().setPropertiesFromParameters(eclass, parameters, "stateMachine", id)
 			return behavior
 		end
@@ -651,11 +649,115 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 		end
 		
+		/** \brief Action "stateMachine{(id)}.set". */
+		private class BTSMSet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value = parameters.getAt("stateMachine", null)
+				if value != null
+					pInstance.setStateMachine(value cast String)
+				end
+				
+				if parameters.has("reset")
+					pInstance.getContext().reset()
+				end
+				
+				value = parameters.getAt("state", null)
+				if value != null
+					var SMState state = pInstance.getStateMachine().getStateAt(value cast String)
+					if state == null
+						return BTResult.failure
+					end
+					pInstance.getContext().setCurrentState(state)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Action "stateMachine{(id)}.event". */
+		private class BTSMEvent extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				pInstance.runEvent(parameters.getAt("id") cast String)
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Condition "stateMachine{(id)}.check". */
+		private class BTSMCheck extends BTSMCondition
+			var Instance pInstance
+			
+			func new(Instance instance, String prefix) super(prefix)
+				pInstance = instance
+			end
+			
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+				var SMState state = pInstance.getContext().getCurrentState()
+				var String stateid = state.getID()
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "state", null)
+				if value != null
+					result &= stateid.equals(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.not", null)
+				if value != null
+					result &= not stateid.equals(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.starts", null)
+				if value != null
+					result &= stateid.startsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.starts.not", null)
+				if value != null
+					result &= not stateid.startsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.ends", null)
+				if value != null
+					result &= stateid.endsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.ends.not", null)
+				if value != null
+					result &= not stateid.endsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.contains", null)
+				if value != null
+					result &= stateid.findString(value cast String) != -1
+				end
+				
+				value = parameters.getAt(prefix + "state.contains.not", null)
+				if value != null
+					result &= stateid.findString(value cast String) == -1
+				end
+				
+				return result
+			end
+		end
+		
 		
 		var ECBehaviorStateMachine pECBehavior
 		var StateMachine pStateMachine
 		var SMContext pContext
 		var bool pReceiveGameWorldEvents
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		/** \brief Create element. */
@@ -666,6 +768,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		
 		/** \brief Dispose of composeable instance. */
 		func void dispose()
+			pBTSMs = null
 			pContext = null
 			pStateMachine = null
 			super.dispose()
@@ -705,16 +808,13 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			
 			var BehaviorElement element = getElement()
 			
-			if pECBehavior.getBehaviorTree() != null
+			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
-				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
-				c.setAction(prefix + "set", BTASet.new(this))
-				c.setAction(prefix + "event", BTAEvent.new(this))
-				
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTSMSet.new(this))
+				pBTSMs.addAllAction(prefix, "event", BTSMEvent.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTSMCheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
 			end
 			
 			element.registerPostInit(this)
@@ -727,6 +827,11 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		/** \brief Load state machine. */
 		protected func StateMachine loadStateMachine(StubElement stub)
 			return pECBehavior.getStateMachine().getStateMachine(stub, getElement().getClass())
+		end
+		
+		/** \brief Load state machine. */
+		protected func StateMachine loadStateMachine(String path)
+			return BaseGameApp.getApp().getLoaders().getStateMachine().loadFromFile(path)
 		end
 		
 		/** \brief Create context. */
@@ -827,6 +932,25 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			updateReceiveGameWorldEvents()
 		end
 		
+		/** \brief Set state machine, reset to initial state and send "initGame" event. */
+		func void setStateMachine(StateMachine stateMachine)
+			pContext.setStateMachine(stateMachine)
+			reset()
+			runEvent("initGame")
+		end
+		
+		/** \brief Set state machine, reset to initial state and send "initGame" event. */
+		func void setStateMachine(String path)
+			var StateMachine stateMachine
+			if not path.empty()
+				stateMachine = loadStateMachine(path)
+			end
+			if stateMachine == null
+				stateMachine = StateMachine.newEmpty()
+			end
+			setStateMachine(stateMachine)
+		end
+		
 		
 		func void addToGameWorld()
 			updateReceiveGameWorldEvents()
@@ -893,6 +1017,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	var Array pActionConditionFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
 	var String pPrefix
+	var ECComposeBTSM pBTSMs
 	
 	
 	
@@ -926,6 +1051,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID, String prefix)\
 	super(eclass, id)
 		pPrefix = prefix
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addProperty(pStateMachine = ECPStateMachine.new(prefix + "path", loaders.getStateMachine()))
 		eclass.addProperty(pDebug = ECPString.new(prefix + "debug", null))
@@ -937,6 +1063,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	
 	/** \brief Dispose of behavior. */
 	func void dispose()
+		pBTSMs = null
 		pActionConditionFactories = null
 		pBehaviorTree = null
 		super.dispose()
@@ -1010,6 +1137,11 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		pActionConditionFactories.forEach(block ActionConditionFactory each
 			each.setActionsConditions(instance)
 		end)
+	end
+	
+	/** \brief Compose behavior trees and state machines. */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	
