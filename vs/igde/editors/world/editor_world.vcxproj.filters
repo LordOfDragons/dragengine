@@ -830,6 +830,15 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\property\meUWorldSetProperty.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUSetWorldBehaviors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUWorldBehaviorSetId.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUWorldBehaviorSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\utils\meBitArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -945,6 +954,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldBehavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldGuiParameters.cpp">
@@ -1861,6 +1873,15 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\property\meUWorldSetProperty.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUSetWorldBehaviors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUWorldBehaviorSetId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUWorldBehaviorSetName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\utils\meBitArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1976,6 +1997,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldBehavior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldGuiParameters.h">

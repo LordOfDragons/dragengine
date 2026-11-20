@@ -550,6 +550,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\property\meUWorldRemoveProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\property\meUWorldSetProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\property\meUWorldSetProperty.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUSetWorldBehaviors.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUWorldBehaviorSetId.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUWorldBehaviorSetName.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\utils\meBitArray.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\utils\meByteArray.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\utils\meHelpers.cpp" />
@@ -589,6 +592,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meLumimeter.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meMusic.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldBehavior.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldGuiParameters.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldNotifier.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\world\navspace\meNavigationSpace.cpp" />
@@ -895,6 +899,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\property\meUWorldRemoveProperty.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\property\meUWorldSetProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\property\meUWorldSetProperty.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUSetWorldBehaviors.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUWorldBehaviorSetId.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\worldbehavior\meUWorldBehaviorSetName.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\utils\meBitArray.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\utils\meByteArray.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\utils\meHelpers.h" />
@@ -934,6 +941,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meLumimeter.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meMusic.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorld.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldBehavior.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldGuiParameters.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\meWorldNotifier.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\world\navspace\meNavigationSpace.h" />
