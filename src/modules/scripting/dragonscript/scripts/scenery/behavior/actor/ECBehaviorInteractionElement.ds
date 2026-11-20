@@ -200,6 +200,26 @@ class ECBehaviorInteractionElement extends DefaultECBehavior
 					end
 				end
 				
+				value = parameters.getAt(prefix + "matches", null)
+				if value != null
+					if value.equals("eventParameter")
+						result &= pInstance.getInteractionElement() == (context cast SMContext).getEventParameter()
+						
+					else
+						result = false
+					end
+				end
+				
+				value = parameters.getAt(prefix + "matches.not", null)
+				if value != null
+					if value.equals("eventParameter")
+						result &= pInstance.getInteractionElement() != (context cast SMContext).getEventParameter()
+						
+					else
+						result = false
+					end
+				end
+				
 				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getInteractionElement(),\
 					parameters, prefix + "interact.", pInstance.getElement())
 				
