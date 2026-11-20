@@ -18,5 +18,8 @@ if (Test-Path $ExpandedDir) {
 DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "eossdk-$EosSdkVersion.zip" -UrlPath "eossdk"
 DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "eossdk_bin_windows-$EosSdkVersion.tar.xz" -UrlPath "eossdk"
 
-Expand-Archive -Path "$ProjectDir\eossdk-$EosSdkVersion.zip" -DestinationPath $ExpandedDir
+# workaround for powershell bug under github
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory("$ProjectDir\eossdk-$EosSdkVersion.zip", $ExpandedDir)
+
 Expand-TarXz -Path "$ProjectDir\eossdk_bin_windows-$EosSdkVersion.tar.xz" -Destination $ExpandedDir

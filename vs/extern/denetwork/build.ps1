@@ -22,4 +22,6 @@ if (!(Test-Path $ArchiveFile)) {
     Invoke-WebRequestWithRetry -Uri "$BaseUrl/DENetworkSDK-$DENetworkVersion.zip" -OutFile $ArchiveFile
 }
 
-Expand-Archive -Path $ArchiveFile -DestinationPath $ExpandedDir
+# workaround for powershell bug under github
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($ArchiveFile, $ExpandedDir)
