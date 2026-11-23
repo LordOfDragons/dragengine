@@ -238,6 +238,12 @@ public:
 				}
 			});
 		});
+		pPanel.GetSkin()->GetMapped().Visit([&](const seMapped &mapped){
+			const decString &name = mapped.GetRenderable();
+			if(!name.IsEmpty() && !dynamicSkin.GetRenderables().HasNamed(name)){
+				proposals.Add(name);
+			}
+		});
 		
 		decString name(proposals.IsNotEmpty() ? proposals.First()
 			: pPanel.Translate("Skin.WPDynamicSkin.DefaultRenderableName").ToUTF8());
