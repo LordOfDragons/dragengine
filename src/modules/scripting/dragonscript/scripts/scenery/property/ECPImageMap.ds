@@ -1,0 +1,197 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Dictionary of images element class property for use with XML loading.
+ * \version 1.35
+ * 
+ * Similar to ECPImage but assigns each image a unique name. This is useful to define
+ * a list of images to use mapped against well known identifiers. Also allows to map
+ * the same image to multiple unique identifiers if required.
+ */
+class ECPImageMap extends ElementClassProperty implements ResourceListener
+	var Dictionary pPath, pImages
+	var Array pFailedLoading, pExceptions
+	var PreloadCounter pCounter
+	var bool pHasPreloaded
+	
+	
+	/** \brief Create property. */
+	func new(String name) super(name)
+		pPath = Dictionary.new()
+		pImages = Dictionary.new()
+	end
+	
+	func void dispose()
+		pImages = null
+	end
+	
+	
+	/** \brief Remove all path. */
+	func void removeAllPath()
+		pPath.removeAll()
+	end
+	
+	/** \brief Set path to load for identifier. */
+	func void setPathAt(String id, String path)
+		pPath.setAt(id, path)
+	end
+	
+	
+	/** \brief Number of images. */
+	func int getCount()
+		return pImages.getCount()
+	end
+	
+	/** \brief Image with identifier or \em null if absent. */
+	func Image getAt(String id)
+		return pImages.getAt(id) cast Image
+	end
+	
+	/** \brief Visit images with block with String id and Image value. */
+	func void forEach(Block ablock)
+		pImages.forEach(ablock)
+	end
+	
+	/** \brief Remove all images. */
+	func void removeAll()
+		pImages.removeAll()
+	end
+	
+	/** \brief Set image for identifier. */
+	func void setAt(String id, Image image)
+		pImages.setAt(id, image)
+	end
+	
+	/** \brief Property has been preloaded. */
+	func bool getHasPreloaded()
+		return pHasPreloaded
+	end
+	
+	
+	func void setValue(Object value)
+		pPath.removeAll()
+		(value cast Dictionary).forEach(block String id, String path
+			pPath.setAt(id, path)
+		end)
+	end
+	
+	func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		var String basePath = elementClass.getBasePath()
+		pPath = (property cast ECPImageMap).pPath.map(block String id, String path
+			return not path.empty() if File.absolutePath(path, basePath).getPath() else null
+		end)
+	end
+	
+	
+	func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
+			return
+		end
+		
+		pHasPreloaded = true
+		pFailedLoading = null
+		pExceptions = null
+		pImages.removeAll()
+		pCounter = counter
+		
+		var String basePath = elementClass.getBasePath()
+		pPath = pPath.map(block String id, String path
+			pImages.setAt(id, null)
+			if not path.empty()
+				path = File.absolutePath(path, basePath).getPath()
+				Image.loadAsynchron(path, this)
+				counter.increase()
+				return path
+				
+			else
+				return ""
+			end
+		end)
+	end
+	
+	func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pFailedLoading == null
+			return false
+		end
+		
+		pFailedLoading.forEach(block int index, String each
+			console.addError("Property {}.{}: Failed loading image {}".format(\
+				Array.newWith(elementClass.getClassname(), getName(), each)),\
+				pExceptions.getAt(index) cast Exception)
+		end)
+		return true
+	end
+	
+	
+	/**
+	 * \brief Image map modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored image map
+	 * is returned. If the named stub property is present it is decoded using codec 
+	 * 
+	 * Supported element stub property values are:
+	 * - "id1:path1 ... idN:pathN"
+	 * 
+	 * \returns Dictionary mapping String id to Image.
+	 */
+	func Dictionary getImages(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
+		if value.empty()
+			return Dictionary.new(pImages)
+		end
+		
+		var Dictionary map = Dictionary.new()
+		codec.decodeStringList(value).forEach(block String each
+			var Array parts = each.splitExact(':')
+			map.setAt(parts.getAt(0) cast String, Image.new(parts.getAt(1) cast String))
+		end)
+		return map
+	end
+	
+	
+	func void finishedLoading(String path, ResourceLoaderType resourceType, Object resource)
+		pPath.forEach(block String id, String path2
+			if path.equals(path2)
+				pImages.setAt(id, resource)
+			end
+		end)
+		pCounter.decrease()
+	end
+	
+	func void failedLoading(String path, ResourceLoaderType resourceType)
+		if pFailedLoading == null
+			pFailedLoading = Array.new()
+		end
+		pFailedLoading.add(path)
+		pCounter.decrease()
+	end
+end
