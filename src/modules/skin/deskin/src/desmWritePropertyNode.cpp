@@ -127,10 +127,10 @@ void desmWritePropertyNode::WriteNodeCommon(const deSkinPropertyNode &node){
 		pWriter.WriteClosingTag("mask");
 	}
 	
-	const struct sMapped{
+	static const struct sMapped{
 		deSkinPropertyNode::eMapped mapped;
 		const char *name;
-	} mapped[15] = {
+	} mapped[16] = {
 		{deSkinPropertyNode::emPositionX, "positionX"},
 		{deSkinPropertyNode::emPositionY, "positionY"},
 		{deSkinPropertyNode::emPositionZ, "positionZ"},
@@ -145,11 +145,12 @@ void desmWritePropertyNode::WriteNodeCommon(const deSkinPropertyNode &node){
 		{deSkinPropertyNode::emColorizeRed, "colorizeR"},
 		{deSkinPropertyNode::emColorizeGreen, "colorizeG"},
 		{deSkinPropertyNode::emColorizeBlue, "colorizeB"},
-		{deSkinPropertyNode::emTransparency, "transparency"}
+		{deSkinPropertyNode::emTransparency, "transparency"},
+		{deSkinPropertyNode::emImage, "image"}
 	};
 	
 	int i;
-	for(i=0; i<15; i++){
+	for(i=0; i<16; i++){
 		const int index = node.GetMappedFor(mapped[i].mapped);
 		if(index == -1){
 			continue;

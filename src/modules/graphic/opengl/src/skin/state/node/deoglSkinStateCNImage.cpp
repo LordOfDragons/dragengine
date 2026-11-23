@@ -24,6 +24,7 @@
 
 #include "deoglSkinStateCNImage.h"
 #include "../deoglSkinState.h"
+#include "../deoglSkinStateMapped.h"
 #include "../../../texture/deoglImage.h"
 #include "../../../rendering/deoglRenderCanvasContext.h"
 #include "../../../rendering/deoglRenderConstructed.h"
@@ -45,8 +46,9 @@ deoglSkinStateCNImage::deoglSkinStateCNImage(deSkinPropertyNodeImage &node) :
 deoglSkinStateConstructedNode(node, etImage),
 pSyncImage(node.GetImage()),
 pImage(pSyncImage && pSyncImage->GetPeerGraphic()
-	? ((deoglImage*)pSyncImage->GetPeerGraphic())->GetRImage().Pointer() : nullptr),
+	? (static_cast<deoglImage*>(pSyncImage->GetPeerGraphic()))->GetRImage().Pointer() : nullptr),
 pRepeat(node.GetRepeat()),
+pTexture(nullptr),
 pDirtyTCTransform(true){
 }
 
@@ -55,45 +57,47 @@ deoglSkinStateConstructedNode(node),
 pSyncImage(node.pSyncImage),
 pImage(node.pImage),
 pRepeat(node.pRepeat),
+pTexture(nullptr),
 pTCTransform(node.pTCTransform),
 pDirtyTCTransform(true){
 }
 
-deoglSkinStateCNImage::~deoglSkinStateCNImage(){
-}
-
+deoglSkinStateCNImage::~deoglSkinStateCNImage() = default;
 
 
 // Management
 ///////////////
 
 void deoglSkinStateCNImage::Update(deoglSkinState &state){
-	if(!pImage){
-		return;
-	}
-	
 	deoglSkinStateConstructedNode::Update(state);
 	
 	pUpdateTCTransform();
 	
-	deoglImage * const peer = (deoglImage*)pSyncImage->GetPeerGraphic();
-	if(peer){
-		peer->SyncToRender();
+	if(pSyncImage){
+		auto image = static_cast<deoglImage*>(pSyncImage->GetPeerGraphic());
+		if(image){
+			image->SyncToRender();
+		}
+	}
+	
+	if(pMapped[deSkinPropertyNode::emImage] != -1){
+		pTexture = state.GetMappedAt(pMapped[deSkinPropertyNode::emImage]).GetTexture();
+		
+	}else{
+		pTexture = nullptr;
 	}
 }
 
 void deoglSkinStateCNImage::PrepareForRender(deoglSkinState &state){
-	if(!pImage){
-		return;
-	}
-	
 	deoglSkinStateConstructedNode::PrepareForRender(state);
 	
-	pImage->PrepareForRender();
+	if(pImage){
+		pImage->PrepareForRender();
+	}
 }
 
 void deoglSkinStateCNImage::Render(deoglSkinState &state, const deoglRenderCanvasContext &context){
-	if(!pImage){
+	if(!pImage && !pTexture){
 		return;
 	}
 	
@@ -121,12 +125,19 @@ void deoglSkinStateCNImage::pUpdateTCTransform(){
 	
 	pDirtyTCTransform = false;
 	
-	const decVector2 halfPixel(0.5f / (float)pImage->GetWidth(), 0.5f / (float)pImage->GetHeight());
-	
-	const float repeatScaleU = (float)pRepeat.x;
-	const float repeatScaleV = (float)pRepeat.y;
-	
-	pTCTransform = decTexMatrix2::CreateScale(repeatScaleU, repeatScaleV);
-	pTCClampMin = halfPixel;
-	pTCClampMax = decVector2(repeatScaleU, repeatScaleV) - halfPixel;
+	if(pImage){
+		const decVector2 halfPixel(0.5f / (float)pImage->GetWidth(), 0.5f / (float)pImage->GetHeight());
+		
+		const float repeatScaleU = (float)pRepeat.x;
+		const float repeatScaleV = (float)pRepeat.y;
+		
+		pTCTransform = decTexMatrix2::CreateScale(repeatScaleU, repeatScaleV);
+		pTCClampMin = halfPixel;
+		pTCClampMax = decVector2(repeatScaleU, repeatScaleV) - halfPixel;
+		
+	}else{
+		pTCTransform.SetIdentity();
+		pTCClampMin.Set(0.0f, 0.0f);
+		pTCClampMax.Set(1.0f, 1.0f);
+	}
 }

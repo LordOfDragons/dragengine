@@ -355,10 +355,10 @@ const deSkinPropertyNode &engNode){
 		node.SetMask(LoadPropertyNode(skin, *engNode.GetMask()));
 	}
 	
-	const struct sMapped{
+	static const struct sMapped{
 		sePropertyNode::eMapped to;
 		deSkinPropertyNode::eMapped from;
-	} mappings[15] = {
+	} mappings[16] = {
 		{sePropertyNode::emPositionX, deSkinPropertyNode::emPositionX},
 		{sePropertyNode::emPositionY, deSkinPropertyNode::emPositionY},
 		{sePropertyNode::emPositionZ, deSkinPropertyNode::emPositionZ},
@@ -373,11 +373,12 @@ const deSkinPropertyNode &engNode){
 		{sePropertyNode::emColorizeRed, deSkinPropertyNode::emColorizeRed},
 		{sePropertyNode::emColorizeGreen, deSkinPropertyNode::emColorizeGreen},
 		{sePropertyNode::emColorizeBlue, deSkinPropertyNode::emColorizeBlue},
-		{sePropertyNode::emTransparency, deSkinPropertyNode::emTransparency}
+		{sePropertyNode::emTransparency, deSkinPropertyNode::emTransparency},
+		{sePropertyNode::emImage, deSkinPropertyNode::emImage}
 	};
 	
 	int i;
-	for(i=0; i<15; i++){
+	for(i=0; i<16; i++){
 		const int index = engNode.GetMappedFor(mappings[i].from);
 		if(index != -1){
 			node.SetMappedFor(mappings[i].to, skin.GetMapped().GetAt(index));

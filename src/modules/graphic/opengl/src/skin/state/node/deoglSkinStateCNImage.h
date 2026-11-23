@@ -47,6 +47,7 @@ private:
 	const deImage::Ref pSyncImage;
 	const deoglRImage::Ref pImage;
 	const decPoint pRepeat;
+	deoglTexture *pTexture;
 	
 	decTexMatrix2 pTCTransform;
 	decVector2 pTCClampMin;
@@ -89,6 +90,8 @@ public:
 	/** Texture coordinates clamp maximum. */
 	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
+	/** Texture. */
+	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	
 	/**

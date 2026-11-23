@@ -31,6 +31,7 @@
 
 class deoglSkinState;
 class deoglSkinStateMapped;
+class deoglTexture;
 
 
 /**
@@ -39,6 +40,12 @@ class deoglSkinStateMapped;
 class deoglSkinMapped : public deObject{
 public:
 	using Ref = deTObjectReference<deoglSkinMapped>;
+	
+	
+	struct Result{
+		float value = 0.0f;
+		deoglTexture *texture = nullptr;
+	};
 	
 	
 private:
@@ -52,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin mapped. */
-	deoglSkinMapped(const deSkinMapped &mapped);
+	explicit deoglSkinMapped(const deSkinMapped &mapped);
 	
 protected:
 	/** Clean up skin mapped. */
@@ -71,13 +78,13 @@ public:
 	void SetRenderable(int renderable);
 	
 	/** Mapped value. */
-	float Calculate(const deoglSkinState &skinState, const deoglSkinStateMapped &mapped) const;
+	Result Calculate(const deoglSkinState &skinState, const deoglSkinStateMapped &mapped) const;
 	/*@}*/
 	
 	
 	
 private:
-	float pCalculateInputValue(const deoglSkinState &skinState, const deoglSkinStateMapped &mapped) const;
+	Result pCalculateInputValue(const deoglSkinState &skinState, const deoglSkinStateMapped &mapped) const;
 	float pCalculateOutputValue(float inputValue) const;
 };
 

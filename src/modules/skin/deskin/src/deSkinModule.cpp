@@ -1083,6 +1083,9 @@ const deSkin &skin, deSkinPropertyNode &node){
 		}else if(strcmp(name, "transparency") == 0){
 			node.SetMappedFor(deSkinPropertyNode::emTransparency, index);
 			
+		}else if(strcmp(name, "image") == 0){
+			node.SetMappedFor(deSkinPropertyNode::emImage, index);
+			
 		}else{
 			LogWarnFormat("node(%i:%i): Unknown Tag %s, ignoring",
 				tag.GetLineNumber(), tag.GetPositionNumber(), tag.GetName().GetString());

@@ -1327,6 +1327,10 @@ void seWPNode::UpdateMappedTypeList(){
 		pCBMappedType->AddItem("@Skin.WPNode.MappedType.ColorBlue", nullptr, (void*)(intptr_t)sePropertyNodeText::etmColorBlue);
 		break;
 		
+	case sePropertyNode::entImage:
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.Image", nullptr, (void*)(intptr_t)sePropertyNode::emImage);
+		break;
+		
 	default:
 		break;
 	}

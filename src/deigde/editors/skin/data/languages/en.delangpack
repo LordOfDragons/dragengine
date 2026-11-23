@@ -247,6 +247,7 @@
 	<translation name="Skin.WPNode.MappedType.ColorRed">Color Red</translation>
 	<translation name="Skin.WPNode.MappedType.ColorGreen">Color Green</translation>
 	<translation name="Skin.WPNode.MappedType.ColorBlue">Color Blue</translation>
+	<translation name="Skin.WPNode.MappedType.Image">Image</translation>
 	
 	<translation name="Skin.WPNode.GroupImage">Image:</translation>
 	<translation name="Skin.WPNode.Image">Image:</translation>

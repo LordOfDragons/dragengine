@@ -211,6 +211,7 @@ geben Sie einen benutzerdefinierten Namen ein.</translation>
 	<translation name="Skin.WPNode.MappedType.ColorRed">Farbe Rot</translation>
 	<translation name="Skin.WPNode.MappedType.ColorGreen">Farbe Grün</translation>
 	<translation name="Skin.WPNode.MappedType.ColorBlue">Farbe Blau</translation>
+	<translation name="Skin.WPNode.MappedType.Image">Bild</translation>
 	<translation name="Skin.WPNode.GroupImage">Bild:</translation>
 	<translation name="Skin.WPNode.Image">Bild:</translation>
 	<translation name="Skin.WPNode.Image.ToolTip">Anzuzeigende Bildressource</translation>

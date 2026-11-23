@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRDSRenderableImage.h"
 #include "../../deoglRDynamicSkin.h"
 #include "../../../../renderthread/deoglRenderThread.h"

@@ -258,8 +258,11 @@ void deoglRenderConstructed::DrawNodeShape(const deoglRenderCanvasContext &conte
 }
 
 void deoglRenderConstructed::DrawNodeImage(const deoglRenderCanvasContext &context, const deoglSkinStateCNImage &node){
-	const deoglRImage::Ref &image = node.GetImage();
-	if(!image || !image->GetTexture()){
+	auto texture = node.GetTexture();
+	if(!texture && node.GetImage()){
+		texture = node.GetImage()->GetTexture();
+	}
+	if(!texture){
 		return;
 	}
 	
@@ -273,7 +276,7 @@ void deoglRenderConstructed::DrawNodeImage(const deoglRenderCanvasContext &conte
 		: *pPipelineCanvasImage[node.GetCombineMode()];
 	pipeline.Activate();
 	
-	tsmgr.EnableTexture(0, *image->GetTexture(), GetSamplerRepeatLinear());
+	tsmgr.EnableTexture(0, *texture, GetSamplerRepeatLinear());
 	if(context.GetMask()){
 		tsmgr.EnableTexture(1, *context.GetMask(), GetSamplerClampLinear());
 	}
