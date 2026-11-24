@@ -388,7 +388,7 @@ void dedsLocomotion::AddControllerMapping(deAnimatorInstance *animatorInstance,
 int controller, dedsLControllerMapping::eAttributes attribute){
 	const int index = IndexOfControllerMappingWith(animatorInstance, controller);
 	if(index >= 0){
-		pControllerMappings[index].SetAttribute(attribute);;
+		pControllerMappings[index].SetAttribute(attribute);
 		return;
 	}
 	
