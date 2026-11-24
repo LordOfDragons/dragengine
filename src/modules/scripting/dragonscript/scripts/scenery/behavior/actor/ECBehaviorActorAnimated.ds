@@ -232,32 +232,32 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 					if c != null
 						value = parameters.getAt("controller.value", null)
 						if value != null
-							c.setValue((value cast String).toFloat())
+							c.setValue(getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.increment", null)
 						if value != null
-							c.increment((value cast String).toFloat())
+							c.increment(getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.decrement", null)
 						if value != null
-							c.increment(-(value cast String).toFloat())
+							c.increment(-getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.relative", null)
 						if value != null
-							c.setRelativeValue((value cast String).toFloat())
+							c.setRelativeValue(getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.relative.increment", null)
 						if value != null
-							c.setRelativeValue(c.getRelativeValue() + (value cast String).toFloat())
+							c.setRelativeValue(c.getRelativeValue() + getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.relative.decrement", null)
 						if value != null
-							c.setRelativeValue(c.getRelativeValue() - (value cast String).toFloat())
+							c.setRelativeValue(c.getRelativeValue() - getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.lower", null)
@@ -273,10 +273,30 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 						if parameters.has("controller.value.reverse")
 							c.reverse()
 						end
+						
+						value = parameters.getAt("controller.mapping", null)
+						if value != null
+							if (value cast String).empty()
+								pInstance.getLocomotion().getLocomotion().removeControllerMapping(c)
+								
+							else
+								pInstance.getLocomotion().getLocomotion().addControllerMapping(c,\
+									LocomotionAttribute.named(value cast String))
+							end
+						end
 					end
 				end
 				
 				return BTResult.success
+			end
+			
+			func float getValue(Object context, Object value)
+				if value.equals("eventParameter")
+					return (context cast SMContext).getEventParameter() cast float
+					
+				else
+					return (value cast String).toFloat()
+				end
 			end
 		end
 		
