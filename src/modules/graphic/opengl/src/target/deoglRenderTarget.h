@@ -89,6 +89,9 @@ public:
 	/** Component count. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
+	/** With depth buffer. */
+	inline bool GetWithDepth() const{ return pWithDepth; }
+	
 	/** Set size. */
 	void SetSize(const decPoint &size);
 	

@@ -45,10 +45,14 @@ private:
 	deFontGlyph pUndefinedGlyph;
 	decTList<deFontGlyph> pGlyphs;
 	const int pLineHeight;
-	int pFontWidth, pBaseLine;
+	int pFontWidth, pBaseLine, pAverageCharacterWidth;
 	decString pImagePath;
 	deImage::Ref pImage;
 	deParallelTask::Ref pTaskLoad;
+	decTList<decColor> pSdfColors;
+	float pSdfPixelRange;
+	decVector2 pSdfDistanceRange;
+	int pSdfTintLayer;
 	
 	
 public:
@@ -80,6 +84,12 @@ public:
 	/** \brief Set base line position in pixels from top. */
 	void SetBaseLine(int baseLine);
 	
+	/** \brief Average character width in pixels. */
+	inline int GetAvgCharWidth() const{ return pAverageCharacterWidth; }
+	
+	/** \brief Set average character width in pixels. */
+	void SetAvgCharWidth(int averageCharacterWidth);
+	
 	
 	/** \brief Undefined glyph. */
 	inline deFontGlyph &GetUndefinedGlyph(){ return pUndefinedGlyph; }
@@ -107,12 +117,34 @@ public:
 	/** \brief Set image or nullptr. */
 	void SetImage(deImage *image);
 	
-	
 	/** \brief Load task or nullptr if finished. */
 	inline const deParallelTask::Ref &GetTaskLoad() const{ return pTaskLoad; }
 	
 	/** \brief Set load task or nullptr if finished. */
 	void SetTaskLoad(deParallelTask *task);
+	
+	
+	/** \brief SDF layer colors. */
+	inline decTList<decColor> &GetSdfColors(){ return pSdfColors; }
+	inline const decTList<decColor> &GetSdfColors() const{ return pSdfColors; }
+	
+	/** \brief SDF pixel range for the font. */
+	inline float GetSdfPixelRange() const{ return pSdfPixelRange; }
+	
+	/** \brief Set SDF pixel range for the font. */
+	void SetSdfPixelRange(float range);
+	
+	/** \brief SDF distance range. */
+	inline const decVector2 &GetSdfDistanceRange() const{ return pSdfDistanceRange; }
+	
+	/** \brief Set SDF distance range. */
+	void SetSdfDistanceRange(const decVector2 &range);
+	
+	/** \brief SDF tint layer or -1 if no layer is tintable. */
+	inline int GetSdfTintLayer() const{ return pSdfTintLayer; }
+	
+	/** \brief Set SDF tint layer or -1 if no layer is tintable. */
+	void SetSdfTintLayer(int layer);
 	/*@}*/
 };
 

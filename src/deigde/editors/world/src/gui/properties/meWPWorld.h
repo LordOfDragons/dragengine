@@ -33,6 +33,7 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/composed/igdeEditDVector.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditPath.h>
@@ -66,6 +67,7 @@ private:
 	igdeAction::Ref pActionMusicPause;
 	igdeAction::Ref pActionMusicStop;
 	
+	igdeListBox::Ref pListBehaviors;
 	
 	igdeWidget::Ref pEditProperties;
 	
@@ -138,10 +140,18 @@ public:
 	void UpdatePathFindTestType();
 	
 	
-	
 	/** Update music. */
 	void UpdateMusic();
 	
+	
+	/** Update world behaviors. */
+	void UpdateWorldBehaviors();
+	
+	/** Active world behavior. */
+	meWorldBehavior::Ref GetActiveWorldBehavior() const;
+	
+	/** Select world behavior. */
+	void SelectWorldBehavior(const meWorldBehavior::Ref &behavior);
 	
 	
 	/** Active property or an empty string if there is none. */

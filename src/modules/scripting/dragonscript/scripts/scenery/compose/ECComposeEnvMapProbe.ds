@@ -36,15 +36,12 @@ pin Dragengine.Utils
  * Provides environment map probe support to element class without subclassing from a specific class.
  */
 class ECComposeEnvMapProbe
-	private var ECPShapeList pInfluenceArea
-	private var ECPFloat pInfluenceBorderSize
-	private var ECPInteger pInfluencePriority
-	private var ECPShapeList pReflectionShape
-	private var ECPShapeList pReflectionMask
-	
-	private var LayerMask pLayerMask
-	
-	private var String pPrefix
+	var ECPShapeList pInfluenceArea
+	var ECPFloat pInfluenceBorderSize
+	var ECPInteger pInfluencePriority
+	var ECPShapeList pReflectionShape, pReflectionMask
+	var ECPLayerMask pLayerMask
+	var String pPrefix
 	
 	
 	
@@ -54,7 +51,7 @@ class ECComposeEnvMapProbe
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new( ElementClass ownerClass ) this( ownerClass, "envMapProbe." )
+	func new(ElementClass ownerClass) this(ownerClass, "envMapProbe.")
 	end
 	
 	/**
@@ -63,92 +60,90 @@ class ECComposeEnvMapProbe
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new( ElementClass ownerClass, String prefix )
+	func new(ElementClass ownerClass, String prefix)
 		var CodecPropertyString codec = ownerClass.getSharedCodecPropertyString()
 		
-		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.envmap )
+		ownerClass.addProperty(pInfluenceArea = ECPShapeList.new(prefix + "influenceArea", codec))
+		ownerClass.addProperty(pInfluenceBorderSize = ECPFloat.new(prefix + "influenceBorderSize", 0.1, 0))
+		ownerClass.addProperty(pInfluencePriority = ECPInteger.new(prefix + "influencePriority", 0))
+		ownerClass.addProperty(pReflectionShape = ECPShapeList.new(prefix + "reflectionShape", codec))
+		ownerClass.addProperty(pReflectionMask = ECPShapeList.new(prefix + "reflectionMask", codec))
 		
-		this.pInfluenceArea = ECPShapeList.new( prefix + "influenceArea", codec )
-		ownerClass.addProperty( this.pInfluenceArea )
+		ownerClass.addProperty(pLayerMask = ECPLayerMask.new(prefix + "layerMask",\
+			ownerClass.getCodecPropertyString(), BaseGameApp.getApp().getWorldLayerMap(),\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.envmap)))
 		
-		this.pInfluenceBorderSize = ECPFloat.new( prefix + "influenceBorderSize", 0.1, 0 )
-		ownerClass.addProperty( this.pInfluenceBorderSize )
-		
-		this.pInfluencePriority = ECPInteger.new( prefix + "influencePriority", 0 )
-		ownerClass.addProperty( this.pInfluencePriority )
-		
-		this.pReflectionShape = ECPShapeList.new( prefix + "reflectionShape", codec )
-		ownerClass.addProperty( this.pReflectionShape )
-		
-		this.pReflectionMask = ECPShapeList.new( prefix + "reflectionMask", codec )
-		ownerClass.addProperty( this.pReflectionMask )
-		
-		this.pPrefix = prefix
+		pPrefix = prefix
 	end
 	
 	
 	
 	/** \brief Influence shape. */
-	public func ECPShapeList getInfluenceArea()
-		return this.pInfluenceArea
+	func ECPShapeList getInfluenceArea()
+		return pInfluenceArea
 	end
 	
 	/** \brief Influence border size. */
-	public func ECPFloat getInfluenceBorderSize()
-		return this.pInfluenceBorderSize
+	func ECPFloat getInfluenceBorderSize()
+		return pInfluenceBorderSize
 	end
 	
 	/** \brief Influence priority. */
-	public func ECPInteger getInfluencePriority()
-		return this.pInfluencePriority
+	func ECPInteger getInfluencePriority()
+		return pInfluencePriority
 	end
 	
 	/** \brief Reflection shape. */
-	public func ECPShapeList getReflectionShape()
-		return this.pReflectionShape
+	func ECPShapeList getReflectionShape()
+		return pReflectionShape
 	end
 	
 	/** \brief Reflection mask. */
-	public func ECPShapeList getReflectionMask()
-		return this.pReflectionMask
+	func ECPShapeList getReflectionMask()
+		return pReflectionMask
 	end
 	
 	
 	
-	/** \brief Layer mask affecting environment probes. */
-	public func LayerMask getLayerMask()
-		return this.pLayerMask
+	/**
+	 * \brief Layer mask affecting environment probes.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
+		return pLayerMask
 	end
 	
-	/** \brief Set layer mask affecting environment probes. */
-	public func void setLayerMask( LayerMask layerMask )
-		this.pLayerMask = layerMask
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func void setLayerMask(LayerMask layerMask)
+		pLayerMask.setLayerMask(layerMask)
 	end
 	
 	/**
 	 * \brief Property prefix.
 	 * \version 1.12
 	 */
-	public func String getPrefix()
-		return this.pPrefix
+	func String getPrefix()
+		return pPrefix
 	end
 	
 	
 	
 	/** \brief Initialize light for element from stub. */
-	public func EnvMapProbe createEnvMapProbe( Element element, StubElement stub )
+	func EnvMapProbe createEnvMapProbe(Element element, StubElement stub)
 		var EnvMapProbe envMapProbe = EnvMapProbe.new()
-		
-		envMapProbe.setPosition( element.getPosition() )
-		envMapProbe.setOrientation( element.getOrientation() )
-		envMapProbe.setShapeListInfluence( this.pInfluenceArea.getShapeList( stub ) )
-		envMapProbe.setInfluenceBorderSize( this.pInfluenceBorderSize.getValue(stub ) )
-		envMapProbe.setInfluencePriority( this.pInfluencePriority.getValue( stub ) )
-		envMapProbe.setShapeReflection( this.pReflectionShape.getShapeList( stub ) )
-		envMapProbe.setShapeListReflectionMask( this.pReflectionMask.getShapeList( stub ) )
-		
-		envMapProbe.setLayerMask( this.pLayerMask )
-		
+		envMapProbe.setPosition(element.getPosition())
+		envMapProbe.setOrientation(element.getOrientation())
+		envMapProbe.setShapeListInfluence(pInfluenceArea.getShapeList(stub))
+		envMapProbe.setInfluenceBorderSize(pInfluenceBorderSize.getValue(stub))
+		envMapProbe.setInfluencePriority(pInfluencePriority.getValue(stub))
+		envMapProbe.setShapeReflection(pReflectionShape.getShapeList(stub))
+		envMapProbe.setShapeListReflectionMask(pReflectionMask.getShapeList(stub))
+		envMapProbe.setLayerMask(pLayerMask.getLayerMask(stub))
 		return envMapProbe
 	end
 end

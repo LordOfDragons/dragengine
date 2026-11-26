@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -51,6 +51,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\..\extern\freetype\extern_freetype.vcxproj">
       <Project>{45273658-2f93-41ba-9add-f9589d47a1cb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\msdfgen\extern_msdfgen.vcxproj">
+      <Project>{7e4a2c15-8b3f-4d91-a625-c9f8e2d4b1a9}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -422,11 +425,28 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCachedFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCachedFontSize.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCaches.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\deftFont.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\deftModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayout.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayouter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayouterSdf.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\renderer\deftRenderer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\renderer\deftRendererSdf.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCachedFont.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCachedFontSize.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\cache\deftCaches.h" />
     <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\deftFont.h" />
     <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\deftModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\includeMsdfgen.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayout.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayouter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\layout\deftLayouterSdf.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\renderer\deftRenderer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\renderer\deftRendererSdf.h" />
   </ItemGroup>
 </Project>

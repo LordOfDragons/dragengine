@@ -177,29 +177,16 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "hearSound.check".
 		 * \version 1.26
 		 */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
 				var bool result = true
-				var Object value
-				
-				value = parameters.getAt(prefix + "count", null)
+				var Object value = parameters.getAt(prefix + "count", null)
 				if value != null
 					result &= pInstance.getAudibleElementCount() == (value cast String).toInt()
 				end
@@ -298,6 +285,11 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachSoundLevelMeter(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pSoundLevelMeter.setPosition(matrix.getPosition())
+				pSoundLevelMeter.setOrientation(matrix.toQuaternion())
 			end
 			
 			pSoundLevelMeter.setListener(this)
@@ -324,7 +316,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			soundLevelMeter.setAudibleDistance(stub.getPropertyFloatFor(\
 				pECBehavior.getAudibleDistance().getName(), pAudibleDistance))
 			
-			soundLevelMeter.setLayerMask(pECBehavior.getLayerMask())
+			soundLevelMeter.setLayerMask(pECBehavior.getLayerMaskProperty().getLayerMask(stub))
 			
 			return soundLevelMeter
 		end
@@ -332,7 +324,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		/**
 		 * \brief Attach sound level meter to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachSoundLevelMeter(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pSoundLevelMeter, stub)
@@ -615,7 +607,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	var ECComposeAttachResource pAttach
 	var ECPFloat pAudibleDistance
 	var ECPFloat pVolumeThreshold
-	var LayerMask pLayerMask
+	var ECPLayerMask pLayerMask
 	var Array pListenerFactories
 	var ECComposeBTSM pBTSMs
 	var String pPrefix
@@ -644,8 +636,9 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		
 		eclass.addProperty(pAudibleDistance = ECPFloat.new(prefix + "audibleDistance", 100, 1))
 		eclass.addProperty(pVolumeThreshold = ECPFloat.new(prefix + "volumeThreshold", 0.01, 0))
-		
-		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
+		eclass.addProperty(pLayerMask = ECPLayerMask.new(prefix + "layerMask",\
+			eclass.getCodecPropertyString(), BaseGameApp.getApp().getWorldLayerMap(),\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)))
 		
 		eclass.addBehavior(this)
 	end
@@ -688,14 +681,22 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		return pVolumeThreshold
 	end
 	
-	/** \brief Layer mask. */
-	func LayerMask getLayerMask()
+	/**
+	 * \brief Layer mask property.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
 		return pLayerMask
 	end
 	
-	/** \brief Set layer mask. */
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
 	func void setLayerMask(LayerMask layerMask)
-		pLayerMask = layerMask
+		pLayerMask.setLayerMask(layerMask)
 	end
 	
 	/**

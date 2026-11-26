@@ -51,25 +51,22 @@ pIsGrayscale(false)
 	auto decoder = avifDecoderCreate();
 	DEASSERT_NOTNULL(decoder)
 	
-	avifImage *image = nullptr;
-	
 	try{
 		avifDecoderSetIO(decoder, &ioHandler.GetIO());
 		
-		image = avifImageCreateEmpty();
-		DEASSERT_NOTNULL(image)
-		
-		auto result = avifDecoderRead(decoder, image);
+		auto result = avifDecoderParse(decoder);
 		if(result != AVIF_RESULT_OK){
 			DETHROW_INFO(deeInvalidFileFormat, avifResultToString(result));
 		}
 		
-		pWidth = image->width;
-		pHeight = image->height;
-		pBitCount = image->depth > 8 ? 16 : 8;
+		DEASSERT_NOTNULL(decoder->image)
 		
-		pHasAlpha = image->alphaPlane != nullptr;
-		pIsGrayscale = image->yuvFormat == AVIF_PIXEL_FORMAT_YUV400;
+		pWidth = decoder->image->width;
+		pHeight = decoder->image->height;
+		pBitCount = decoder->image->depth > 8 ? 16 : 8;
+		
+		pHasAlpha = decoder->alphaPresent != AVIF_FALSE;
+		pIsGrayscale = decoder->image->yuvFormat == AVIF_PIXEL_FORMAT_YUV400;
 		
 		if(pIsGrayscale && pHasAlpha){
 			pComponentCount = 2;
@@ -85,14 +82,10 @@ pIsGrayscale(false)
 		}
 		
 	}catch(const deException &){
-		if(image){
-			avifImageDestroy(image);
-		}
 		avifDecoderDestroy(decoder);
 		throw;
 	}
 	
-	avifImageDestroy(image);
 	avifDecoderDestroy(decoder);
 }
 

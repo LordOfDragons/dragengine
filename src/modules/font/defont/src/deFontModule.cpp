@@ -187,6 +187,7 @@ void deFontModule::pParseFont(decXmlElementTag *root, deFont &font){
 			if(!hasBaseLine){
 				font.SetBaseLine(font.GetLineHeight() * 3 / 4);
 			}
+			font.SetAvgCharWidth(font.GetLineHeight() / 2);
 			
 		}else if(tag->GetName() == "baseLine"){
 			font.SetBaseLine(tag->GetFirstData()->GetData().ToInt());

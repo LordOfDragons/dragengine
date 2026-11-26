@@ -220,6 +220,9 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 			
 			var Font font = spanStyle.getFont()
 			var Color textColor = spanStyle.getTextColor()
+			var Color textBorderColor = spanStyle.getTextBorderColor()
+			var float textBorderThickness = spanStyle.getTextBorderThickness()
+			var float textDilation = spanStyle.getTextDilation()
 			var Color backgroundColor = spanStyle.getBackgroundColor()
 			
 			var int lineHeight = font.getSize()
@@ -328,6 +331,9 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 					textSpan = STREText.new()
 					textSpan.setFont(font)
 					textSpan.setTextColor(textColor)
+					textSpan.setTextBorderColor(textBorderColor)
+					textSpan.setTextBorderThickness(textBorderThickness)
+					textSpan.setTextDilation(textDilation)
 					textSpan.setBackgroundColor(backgroundColor)
 					
 					textLineWidth += spanSpacesWidth
@@ -447,6 +453,9 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 						if textSpan != null
 							textSpan.setFont(font)
 							textSpan.setTextColor(textColor)
+							textSpan.setTextBorderColor(textBorderColor)
+							textSpan.setTextBorderThickness(textBorderThickness)
+							textSpan.setTextDilation(textDilation)
 							textSpan.setBackgroundColor(backgroundColor)
 							textLine.add(textSpan)
 							textSpan = null

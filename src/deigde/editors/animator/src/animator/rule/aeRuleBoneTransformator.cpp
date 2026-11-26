@@ -85,14 +85,16 @@ mpTargetScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targe
 	
 	mpMinRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMinimumRotation(mpMinRotation);
+			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMinimumRotation(
+				mpMinRotation.GetEulerAnglesRadians());
 		}
 		NotifyRuleChanged();
 	};
 	
 	mpMaxRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMaximumRotation(mpMaxRotation);
+			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMaximumRotation(
+				mpMaxRotation.GetEulerAnglesRadians());
 		}
 		NotifyRuleChanged();
 	};
@@ -120,14 +122,14 @@ mpTargetScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targe
 	
 	mpMinAngle.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMinimumAngle(mpMinAngle);
+			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMinimumAngle(mpMinAngle * DEG2RAD);
 		}
 		NotifyRuleChanged();
 	};
 	
 	mpMaxAngle.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMaximumAngle(mpMaxAngle);
+			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMaximumAngle(mpMaxAngle * DEG2RAD);
 		}
 		NotifyRuleChanged();
 	};
@@ -320,4 +322,20 @@ deAnimatorRule::Ref aeRuleBoneTransformator::CreateEngineRule(){
 
 aeRule::Ref aeRuleBoneTransformator::CreateCopy() const{
 	return Ref::New(*this);
+}
+
+void aeRuleBoneTransformator::CreateLinkCopies(){
+	aeRule::CreateLinkCopies();
+	mpTargetTranslation.CreateLinkCopies();
+	mpTargetRotation.CreateLinkCopies();
+	mpTargetScaling.CreateLinkCopies();
+}
+
+void aeRuleBoneTransformator::EnsureValidLinks(const aeAnimator &animator,
+decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	aeRule::EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetTranslation.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetRotation.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetScaling.EnsureValidLinks(animator, addLinks, addControllers);
 }

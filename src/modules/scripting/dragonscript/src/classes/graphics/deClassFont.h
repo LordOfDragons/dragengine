@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassFont(deScriptingDragonScript &ds);
+	explicit deClassFont(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	~deClassFont() override;
@@ -102,10 +102,12 @@ private:
 	DEF_NATFUNC(nfGetBaseLine);
 	
 	DEF_NATFUNC(nfGetTextSize);
+	DEF_NATFUNC(nfGetTextSize2);
 	DEF_NATFUNC(nfGetCharWidth);
 	DEF_NATFUNC(nfGetCharAdvance);
 	DEF_NATFUNC(nfGetCharBearing);
 	DEF_NATFUNC(nfGetMaxWidth);
+	DEF_NATFUNC(nfGetAvgCharWidth);
 	DEF_NATFUNC(nfHasGlyph);
 	
 	DEF_NATFUNC(nfEquals);

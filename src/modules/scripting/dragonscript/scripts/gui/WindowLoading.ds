@@ -73,8 +73,8 @@ class WindowLoading extends Window
 	
 	/** \brief Create window. */
 	func new()
-		pModelText = DefaultTextModel.new("Loading...")
-		pModelTextFinished = DefaultTextModel.new("Press any key to Start")
+		pModelText = DefaultTextModel.new("@UI.WindowLoading.Loading")
+		pModelTextFinished = DefaultTextModel.new("@UI.WindowLoading.Finished")
 		pModelProgress = DefaultRangeModel.new(0, 100, 1, 0, 1)
 		pModelFinished = DefaultRangeModel.new(0, 2, 1, 0, 1)
 		

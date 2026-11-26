@@ -242,15 +242,20 @@ void deoglSPBlockSSBO::MapBuffer(int element, int count){
 	pSetMapped(pWriteBuffer.GetArrayPointer(), element, count);
 }
 
-void deoglSPBlockSSBO::UnmapBuffer(){
+void deoglSPBlockSSBO::UnmapBuffer(bool delayUpload){
 	DEASSERT_TRUE(pType == etStatic || pType == etStream)
 	DEASSERT_TRUE(IsBufferMapped())
+	
+	if(delayUpload){
+		pClearMapped();
+		return;
+	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	
 	const int stride = GetElementStride();
-	const int lower = pGetElementLower();
-	const int upper = pGetElementUpper();
+	const int lower = GetElementLower();
+	const int upper = GetElementUpper();
 	
 	const int offset = stride * lower;
 	const int size = stride * (upper - lower + 1);

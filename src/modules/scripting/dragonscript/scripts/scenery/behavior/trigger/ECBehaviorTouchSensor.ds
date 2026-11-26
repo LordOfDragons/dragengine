@@ -163,13 +163,6 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorTouchSensor'>
-	 *   <!-- optional: set collision filter. default value '4:3' which means
-	 *                  category BaseGameApp.CollisionFilterBit.trigger
-	 *                  filter BaseGameApp.CollisionFilterBit.actorAI.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>3:4 0</string>
-	 *   
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -201,8 +194,9 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				ECBehaviorCollider.getBehaviorIn(eclass), id)
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -216,10 +210,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements TouchSensorListener
-		/**
-		 * \brief Behavior tree action "touchSensor{(id)}.set".
-		 * \version 1.26
-		 */
+		/** \brief Behavior tree action "touchSensor{(id)}.set". */
 		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
@@ -235,37 +226,63 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 					pInstance.setTouching(value.equals("true"))
 				end
 				
+				value = parameters.getAt("collisionFilter.filter.set", null)
+				if value != null
+					var CollisionFilter cf = pInstance.getTouchSensor().getCollisionFilter()
+					var LayerMask lm = cf.getFilter()
+					lm.setBit(BehaviorElementClass.sharedFactoryHelper.defaultCollisionFilterMap().getAt(value cast String) cast int)
+					pInstance.getTouchSensor().setCollisionFilter(CollisionFilter.new(cf.getCategory(), lm))
+				end
+				
+				value = parameters.getAt("collisionFilter.filter.clear", null)
+				if value != null
+					var CollisionFilter cf = pInstance.getTouchSensor().getCollisionFilter()
+					var LayerMask lm = cf.getFilter()
+					lm.clearBit(BehaviorElementClass.sharedFactoryHelper.defaultCollisionFilterMap().getAt(value cast String) cast int)
+					pInstance.getTouchSensor().setCollisionFilter(CollisionFilter.new(cf.getCategory(), lm))
+				end
+				
 				return BTResult.success
 			end
 		end
 		
-		/**
-		 * \brief Behavior tree action/condition "touchSensor.check".
-		 * \version 1.26
-		 */
-		private class BTACheck extends BTSMActionCondition
+		/** \brief Behavior tree action "touchSensor{(id)}.update". */
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
-				var bool result = true
 				var Object value
 				
-				value = parameters.getAt(prefix + "enabled", null)
+				value = parameters.getAt("touching.runEvent", null)
+				if value != null
+					var String event = value cast String
+					var BehaviorElement eventParameter = pInstance.getElement()
+					pInstance.forEachTouchingElementCastable(block BehaviorElement element
+						element.forEachInstance(block ECBehaviorStateMachine.Instance behavior
+							behavior.runEvent(event, eventParameter)
+						end)
+					end)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Behavior tree action/condition "touchSensor.check". */
+		private class BTACheck extends BTSMCondition
+			var Instance pInstance
+			
+			func new(Instance instance, String prefix) super(prefix)
+				pInstance = instance
+			end
+			
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+				var bool result = true
+				var Object value = parameters.getAt(prefix + "enabled", null)
 				if value != null
 					result &= pInstance.getTouching() == value.equals("true")
 				end
@@ -324,6 +341,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		var TouchSensor pTouchSensor
 		var Array pTrackedElements, pTouchingElements, pListeners
 		var ECComposeBTSM.Instance pBTSMs
+		var bool pTouching
 		
 		
 		
@@ -332,6 +350,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			pECBehavior = ecbehavior
 			pTrackedElements = Array.new()
 			pListeners = Array.new()
+			pTouching = true
 		end
 		
 		/** \brief Dispose of behavior instance. */
@@ -355,6 +374,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		func void init(StubElement stub)
 			var BehaviorElement element = getElement()
 			
+			pTouching = pECBehavior.getTouching().getValue(stub)
 			pTouchSensor = createTouchSensor(stub)
 			
 			if pECBehavior.getCollider() != null
@@ -363,6 +383,11 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachTouchSensor(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pTouchSensor.setPosition(matrix.getPosition())
+				pTouchSensor.setOrientation(matrix.toQuaternion())
 			end
 			
 			pTouchSensor.setListener(this)
@@ -373,6 +398,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
 				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
@@ -387,9 +413,9 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			
 			touchSensor.setPosition(element.getPosition())
 			touchSensor.setOrientation(element.getOrientation())
-			touchSensor.setCollisionFilter(pECBehavior.getCollisionFilter().getCollisionFilter())
+			touchSensor.setCollisionFilter(pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub))
 			touchSensor.setTrackEnterLeave(true)
-			touchSensor.setEnabled(pECBehavior.getTouching().getValue(stub))
+			touchSensor.setEnabled(pTouching and element.getTouchable())
 			
 			if pECBehavior.getShapeFromSize().getValue(stub)
 				var ShapeList shape = ShapeList.new()
@@ -406,7 +432,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		/**
 		 * \brief Attach touch sensor to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachTouchSensor(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pTouchSensor, stub)
@@ -433,12 +459,13 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		/** \brief Touch sensor is sensing touches. */
 		func bool getTouching()
-			return pTouchSensor.getEnabled()
+			return pTouching
 		end
 		
 		/** \brief Set if touch sensor is sensing touches. */
 		func void setTouching(bool touching)
-			pTouchSensor.setEnabled(touching)
+			pTouching = touching
+			pTouchSensor.setEnabled(touching and getElement().getTouchable())
 		end
 		
 		
@@ -579,12 +606,10 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		
 		
-		/** \brief Add element to game world. */
 		func void addToGameWorld()
 			getElement().getGameWorld().getWorld().addTouchSensor(pTouchSensor)
 		end
 		
-		/** \brief Remove element from game world. */
 		func void removeFromGameWorld()
 			prepareTouchingElements()
 			pTrackedElements.removeAll()
@@ -593,13 +618,17 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				pListeners.forEach(block Listener listener
 					listener.elementLeft(this, element)
 				end)
-				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix(), "left")
+				if pBTSMs != null and element castable BehaviorElement
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "left", element cast BehaviorElement)
 				end
 			end)
 			pTouchingElements = null
 			
 			getElement().getGameWorld().getWorld().removeTouchSensor(pTouchSensor)
+		end
+		
+		func void stateChanged()
+			pTouchSensor.setEnabled(pTouching and getElement().getTouchable())
 		end
 		
 		
@@ -628,8 +657,8 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.elementEntered(this, element)
 			end)
-			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix(), "entered")
+			if pBTSMs != null and element castable BehaviorElement
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "entered", element cast BehaviorElement)
 			end
 		end
 		
@@ -650,8 +679,8 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.elementLeft(this, element)
 			end)
-			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix(), "left")
+			if pBTSMs != null and element castable BehaviorElement
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "left", element cast BehaviorElement)
 			end
 		end
 		
@@ -682,14 +711,14 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
-			env.writeBool(writer, getTouching())
+			env.writeBool(writer, pTouching)
 		end
 	end
 	
 	
 	
 	var ECBehaviorCollider pCollider
-	var ECComposeCollisionFilter pCollisionFilter
+	var ECPCollisionFilter pCollisionFilter
 	var ECPShapeList pShape
 	var ECPBoolean pShapeFromSize
 	var ECPBoolean pTouching
@@ -722,10 +751,11 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		eclass.addProperty(pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString()))
 		
-		pCollisionFilter = ECComposeCollisionFilter.new()
-		pCollisionFilter.setCollisionFilter(CollisionFilter.new(\
-			LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger), \
-			LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)))
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			eclass.getCodecPropertyString(), eclass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger),\
+				LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)))
+		eclass.addProperty(pCollisionFilter)
 		
 		eclass.addProperty(pShapeFromSize = ECPBoolean.new(prefix + "shapeFromSize", false))
 		eclass.addProperty(pTouching = ECPBoolean.new(prefix + "touching", true))
@@ -763,8 +793,19 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		return pAttach
 	end
 	
-	/** \brief Collision filter. */
+	/**
+	 * \brief Collision filter.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
 	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
 		return pCollisionFilter
 	end
 	

@@ -205,55 +205,6 @@ public:
 	}
 };
 
-class cActionRuleCopy : public igdeAction{
-protected:
-	aeMCPRuleTree &pPropertyRules;
-	igdeMetaContext::Ref pContext;
-	
-public:
-	cActionRuleCopy(aeMCPRuleTree &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
-	igdeAction("@Igde.Action.Copy", owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"@Igde.Action.Copy.ToolTip"),
-	pPropertyRules(property),
-	pContext(context){
-	}
-	
-	~cActionRuleCopy() override = default;
-	
-	void OnAction() override{
-		auto active = pPropertyRules.GetActiveObjectType(pContext);
-		if(active){
-			pContext->GetClipboard().Set(igdeMetaPropertyList::ClipboardData::Ref::New(
-				pPropertyRules.GetClipboardDataTypeName(),
-					igdeMetaPropertyList::List(devctag,active->CreateCopy())));
-		}
-	}
-	
-	void Update() override{
-		SetEnabled(pPropertyRules.IsValid(pContext) && pPropertyRules.GetActiveObject(pContext).IsNotNull());
-	}
-};
-
-class cActionRuleCut : public cActionRuleRemove{
-protected:
-	deTObjectReference<cActionRuleCopy> pActionCopy;
-	
-public:
-	cActionRuleCut(aeMCPRuleTree &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
-	cActionRuleRemove(property, owner, context),
-	pActionCopy(deTObjectReference<cActionRuleCopy>::New(property, owner, context))
-	{
-		SetText("@Igde.Action.Cut");
-		SetIcon(owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));
-		SetDescription("@Igde.Action.Cut.ToolTip");
-	}
-	
-	void OnAction() override{
-		pActionCopy->OnAction();
-		cActionRuleRemove::OnAction();
-	}
-};
-
 class cActionRulePasteIntoGroup : public igdeMetaPropertyList::ActionPaste{
 public:
 	cActionRulePasteIntoGroup(igdeMetaPropertyList &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
@@ -304,7 +255,8 @@ void aeMCPRuleTree::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaC
 	
 	auto ruleGroup = rule.DynamicCast<aeRuleGroup>();
 	if(ruleGroup){
-		helper.MenuCommand(menu, deTObjectReference<cActionRulePasteIntoGroup>::New(property, owner, ruleGroup->GetMetaContext()));
+		helper.MenuCommand(menu, deTObjectReference<cActionRulePasteIntoGroup>::New(
+			ruleGroup->mpRules.Property(), owner, ruleGroup->GetMetaContext()));
 	}
 	
 	helper.MenuSeparator(menu);
@@ -416,6 +368,69 @@ igdeMetaContext::Ref aeMCPRuleTree::GetActionContext(const ContextRef &context) 
 // Class aeMCPRules
 /////////////////////
 
+namespace {
+
+class UndoRules : public igdeMetaPropertyListUndo{
+private:
+	aeLink::List pAddLinks;
+	aeController::List pAddControllers;
+	
+public:
+	using Ref = deTObjectReference<UndoRules>;
+	
+	UndoRules(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context,
+	const igdeMetaPropertyList::List &newValue, const char *undoInfo = nullptr,
+	const char *undoInfoLong = nullptr) :
+		igdeMetaPropertyListUndo(property, context, newValue, undoInfo, undoInfoLong)
+	{
+		pProcessLinks();
+	}
+	
+	void Undo() override{
+		igdeMetaPropertyListUndo::Undo();
+		if(pAddLinks.IsNotEmpty()){
+			auto &animator = GetContext().DynamicCast<aeAnimator::MetaContext>()->GetOwnerRef();
+			animator.mpLinks.SetValue(animator.mpLinks.GetValue() - pAddLinks);
+		}
+		if(pAddControllers.IsNotEmpty()){
+			auto &animator = GetContext().DynamicCast<aeAnimator::MetaContext>()->GetOwnerRef();
+			animator.mpControllers.SetValue(animator.mpControllers.GetValue() - pAddControllers);
+		}
+	}
+	
+	void Redo() override{
+		if(pAddControllers.IsNotEmpty()){
+			auto &animator = GetContext().DynamicCast<aeAnimator::MetaContext>()->GetOwnerRef();
+			animator.mpControllers.SetValue(animator.mpControllers.GetValue() + pAddControllers);
+		}
+		if(pAddLinks.IsNotEmpty()){
+			auto &animator = GetContext().DynamicCast<aeAnimator::MetaContext>()->GetOwnerRef();
+			animator.mpLinks.SetValue(animator.mpLinks.GetValue() + pAddLinks);
+		}
+		igdeMetaPropertyListUndo::Redo();
+	}
+	
+protected:
+	void pProcessLinks(){
+		const auto &animator = GetContext().DynamicCast<aeAnimator::MetaContext>()->GetOwnerRef();
+		decTDictionary<aeLink::Ref,aeLink::Ref> addLinks;
+		decTDictionary<aeController::Ref,aeController::Ref> addControllers;
+		
+		GetNewValue().Visit([&](const deObject::Ref &object){
+			object.DynamicCast<aeRule>()->EnsureValidLinks(animator, addLinks, addControllers);
+		});
+		
+		addLinks.Visit([&](const aeLink::Ref&, const aeLink::Ref &value){
+			pAddLinks.Add(value);
+		});
+		addControllers.Visit([&](const aeController::Ref&, const aeController::Ref &value){
+			pAddControllers.Add(value);
+		});
+	}
+};
+
+}
+
 void aeMCPRules::GetObjectItemInfoType(const ContextRef &context,
 const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const{
 	info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->mpName.GetValue()),
@@ -431,8 +446,23 @@ const aeRule::List &existingObjects, const ObjectTypeRef &object) const{
 				return existing.mpName == name;
 			});
 		}, copied->mpName), false);
+	copied->CreateLinkCopies();
 	return copied;
 }
+
+igdeMetaPropertyListUndo::Ref aeMCPRules::ChangePropertyValue(const ContextRef &context,
+const List &newValue, const char *undoInfo, const char *undoInfoLong){
+	if(context->GetUndoSystem() && GetCanUndo()){
+		const auto undo = UndoRules::Ref::New(*this, context, newValue, undoInfo, undoInfoLong);
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
+}
+
 
 
 // Class cActionAffectedBonesMirror

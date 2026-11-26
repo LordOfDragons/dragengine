@@ -49,7 +49,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.Settings.ModuleParameters.Tooltip.Reset'>Auf Standardwert zurücksetzen</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectParameterValue'>Parameterwert auswählen</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectValue'>Wert auswählen.</translation>
-	<translation name='UI.Settings.ModuleParameters.DefaultInfoText'>&lt; Für Informationen Parameter-Name anklicken &lt;</translation>
+	<translation name='UI.Settings.ModuleParameters.DefaultInfoText'>&lt; Für Informationen Parameter-Name anklicken &gt;</translation>
 	<translation name='UI.Settings.Label.Language'>Sprache</translation>
 	<translation name='UI.Settings.ToolTip.Language'>Sprache wählen</translation>
 	<translation name='UI.Command.Quit.DisplayName'>Beenden</translation>
@@ -212,4 +212,6 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementReportMod.Enum.ReportType.illegalContent'>Verbotener Inhalt</translation>
 	<translation name='UI.ModManagementReportMod.Enum.ReportType.other'>Anderer Grund</translation>
 	<translation name='UI.Submit'>Senden</translation>
+	<translation name='UI.WindowLoading.Loading'>Laden...</translation>
+	<translation name='UI.WindowLoading.Finished'>Taste drücken zum Fortfahren</translation>
 </languagePack>

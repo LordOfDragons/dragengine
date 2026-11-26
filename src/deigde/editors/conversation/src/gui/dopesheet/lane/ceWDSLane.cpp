@@ -694,6 +694,8 @@ void ceWDSLane::UpdateCanvas(){
 	const decColor colorTextBg(0.75f, 0.75f, 0.75f);
 	const decColor colorTextSelectedBg(colorHandleSelectedBg);
 	
+	const auto &font = pWindow.GetFontText()->GetEngineFont();
+	const auto &fontSize = pWindow.GetFontText()->GetEngineFontSize();
 	const int center = pCanvas->GetSize().y / 2;
 	const ceStrip::List &list = GetStripList();
 	const int count = list.GetCount();
@@ -722,7 +724,7 @@ void ceWDSLane::UpdateCanvas(){
 		const int right = x;
 		
 		strip.stripId->SetText(listStrip.GetID());
-		strip.stripId->SetSize(strip.stripId->GetFont()->TextSize(strip.stripId->GetText()));
+		strip.stripId->SetSize(font->TextSize(strip.stripId->GetText(), fontSize, font->GetLineHeight()));
 		strip.stripId->SetPosition(decPoint((left2 + right) / 2, center) - strip.stripId->GetSize() / 2);
 		
 		strip.stripIdBg->SetPosition(strip.stripId->GetPosition() - decPoint(1, 1));

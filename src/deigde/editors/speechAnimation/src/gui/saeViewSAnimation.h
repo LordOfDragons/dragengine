@@ -46,7 +46,7 @@ public:
 	
 private:
 	saeWindowMain &pWindowMain;
-	deFont::Ref pFontStats;
+	// deFont::Ref pFontStats;
 	
 	saeSAnimation::Ref pSAnimation;
 	

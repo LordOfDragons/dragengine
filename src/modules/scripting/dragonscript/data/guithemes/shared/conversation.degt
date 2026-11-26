@@ -29,7 +29,8 @@
 	
 	<designer name='Label.PlayerChoiceEntry' extendNamed='Label'>
 		<color parameter='normal.textColor' r='0.6' g='0.6' b='0.6'/>
-		<font parameter='normal.font' size='31'>../modern/fonts/subtitle.defont</font>
+		<font parameter='normal.font' size='31'>../modern/fonts/liberation/sans/regular.ttf</font>
+		<float parameter='normal.textBorderThickness'>0.075</float>
 	</designer>
 	
 	
@@ -54,8 +55,9 @@
 	
 	<designer name='Label.SubTitleBoxText' type='Label'>
 		<borderSize parameter='normal.padding' left='5' top='0' right='5' bottom='0'/>
-		<font parameter='normal.font' size='31'>../modern/fonts/subtitle.defont</font>
+		<font parameter='normal.font' size='31'>../modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<float parameter='normal.textBorderThickness'>0.075</float>
 	</designer>
 	
 	<designer name='Label.SubTitleBoxText.Text' extendNamed='Label.SubTitleBoxText'>

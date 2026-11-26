@@ -156,7 +156,7 @@ class BaseActorClass extends BehaviorElementClass
 		cffilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
 		cffilter.setBit(BaseGameApp.CollisionFilterBit.particle)
 		
-		collider.setCollisionFilter(CollisionFilter.new(cfcategory, cffilter))
+		collider.getCollisionFilterProperty().setCollisionFilter(CollisionFilter.new(cfcategory, cffilter))
 		collider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
 		collider.getLocalGravity().setVector(Vector.new())
 		

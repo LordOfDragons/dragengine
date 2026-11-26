@@ -313,7 +313,16 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetBorderColor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetBorderThickness.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetColor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetDilation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetPath.cpp">
@@ -687,7 +696,16 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetBorderColor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetBorderThickness.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetColor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetDilation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetPath.h">

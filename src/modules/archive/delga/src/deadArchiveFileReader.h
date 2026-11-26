@@ -27,6 +27,7 @@
 
 #include <unzip.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 
 class deadContextUnpack;
@@ -45,12 +46,14 @@ public:
 private:
 	deadContextUnpack *pContext;
 	const unz_file_pos pArchivePosition;
-	const decString pFilename;
+	const decString pFilename, pFullFilename;
 	const int pFilesize;
 	const TIME_SYSTEM pModificationTime;
 	
 	int pPosition;
 	
+	decTList<uint8_t> pCache;
+	bool pCached;
 	
 	
 public:
@@ -62,7 +65,6 @@ public:
 	/** Clean up reader. */
 	~deadArchiveFileReader() override;
 	/*@}*/
-	
 	
 	
 	/** \name Management */
@@ -98,6 +100,10 @@ public:
 	/** Duplicate file reader. */
 	decBaseFileReader::Ref Duplicate() override;
 	/*@}*/
+	
+	
+private:
+	void pCacheContent();
 };
 
 #endif

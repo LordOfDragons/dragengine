@@ -127,10 +127,10 @@ void desmWritePropertyNode::WriteNodeCommon(const deSkinPropertyNode &node){
 		pWriter.WriteClosingTag("mask");
 	}
 	
-	const struct sMapped{
+	static const struct sMapped{
 		deSkinPropertyNode::eMapped mapped;
 		const char *name;
-	} mapped[15] = {
+	} mapped[16] = {
 		{deSkinPropertyNode::emPositionX, "positionX"},
 		{deSkinPropertyNode::emPositionY, "positionY"},
 		{deSkinPropertyNode::emPositionZ, "positionZ"},
@@ -145,11 +145,12 @@ void desmWritePropertyNode::WriteNodeCommon(const deSkinPropertyNode &node){
 		{deSkinPropertyNode::emColorizeRed, "colorizeR"},
 		{deSkinPropertyNode::emColorizeGreen, "colorizeG"},
 		{deSkinPropertyNode::emColorizeBlue, "colorizeB"},
-		{deSkinPropertyNode::emTransparency, "transparency"}
+		{deSkinPropertyNode::emTransparency, "transparency"},
+		{deSkinPropertyNode::emImage, "image"}
 	};
 	
 	int i;
-	for(i=0; i<15; i++){
+	for(i=0; i<16; i++){
 		const int index = node.GetMappedFor(mapped[i].mapped);
 		if(index == -1){
 			continue;
@@ -289,14 +290,36 @@ void desmWritePropertyNode::VisitText(deSkinPropertyNodeText &node){
 	pWriter.WriteDataTagString("text", node.GetText());
 	
 	const decColor &color = node.GetColor();
-	pWriter.WriteOpeningTagStart("color");
-	pWriter.WriteAttributeFloat("r", color.r);
-	pWriter.WriteAttributeFloat("g", color.g);
-	pWriter.WriteAttributeFloat("b", color.b);
-	if(fabsf(color.a - 1.0f) > FLOAT_SAFE_EPSILON){
-		pWriter.WriteAttributeFloat("a", color.a);
+	if(!color.IsEqualTo(decColor(0.0f, 0.0f, 0.0f))){
+		pWriter.WriteOpeningTagStart("color");
+		pWriter.WriteAttributeFloat("r", color.r);
+		pWriter.WriteAttributeFloat("g", color.g);
+		pWriter.WriteAttributeFloat("b", color.b);
+		if(fabsf(color.a - 1.0f) > FLOAT_SAFE_EPSILON){
+			pWriter.WriteAttributeFloat("a", color.a);
+		}
+		pWriter.WriteOpeningTagEnd(true);
 	}
-	pWriter.WriteOpeningTagEnd(true);
+	
+	const decColor &borderColor = node.GetBorderColor();
+	if(!borderColor.IsEqualTo(decColor(0.0f, 0.0f, 0.0f))){
+		pWriter.WriteOpeningTagStart("borderColor");
+		pWriter.WriteAttributeFloat("r", borderColor.r);
+		pWriter.WriteAttributeFloat("g", borderColor.g);
+		pWriter.WriteAttributeFloat("b", borderColor.b);
+		if(fabsf(borderColor.a - 1.0f) > FLOAT_SAFE_EPSILON){
+			pWriter.WriteAttributeFloat("a", borderColor.a);
+		}
+		pWriter.WriteOpeningTagEnd(true);
+	}
+	
+	if(fabsf(node.GetBorderThickness() - 0.0f) > FLOAT_SAFE_EPSILON){
+		pWriter.WriteDataTagFloat("borderThickness", node.GetBorderThickness());
+	}
+	
+	if(fabsf(node.GetDilation() - 0.0f) > FLOAT_SAFE_EPSILON){
+		pWriter.WriteDataTagFloat("dilation", node.GetDilation());
+	}
 	
 	const struct sMapped{
 		deSkinPropertyNodeText::eTextMapped mapped;

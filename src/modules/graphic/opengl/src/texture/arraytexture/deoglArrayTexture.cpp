@@ -983,7 +983,7 @@ void deoglArrayTexture::SetDepthFormat(bool packedStencil, bool useFloat){
 }
 
 void deoglArrayTexture::SetDebugObjectLabel(const char *name){
-	pDebugObjectLabel.Format("ArrT: %s", name);
+	pDebugObjectLabel.FormatSafe("ArrT: {}", name);
 	if(pTexture){
 		pUpdateDebugObjectLabel();
 	}

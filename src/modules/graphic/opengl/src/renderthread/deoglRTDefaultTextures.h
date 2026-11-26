@@ -26,6 +26,7 @@
 #define _DEOGLRRTDEFAULTTEXTURES_H_
 
 class deoglArrayTexture;
+class deoglArrayCubeMap;
 class deoglCubeMap;
 class deoglRenderThread;
 class deoglTexture;
@@ -54,6 +55,8 @@ private:
 	deoglCubeMap *pShadowCube;
 	deoglCubeMap *pShadowCubeInverseDepth;
 	deoglCubeMap *pShadowCubeColor;
+	deoglArrayTexture *pShadowArrayMap;
+	deoglArrayCubeMap *pShadowArrayCube;
 	
 	deoglTexture *pWeights;
 	deoglTexture *pMaskOpaque;
@@ -135,6 +138,12 @@ public:
 	
 	/** Default shadow cube color. */
 	inline deoglCubeMap *GetShadowCubeColor() const{ return pShadowCubeColor; }
+	
+	/** Default shadow array map. */
+	inline deoglArrayTexture *GetShadowArrayMap() const{ return pShadowArrayMap; }
+	
+	/** Default shadow array cube. */
+	inline deoglArrayCubeMap *GetShadowArrayCube() const{ return pShadowArrayCube; }
 	
 	/** Default envirnoment map. */
 	inline deoglCubeMap *GetEnvMap() const{ return pEnvMap; }

@@ -57,8 +57,8 @@ private:
 	deFontSize::Ref pFontSize;
 	float pTextSize;
 	decString pText;
-	decColor pColor;
-	
+	decColor pColor, pBorderColor;
+	float pBorderThickness, pDilation;
 	
 	
 public:
@@ -119,6 +119,23 @@ public:
 	/** \brief Set text color. */
 	void SetColor(const decColor &color);
 	
+	/** \brief Border color. */
+	inline const decColor &GetBorderColor() const{ return pBorderColor; }
+	
+	/** \brief Set border color. */
+	void SetBorderColor(const decColor &color);
+	
+	/** \brief Border thickness. */
+	inline float GetBorderThickness() const{ return pBorderThickness; }
+	
+	/** \brief Set border thickness. */
+	void SetBorderThickness(float thickness);
+	
+	/** \brief Dilation. */
+	inline float GetDilation() const{ return pDilation; }
+	
+	/** \brief Set dilation. */
+	void SetDilation(float dilation);
 	
 	
 	/** \brief Create copy of node. */

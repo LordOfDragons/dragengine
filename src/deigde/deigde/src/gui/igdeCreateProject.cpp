@@ -254,7 +254,8 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	
 	const char * const extensions[] = {
 		// images
-		"apng", "jpg", "jpeg", "png", "png3d", "tga", "exr", "gif", "webp",
+		"apng", "jpg", "jpeg", "png", "png3d", "tga", "exr", "hdr", "gif",
+		"webp", "webp3d", "avif", "avif3d",
 		// vector graphics
 		"svgz",
 		// videos
@@ -264,7 +265,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 		// animation
 		"deanim",
 		// models
-		"demodel", "deoccmesh", "fbx",
+		"demodel", "deoccmesh", "fbx", "glb",
 		// text documents
 		"odg", "ods", "odt", "pdf", "doc", "docx", "docm", "xls", "xlsx", "xlsm",
 		"ppt", "pps", "pptx", "pptm", "ppsx", "ppsm", "sldx", "sldm",
@@ -277,7 +278,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 		// image editing
 		"kra", "psd", "xcf", "xcfbz2",
 		// archives
-		"7z", "zip", "tar", "gz", "bz2",
+		"7z", "zip", "tar", "gz", "bz2", "xz",
 		// programming intermetiate files
 		"o", "os", "lo", "pyc",
 		// dragengine specific

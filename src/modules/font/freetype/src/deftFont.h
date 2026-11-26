@@ -28,15 +28,19 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include <dragengine/common/math/decMath.h>
+#include "cache/deftCachedFont.h"
+#include "cache/deftCachedFontSize.h"
+#include "layout/deftLayout.h"
+
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
 
 class decBaseFileReader;
 class deftModule;
-class deFont;
+class deftLayouterSdf;
 class deImage;
-
 
 /**
  * FreeType Font module.
@@ -45,21 +49,20 @@ class deftFont{
 private:
 	deftModule &pModule;
 	decBaseFileReader &pReader;
+	deFont::Ref pFont;
+	deftCachedFont::Ref pCachedFont;
+	deftCachedFontSize::Ref pCachedFontSize;
+	
 	FT_Face pFace;
 	FT_StreamRec pStreamRec;
 	FT_Open_Args pOpenArgs;
-	int pMaxImageWidth, pGlyphSpacing, pLineHeightLimit, pHintingSafetyMargin;
-	int pRealFontSize, pBaseLine, pRealLineHeight, pComponentCount;
-	FT_Int32 pLoadFlags;
-	decPoint pBearingOffset;
-	decBoundary pBBox;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deftFont(deftModule &module, decBaseFileReader &reader);
+	deftFont(deftModule &module, decBaseFileReader &reader, const deFont::Ref &font);
 	
 	/** Clean up module. */
 	~deftFont();
@@ -69,21 +72,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Load font. */
-	void LoadFont(deFont &font);
+	void LoadFont();
 	
 	/** Load font size. */
-	deFontSize::Ref LoadFontSize(deFont &font, int lineHeight);
+	deFontSize::Ref LoadFontSize(int lineHeight);
 	/*@}*/
 	
 	
 private:
+	deFontSize::Ref pLoadFontSizeBitmap(int lineHeight);
+	deFontSize::Ref pLoadFontSizeSdf();
+	int pSdfFindBestLayout(deTUniqueReference<deftLayouterSdf> &layouter, deftLayout::Ref &layout);
+	
+	void pOpenFontFile();
 	int pCountUsableGlyphs() const;
-	void pInitGlyphs(deFont &font);
-	int pFindBestSize(const deFont &font, const deFontSize &size);
-	void pInitGlyphs(deFontSize &size);
-	decPoint3 pCalcLayout(deFontSize &size);
-	void pDebugPrintGlyphs(const deFont &font, const deFontSize &size);
-	void pRenderGlyphs(const deFontSize &size, deImage &image);
+	void pInitGlyphs() const;
+	void pDebugPrintGlyphs(const deFontSize &size, const deftLayout &layout) const;
 	
 	static unsigned long fStreamRead(FT_Stream stream, unsigned long offset,
 		unsigned char *buffer, unsigned long count);

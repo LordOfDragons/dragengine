@@ -143,6 +143,7 @@ void dbgPrintMemoryUsage(deoglRenderThread &renderThread){
 	const deoglMemoryConsumptionTexture &conTexArr = consumption.textureArray;
 	const deoglMemoryConsumptionTexture &conTexArrRen = consumption.textureArrayRenderable;
 	const deoglMemoryConsumptionTexture &conTexCube = consumption.textureCube;
+	const deoglMemoryConsumptionTexture &conTexArrCube = consumption.textureArrayCube;
 	const deoglMemoryConsumptionTexture &conTexCubeRen = consumption.textureCubeRenderable;
 	const deoglMemoryConsumptionBufferObject &conBO = consumption.bufferObject;
 	
@@ -153,6 +154,7 @@ void dbgPrintMemoryUsage(deoglRenderThread &renderThread){
 		" tex3D(%d,%dM|%d,%dM)"
 		" texArr(%d,%dM|%d,%dM)"
 		" texCube(%d,%dM|%d,%dM)"
+		" texArrCube(%d,%dM)"
 		" vbo(%d,%dM|%d,%dM)"
 		" ibo(%d,%dM|%d,%dM)"
 		" ubo(%d,%dM)"
@@ -174,6 +176,7 @@ void dbgPrintMemoryUsage(deoglRenderThread &renderThread){
 		conTexArr.all.GetCount(), conTexArr.all.GetConsumptionMB(),
 		conTexArrRen.all.GetCount(), conTexArrRen.all.GetConsumptionMB(),
 		conTexCube.all.GetCount(), conTexCube.all.GetConsumptionMB(),
+		conTexArrCube.all.GetCount(), conTexArrCube.all.GetConsumptionMB(),
 		conTexCubeRen.all.GetCount(), conTexCubeRen.all.GetConsumptionMB(),
 		conBO.vbo.GetCount(), conBO.vbo.GetConsumptionMB(),
 		conBO.vboShared.GetCount(), conBO.vboShared.GetConsumptionMB(),
@@ -181,7 +184,7 @@ void dbgPrintMemoryUsage(deoglRenderThread &renderThread){
 		conBO.iboShared.GetCount(), conBO.iboShared.GetConsumptionMB(),
 		conBO.ubo.GetCount(), conBO.ubo.GetConsumptionMB(),
 		conBO.tbo.GetCount(), conBO.tbo.GetConsumptionMB()
-);
+		);
 }
 
 void oglClearError(){

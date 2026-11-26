@@ -93,6 +93,20 @@ public:
 		~MetaPropertyTarget() override = default;
 	};
 	
+	class LinkStorage : public igdeMetaPropertyObjectSetStorage<aeLink>::Storage{
+		using igdeMetaPropertyObjectSetStorage<aeLink>::Storage::Storage;
+		using igdeMetaPropertyObjectSetStorage<aeLink>::Storage::SetValue;
+		
+	private:
+		decTDictionary<aeLink::Ref,aeLink::Ref> pLinkCopies;
+		
+	public:
+		void SetValue(const LinkStorage &value, bool notify = true);
+		void CreateLinkCopies();
+		void EnsureValidLinks(const aeAnimator &animator, decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+			decTDictionary<aeController::Ref,aeController::Ref> &addControllers);
+	};
+	
 	
 private:
 	aeWindowMain &pWindowMain;
@@ -112,7 +126,7 @@ public:
 	igdeMetaPropertyBooleanStorage::Storage mpEnabled;
 	igdeMetaPropertyStringSetStorage::Storage mpAffectedBones;
 	igdeMetaPropertyStringSetStorage::Storage mpAffectedVps;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetBlendFactor;
+	LinkStorage mpTargetBlendFactor;
 	
 	
 protected:
@@ -189,6 +203,14 @@ public:
 	
 	/** Parent animator changed. */
 	virtual void OnParentAnimatorChanged();
+	
+	/** Create link copies. Required for rules copied to clipboard. */
+	virtual void CreateLinkCopies();
+	
+	/** Ensure links are valid. Required for rules pasted from clipboard. */
+	virtual void EnsureValidLinks(const aeAnimator &animator,
+		decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+		decTDictionary<aeController::Ref,aeController::Ref> &addControllers);
 	/*@}*/
 	
 	

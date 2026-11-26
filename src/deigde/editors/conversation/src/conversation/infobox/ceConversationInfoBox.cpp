@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "ceConversationInfoBox.h"
 #include "../ceConversation.h"
 #include "../playback/cePlayback.h"
@@ -40,6 +35,7 @@
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontManager.h>
 #include <dragengine/resources/font/deFontGlyph.h>
+#include <dragengine/resources/font/deFontSize.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
@@ -63,7 +59,9 @@
 ceConversationInfoBox::ceConversationInfoBox(ceConversation &conversation) :
 pConversation(conversation),
 pBackgroundColor(1.0f, 1.0f, 0.0f, 0.5f),
-pTextColor(1.0f, 1.0f, 1.0f, 1.0f),
+pTextColor(1.0f, 1.0f, 1.0f),
+pBorderColor(0.0f, 0.0f, 0.0f),
+pBorderThickness(0.075f),
 pTextSize(18),
 pPadding(10),
 pWidth(0),
@@ -73,7 +71,7 @@ pHeight(0)
 		pCanvasView = conversation.GetEngine()->GetCanvasManager()->CreateCanvasView();
 		pCanvasView->SetOrder(12.0f);
 		
-		SetPathFont("/igde/fonts/sans_9_border.defont");
+		SetPathFont("/igde/fonts/liberation/sans/regular.ttf");
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -116,6 +114,26 @@ void ceConversationInfoBox::SetTextColor(const decColor &color){
 	}
 	
 	pTextColor = color;
+	UpdateCanvas();
+}
+
+void ceConversationInfoBox::SetBorderColor(const decColor &color){
+	if(color.IsEqualTo(pBorderColor)){
+		return;
+	}
+	
+	pBorderColor = color;
+	UpdateCanvas();
+}
+
+void ceConversationInfoBox::SetBorderThickness(float thickness){
+	thickness = decMath::max(thickness, 0.0f);
+	
+	if(thickness == pBorderThickness){
+		return;
+	}
+	
+	pBorderThickness = thickness;
 	UpdateCanvas();
 }
 
@@ -215,6 +233,8 @@ void ceConversationInfoBox::UpdateCanvas(){
 			canvasText->SetColor(pTextColor);
 			canvasText->SetFont(pEngFont);
 			canvasText->SetFontSize((float)fontSize);
+			canvasText->SetBorderColor(pBorderColor);
+			canvasText->SetBorderThickness(pBorderThickness);
 			canvasText->SetText(text);
 			canvasText->SetOrder((float)(1 + i));
 			canvasText->SetPosition(decPoint((pWidth - lineWidth) / 2, y));
@@ -278,46 +298,21 @@ void ceConversationInfoBox::pUpdateText(){
 		return;
 	}
 	
-	decUTF8Decoder utf8Decoder;
-	utf8Decoder.SetString(pText);
+	const int lineHeight = igdeApplication::app().DisplayScaled(pTextSize);
+	const float dilate = pBorderThickness;
 	
-	const int fontSize = igdeApplication::app().DisplayScaled(pTextSize);
-	const float scale = (float)fontSize / (float)(pEngFontSize
-		? pEngFontSize->GetLineHeight() : pEngFont->GetLineHeight());
-	const int textLength = utf8Decoder.GetLength();
-	int textHeight = 0;
+	const auto lines = decUnicodeString::NewFromUTF8(pText).Split('\n');
 	int textWidth = 0;
-	int lineWidth = 0;
-	int lineStart = 0;
 	
-	while(utf8Decoder.GetPosition() < textLength){
-		const int position = utf8Decoder.GetPosition();
-		const int character = utf8Decoder.DecodeNextCharacter();
-		if(character < 0){
-			continue; // invalid unicode character
-		}
+	lines.Visit([&](const decUnicodeString &line){
+		const auto textSize = pEngFont->TextSize(line, pEngFontSize, lineHeight, dilate);
 		
-		if(character == '\n'){
-			pLayoutTexts.Add(pText.GetMiddle(lineStart, position));
-			pLayoutWidths.Add(lineWidth);
-			textHeight += fontSize;
-			lineWidth = 0;
-			lineStart = utf8Decoder.GetPosition();
-			
-		}else{
-			lineWidth += (int)((float)pEngFont->GetGlyph(character, pEngFontSize).GetAdvance() * scale);
-			if(lineWidth > textWidth){
-				textWidth = lineWidth;
-			}
-		}
-	}
-	
-	if(lineStart < textLength){
-		pLayoutTexts.Add(pText.GetMiddle(lineStart, textLength));
-		pLayoutWidths.Add(lineWidth);
-		textHeight += fontSize;
-	}
+		pLayoutTexts.Add(line.ToUTF8());
+		pLayoutWidths.Add(textSize.x);
+		
+		textWidth = decMath::max(textWidth, textSize.x);
+		pHeight += lineHeight;
+	});
 	
 	pWidth += textWidth;
-	pHeight += textHeight;
 }

@@ -321,6 +321,9 @@ void seTexture::SetTexCoordRotation(float rotation){
 //////////////////////
 
 void seTexture::pCleanUp(){
+	pProperties.Visit([](seProperty &p){
+		p.SetTexture(nullptr);
+	});
 }
 
 void seTexture::pUpdateTexCoordTransform(){

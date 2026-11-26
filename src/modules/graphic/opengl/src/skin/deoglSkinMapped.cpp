@@ -60,8 +60,10 @@ void deoglSkinMapped::SetRenderable(int renderable){
 	pRenderable = renderable;
 }
 
-float deoglSkinMapped::Calculate(const deoglSkinState &skinState, const deoglSkinStateMapped &mapped) const{
-	return pCalculateOutputValue(pCalculateInputValue(skinState, mapped));
+deoglSkinMapped::Result deoglSkinMapped::Calculate(const deoglSkinState &skinState, const deoglSkinStateMapped &mapped) const{
+	Result result = pCalculateInputValue(skinState, mapped);
+	result.value = pCalculateOutputValue(result.value);
+	return result;
 }
 
 
@@ -69,13 +71,13 @@ float deoglSkinMapped::Calculate(const deoglSkinState &skinState, const deoglSki
 // Private Functions
 //////////////////////
 
-float deoglSkinMapped::pCalculateInputValue(const deoglSkinState &skinState,
+deoglSkinMapped::Result deoglSkinMapped::pCalculateInputValue(const deoglSkinState &skinState,
 const deoglSkinStateMapped &mapped) const{
-	float input = 0.0f;
+	Result result{};
 	
 	switch(pMapped.GetInputType()){
 	case deSkinMapped::eitTime:
-		input = skinState.GetTime();
+		result.value = skinState.GetTime();
 		break;
 		
 	case deSkinMapped::eitBonePositionX:
@@ -87,7 +89,7 @@ const deoglSkinStateMapped &mapped) const{
 	case deSkinMapped::eitBoneScaleX:
 	case deSkinMapped::eitBoneScaleY:
 	case deSkinMapped::eitBoneScaleZ:
-		input = mapped.GetBoneInputValue();
+		result.value = mapped.GetBoneInputValue();
 		break;
 		
 	case deSkinMapped::eitRenderable:{
@@ -110,34 +112,28 @@ const deoglSkinStateMapped &mapped) const{
 			break;
 		}
 		
-		deoglRDSRenderable * const dsrenderable = dynamicSkin->GetRenderableAt(hostRenderable);
-		if(!dsrenderable){
+		result.renderable = dynamicSkin->GetRenderableAt(hostRenderable);
+		if(!result.renderable){
 			break;
 		}
 		
-		if(dsrenderable->GetType() == deoglRDSRenderable::etColor){
-			const decColor color(dsrenderable->GetRenderColor(decColor()));
+		const auto color = result.renderable->GetRenderColor({});
+		switch(pMapped.GetRenderableComponent()){
+		case deSkinMapped::ercRed:
+			result.value = color.r;
+			break;
 			
-			switch(pMapped.GetRenderableComponent()){
-			case deSkinMapped::ercRed:
-				input = color.r;
-				break;
-				
-			case deSkinMapped::ercGreen:
-				input = color.g;
-				break;
-				
-			case deSkinMapped::ercBlue:
-				input = color.b;
-				break;
-				
-			case deSkinMapped::ercAlpha:
-				input = color.a;
-				break;
-			}
+		case deSkinMapped::ercGreen:
+			result.value = color.g;
+			break;
 			
-		}else{
-			input = dsrenderable->GetRenderValue(0.0f);
+		case deSkinMapped::ercBlue:
+			result.value = color.b;
+			break;
+			
+		case deSkinMapped::ercAlpha:
+			result.value = color.a;
+			break;
 		}
 		}break;
 		
@@ -146,10 +142,11 @@ const deoglSkinStateMapped &mapped) const{
 	}
 	
 	if(!pMapped.GetInputClamped()){
-		input = decMath::normalize(input, pMapped.GetInputLower(), pMapped.GetInputUpper());
+		result.value = decMath::normalize(result.value, pMapped.GetInputLower(), pMapped.GetInputUpper());
 	}
 	
-	return decMath::linearStep(input, pMapped.GetInputLower(), pMapped.GetInputUpper());
+	result.value = decMath::linearStep(result.value, pMapped.GetInputLower(), pMapped.GetInputUpper());
+	return result;
 }
 
 float deoglSkinMapped::pCalculateOutputValue(float inputValue) const{

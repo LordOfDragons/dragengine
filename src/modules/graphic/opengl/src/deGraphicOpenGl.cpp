@@ -73,6 +73,7 @@
 #include "parameters/debug/deoglPWireframeMode.h"
 #include "parameters/defren/deoglPDefRenSizeLimit.h"
 #include "parameters/defren/deoglPHDRRMaximumIntensity.h"
+#include "parameters/defren/deoglPLowFillRate.h"
 #include "parameters/defren/deoglPRenderDownScale.h"
 #include "parameters/defren/deoglPTranspLayerLimit.h"
 #include "parameters/defren/deoglPAsyncRenderSkipSyncTimeRatio.h"
@@ -783,6 +784,7 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.Add(deTUniqueReference<deoglPHDRRMaximumIntensity>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPDefRenSizeLimit>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPTranspLayerLimit>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPLowFillRate>::New(*this));
 	
 	pParameters.Add(deTUniqueReference<deoglPVSyncMode>::New(*this));
 	

@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "cePCBOption.h"
 #include "cePlayerChoiceBox.h"
 #include "../ceConversation.h"
@@ -60,20 +55,21 @@
 cePlayerChoiceBox::cePlayerChoiceBox(ceConversation &conversation) :
 pConversation(conversation),
 pBackgroundColor(0.0f, 0.0f, 0.0f, 0.5f),
-pTextColor(1.0f, 1.0f, 1.0f, 1.0f),
+pTextColor(1.0f, 1.0f, 1.0f),
+pBorderColor(0.0f, 0.0f, 0.0f),
 pSelectedBackgroundColor(0.0f, 0.0f, 0.5f, 0.5f),
-pSelectedTextColor(1.0f, 0.5f, 0.5f, 1.0f),
+pSelectedTextColor(1.0f, 0.5f, 0.5f),
+pBorderThickness(0.075f),
 pTextSize(18),
 pPadding(10),
 pPlaybackStackDepth(-1),
-
 pSelectedOption(-1)
 {
 	try{
 		pCanvasView = conversation.GetEngine()->GetCanvasManager()->CreateCanvasView();
 		pCanvasView->SetOrder(11.0f);
 		
-		SetPathFont("/igde/fonts/sans_9_border.defont");
+		SetPathFont("/igde/fonts/liberation/sans/regular.ttf");
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -111,6 +107,26 @@ void cePlayerChoiceBox::SetTextColor(const decColor &color){
 	}
 	
 	pTextColor = color;
+	UpdateCanvas();
+}
+
+void cePlayerChoiceBox::SetBorderColor(const decColor &color){
+	if(color.IsEqualTo(pBorderColor)){
+		return;
+	}
+	
+	pBorderColor = color;
+	UpdateCanvas();
+}
+
+void cePlayerChoiceBox::SetBorderThickness(float thickness){
+	thickness = decMath::max(thickness, 0.0f);
+	
+	if(thickness == pBorderThickness){
+		return;
+	}
+	
+	pBorderThickness = thickness;
 	UpdateCanvas();
 }
 

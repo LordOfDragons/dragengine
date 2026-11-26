@@ -183,6 +183,7 @@ void deModio::AddVFSContainers(deVirtualFileSystem &vfs, const char *stage){
 		
 		if(!pVFSMods){
 			pVFSMods = deVirtualFileSystem::Ref::New();
+			pVFSMods->SetIdentifier("modio:mods");
 		}
 		
 		const decPath rootDir(decPath::CreatePathUnix("/"));

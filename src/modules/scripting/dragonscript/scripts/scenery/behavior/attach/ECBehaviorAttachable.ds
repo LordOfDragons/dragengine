@@ -161,11 +161,11 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
+				var ECBehaviorAttachSlot.Instance attachSlot = pInstance.getAttachSlot()
 				var Object value
 				
 				value = parameters.getAt("interactElement.assign", null)
 				if value != null
-					var ECBehaviorAttachSlot.Instance attachSlot = pInstance.getAttachSlot()
 					if attachSlot == null
 						return BTResult.failure
 					end
@@ -188,6 +188,17 @@ class ECBehaviorAttachable extends DefaultECBehavior
 					end
 				end
 				
+				value = parameters.getAt("runEvent", null)
+				if value != null
+					if attachSlot == null
+						return BTResult.failure
+					end
+					
+					attachSlot.getElement().forEachInstance(block ECBehaviorStateMachine.Instance each
+						each.runEvent(value cast String, pInstance.getElement())
+					end)
+				end
+				
 				value = parameters.getAt("detach", null)
 				if value != null
 					if value.equals("dispose")
@@ -205,31 +216,41 @@ class ECBehaviorAttachable extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "attachable.check".
 		 * \version 1.26
 		 */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+				var ECBehaviorAttachSlot.Instance attachSlot = pInstance.getAttachSlot()
 				var bool result = true
-				var Object value
-				
-				value = parameters.getAt(prefix + "attached", null)
+				var Object value = parameters.getAt(prefix + "attached", null)
 				if value != null
 					result &= pInstance.isAttached() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "flags.set", null)
+				if value != null
+					if attachSlot != null
+						var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(attachSlot.getElement())
+						result &= flags != null and flags.getFlag(value cast String)
+						
+					else
+						result = false
+					end
+				end
+				
+				value = parameters.getAt(prefix + "flags.clear", null)
+				if value != null
+					if attachSlot != null
+						var ECBehaviorFlags.Instance flags = ECBehaviorFlags.getInstanceIn(attachSlot.getElement())
+						result &= flags != null and not flags.getFlag(value cast String)
+						
+					else
+						result = false
+					end
 				end
 				
 				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getAttachSlot(),\
@@ -612,7 +633,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	 * \brief Get behavior in element class or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
-	 * of type ECBehaviorComponent.
+	 * of type ECBehaviorAttachable.
 	 */
 	static func ECBehaviorAttachable getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorAttachable each
@@ -624,7 +645,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	 * \brief Get instance in element or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
-	 * of type ECBehaviorAttachable.Instance . If more than one instance is present returns
+	 * of type ECBehaviorAttachable.Instance. If more than one instance is present returns
 	 * the first instance.
 	 */
 	static func Instance getInstanceIn(BehaviorElement element)
@@ -635,7 +656,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	
 	
 	
-	/** \brief Create Behavior instance. */
+	/** \brief Create behavior instance. */
 	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end

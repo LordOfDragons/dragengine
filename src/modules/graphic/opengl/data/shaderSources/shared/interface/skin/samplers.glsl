@@ -2,7 +2,7 @@
 // #include "shared/interface/skin/samplers.glsl"
 
 #ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
-	#ifdef WITH_VARIATION
+	#ifdef WITH_VARIATIONS
 		#define DTNA(e)
 		#define DTA(e) e;
 	#else
@@ -102,6 +102,15 @@ DTA(layout(binding=18) uniform mediump sampler2DArray texRimEmissivityArray)
 layout(binding=19) uniform HIGHP sampler2DArray texDepthTest;
 
 layout(binding=20) uniform lowp sampler2D texNoise;
+
+// depth.vert.glsl
+//layout(binding=21) uniform HIGHP samplerBuffer texSubInstance1;
+//layout(binding=22) uniform HIGHP samplerBuffer texSubInstance2;
+
+// pCondLowFillRate
+layout(binding=23) uniform HIGHP sampler2DArrayShadow texFRShadowSky;
+layout(binding=24) uniform HIGHP sampler2DArrayShadow texFRShadowSpot;
+layout(binding=25) uniform HIGHP samplerCubeArrayShadow texFRShadowPoint;
 
 
 #undef DTNA

@@ -398,6 +398,7 @@
 		<transition event='playerReleasesControl'>
 			<import>shared.init.inputLocomotion</import>
 		</transition>
+		
 		<!--
 		Think on frame update for player controlled actor only.
 		
@@ -421,6 +422,60 @@
 	
 	
 	<!--
+	Handles actor not touching the ground anymore (ECBehaviorProjectToGround).
+	
+	If the actor is no longer touching the ground, switches to state 'falling'. This check is
+	done using enter action and transition.
+	-->
+	<state id='shared.state.ground.player.falling'>
+		<!--
+		If not touching ground switch to "falling" state.
+		-->
+		<enterAction>
+			<condition>projectToGround.check</condition>
+			<parameter name='projectToGround.ground'>false</parameter>
+			
+			<state>falling</state>
+		</enterAction>
+		
+		<!--
+		Actor begins falling. Send by ECBehaviorProjectToGround if the actor is detected
+		to be no more touching ground.
+		
+		Switches to "fallig" state.
+		-->
+		<transition event='projectToGround.noTouch' state='falling'/>
+	</state>
+	
+	
+	<!--
+	Handles actor being moved by behavior (ECBehaviorActorMover).
+	
+	If actor is being moved by behavior (ECBehaviorActorMover), switches to state 'actorMover'.
+	This check is done using enter action and transition.
+	-->
+	<state id='shared.state.ground.player.actorMover'>
+		<!--
+		If actorMover has goal switch to "actorMover" state.
+		-->
+		<enterAction>
+			<condition>actorMover.check</condition>
+			<parameter name='actorMover.goal'>true</parameter>
+			
+			<state>actorMover</state>
+		</enterAction>
+		
+		<!--
+		Actor starts being moved by ECBehaviorActorMover. Send by ECBehaviorActorMover
+		if a goal is set to move to.
+		
+		Switches to "actorMover" state.
+		-->
+		<transition event='actorMover.start' state='actorMover'/>
+	</state>
+	
+	
+	<!--
 	Basic state content for falling actors. Import this into your custom states to get
 	basic actor handling for falling actors. This does not include player handling.
 	
@@ -431,7 +486,7 @@
 	-->
 	<state id='shared.state.falling'>
 		<transition event='think'>
-			<import>shared.think.falling</import>>
+			<import>shared.think.falling</import>
 		</transition>
 		
 		<transition event='postThink'>
@@ -521,27 +576,20 @@
 	<!--
 	Actor is standing on ground. This is the main state which processes player input by
 	updating respective player input behaviors.
+	
+	If the actor is no longer touching the ground, switches to state 'falling'
+	(ECBehaviorProjectToGround).
+	
+	If actor is being moved by behavior (ECBehaviorActorMover), switches to state 'actorMover'.
+	
+	These checks are done as part of transitions and enter actions. Enter actions can not be
+	overwritten. If you want to handle falling and actor moving differently import
+	'shared.state.ground.player' instead and import 'shared.state.ground.player.falling'
+	and 'shared.state.ground.player.actorMover' if needed.
 	-->
 	<state id='ground'>
-		<!--
-		If not touching ground switch to "falling" state.
-		-->
-		<enterAction>
-			<condition>projectToGround.check</condition>
-			<parameter name='projectToGround.ground'>false</parameter>
-			
-			<state>falling</state>
-		</enterAction>
-		
-		<!--
-		If actorMover has goal switch to "actorMover" state.
-		-->
-		<enterAction>
-			<condition>actorMover.check</condition>
-			<parameter name='actorMover.goal'>true</parameter>
-			
-			<state>actorMover</state>
-		</enterAction>
+		<import>shared.state.ground.player.falling</import>
+		<import>shared.state.ground.player.actorMover</import>
 		
 		<!--
 		About using BaseActorAction.conversationWait(). This function returns true if
@@ -556,22 +604,6 @@
 		This state is reset to false whenever the current action is changed
 		-->
 		
-		
-		<!--
-		Actor begins falling. Send by ECBehaviorProjectToGround if the actor is detected
-		to be no more touching ground.
-		
-		Switches to "fallig" state.
-		-->
-		<transition event='projectToGround.noTouch' state='falling'/>
-		
-		<!--
-		Actor starts being moved by ECBehaviorActorMover. Send by ECBehaviorActorMover
-		if a goal is set to move to.
-		
-		Switches to "actorMover" state.
-		-->
-		<transition event='actorMover.start' state='actorMover'/>
 		
 		<!--
 		Element entered game world. Does nothing.
@@ -627,8 +659,8 @@
 	
 	
 	<!--
-	Actor is moved by ECBehaviorActorMover. Same as "ground" state but certain player
-	inputs are disregarded.
+	Actor is moved by ECBehaviorActorMover. Similar to "ground" state but certain player
+	inputs are disregarded and actor moving is handled differently.
 	-->
 	<state id='actorMover'>
 		<!--
@@ -648,6 +680,7 @@
 		<transition event='playerThink'/>
 		
 		
+		<import>shared.state.ground.player.falling</import>
 		<import>shared.state.ground.player</import>
 	</state>
 </stateMachine>

@@ -35,6 +35,7 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
 	-DCMAKE_SYSTEM_NAME=Windows `
 	-DCMAKE_SYSTEM_PROCESSOR=AMD64 `
 	-DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
+	-DCMAKE_STATIC_LINKER_FLAGS="/EXPORT:none" `
 	-DZLIB_INCLUDE_DIR="$ZlibIncludeDir" `
 	-DZLIB_LIBRARY_RELEASE="$ZlibLibDir\zlibstatic.lib"
 

@@ -35,7 +35,6 @@ class peeEmitter;
 class deParticleEmitterController;
 
 
-
 /**
  * \brief Particle Emitter Controller.
  */
@@ -50,12 +49,8 @@ private:
 	
 	decString pName;
 	
-	float pLower;
-	float pUpper;
-	float pValue;
-	bool pClamp;
-	bool pFrozen;
-	bool pLinkToTime;
+	float pLower, pUpper, pValue, pDefaultValue;
+	bool pClamp, pFrozen, pLinkToTime;
 	
 	bool pActive;
 	
@@ -121,6 +116,12 @@ public:
 	inline bool GetLinkToTime() const{ return pLinkToTime; }
 	/** Sets if the controller is advanced by elapsed time. */
 	void SetLinkToTime(bool linkToTime);
+	
+	/** Default value. */
+	inline float GetDefaultValue() const{ return pDefaultValue; }
+	
+	/** Set default value. */
+	void SetDefaultValue(float value);
 	
 	/** Determines if this is the active controller. */
 	inline bool GetActive() const{ return pActive; }

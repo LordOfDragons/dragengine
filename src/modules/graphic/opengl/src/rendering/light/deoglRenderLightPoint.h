@@ -35,6 +35,7 @@ class deoglRenderPlan;
 class deoglRenderPlanLight;
 class deoglRLight;
 class deoglSPBlockUBO;
+class deoglSPBAccessor;
 class deoglShadowMapper;
 class deoglRTRenderers;
 class deoglRenderPlanMasked;
@@ -184,9 +185,21 @@ public:
 	void UpdateLightParamBlock(deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanLight &planLight);
 	
+	void UpdateLightParamBlock(deoglLightShader &lightShader, deoglSPBAccessor &accessor,
+		deoglRenderPlanLight &planLight);
+	
 	/** Update instance shader parameter block. */
 	void UpdateInstanceParamBlock(deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanLight &planLight, sShadowDepthMaps &shadowDepthMaps);
+	
+	void UpdateInstanceParamBlock(deoglLightShader &lightShader, deoglSPBAccessor &accessor,
+		deoglRenderPlanLight &planLight, sShadowDepthMaps &shadowDepthMaps);
+	
+	/** Forward rendering. */
+	void RenderForward(deoglRenderPlan &plan);
+	
+	/** Forward rendering. */
+	void RenderForward(deoglRenderPlanLight &planLight);
 	
 	
 	

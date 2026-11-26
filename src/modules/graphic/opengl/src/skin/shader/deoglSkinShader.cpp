@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <inttypes.h>
 
 #include "deoglSkinShader.h"
@@ -52,6 +49,7 @@
 #include "../../shaders/paramblock/deoglSPBParameter.h"
 #include "../../shaders/paramblock/deoglSPBlockMemory.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBElement.h"
+#include "../../shadow/deoglFRShadowManager.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../texture/texunitsconfig/deoglTexUnitConfig.h"
@@ -431,7 +429,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender(deoglRenderThread &renderT
 	spb->GetParameterAt(erutSSAOParams3).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3
 	
 	spb->GetParameterAt(erutSSSSSParams1).SetAll(deoglSPBParameter::evtFloat, 4, 1, 1); // vec4
-	spb->GetParameterAt(erutSSSSSParams2).SetAll(deoglSPBParameter::evtInt, 2, 1, 1); // ivec2
+	spb->GetParameterAt(erutSSSSSParams2).SetAll(deoglSPBParameter::evtInt, 3, 1, 1); // ivec3
 	
 	spb->GetParameterAt(erutSSRParams1).SetAll(deoglSPBParameter::evtFloat, 4, 1, 1); // vec4
 	spb->GetParameterAt(erutSSRParams2).SetAll(deoglSPBParameter::evtFloat, 4, 1, 1); // vec4
@@ -458,6 +456,9 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender(deoglRenderThread &renderT
 	spb->GetParameterAt(erutDebugDepthTransform).SetAll(deoglSPBParameter::evtFloat, 2, 1, 1); // vec2
 	
 	spb->GetParameterAt(erutConditions1).SetAll(deoglSPBParameter::evtBool, 4, 1, 1); // bvec4
+	
+	spb->GetParameterAt(erutFRLightCount).SetAll(deoglSPBParameter::evtInt, 1, 1, 1); // int pFRLightCount
+	deoglFRShadowManager::SetSPBParameterLightParams(spb->GetParameterAt(erutFRLights)); // struct pFRLights
 	
 	spb->MapToStd140();
 	spb->SetBindingPoint(deoglSkinShader::eubRenderParameters);
@@ -1301,6 +1302,22 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin){
 		units[pTextureTargets[ettNoise]].EnableTexture(pRenderThread.GetDefaultTextures().GetNoise(),
 			pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatNearest));
 	}
+	
+	// forward rendering
+	if(pTextureTargets[ettFRShadowSky] != -1){
+		units[pTextureTargets[ettFRShadowSky]].EnableSpecial(deoglTexUnitConfig::estFRShadowSky,
+			pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscShadowClampLinear));
+	}
+	
+	if(pTextureTargets[ettFRShadowSpot] != -1){
+		units[pTextureTargets[ettFRShadowSpot]].EnableSpecial(deoglTexUnitConfig::estFRShadowSpot,
+			pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscShadowClampLinearInverse));
+	}
+	
+	if(pTextureTargets[ettFRShadowPoint] != -1){
+		units[pTextureTargets[ettFRShadowPoint]].EnableSpecial(deoglTexUnitConfig::estFRShadowPoint,
+			pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscShadowClampLinearInverse));
+	}
 }
 
 
@@ -2133,6 +2150,12 @@ void deoglSkinShader::UpdateTextureTargets(){
 		
 	default:
 		break;
+	}
+	
+	if(shaderMode == deoglSkinShaderConfig::esmGeometry){
+		pTextureTargets[ettFRShadowSky] = 23;
+		pTextureTargets[ettFRShadowSpot] = 24;
+		pTextureTargets[ettFRShadowPoint] = 25;
 	}
 	
 	pTextureUnitCount = -1;

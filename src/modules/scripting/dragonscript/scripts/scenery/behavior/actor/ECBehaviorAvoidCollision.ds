@@ -86,15 +86,6 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorAvoidCollision'>
-	 *   <!-- optional: set collision filter. default value '3:0 1 2 3' which means
-	 *                  category BaseGameApp.CollisionFilterBit.actorAI
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actorAI.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>3:0 1 2 3</string>
-	 * 
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -126,8 +117,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().setPropertiesFromParameters(eclass, parameters, "avoidCollision")
@@ -234,29 +226,16 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "avoidCollision.check".
 		 * \version 1.26
 		 */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
 				var bool result = true
-				var Object value
-				
-				value = parameters.getAt(prefix + "waitBehindObstacles", null)
+				var Object value = parameters.getAt(prefix + "waitBehindObstacles", null)
 				if value != null
 					result &= pInstance.getWaitBehindObstacles() == value.equals("true")
 				end
@@ -366,7 +345,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			end
 			
 			// create collision tests
-			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
+			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilterProperty().getCollisionFilter(stub)
 			pRadius = pECBehavior.getRadius().getValue(stub)
 			
 			pCCTAvoidCollision = ColliderCollisionTest.new(collisionFilter, Vector.new(), Vector.new())
@@ -842,6 +821,12 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// using getMovingDirectionVector() requires using setLocalDirection() on CCT
 			var float directionLen = direction.getLength()
 			direction = direction / directionLen
+			if dh != null
+				dh.addValue("velocity", velocity)
+				dh.addValue("frameMovementDistance", frameMovementDistance)
+				dh.addValue("direction", direction)
+				dh.addValue("direction.length", directionLen)
+			end
 			
 			if pActorMover.hasNextPathPoint()
 				directionLen = DEMath.min(directionLen, \
@@ -851,13 +836,11 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			directionLen = DEMath.min(directionLen, pActorMover.getDistanceToGoal() \
 				- pActorMover.getGoalDistance() - frameMovementDistance)
 			if dh != null
-				dh.addValue("velocity", velocity)
-				dh.addValue("frameMovementDistance", frameMovementDistance)
-				dh.addValue("direction", direction)
 				dh.addValue("direction.length#2", directionLen)
 				dh.addValue("distanceToGoal", pActorMover.getDistanceToGoal())
 				dh.addValue("goalDistance", pActorMover.getGoalDistance())
 			end
+			/*
 			if directionLen < 0.1
 				if dh != null
 					dh.log(getElement(), "ECBehaviorAvoidCollision", "startTests", "short direction")
@@ -865,6 +848,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				clearAvoiding()
 				return
 			end
+			*/
+			directionLen = DEMath.max(directionLen, 0.1)
 			
 			if dh != null
 				dh.log(getElement(), "ECBehaviorAvoidCollision", "startTests", "arm test")
@@ -955,6 +940,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				dh.addValue("actorVelocity", actorVelocity)
 				dh.addValue("actorVelocity.length", actorVelocity.getLength())
 				dh.addValue("hitAngle", hitAngle)
+				dh.addValue("realHitDistance", pCCTAvoidCollision.hitDistance(0))
 			end
 			if pCCTAvoidCollision.hitDistance(0) > 0 and hitAngle < 100
 				if dh != null
@@ -1004,8 +990,14 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// works only if the collider is moving. avoids actors walking around an obstacle
 			// which they can better avoid by just waiting a second or two.
 			var bool nextPathPointIsGoal = pActorMover.isNextPathPointGoal()
+			var float distanceToGoal = pActorMover.getDistanceToGoal()
+			var float thresholdDistanceToGoal = pRadius * 4
 			if dh != null
+				dh.addValue("goalPosition", pActorMover.getGoalPosition())
+				dh.addValue("nextPathPoint", pActorMover.getNextPathPoint())
 				dh.addValue("nextPathPointIsGoal", nextPathPointIsGoal)
+				dh.addValue("distanceToGoal", distanceToGoal)
+				dh.addValue("thresholdDistanceToGoal", thresholdDistanceToGoal)
 			end
 			
 			var float crossAngle
@@ -1051,10 +1043,14 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// other actor is backing off a bit to make it easier for use to get around
 			var ECBehaviorAvoidCollision.Instance otherAvoidCollision = \
 				ECBehaviorAvoidCollision.getInstanceIn(behavior.getElement())
+			var float otherThresholdDistanceToGoal = thresholdDistanceToGoal
 			if otherAvoidCollision != null
+				otherThresholdDistanceToGoal = otherAvoidCollision.pRadius * 4
 				if dh != null
 					dh.addValue("otherAvoidCollision.deviationTime", otherAvoidCollision.pDeviationTime)
 					dh.addValue("otherAvoidCollision.speedMultiplier", otherAvoidCollision.pSpeedMultiplier)
+					dh.addValue("otherAvoidCollision.radius", otherAvoidCollision.pRadius)
+					dh.addValue("otherAvoidCollision.thresholdDistanceToGoal", otherThresholdDistanceToGoal)
 				end
 				if otherAvoidCollision.pDeviationTime > 0 and otherAvoidCollision.pSpeedMultiplier > 0
 					if dh != null
@@ -1065,10 +1061,30 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				end
 			end
 			
-			// if the other actor does not support ECBehaviorActorMover or has no goal set
-			// wait behind it and back off a bit since it can not avoid us
+			// if next path point is goal, other actor supports ECBehaviorActorMover and other
+			// actor has no goal set, wait behind it
 			var ECBehaviorActorMover.Instance otherMover =\
 				ECBehaviorActorMover.getInstanceIn(behavior.getElement())
+			var bool otherNextPathPointIsGoal
+			var float otherDistanceToGoal
+			if otherMover != null
+				otherNextPathPointIsGoal = otherMover.isNextPathPointGoal()
+				otherDistanceToGoal = otherMover.getDistanceToGoal()
+				if dh != null
+					dh.addValue("otherMover.goalPosition", otherMover.getGoalPosition())
+					dh.addValue("otherMover.nextPathPoint", otherMover.getNextPathPoint())
+					dh.addValue("otherMover.nextPathPointIsGoal", otherNextPathPointIsGoal)
+					dh.addValue("otherMover.distanceToGoal", otherDistanceToGoal)
+				end
+			end
+			if nextPathPointIsGoal and distanceToGoal < thresholdDistanceToGoal\
+			and otherMover != null and otherMover.hasNoGoal()
+				if dh != null
+					dh.log(getElement(), "ECBehaviorAvoidCollision", "moveAroundAvoidedByActor", "other no goal blocked")
+				end
+				waitBehindAvoidedByActor(behavior)
+				return
+			end
 			/*
 			if dh != null
 				dh.addValue("otherMover", otherMover != null)
@@ -1089,11 +1105,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			if pCCTAvoidCollision.hitDistance(0) < 0.01
 				// if other actor has an actor mover and has same goal back off if other actor
 				// is closer to his goal than we are to ours
-				if nextPathPointIsGoal
-					if dh != null and otherMover != null
-						dh.addValue("otherMover.nextPathPointIsGoal", otherMover.isNextPathPointGoal())
-					end
-					if otherMover != null and otherMover.isNextPathPointGoal()
+				if nextPathPointIsGoal and distanceToGoal < thresholdDistanceToGoal
+					if otherMover != null and otherNextPathPointIsGoal\
+					and otherDistanceToGoal < otherThresholdDistanceToGoal
 						var DVector goalPosition = pActorMover.getGoalPosition()
 						var DVector otherGoalPosition = otherMover.getGoalPosition()
 						var float goalGoalDistance = (goalPosition - otherGoalPosition).getLength()
@@ -1105,13 +1119,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 							dh.addValue("minDistance", minDistance)
 						end
 						if goalGoalDistance < minDistance
-							var float goalDistance = (goalPosition - actorPosition).getLength()
-							var float otherGoalDistance = (otherGoalPosition - collider.getPosition()).getLength()
-							if dh != null
-								dh.addValue("goalDistance", goalDistance)
-								dh.addValue("otherGoalDistance", otherGoalDistance)
-							end
-							if otherGoalDistance < goalDistance
+							if otherDistanceToGoal < distanceToGoal
 								pDeviationAngle = movingOrientation + DEMath.random(-30.0, 30.0)
 								pDeviationTime = DEMath.random(0.5, 1.0)
 								pSpeedMultiplier = -1
@@ -1729,7 +1737,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	
 	
 	
-	var ECComposeCollisionFilter pCollisionFilter
+	var ECPCollisionFilter pCollisionFilter
 	var ECBehaviorActorMover pActorMover
 	var ECBehaviorRideOn pRideOn
 	var ECPFloat pRadius
@@ -1761,6 +1769,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		pRideOn = rideOn
 		pBTSMs = ECComposeBTSM.new()
 		
+		pRadius = ECPFloat.new(prefix + "radius", 0.4, 0)
+		eclass.addProperty(pRadius)
+		
 		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)
 		
 		var LayerMask cfFilter = LayerMask.new()
@@ -1768,10 +1779,10 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
 		
-		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
-		
-		pRadius = ECPFloat.new(prefix + "radius", 0.4, 0)
-		eclass.addProperty(pRadius)
+		pCollisionFilter = ECPCollisionFilter.new(prefix + "collisionFilter",\
+			eclass.getCodecPropertyString(), eclass.sharedFactoryHelper.defaultCollisionFilterMap(),\
+			CollisionFilter.new(cfCategory, cfFilter))
+		eclass.addProperty(pCollisionFilter)
 		
 		eclass.addBehavior(this)
 	end
@@ -1804,8 +1815,19 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		return pRideOn
 	end
 	
-	/** \brief Collision filter. */
+	/**
+	 * \brief Collision filter.
+	 * \deprecated Use getCollisionFilterProperty() instead.
+	 */
 	func ECComposeCollisionFilter getCollisionFilter()
+		return ECComposeCollisionFilter.new(pCollisionFilter)
+	end
+	
+	/**
+	 * \brief Collision filter.
+	 * \version 1.35
+	 */
+	func ECPCollisionFilter getCollisionFilterProperty()
 		return pCollisionFilter
 	end
 	

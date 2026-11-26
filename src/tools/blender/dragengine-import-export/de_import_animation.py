@@ -153,7 +153,7 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
 	
 	def checkInitState(self, context):
 		if not self.armature and not self.mesh:
-			self.report({'INFO', 'ERROR'}, "There is no Armature or Mesh selected. Select at last one Armature or Mesh parented to an armature")
+			self.report({'ERROR'}, "There is no Armature or Mesh selected. Select at last one Armature or Mesh parented to an armature")
 			return False
 		return True
 	

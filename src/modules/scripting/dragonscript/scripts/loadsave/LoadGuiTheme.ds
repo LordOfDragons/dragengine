@@ -91,8 +91,7 @@ class LoadGuiTheme extends BaseXmlLoader
 	
 	
 	/** \brief Parse gui theme tag. */
-	func GuiTheme parseGuiTheme(String filename, EasyXMLElement root, \
-	String basePath, GuiTheme guitheme)
+	func GuiTheme parseGuiTheme(String filename, EasyXMLElement root, String basePath, GuiTheme guitheme)
 		var int e, elementCount = root.getElementCount()
 		var EasyXMLElement element
 		var bool isShared = false
@@ -168,7 +167,7 @@ class LoadGuiTheme extends BaseXmlLoader
 				
 			elif tagName.equals("theme")
 				guitheme.setNamedGuiTheme(element.getAttributeNamed("name"), \
-					parseGuiTheme(filename, element, basePath, guitheme))
+					parseGuiTheme(filename, element, basePath, GuiTheme.new(guitheme)))
 				
 			elif tagName.equals("import")
 				try

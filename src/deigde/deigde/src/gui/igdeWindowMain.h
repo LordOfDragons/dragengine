@@ -33,6 +33,7 @@
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/environment/igdeEnvironmentListener.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gui/igdeMainWindow.h>
@@ -57,6 +58,7 @@
 
 #include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/collection/decTListeners.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
@@ -89,6 +91,7 @@ public:
 	
 private:
 	igdeEnvironmentIGDE &pEnvironmentIGDE;
+	decTListeners<igdeEnvironmentListener> pEnvironmentListeners;
 	igdeConfiguration pConfiguration;
 	igdeConfigurationLocal pConfigurationLocal;
 	igdeEditorModuleManager *pModuleManager;
@@ -205,6 +208,9 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** Environment listeners. */
+	inline decTListeners<igdeEnvironmentListener> &GetEnvironmentListeners(){ return pEnvironmentListeners; }
+	
 	/** Configuration. */
 	inline igdeConfiguration &GetConfiguration(){ return pConfiguration; }
 	inline const igdeConfiguration &GetConfiguration() const{ return pConfiguration; }

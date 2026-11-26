@@ -304,7 +304,8 @@ void deoglShaderCompilerThread::pRunGLParallel(){
 	count = unitTasks.GetCount();
 	for(i=0; i<count; i++){
 		deoglShaderCompileUnitTask * const unitTask = unitTasks.GetAt(i);
-		deoglShaderProgramUnit &unit = *unitTask->GetUnit();			try{
+		deoglShaderProgramUnit &unit = *unitTask->GetUnit();
+			try{
 				if(!pCompiler->HasCompileShaderUnitFinished(unit)){
 					continue;
 				}
@@ -330,7 +331,8 @@ void deoglShaderCompilerThread::pRunGLParallel(){
 	count = tasks.GetCount();
 	for(i=0; i<count; i++){
 		deoglShaderCompileTask * const task = tasks.GetAt(i);
-		deoglShaderProgram &program = *task->GetProgram();			try{
+		deoglShaderProgram &program = *task->GetProgram();
+			try{
 				if(!pCompiler->HasCompileShaderFinished(program)){
 					continue;
 				}

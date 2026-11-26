@@ -8,7 +8,7 @@
 			<color parameter='colorFill' r='0' g='0' b='0' a='0.8'/>
 		</canvasCreator>
 		<color parameter='normal.textColor' r='1' g='1' b='1'/>
-		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 	</designer>
 	
 	<designer name='TextField.ConsoleInput' type='TextField'>
@@ -16,7 +16,7 @@
 			<color parameter='colorFill' r='0.9' g='0.9' b='0.9'/>
 		</canvasCreator>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 	</designer>
 	
 	
@@ -26,6 +26,7 @@
 	-->
 	<designer name='ShoutConsole' type='Widget'>
 		<color parameter='normal.textColor' r='1' g='1' b='1'/>
-		<font parameter='normal.font' size='31'>../modern/fonts/subtitle.defont</font>
+		<font parameter='normal.font' size='31'>../modern/fonts/liberation/sans/regular.ttf</font>
+		<float parameter='normal.textBorderThickness'>0.075</float>
 	</designer>
 </guiTheme>

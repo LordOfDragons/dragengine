@@ -893,6 +893,30 @@ void igdeEditPropertyValue::pUpdateEditWidgets(){
 				pPath->SetResourceType(igdeEnvironment::efpltWorld);
 				break;
 				
+			case igdeGDProperty::epptParameterTree:
+				pPath->SetResourceType(igdeEnvironment::efpltParameterTree);
+				break;
+				
+			case igdeGDProperty::epptStateMachine:
+				pPath->SetResourceType(igdeEnvironment::efpltStateMachine);
+				break;
+				
+			case igdeGDProperty::epptBehaviorTree:
+				pPath->SetResourceType(igdeEnvironment::efpltBehaviorTree);
+				break;
+				
+			case igdeGDProperty::epptGuiTheme:
+				pPath->SetResourceType(igdeEnvironment::efpltGuiTheme);
+				break;
+				
+			case igdeGDProperty::epptConversation:
+				pPath->SetResourceType(igdeEnvironment::efpltConversation);
+				break;
+				
+			case igdeGDProperty::epptSimpleConversation:
+				pPath->SetResourceType(igdeEnvironment::efpltSimpleConversation);
+				break;
+				
 			case igdeGDProperty::epptCustom:
 			default:
 				pPath->SetResourceType(igdeEnvironment::efpltAll);

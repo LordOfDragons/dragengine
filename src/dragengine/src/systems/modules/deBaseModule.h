@@ -200,6 +200,12 @@ public:
 	 * physically present on a hard disk this call returns empty string.
 	 */
 	decString GetNativePathShare() const;
+	
+	/**
+	 * \brief Drop all resource references held, for example in caches.
+	 * \version 1.35
+	 */
+	virtual void DropResourceReferences();
 	/*@}*/
 	
 	

@@ -371,6 +371,7 @@ bool declRunGame::LocateGame(){
 		
 		pGame = list.First(); // TODO support multiple games using a choice for for example
 		
+		auto delgaFile(pGame->GetDelgaFile());
 		const delGame::Ref loadedGame(gameManager.GetGames().FindWithId(pGame->GetIdentifier()));
 		if(loadedGame){
 			if(loadedGame->GetDelgaFile() == pGameDefFile){
@@ -378,12 +379,14 @@ bool declRunGame::LocateGame(){
 				
 			}else{
 				pGame->LoadConfig();
+				pGame->SetDelgaFile(delgaFile);
 				gameManager.GetGames().Remove(loadedGame);
 				gameManager.GetGames().Add(pGame);
 			}
 			
 		}else{
 			pGame->LoadConfig();
+			pGame->SetDelgaFile(delgaFile);
 			gameManager.GetGames().Add(pGame);
 		}
 		

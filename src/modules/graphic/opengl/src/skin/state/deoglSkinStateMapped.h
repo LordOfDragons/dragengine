@@ -25,11 +25,10 @@
 #ifndef _DEOGLSKINSTATEMAPPED_H_
 #define _DEOGLSKINSTATEMAPPED_H_
 
-#include <dragengine/common/math/decMath.h>
-
 class deoglRenderThread;
 class deoglSkinState;
 class deoglRComponent;
+class deoglRDSRenderable;
 class deoglSkinMapped;
 
 class deComponent;
@@ -45,6 +44,7 @@ private:
 	const deoglRComponent *pComponent;
 	int pBone;
 	float pBoneInputValue;
+	deoglRDSRenderable *pRenderable;
 	
 	
 	
@@ -85,6 +85,9 @@ public:
 	
 	/** Bone input value. */
 	inline float GetBoneInputValue() const{ return pBoneInputValue; }
+	
+	/** Renderable or nullptr. */
+	inline deoglRDSRenderable *GetRenderable() const{ return pRenderable; }
 	
 	/** Map bone. */
 	void MapBone(const deComponent &component);

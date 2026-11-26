@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSharedSPBElementMapBuffer.h"
 #include "deoglSharedSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
@@ -37,10 +33,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-
 deoglSharedSPBElementMapBuffer::deoglSharedSPBElementMapBuffer(deoglSharedSPBElement &element) :
 pElement(element),
-pBlock(nullptr)
+pBlock(nullptr),
+pDelayUpload(false)
 {
 	Map();
 }
@@ -48,7 +44,6 @@ pBlock(nullptr)
 deoglSharedSPBElementMapBuffer::~deoglSharedSPBElementMapBuffer(){
 	Unmap();
 }
-
 
 
 // Management
@@ -72,6 +67,10 @@ void deoglSharedSPBElementMapBuffer::Unmap(){
 		return;
 	}
 	
-	pBlock->UnmapBuffer();
+	pBlock->UnmapBuffer(pDelayUpload);
 	pBlock = nullptr;
+}
+
+void deoglSharedSPBElementMapBuffer::SetDelayUpload(bool delayUpload){
+	pDelayUpload = delayUpload;
 }

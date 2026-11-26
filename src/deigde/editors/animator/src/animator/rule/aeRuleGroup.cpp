@@ -227,6 +227,25 @@ void aeRuleGroup::OnParentAnimatorChanged(){
 	});
 }
 
+void aeRuleGroup::CreateLinkCopies(){
+	aeRule::CreateLinkCopies();
+	mpTargetSelect.CreateLinkCopies();
+	mpRules->Visit([&](aeRule &rule){
+		rule.CreateLinkCopies();
+	});
+}
+
+void aeRuleGroup::EnsureValidLinks(const aeAnimator &animator,
+decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	aeRule::EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetSelect.EnsureValidLinks(animator, addLinks, addControllers);
+	mpRules->Visit([&](aeRule &rule){
+		rule.EnsureValidLinks(animator, addLinks, addControllers);
+	});
+}
+
+
 
 // Private Functions
 //////////////////////

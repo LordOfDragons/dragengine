@@ -305,6 +305,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerMoveDown.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerMoveUp.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetDefaultValue.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetLower.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetName.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetUpper.cpp" />
@@ -372,6 +373,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerMoveDown.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerMoveUp.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetDefaultValue.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetLower.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetName.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetUpper.h" />

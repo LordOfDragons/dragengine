@@ -1,0 +1,44 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Commands
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Interface selecting \ref ECBehaviorPlayerControllable.Tracker matching binding.
+ * \version 1.35
+ * 
+ * This interface is useful for situations where bindings for the same command exist for multiple
+ * input devices and the input device producing the input is relevant. This is the case for
+ * example for local multiplayer games where input devices are assigned to individual players.
+ * This interface is presented the \ref Binding which produced the input and returns the
+ * \ref ECBehaviorPlayerControllable.Tracker to use.
+ */
+interface PlayerControlledActorSelector
+	/**
+	 * \brief Select \ref ECBehaviorPlayerControllable.Tracker matching binding.
+	 */
+	func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor(Binding binding)
+end

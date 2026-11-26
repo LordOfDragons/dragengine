@@ -219,6 +219,9 @@ void deoglSCConstructedDefinition::VisitText(deSkinPropertyNodeText &node){
 	pWriteFloat(node.GetFontSize(), 10.0f); // 0.1 precision
 	pDefinition->WriteString16(node.GetText());
 	pWriteColor(node.GetColor());
+	pWriteColor(node.GetBorderColor());
+	pWriteFloat(node.GetBorderThickness(), 100.0f); // 0.01 precision
+	pWriteFloat(node.GetDilation(), 100.0f); // 0.01 precision
 }
 
 

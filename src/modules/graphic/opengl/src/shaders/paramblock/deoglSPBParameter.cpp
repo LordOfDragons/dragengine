@@ -22,14 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSPBParameter.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class deoglSPBParameter
@@ -38,17 +33,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-
 deoglSPBParameter::deoglSPBParameter() :
 pValueType(evtFloat),
 pComponentCount(1),
 pVectorCount(1),
 pArrayCount(1),
-
 pOffset(0),
 pStride(0),
 pArrayStride(0),
 pDataSize(0){
+}
+
+deoglSPBParameter::deoglSPBParameter(eValueTypes valueType, int componentCount,
+	int vectorCount, int arrayCount) :
+deoglSPBParameter()
+{
+	SetValueType(valueType);
+	SetComponentCount(componentCount);
+	SetVectorCount(vectorCount);
+	SetArrayCount(arrayCount);
 }
 
 deoglSPBParameter::deoglSPBParameter(const deoglSPBParameter &parameter){
@@ -61,52 +64,61 @@ deoglSPBParameter &deoglSPBParameter::operator=(const deoglSPBParameter &paramet
 		pComponentCount = parameter.pComponentCount;
 		pVectorCount = parameter.pVectorCount;
 		pArrayCount = parameter.pArrayCount;
-		
 		pOffset = parameter.pOffset;
 		pStride = parameter.pStride;
 		pArrayStride = parameter.pArrayStride;
 		pDataSize = parameter.pDataSize;
+		pMembers = parameter.pMembers;
 	}
 	
 	return *this;
 }
 
-deoglSPBParameter::~deoglSPBParameter(){
+deoglSPBParameter::deoglSPBParameter(deoglSPBParameter &&parameter) noexcept{
+	*this = std::move(parameter);
 }
 
+deoglSPBParameter &deoglSPBParameter::operator=(deoglSPBParameter &&parameter) noexcept{
+	if(this != &parameter){
+		pValueType = parameter.pValueType;
+		pComponentCount = parameter.pComponentCount;
+		pVectorCount = parameter.pVectorCount;
+		pArrayCount = parameter.pArrayCount;
+		pOffset = parameter.pOffset;
+		pStride = parameter.pStride;
+		pArrayStride = parameter.pArrayStride;
+		pDataSize = parameter.pDataSize;
+		pMembers = std::move(parameter.pMembers);
+	}
+	
+	return *this;
+}
+
+deoglSPBParameter::~deoglSPBParameter() = default;
 
 
 // Management
 ///////////////
 
 void deoglSPBParameter::SetValueType(eValueTypes valueType){
-	if(valueType < evtFloat || valueType > evtBool){
-		DETHROW(deeInvalidParam);
-	}
-	
 	pValueType = valueType;
 }
 
 void deoglSPBParameter::SetComponentCount(int componentCount){
-	if(componentCount < 1 || componentCount > 4){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(componentCount >= 1)
+	DEASSERT_TRUE(componentCount <= 4)
 	
 	pComponentCount = componentCount;
 }
 
 void deoglSPBParameter::SetVectorCount(int vectorCount){
-	if(vectorCount < 1){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(vectorCount >= 1)
 	
 	pVectorCount = vectorCount;
 }
 
 void deoglSPBParameter::SetArrayCount(int arrayCount){
-	if(arrayCount < 1){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(arrayCount >= 1)
 	
 	pArrayCount = arrayCount;
 }
@@ -119,36 +131,42 @@ int vectorCount, int arrayCount){
 	SetArrayCount(arrayCount);
 }
 
+void deoglSPBParameter::SetStruct(const ParameterList &members, int arrayCount){
+	SetValueType(evtStruct);
+	SetComponentCount(1);
+	SetVectorCount(1);
+	SetArrayCount(arrayCount);
+	pMembers = members;
+}
 
+void deoglSPBParameter::SetStruct(ParameterList &&members, int arrayCount){
+	SetValueType(evtStruct);
+	SetComponentCount(1);
+	SetVectorCount(1);
+	SetArrayCount(arrayCount);
+	pMembers = std::move(members);
+}
 
 void deoglSPBParameter::SetOffset(int offset){
-	if(offset < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(offset >= 0)
 	
 	pOffset = offset;
 }
 
 void deoglSPBParameter::SetStride(int stride){
-	if(stride < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(stride >= 0)
 	
 	pStride = stride;
 }
 
 void deoglSPBParameter::SetArrayStride(int arrayStride){
-	if(arrayStride < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(arrayStride >= 0)
 	
 	pArrayStride = arrayStride;
 }
 
-void deoglSPBParameter::SetDataSize (int size){
-	if(size < 0){
-		DETHROW(deeInvalidParam);
-	}
+void deoglSPBParameter::SetDataSize(int size){
+	DEASSERT_TRUE(size >= 0)
 	
 	pDataSize = size;
 }

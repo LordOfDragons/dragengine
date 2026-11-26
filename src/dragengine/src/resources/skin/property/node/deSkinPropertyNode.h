@@ -89,10 +89,11 @@ public:
 		emColorizeRed, //!< Colorize red component
 		emColorizeGreen, //!< Colorize green component
 		emColorizeBlue, //!< Colorize blue component
-		emTransparency //!< Transparency
+		emTransparency, //!< Transparency
+		emImage, //!< Image
 	};
 	
-	static const int MappedCount = emTransparency + 1;
+	static const int MappedCount = emImage + 1;
 	
 	
 	

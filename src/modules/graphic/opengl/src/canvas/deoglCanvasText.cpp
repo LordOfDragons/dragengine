@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglCanvasText.h"
 #include "render/deoglRCanvasText.h"
 #include "../deGraphicOpenGl.h"
@@ -81,6 +77,9 @@ void deoglCanvasText::SyncContentToRender(){
 	pRCanvasText->SetTextSize(pCanvasText.GetFontSize());
 	pRCanvasText->SetColor(pCanvasText.GetColor());
 	pRCanvasText->SetText(pCanvasText.GetText());
+	pRCanvasText->SetBorderColor(pCanvasText.GetBorderColor());
+	pRCanvasText->SetBorderThickness(pCanvasText.GetBorderThickness());
+	pRCanvasText->SetDilation(pCanvasText.GetDilation());
 }
 
 

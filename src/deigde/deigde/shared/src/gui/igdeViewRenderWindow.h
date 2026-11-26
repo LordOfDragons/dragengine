@@ -26,6 +26,7 @@
 #define _IGDEVIEWRENDERWINDOW_H_
 
 #include "igdeWidget.h"
+#include "igdeInfoBubbleToast.h"
 #include "event/igdeMouseKeyListener.h"
 
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -38,7 +39,6 @@ class deCamera;
 class deCanvasView;
 class deCanvasPaint;
 class deCanvasRenderWorld;
-
 
 
 /**
@@ -71,6 +71,8 @@ private:
 	deCanvas::Ref pCanvasRenderWorld;
 	deCanvas::Ref pCanvasBackground;
 	bool pEnableRendering, pEngineRunning;
+	
+	igdeInfoBubbleToast::Ref pToastBubble;
 	
 	decTObjectOrderedSet<igdeMouseKeyListener> pListeners;
 	
@@ -117,6 +119,8 @@ public:
 	/** \brief Render area size. */
 	virtual decPoint GetRenderAreaSize() const;
 	
+	/** \brief Toast bubble. */
+	const igdeInfoBubbleToast::Ref &GetToastBubble();
 	
 	
 	/** \brief Clear render window failed error allowing the render window to try again. */
@@ -153,6 +157,12 @@ public:
 	 * \details Convenience call to not deal with deRenderWindow, deRenderTarget and deCanvasView.
 	 */
 	void RemoveCanvas(deCanvas *canvas);
+	
+	/**
+	 * \brief Highest order of all canvas in the render window.
+	 * \details Convenience call to not deal with deRenderWindow, deRenderTarget and deCanvasView.
+	 */
+	float GetHighestCanvasOrder() const;
 	
 	/** \brief Render window canvas. */
 	deCanvasView *GetRenderWindowCanvas() const;

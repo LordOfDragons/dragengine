@@ -1,0 +1,151 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief GameWorld Behavior adding support for anchoring elements.
+ * \version 1.35
+ * 
+ * Mainly used by \ref ECBehaviorAnchorElement and \ref ECABehaviorAnchorElement
+ * but elements can be manually anchored and unanchored.
+ * 
+ * This behavior can be present only once in a GameWorld.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:gwbehavior_anchoredelements
+ */
+class GWBehaviorAnchoredElements extends DefaultGWBehavior
+	var AnchoredElementList pElements
+	var Dictionary pGroups
+	
+	
+	/** \brief Create element. */
+	func new(GameWorld gameWorld) super(gameWorld)
+		pElements = AnchoredElementList.new()
+		pGroups = Dictionary.new()
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pElements = null
+		pGroups = null
+		super.dispose()
+	end
+	
+	
+	/** \brief Anchored element list. */
+	func AnchoredElementList getElements()
+		return pElements
+	end
+	
+	
+	/** \brief Count of elements in anchor group. */
+	func int getGroupElementCount(StringID group)
+		var Array elements = pGroups.getAt(group, null) cast Array
+		return elements != null if elements.getCount() else 0
+	end
+	
+	/** \brief Element is present in anchor group. */
+	func bool hasGroupElement(StringID group, Element element)
+		var Array elements = pGroups.getAt(group, null) cast Array
+		return elements != null if elements.has(element) else false
+	end
+	
+	/** \brief Add element to anchor group if absent. */
+	func void addGroupElement(StringID group, Element element)
+		if group == null
+			throw ENullPointer.new("group")
+		end
+		if element == null
+			throw ENullPointer.new("element")
+		end
+		
+		var Array elements = pGroups.getAt(group, null) cast Array
+		if elements == null
+			elements = Array.new()
+			pGroups.setAt(group, elements)
+		end
+		
+		if not elements.has(element)
+			elements.add(element)
+		end
+	end
+	
+	/** \brief Remove element from anchor group if present. */
+	func void removeGroupElement(StringID group, Element element)
+		var Array elements = pGroups.getAt(group, null) cast Array
+		if elements != null and elements.has(element)
+			elements.remove(element)
+		end
+	end
+	
+	/** \brief Remove all elements from anchor group. */
+	func void removeAllGroupElements(StringID group)
+		var Array elements = pGroups.getAt(group, null) cast Array
+		if elements != null
+			elements.removeAll()
+		end
+	end
+	
+	/** \brief Visit anchor group elements with block with parameter \ref Element. */
+	func void forEachGroupElement(StringID group, Block ablock)
+		var Array elements = pGroups.getAt(group, null) cast Array
+		if elements != null
+			elements.forEach(ablock)
+		end
+	end
+	
+	/**
+	 * \brief Find elements in anchor group with block.
+	 * 
+	 * Block is called with arguments \ref StringID (identifier) and \ref Element.
+	 * Block has to return true if the element has been found.
+	 */
+	func Element findGroupElement(StringID group, Block ablock)
+		var Array elements = pGroups.getAt(group, null) cast Array
+		return elements != null if elements.find(ablock) cast Element else null
+	end
+	
+	/** \brief \ref Array of \ref StringID of all anchor group identifiers. */
+	func Array getAllGroupIDs()
+		return pGroups.getKeys()
+	end
+	
+	
+	/**
+	 * \brief Get behavior in game world or null if absent.
+	 * 
+	 * Use this method to check if GameWorld contains behavior of type GWBehaviorAnchoredElements.
+	 */
+	static func GWBehaviorAnchoredElements getBehaviorIn(GameWorld gameWorld)
+		return gameWorld.findBehavior(block GWBehaviorAnchoredElements each
+			return true
+		end) cast GWBehaviorAnchoredElements
+	end
+end

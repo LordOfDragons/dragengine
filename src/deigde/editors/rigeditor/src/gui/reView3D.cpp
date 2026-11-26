@@ -693,7 +693,7 @@ pWindowMain(windowMain)
 	pScaleInteraction = cScaleInteraction::Ref::New(*this);
 	pRotateInteraction = cRotateInteraction::Ref::New(*this);
 	
-	pCameraInteraction->AddListeners(*this, windowMain);
+	pCameraInteraction->AddListeners(*this);
 	AddListener(pSimulationInteraction);
 	AddListener(pSelectInteraction);
 	AddListener(pMoveInteraction);

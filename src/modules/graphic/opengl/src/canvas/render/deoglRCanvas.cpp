@@ -54,9 +54,7 @@ pBlendMode(deCanvas::ebmBlend),
 pVisible(true){
 }
 
-deoglRCanvas::~deoglRCanvas(){
-}
-
+deoglRCanvas::~deoglRCanvas() = default;
 
 
 // Management

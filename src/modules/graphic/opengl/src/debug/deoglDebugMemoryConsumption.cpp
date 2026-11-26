@@ -71,6 +71,7 @@ void deoglDebugMemoryConsumption::LogConsumption(){
 	pLog(consumption.texture3D);
 	pLog(consumption.textureArray);
 	pLog(consumption.textureCube);
+	pLog(consumption.textureArrayCube);
 	
 	pLog(consumption.texture2DRenderable);
 	pLog(consumption.texture3DRenderable);

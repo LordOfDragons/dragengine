@@ -411,14 +411,14 @@ void debpCollider::RegisterColDetPrepare(){
 	if(pColDetPrepareIndex != -1 || !pParentWorld){
 		return;
 	}
-	pParentWorld->pColDetPrepareColliderAdd(this);
+	pParentWorld->ColDetPrepareColliderAdd(this);
 }
 
 void debpCollider::UnregisterColDetPrepare(){
 	if(pColDetPrepareIndex == -1 || !pParentWorld){
 		return;
 	}
-	pParentWorld->pColDetPrepareColliderRemove(this);
+	pParentWorld->ColDetPrepareColliderRemove(this);
 }
 
 void debpCollider::SetColDetPrepareIndex(int index){
@@ -450,7 +450,7 @@ void debpCollider::RegisterColDetFinish(){
 	if(pColDetFinishIndex != -1 || !pParentWorld){
 		return;
 	}
-	pParentWorld->pColDetFinishColliderAdd(this);
+	pParentWorld->ColDetFinishColliderAdd(this);
 	
 	// we need to reset pRequiresUpdate if the collider is not registered for prepare.
 	// this is due to PrepareDetection() reseting pRequiresUpdate. if the collider is
@@ -468,7 +468,7 @@ void debpCollider::UnregisterColDetFinish(){
 	if(pColDetFinishIndex == -1 || !pParentWorld){
 		return;
 	}
-	pParentWorld->pColDetFinishColliderRemove(this);
+	pParentWorld->ColDetFinishColliderRemove(this);
 }
 
 void debpCollider::SetColDetFinishIndex(int index){
@@ -500,14 +500,14 @@ void debpCollider::RegisterPPCProcessing(){
 	if(pPPCTColliderIndex != -1 || !pParentWorld){
 		return;
 	}
-	pParentWorld->pPPCTColliderAdd(this);
+	pParentWorld->PPCTColliderAdd(this);
 }
 
 void debpCollider::UnregisterPPCProcessing(){
 	if(pPPCTColliderIndex == -1 || !pParentWorld){
 		return;
 	}
-	pParentWorld->pPPCTColliderRemove(this);
+	pParentWorld->PPCTColliderRemove(this);
 }
 
 void debpCollider::SetPPCProcessingIndex(int index){
@@ -520,14 +520,14 @@ void debpCollider::RegisterUpdateOctree(){
 	if(pUpdateOctreeIndex != -1 || !pParentWorld){
 		return;
 	}
-	pParentWorld->pUpdateOctreeColliderAdd(this);
+	pParentWorld->UpdateOctreeColliderAdd(this);
 }
 
 void debpCollider::UnregisterUpdateOctree(){
 	if(pUpdateOctreeIndex == -1 || !pParentWorld){
 		return;
 	}
-	pParentWorld->pUpdateOctreeColliderRemove(this);
+	pParentWorld->UpdateOctreeColliderRemove(this);
 }
 
 void debpCollider::SetUpdateOctreeIndex(int index){

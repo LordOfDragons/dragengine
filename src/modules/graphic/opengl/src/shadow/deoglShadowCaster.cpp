@@ -55,7 +55,10 @@ pStaticOffset(2.887585e-4f),
 pDynamicNear(0.01f),
 pDynamicFar(10.0f),
 pDynamicScale(2.887585e-2f),
-pDynamicOffset(2.887585e-4f){
+pDynamicOffset(2.887585e-4f),
+
+pFRSpotLayer(-1),
+pFRPointLayer(-1){
 }
 
 deoglShadowCaster::~deoglShadowCaster() = default;
@@ -136,4 +139,12 @@ const deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt(int i
 
 deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt(int index){
 	return pShadowLayers[index];
+}
+
+void deoglShadowCaster::SetFRSpotLayer(int layer){
+	pFRSpotLayer = layer;
+}
+
+void deoglShadowCaster::SetFRPointLayer(int layer){
+	pFRPointLayer = layer;
 }

@@ -232,32 +232,32 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 					if c != null
 						value = parameters.getAt("controller.value", null)
 						if value != null
-							c.setValue((value cast String).toFloat())
+							c.setValue(getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.increment", null)
 						if value != null
-							c.increment((value cast String).toFloat())
+							c.increment(getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.decrement", null)
 						if value != null
-							c.increment(-(value cast String).toFloat())
+							c.increment(-getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.relative", null)
 						if value != null
-							c.setRelativeValue((value cast String).toFloat())
+							c.setRelativeValue(getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.relative.increment", null)
 						if value != null
-							c.setRelativeValue(c.getRelativeValue() + (value cast String).toFloat())
+							c.setRelativeValue(c.getRelativeValue() + getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.relative.decrement", null)
 						if value != null
-							c.setRelativeValue(c.getRelativeValue() - (value cast String).toFloat())
+							c.setRelativeValue(c.getRelativeValue() - getValue(context, value))
 						end
 						
 						value = parameters.getAt("controller.value.lower", null)
@@ -273,10 +273,30 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 						if parameters.has("controller.value.reverse")
 							c.reverse()
 						end
+						
+						value = parameters.getAt("controller.mapping", null)
+						if value != null
+							if (value cast String).empty()
+								pInstance.getLocomotion().getLocomotion().removeControllerMapping(c)
+								
+							else
+								pInstance.getLocomotion().getLocomotion().addControllerMapping(c,\
+									LocomotionAttribute.named(value cast String))
+							end
+						end
 					end
 				end
 				
 				return BTResult.success
+			end
+			
+			func float getValue(Object context, Object value)
+				if value.equals("eventParameter")
+					return (context cast SMContext).getEventParameter() cast float
+					
+				else
+					return (value cast String).toFloat()
+				end
 			end
 		end
 		
@@ -308,29 +328,16 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "actorAnimated{(id)}.check".
 		 * \version 1.26
 		 */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
 				var bool result = true
-				var Object value
-				
-				value = parameters.getAt(prefix + "animator", null)
+				var Object value = parameters.getAt(prefix + "animator", null)
 				if value != null
 					result &= pInstance.getActiveAnimatorID().equals(value)
 				end
@@ -793,6 +800,8 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	 * "move.walk": LocomotionAttribute.displacement
 	 * "move.run": LocomotionAttribute.displacement
 	 * "move.velocity": LocomotionAttribute.relativeMovingSpeed
+	 * "move.speed": LocomotionAttribute.movingSpeed
+	 * "move.direction": LocomotionAttribute.movingDirection
 	 * "tilt.vertical": LocomotionAttribute.tiltVertical
 	 * "tilt.horizontal": LocomotionAttribute.tiltHorizontal
 	 * "tilt.offset": LocomotionAttribute.tiltOffset
@@ -809,6 +818,8 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		pControllerMappings.setAt("move.walk", LocomotionAttribute.displacement)
 		pControllerMappings.setAt("move.run", LocomotionAttribute.displacement)
 		pControllerMappings.setAt("move.velocity", LocomotionAttribute.relativeMovingSpeed)
+		pControllerMappings.setAt("move.speed", LocomotionAttribute.movingSpeed)
+		pControllerMappings.setAt("move.direction", LocomotionAttribute.movingDirection)
 		pControllerMappings.setAt("tilt.vertical", LocomotionAttribute.tiltVertical)
 		pControllerMappings.setAt("tilt.horizontal", LocomotionAttribute.tiltHorizontal)
 		pControllerMappings.setAt("tilt.offset", LocomotionAttribute.tiltOffset)

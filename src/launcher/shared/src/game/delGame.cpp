@@ -394,6 +394,9 @@ void delGame::StartGame(const delGameRunParams &runParams, delEngineInstance::Fa
 	
 	// start the game
 	logger.LogInfoFormat(pLauncher.GetLogSource(), "Starting game '%s'", pTitle.ToUTF8().GetString());
+	logger.LogInfoFormat(pLauncher.GetLogSource(), "- Delga file: '%s'", pDelgaFile.GetString());
+	logger.LogInfoFormat(pLauncher.GetLogSource(), "- Game directory: '%s'", pGameDirectory.GetString());
+	logger.LogInfoFormat(pLauncher.GetLogSource(), "- Data directory: '%s'", pDataDirectory.GetString());
 	
 	try{
 		// create engine instance and start engine

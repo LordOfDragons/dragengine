@@ -63,7 +63,7 @@ class SMContext
 	var SMState pCurrentState
 	var Console pConsole
 	var String pLoggingName
-	var bool pLogTransitions, pLogStateChanges, pLogActions
+	var bool pLogTransitions, pLogStateChanges, pLogActions, pTransitionInProgress
 	var Object pEventParameter
 	var Array pDelayedEvents
 	
@@ -160,7 +160,7 @@ class SMContext
 		return pConditions.has(name)
 	end
 	
-	/** \brief Visit conditions using block with parameters String (name and SMCondition (condition). */
+	/** \brief Visit conditions using block with parameters String (name) and SMCondition (condition). */
 	func void forEachCondition(Block ablock)
 		pConditions.forEach(ablock)
 	end
@@ -191,6 +191,16 @@ class SMContext
 		pConditions.removeAll()
 	end
 	
+	/**
+	 * \brief Add conditions from another context.
+	 * \version 1.35
+	 * */
+	func void addConditionsFromContext(SMContext context)
+		context.forEachCondition(block String name, SMCondition condition
+			pConditions.setAt(name, condition)
+		end)
+	end
+	
 	
 	/** \brief Count of actions. */
 	func int getActionCount()
@@ -207,7 +217,7 @@ class SMContext
 		return pActions.has(name)
 	end
 	
-	/** \brief Visit actions using block with parameters String (name and SMAction (action). */
+	/** \brief Visit actions using block with parameters String (name) and SMAction (action). */
 	func void forEachAction(Block ablock)
 		pActions.forEach(ablock)
 	end
@@ -236,6 +246,26 @@ class SMContext
 	/** \brief Remove all actions. */
 	func void removeAllActions()
 		pActions.removeAll()
+	end
+	
+	/**
+	 * \brief Add actions from another context.
+	 * \version 1.35
+	 */
+	func void addActionsFromContext(SMContext context)
+		context.forEachAction(block String name, SMAction action
+			pActions.setAt(name, action)
+		end)
+	end
+	
+	
+	/**
+	 * \brief Add actions and conditions from another context.
+	 * \version 1.35
+	 */
+	func void addActionsAndConditionsFromContext(SMContext context)
+		addActionsFromContext(context)
+		addConditionsFromContext(context)
 	end
 	
 	
@@ -301,6 +331,7 @@ class SMContext
 						Array.newWith(pLoggingName, state.getID(), state.getNextStateID())))
 				end
 				setCurrentStateByID(state.getNextStateID())
+				return
 			end
 		end
 		
@@ -418,10 +449,10 @@ class SMContext
 		
 		var bool doLog = pLogStateChanges and pConsole != null
 		
-		if pCurrentState == null
+		if pCurrentState == null or pTransitionInProgress
 			if doLog
-				pConsole.addMessage("{}: Event '{}' while in transition -> delayed"\
-					.format(Array.newWith(pLoggingName, event)))
+				pConsole.addMessage("{}: Event '{}' while in transition({}) -> delayed"\
+					.format(Array.newWith(pLoggingName, event, pTransitionInProgress)))
 			end
 			
 			if pDelayedEvents == null
@@ -431,30 +462,63 @@ class SMContext
 			return
 		end
 		
-		var SMTransition transition = pCurrentState.findTransition(block SMTransition each
-			return each.matches(this, event)
-		end)
-		
-		if doLog
-			if transition != null
-				pConsole.addMessage("{}: State '{}' event '{}' transition {} next state '{}'"\
-					.format(Array.newWith(pLoggingName, pCurrentState.getID(), event,\
-						pCurrentState.indexOfTransition(transition), transition.getStateID())))
+		var SMState recoverState = pCurrentState
+		try
+			while event != null
+				var SMTransition transition = pCurrentState.findTransition(block SMTransition each
+					pEventParameter = parameter // ensure event parameter is set
+					return each.matches(this, event)
+				end)
 				
-			else
-				pConsole.addMessage("{}: State '{}' event '{}' no transition"\
-					.format(Array.newWith(pLoggingName, pCurrentState.getID(), event)))
+				if transition == null
+					transition = pStateMachine.findTransition(block SMTransition each
+						pEventParameter = parameter // ensure event parameter is set
+						return each.matches(this, event)
+					end)
+				end
+				
+				if doLog
+					if transition != null
+						pConsole.addMessage("{}: State '{}' event '{}'(param '{}') transition {} next state '{}' delegate event '{}'"\
+							.format(Array.newWith(pLoggingName, pCurrentState.getID(), event, parameter,\
+								pCurrentState.indexOfTransition(transition), transition.getStateID(), transition.getDelegate())))
+						
+					else
+						pConsole.addMessage("{}: State '{}' event '{}'({}) no transition"\
+							.format(Array.newWith(pLoggingName, pCurrentState.getID(), event, parameter)))
+					end
+				end
+				
+				if transition == null
+					break
+				end
+				
+				recoverState = pCurrentState
+				pEventParameter = parameter // ensure event parameter is set
+				pTransitionInProgress = true
+				transition.run(this)
+				pTransitionInProgress = false
+				
+				event = transition.getDelegate()
 			end
+			pEventParameter = null
+			
+		catch Exception e
+			pTransitionInProgress = false
+			pEventParameter = null
+			if pCurrentState == null
+				pCurrentState = recoverState
+			end
+			throw e
 		end
 		
-		if transition == null
-			return
+		if pDelayedEvents != null
+			if doLog
+				pConsole.addMessage("{}: State '{}' run delayed {} events".format(\
+					Array.newWith(pLoggingName, pCurrentState.getID(), pDelayedEvents.getCount())))
+			end
+			runDelayedEvents()
 		end
-		
-		pEventParameter = parameter
-		transition.run(this)
-		pEventParameter = null
-		return
 	end
 	
 	private func void runDelayedEvents()
@@ -473,6 +537,7 @@ class SMContext
 	 */
 	func void reset()
 		pCurrentState = null
+		pDelayedEvents = null
 		setCurrentState(pStateMachine.getStateAt(pStateMachine.getInitialState()))
 	end
 	
@@ -509,6 +574,7 @@ class SMContext
 		
 		var PersistencyFlags flags = PersistencyFlags.new(1)
 		flags.setAt(0, pCurrentState != null)
+		flags.writeToFile(writer)
 		
 		if pCurrentState != null
 			writer.writeString8(pCurrentState.getID())

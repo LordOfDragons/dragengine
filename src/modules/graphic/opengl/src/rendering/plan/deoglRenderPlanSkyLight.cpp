@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglRenderPlanSkyLight.h"
 #include "deoglRenderPlan.h"
 #include "parallel/deoglRPTSkyLightFindContent.h"
@@ -93,6 +90,7 @@ pPlanned(false),
 pUseLight(true),
 pUseShadow(false),
 pShadowLayerCount(0),
+pFRSlot(-1),
 pGIShadowSize(1024),
 pGIShadowUpdateStatic(true),
 pGIRenderTaskStatic(plan.GetRenderThread()),
@@ -151,6 +149,10 @@ deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
 
 // Management
 ///////////////
+
+void deoglRenderPlanSkyLight::SetFRSlot(int slot){
+	pFRSlot = slot;
+}
 
 void deoglRenderPlanSkyLight::SetOcclusionTest(deoglOcclusionTest *occlusionTest){
 	if(occlusionTest == pOcclusionTest){
@@ -211,6 +213,7 @@ void deoglRenderPlanSkyLight::Clear(){
 	pUseLight = false;
 	pUseShadow = false;
 	pPlanned = false;
+	pFRSlot = -1;
 	
 	pSky = nullptr;
 	pLayer = nullptr;

@@ -506,29 +506,16 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "actorMover.check".
 		 * \version 1.26
 		 */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
 				var bool result = true
-				var Object value
-				
-				value = parameters.getAt(prefix + "goal", null)
+				var Object value = parameters.getAt(prefix + "goal", null)
 				if value != null
 					result &= pInstance.hasGoal() == value.equals("true")
 				end
@@ -1255,7 +1242,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				end
 				
 				// heading for the next path point
-				if distance < locomotion.getAbsMovingSpeed() * 0.1   // add option for this
+				if distance < locomotion.getAbsMovingSpeed() * 0.1 // add option for this
 					// sanity check. if the position is more than 1m away from the corner the actor is most probably stuck
 					// due to some unholy combination of circumstances. recalculate the path to get out of the mess
 // 					if (nextCorner - position).getLength() > 1.0

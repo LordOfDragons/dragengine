@@ -24,6 +24,10 @@
 
 #include "deftFont.h"
 #include "deftModule.h"
+#include "layout/deftLayouter.h"
+#include "layout/deftLayouterSdf.h"
+#include "renderer/deftRenderer.h"
+#include "renderer/deftRendererSdf.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -35,12 +39,10 @@
 #include <dragengine/resources/font/deFontGlyph.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
+#include <dragengine/threading/deMutexGuard.h>
 
+#include "includeMsdfgen.h"
 
-/** Free type color in BGRS format. */
-struct sFTColorBGRA{
-	unsigned char blue, green, red, alpha;
-};
 
 
 // Class deftFont
@@ -49,32 +51,13 @@ struct sFTColorBGRA{
 // Constructor, destructor
 ////////////////////////////
 
-deftFont::deftFont(deftModule &module, decBaseFileReader &reader) :
+deftFont::deftFont(deftModule &module, decBaseFileReader &reader, const deFont::Ref &font) :
 pModule(module),
 pReader(reader),
+pFont(font),
 pFace(nullptr),
 pStreamRec{},
-pOpenArgs{},
-pMaxImageWidth(2048),
-pGlyphSpacing(1),
-pLineHeightLimit(128),
-pHintingSafetyMargin(1),
-pRealFontSize(0),
-pBaseLine(0),
-pRealLineHeight(0),
-pComponentCount(2),
-pLoadFlags(FT_LOAD_DEFAULT)
-{
-	pStreamRec.size = reader.GetLength();
-	pStreamRec.pos = reader.GetPosition();
-	pStreamRec.descriptor.pointer = this;
-	pStreamRec.read = fStreamRead;
-	pStreamRec.close = fStreamClose;
-	
-	pOpenArgs.flags = FT_OPEN_STREAM;
-	pOpenArgs.stream = &pStreamRec;
-	
-	module.AssertFT(FT_Open_Face(module.GetFTLibrary(), &pOpenArgs, 0, &pFace), "FT_Open_Face");
+pOpenArgs{}{
 }
 
 deftFont::~deftFont(){
@@ -87,88 +70,48 @@ deftFont::~deftFont(){
 // Management
 ///////////////
 
-void deftFont::LoadFont(deFont &font){
-	pModule.AssertFT(FT_Set_Pixel_Sizes(pFace, 0, 16), "FT_Set_Pixel_Sizes");
+void deftFont::LoadFont(){
+	// pFont->SetImagePath("");
+	pFont->SetImage(pModule.GetGameEngine()->GetImageManager()->LoadDefault());
 	
-	font.SetImagePath("");
-	font.SetImage(pModule.GetGameEngine()->GetImageManager()->LoadDefault());
+	// try loading the cached font data
+	pCachedFont = pModule.GetCaches()->LoadFont(pFont);
+	if(pCachedFont){
+		// loading the cache has initialized the font data already
+		return;
+	}
 	
-	font.SetLineHeight(16);
-	font.SetBaseLine(16 * 3 / 4);
-	font.SetIsColorFont(false);//FT_HAS_COLOR(pFace));
-	font.SetScalable(FT_IS_SCALABLE(pFace));
+	// no valid cache found. load font and save new cache
+	pOpenFontFile();
 	
-	if(FT_HAS_FIXED_SIZES(pFace)){
-		FT_Int i;
-		for(i=0; i<pFace->num_fixed_sizes; i++){
-			font.GetFixedSizes().Add((int)pFace->available_sizes[i].height);
+	pFont->SetLineHeight(16);
+	pFont->SetBaseLine(16 * 3 / 4);
+	pFont->SetAvgCharWidth(8);
+	pFont->SetIsColorFont(false);//FT_HAS_COLOR(pFace));
+	pFont->SetScalable(FT_IS_SCALABLE(pFace));
+	
+	if(pFont->GetScalable() && pModule.GetCreateSdfFont()){
+		pFont->SetIsSdf(true);
+		
+	}else if(FT_HAS_FIXED_SIZES(pFace)){
+		for(FT_Int i=0; i<pFace->num_fixed_sizes; i++){
+			pFont->GetFixedSizes().Add((int)pFace->available_sizes[i].height);
 		}
 	}
 	
-	pInitGlyphs(font);
+	pInitGlyphs();
+	
+	pCachedFont = deftCachedFont::Ref::New(pModule, pFont);
+	pModule.GetCaches()->SaveFont(pCachedFont);
 }
 
-deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
-	const char * const filename = font.GetFilename();
-	deFontSize::Ref size;
-	
-	if(lineHeight > pLineHeightLimit){
-		pModule.LogInfoFormat("LoadFontSize[%s,%d]: Request font size too large. Using %d instead",
-			filename, lineHeight, pLineHeightLimit);
-		size = font.GetSizeWith(pLineHeightLimit);
-		if(size){
-			return size;
-		}
-		
-		lineHeight = pLineHeightLimit;
-	}
-	
-	size = deFontSize::Ref::New(lineHeight, font.GetGlyphCount());
-	
-	pRealFontSize = pFindBestSize(font, size);
-	
-	pRealLineHeight = pBBox.y2 - pBBox.y1;
-	
-	// enlarge glyphs by a small margin to get some wiggle space if hinting enlarges font
-	pRealLineHeight += pHintingSafetyMargin;
-	
-	pBearingOffset.x = 0;
-	pBearingOffset.y = (lineHeight - pRealLineHeight) / 2;
-	pBaseLine = pBBox.y2 + pBearingOffset.y;
-	
-	if(FT_HAS_COLOR(pFace)){
-		pLoadFlags = FT_LOAD_DEFAULT | FT_LOAD_COLOR;
-		pComponentCount = 4;
+deFontSize::Ref deftFont::LoadFontSize(int lineHeight){
+	if(pFont->GetIsSdf()){
+		return pLoadFontSizeSdf();
 		
 	}else{
-		pLoadFlags = FT_LOAD_COLOR;
-		pComponentCount = 2;
+		return pLoadFontSizeBitmap(lineHeight);
 	}
-	
-	pModule.LogInfoFormat(
-		"LoadFontSize[%s,%d]: fs=%d bb=(%d,%d,%d,%d) h=%d gh=%d o=(%d,%d) bl=%d clr=%d",
-		filename, lineHeight, pRealFontSize, pBBox.x1, pBBox.y1, pBBox.x2, pBBox.y2,
-		(int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64),
-		pRealLineHeight, pBearingOffset.x, pBearingOffset.y, pBaseLine, FT_HAS_COLOR(pFace));
-	
-	pInitGlyphs(size);
-	
-	decPoint3 imageSize(pCalcLayout(size));
-	DEASSERT_FALSE(imageSize == decPoint3())
-	pModule.LogInfoFormat("LoadFontSize[%s,%d]: Layout calculated, %d glyphs, image size (%d,%d,%d)",
-		filename, lineHeight, size->GetGlyphs().GetCount(), imageSize.x, imageSize.y, imageSize.z);
-	
-	// pDebugPrintGlyphs(font, size);
-	
-	decTimer timer;
-	const deImage::Ref image(pModule.GetGameEngine()->GetImageManager()->
-		CreateImage(imageSize.x, imageSize.y, imageSize.z, pComponentCount, 8));
-	pRenderGlyphs(size, image);
-	image->NotifyImageDataChanged();
-	size->SetImage(image);
-	
-	pModule.LogInfoFormat("LoadFontSize[%s,%d]: Image rendered in %dms",
-		filename, lineHeight, (int)(timer.GetElapsedTime() * 1e3f));
 	
 	// DEBUG
 	/*
@@ -184,19 +127,235 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	
 	// if done on manually created images data is lost and can not be retained for graphic module
 	// image->ReleaseImageData();
-	
-	return size;
 }
 
 
 // Private functions
 //////////////////////
 
-int deftFont::pCountUsableGlyphs() const{
-	int glyphCount = 0;
+deFontSize::Ref deftFont::pLoadFontSizeBitmap(int lineHeight){
+	const char * const filename = pFont->GetFilename();
 	
+	// check request line height. can use an already loaded size
+	deFontSize::Ref fontSize;
+	
+	const int lineHeightLimit = pModule.GetLineHeightLimit();
+	if(lineHeight > lineHeightLimit){
+		pModule.LogInfoFormat("LoadFontSize[%s,%s,%d]: Request font size too large. Using %d instead",
+			pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
+			filename, lineHeight, lineHeightLimit);
+		fontSize = pFont->GetSizeWith(lineHeightLimit);
+		if(fontSize){
+			return fontSize;
+		}
+		
+		lineHeight = lineHeightLimit;
+	}
+	
+	// try loading the cached font size data
+	fontSize = deFontSize::Ref::New(lineHeight, pFont->GetGlyphCount());
+	
+	pCachedFontSize = pModule.GetCaches()->LoadFontSize(pFont, fontSize);
+	if(pCachedFontSize){
+		// loading the cache has initialized the font size data already
+		pModule.LogInfoFormat("LoadFontSize[%s,%s,%d]: Loaded from cache, %d glyphs, image size (%d,%d,%d)",
+			pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
+			filename, lineHeight, fontSize->GetGlyphs().GetCount(), fontSize->GetImage()->GetWidth(),
+			fontSize->GetImage()->GetHeight(), fontSize->GetImage()->GetDepth());
+		
+		return fontSize;
+	}
+	
+	// no valid cache found. build font size and save new cache
+	pOpenFontFile();
+	
+	FT_Int32 loadFlags;
+	int componentCount;
+	if(FT_HAS_COLOR(pFace)){
+		loadFlags = FT_LOAD_DEFAULT | FT_LOAD_COLOR;
+		componentCount = 4;
+		
+	}else{
+		loadFlags = FT_LOAD_COLOR;
+		componentCount = 2;
+	}
+	
+	deftLayouter layouter(pModule, pFont, lineHeight, pFace);
+	layouter.SetLoadFlags(loadFlags);
+	layouter.SetMaxImageWidth(pModule.GetMaxImageSize());
+	layouter.SetGlyphSpacing(pModule.GetGlyphSpacing());
+	
+	deftLayout::Ref layout = layouter.Layout();
+	layout->Apply(fontSize);
+	fontSize->SetBaseLine(layouter.GetBaseLine());
+	fontSize->SetAvgCharWidth(layouter.GetAvgCharWidth());
+	
+	pModule.LogInfoFormat("LoadFontSize[%s,%s,%d]: Layout calculated, %d glyphs, image size (%d,%d,%d)",
+		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
+		filename, lineHeight, layout->GetGlyphs().GetCount(),
+		layout->GetImageSize().x, layout->GetImageSize().y, layout->GetImageSize().z);
+	
+	// pDebugPrintGlyphs(size, layout);
+	
+	decTimer timer;
+	deftRenderer renderer(pModule, pFace);
+	renderer.SetLoadFlags(loadFlags);
+	renderer.SetComponentCount(componentCount);
+	renderer.Render(layout, fontSize);
+	
+	pModule.LogInfoFormat("LoadFontSize[%s,%s,%d]: Image rendered in %dms",
+		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
+		filename, lineHeight, (int)(timer.GetElapsedTime() * 1e3f));
+	
+	// write cache
+	pCachedFontSize = deftCachedFontSize::Ref::New(pModule, pFont, fontSize);
+	pModule.GetCaches()->SaveFontSize(pCachedFontSize);
+	
+	return fontSize;
+}
+
+deFontSize::Ref deftFont::pLoadFontSizeSdf(){
+	// return first font size if existing. works since SDF requires only one font size.
+	// if font file changes the font object itself becomes invalid and we create a new one
+	if(pFont->GetSizeCount() > 0){
+		return deFontSize::Ref(&pFont->GetSizeAt(0));
+	}
+	
+	const char * const filename = pFont->GetFilename();
+	
+	deTUniqueReference<deftLayouterSdf> layouter;
+	deftLayout::Ref layout;
+	int sdfSize = 0;
+	
+	// determine the best SDF line height to use
+	{
+	if(!pCachedFont){
+		pCachedFont = pModule.GetCaches()->LoadFont(pFont);
+		if(!pCachedFont){
+			pCachedFont = deftCachedFont::Ref::New(pModule, pFont);
+		}
+	}
+	
+	const deMutexGuard guard(pCachedFont->GetMutex());
+	sdfSize = pCachedFont->GetSdfSize();
+	
+	if(sdfSize == 0){
+		// we have not determined the best SDF parameters yet so find the best size
+		sdfSize = pSdfFindBestLayout(layouter, layout);
+	}
+	}
+	
+	// try loading the cached font size data
+	auto fontSize = deFontSize::Ref::New(sdfSize, pFont->GetGlyphCount());
+	
+	pCachedFontSize = pModule.GetCaches()->LoadFontSize(pFont, fontSize);
+	if(pCachedFontSize){
+		// loading the cache has initialized the font size data already
+		pModule.LogInfoFormat("LoadFontSize[%s,%s,sdf]: Loaded from cache, %d glyphs, "
+				"image size (%d,%d,%d), SDF size %d",
+			pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
+			filename, fontSize->GetGlyphs().GetCount(), fontSize->GetImage()->GetWidth(),
+			fontSize->GetImage()->GetHeight(), fontSize->GetImage()->GetDepth(), sdfSize);
+		
+		return fontSize;
+	}
+	
+	// no valid cache found. build font size and save new cache
+	if(!layouter){
+		// best layout known but cache is invalid. find best layout
+		const deMutexGuard guard(pCachedFont->GetMutex());
+		sdfSize = pSdfFindBestLayout(layouter, layout);
+	}
+	
+	layout->Apply(fontSize);
+	fontSize->SetBaseLine(layouter->GetBaseLine());
+	fontSize->SetAvgCharWidth(layouter->GetAvgCharWidth());
+	fontSize->SetSdfPixelRange((float)layouter->GetSdfPixelRange());
+	fontSize->SetSdfDistanceRange(layouter->GetSdfDistanceRange());
+	
+	pModule.LogInfoFormat("LoadFontSize[%s,%s,sdf]: Layout calculated, %d glyphs, "
+			"image size (%d,%d,%d), SDF size %d, SDF pixel range %g",
+		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
+		filename, layout->GetGlyphs().GetCount(), layout->GetImageSize().x,
+		layout->GetImageSize().y, layout->GetImageSize().z, sdfSize, layouter->GetSdfPixelRange());
+	
+	// pDebugPrintGlyphs(size, layout);
+	
+	// render layout
+	{
+	decTimer timer;
+	
+	deftRendererSdf renderer(pModule, pFace);
+	renderer.SetLoadFlags(layouter->GetLoadFlags());
+	renderer.SetPixelRange(layouter->GetSdfPixelRange());
+	renderer.SetUnitScale(layouter->GetSdfUnitScale());
+	renderer.SetSdfDistanceRange(layouter->GetSdfMinVal(), layouter->GetSdfMaxVal());
+	renderer.Render(layout, fontSize);
+	
+	pModule.LogInfoFormat("LoadFontSize[%s,%s,sdf]: Image rendered in %dms",
+		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
+		filename, (int)(timer.GetElapsedTime() * 1e3f));
+	}
+	
+	// write cache
+	pCachedFontSize = deftCachedFontSize::Ref::New(pModule, pFont, fontSize);
+	pModule.GetCaches()->SaveFontSize(pCachedFontSize);
+	
+	return fontSize;
+}
+
+int deftFont::pSdfFindBestLayout(deTUniqueReference<deftLayouterSdf> &layouter, deftLayout::Ref &layout){
+	// FT_LOAD_NO_SCALE: ensure coordinates are in exact font design units (not 26.6 fixed-point)
+	// FT_LOAD_NO_BITMAP: do not load embedded bitmaps. just in case the font has them
+	// FT_LOAD_NO_HINTING: disable hinting to get raw font outlines
+	const FT_Int32 loadFlags = FT_LOAD_NO_SCALE | FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING;
+	
+	pOpenFontFile();
+	
+	layouter = deTUniqueReference<deftLayouterSdf>::New(pModule, pFont, pFace);
+	layouter->SetLoadFlags(loadFlags);
+	layouter->SetMaxImageWidth(pModule.GetMaxImageSize());
+	layouter->SetGlyphSpacing(pModule.GetGlyphSpacing());
+	
+	{
+	decTimer timer;
+	
+	layout = layouter->FindBestLayout();
+	DEASSERT_NOTNULL(layout)
+	
+	pModule.LogInfoFormat("LoadFontSize[%s,%s,sdf]: Layout calculated in %dms",
+		pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
+		pFont->GetFilename().GetString(), (int)(timer.GetElapsedTime() * 1e3f));
+	}
+	
+	pCachedFont->SetSdfSize(layouter->GetSdfSize());
+	pModule.GetCaches()->SaveFont(pCachedFont);
+	
+	return layouter->GetSdfSize();
+}
+
+void deftFont::pOpenFontFile(){
+	if(pFace){
+		return;
+	}
+	
+	pStreamRec.size = pReader.GetLength();
+	pStreamRec.pos = pReader.GetPosition();
+	pStreamRec.descriptor.pointer = this;
+	pStreamRec.read = fStreamRead;
+	pStreamRec.close = fStreamClose;
+	
+	pOpenArgs.flags = FT_OPEN_STREAM;
+	pOpenArgs.stream = &pStreamRec;
+	
+	pModule.AssertFT(FT_Open_Face(pModule.GetFTLibrary(), &pOpenArgs, 0, &pFace), "FT_Open_Face");
+	pModule.AssertFT(FT_Set_Pixel_Sizes(pFace, 0, 16), "FT_Set_Pixel_Sizes");
+}
+
+int deftFont::pCountUsableGlyphs() const{
 	FT_UInt gindex;
 	FT_ULong charcode = FT_Get_First_Char(pFace, &gindex);
+	int glyphCount = 0;
 	
 	while(gindex != 0){
 		if(charcode < 0xffff){
@@ -208,305 +367,32 @@ int deftFont::pCountUsableGlyphs() const{
 	return glyphCount;
 }
 
-void deftFont::pInitGlyphs(deFont &font){
-	font.SetGlyphCount(pCountUsableGlyphs());
+void deftFont::pInitGlyphs() const{
+	pFont->SetGlyphCount(pCountUsableGlyphs());
 	
 	int glyphIndex = 0;
 	FT_UInt gindex;
 	FT_ULong charcode = FT_Get_First_Char(pFace, &gindex);
 	while(gindex != 0){
 		if(charcode < 0xffff){
-			deFontGlyph &glyph = font.GetGlyphAt(glyphIndex++);
-			glyph.SetUnicode((int)charcode);
+			pFont->GetGlyphAt(glyphIndex++).SetUnicode((int)charcode);
 		}
 		charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
 	}
 }
 
-int deftFont::pFindBestSize(const deFont &font, const deFontSize &size){
-	// const char * const filename = font.GetFilename();
-	const int reqLineHeight = size.GetLineHeight();
-	int prevHeight = 0, lineHeight = reqLineHeight;
-	
-	while(true){
-		pModule.AssertFT(FT_Set_Pixel_Sizes(pFace, 0, lineHeight), "FT_Set_Pixel_Sizes");
-		
-		pBBox.x1 = FT_MulFix(pFace->bbox.xMin, pFace->size->metrics.y_scale) / 64;
-		pBBox.y1 = FT_MulFix(pFace->bbox.yMin, pFace->size->metrics.y_scale) / 64;
-		pBBox.x2 = FT_MulFix(pFace->bbox.xMax, pFace->size->metrics.y_scale) / 64;
-		pBBox.y2 = FT_MulFix(pFace->bbox.yMax, pFace->size->metrics.y_scale) / 64;
-		
-		const int height = (int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64);
-		
-		/*
-		pModule.LogInfoFormat(
-			"LoadFontSize[%s,%d]: lh=%d bbox=(%d,%d,%d,%d) height=%d gheight=%d",
-			filename, reqLineHeight, lineHeight, pBBox.x1, pBBox.y1, pBBox.x2, pBBox.y2,
-			height, pBBox.y2 - pBBox.y1);
-		*/
-		
-		if(height == reqLineHeight){
-			return lineHeight;
-		}
-		
-		if(height > reqLineHeight){
-			if(prevHeight != 0 && prevHeight < height){
-				return lineHeight;
-			}
-			
-			prevHeight = height;
-			lineHeight--;
-			
-		}else{
-			prevHeight = height;
-			lineHeight++;
-		}
-	}
-}
-
-void deftFont::pInitGlyphs(deFontSize &size){
-	int glyphIndex = 0;
-	FT_UInt gindex;
-	FT_ULong charcode = FT_Get_First_Char(pFace, &gindex);
-	
-	while(gindex != 0){
-		if(charcode < 0xffff){
-			pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
-			
-			deFontGlyph &glyph = size.GetGlyphAt(glyphIndex++);
-			glyph.SetUnicode((int)charcode);
-			glyph.SetWidth(pFace->glyph->metrics.width / 64);
-			glyph.SetHeight(decMath::min(pFace->glyph->metrics.height / 64, pRealLineHeight));
-			glyph.SetAdvance(pFace->glyph->metrics.horiAdvance / 64);
-			
-			// bearing in freetype is positive to the right and top.
-			// bearing in dragengine is positive to the left and bottom
-			glyph.SetBearing(-(pFace->glyph->metrics.horiBearingX / 64 + pBearingOffset.x));
-			glyph.SetBearingY(pFace->glyph->metrics.horiBearingY / 64 - pBaseLine);
-			
-			// enlarge glyph by a small margin to get some wiggle space if hinting enlarges font
-			glyph.SetWidth(glyph.GetWidth() + pHintingSafetyMargin);
-			glyph.SetHeight(glyph.GetHeight() + pHintingSafetyMargin);
-		}
-		charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
-	}
-}
-
-decPoint3 deftFont::pCalcLayout(deFontSize &size){
-	if(pRealLineHeight > pMaxImageWidth){
-		return decPoint3();
-	}
-	
-	const int glyphCount = size.GetGlyphs().GetCount();
-	decPoint3 coords, imageSize;
-	int i;
-	
-	for(i=0; i<glyphCount; i++){
-		deFontGlyph &glyph = size.GetGlyphAt(i);
-		const int glyphWidth = glyph.GetWidth();
-		
-		if(coords.x + glyphWidth > pMaxImageWidth){
-			imageSize.x = decMath::max(imageSize.x, coords.x - pGlyphSpacing);
-			coords.x = 0;
-			coords.y += pRealLineHeight + pGlyphSpacing;
-			
-			if(coords.y + pRealLineHeight > pMaxImageWidth){
-				imageSize.y = decMath::max(imageSize.y, coords.y - pGlyphSpacing);
-				coords.y = 0;
-				coords.z++;
-			}
-		}
-		
-		glyph.SetX(coords.x);
-		glyph.SetY(coords.y + (pRealLineHeight - glyph.GetHeight()) / 2);
-		glyph.SetZ(coords.z);
-		
-		coords.x += glyphWidth + pGlyphSpacing;
-	}
-	
-	imageSize.x = decMath::max(imageSize.x, coords.x - pGlyphSpacing);
-	imageSize.y = decMath::max(imageSize.y, coords.y + pRealLineHeight);
-	imageSize.z = coords.z + 1;
-	
-	return imageSize;
-}
-
-void deftFont::pDebugPrintGlyphs(const deFont &font, const deFontSize &size){
-	const char * const filename = font.GetFilename();
+void deftFont::pDebugPrintGlyphs(const deFontSize &size, const deftLayout &layout) const{
+	const char * const filename = pFont->GetFilename();
 	const int lineHeight = size.GetLineHeight();
 	
-	size.GetGlyphs().Visit([&](const deFontGlyph &g){
+	layout.GetGlyphs().Visit([&](const deftLayout::Glyph &g){
 		pModule.LogInfoFormat(
-			"LoadFontSize[%s,%d].Glyph: u=0x%x s=(%d,%d) b=(%d,%d) a=%d tc=(%d,%d,%d)",
-			filename, lineHeight, g.GetUnicode(), g.GetWidth(), g.GetHeight(), g.GetBearing(),
-			g.GetBearingY(), g.GetAdvance(), g.GetX(), g.GetY(), g.GetZ());
+			"LoadFontSize[%s,%s,%d].Glyph: u=0x%x s=(%d,%d) b=(%d,%d) a=%d tc=(%d,%d,%d)",
+			pFont->GetVirtualFileSystem() ? pFont->GetVirtualFileSystem()->GetIdentifier().GetString() : "-",
+			filename, lineHeight, g.unicode, g.size.x, g.size.y, g.bearing.x, g.bearing.y,
+			g.advance, g.position.x, g.position.y, g.position.z);
 	});
 }
-
-void deftFont::pRenderGlyphs(const deFontSize &size, deImage &image){
-	const int pixelCount = image.GetWidth() * image.GetHeight() * image.GetDepth();
-	const int strideZ = image.GetWidth() * image.GetHeight();
-	const int strideY = image.GetWidth();
-	
-	int x, y, glyphIndex = 0;
-	FT_UInt gindex;
-	FT_ULong charcode = FT_Get_First_Char(pFace, &gindex);
-	
-	if(image.GetComponentCount() == 2){
-		sGrayscaleAlpha8 * const di = image.GetDataGrayscaleAlpha8();
-		for(x=0; x<pixelCount; x++){
-			di[x] = {255, 0};
-		}
-		
-		while(gindex != 0){
-			if(charcode < 0xffff){
-				pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
-				pModule.AssertFT(FT_Render_Glyph(pFace->glyph, FT_RENDER_MODE_NORMAL), "FT_Render_Glyph");
-				
-				const deFontGlyph &glyph = size.GetGlyphs()[glyphIndex++];
-				
-				if(pFace->glyph->bitmap.buffer){
-					const int rows = pFace->glyph->bitmap.rows;
-					
-					// hinting can cause the glyph to be slightly larger than the boundary box.
-					// since we can not enlarge the image anymore at this point in time we have
-					// to clip the glyph. using the bearing the glyph lines up at the top. hence
-					// the best we can do is clip the glyph at the bottom. this could be improved
-					// by adding a clip area at the bottom of the line as safeguard
-					const int safeRows = decMath::min(rows, glyph.GetHeight());
-					const int padTop = rows - safeRows;
-					
-					const int pitch = pFace->glyph->bitmap.pitch;
-					
-					const unsigned char *bdBase = pFace->glyph->bitmap.buffer;
-					if(pitch < 0){
-						bdBase += (rows - 1 - padTop) * -pitch;
-						
-					}else{
-						bdBase += padTop * pitch;
-					}
-					
-					// some fonts cause the bearing to be included in the bitmap width although it
-					// is not included in the metrics. this is incorrect and causes problems.
-					// as a work around calculate the padding on the left side and clip the bitmap
-					const unsigned char *bd = bdBase;
-					const int realWidth = pFace->glyph->bitmap.width;
-					int padLeft = realWidth - 1;
-					
-					for(y=0; y<safeRows; y++){
-						for(x=0; x<realWidth; x++){
-							if(bd[x] > 0){
-								padLeft = decMath::min(padLeft, x);
-								break;
-							}
-						}
-						bd += pitch;
-					}
-					
-					const int width = decMath::min(realWidth - padLeft, glyph.GetWidth());
-					
-					/*
-					pModule.LogInfoFormat("Render: g=0x%x s=(%d,%d) p=%d pm=%d pad=%d", (int)charcode,
-						pFace->glyph->bitmap.width, pFace->glyph->bitmap.rows,
-						pFace->glyph->bitmap.pitch, pFace->glyph->bitmap.pixel_mode, padLeft);
-					*/
-					
-					sGrayscaleAlpha8 *dg = di + strideZ * glyph.GetZ() + strideY * glyph.GetY() + glyph.GetX();
-					bd = bdBase + padLeft;
-					
-					for(y=0; y<safeRows; y++){
-						for(x=0; x<width; x++){
-							dg[x].alpha = bd[x];
-						}
-						dg += strideY;
-						bd += pitch;
-					}
-				}
-			}
-			charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
-		}
-		
-	}else if(image.GetComponentCount() == 4){
-		sRGBA8 * const di = image.GetDataRGBA8();
-		for(x=0; x<pixelCount; x++){
-			di[x] = {255, 255, 255, 0};
-		}
-		
-		while(gindex != 0){
-			if(charcode < 0xffff){
-				pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
-				pModule.AssertFT(FT_Render_Glyph(pFace->glyph, FT_RENDER_MODE_NORMAL), "FT_Render_Glyph");
-				
-				const deFontGlyph &glyph = size.GetGlyphs()[glyphIndex++];
-				
-				if(pFace->glyph->bitmap.buffer){
-					const int rows = pFace->glyph->bitmap.rows;
-					
-					// hinting can cause the glyph to be slightly larger than the boundary box.
-					// since we can not enlarge the image anymore at this point in time we have
-					// to clip the glyph. using the bearing the glyph lines up at the top. hence
-					// the best we can do is clip the glyph at the bottom. this could be improved
-					// by adding a clip area at the bottom of the line as safeguard
-					const int safeRows = decMath::min(rows, glyph.GetHeight());
-					const int padTop = rows - safeRows;
-					
-					const int pitch = pFace->glyph->bitmap.pitch;
-					
-					const unsigned char *bdBase = pFace->glyph->bitmap.buffer;
-					if(pitch < 0){
-						bdBase += (rows - 1 - padTop) * -pitch;
-						
-					}else{
-						bdBase += padTop * pitch;
-					}
-					
-					// some fonts cause the bearing to be included in the bitmap width although it
-					// is not included in the metrics. this is incorrect and causes problems.
-					// as a work around calculate the padding on the left side and clip the bitmap
-					const unsigned char *bd = bdBase;
-					const int realWidth = pFace->glyph->bitmap.width;
-					int padLeft = realWidth - 1;
-					
-					for(y=0; y<safeRows; y++){
-						const sFTColorBGRA * const bg = (sFTColorBGRA*)bd;
-						for(x=0; x<realWidth; x++){
-							if(bg[x].alpha > 0){
-								padLeft = decMath::min(padLeft, x);
-								break;
-							}
-						}
-						bd += pitch;
-					}
-					
-					const int width = decMath::min(realWidth - padLeft, glyph.GetWidth());
-					
-					/*
-					pModule.LogInfoFormat("Render: g=0x%x s=(%d,%d) p=%d pm=%d pad=(%d,%d)", (int)charcode,
-						pFace->glyph->bitmap.width, pFace->glyph->bitmap.rows,
-						pFace->glyph->bitmap.pitch, pFace->glyph->bitmap.pixel_mode, padLeft, padTop);
-					*/
-					
-					sRGBA8 *dg = di + strideZ * glyph.GetZ() + strideY * glyph.GetY() + glyph.GetX();
-					bd = bdBase + sizeof(sFTColorBGRA) * padLeft;
-					
-					for(y=0; y<safeRows; y++){
-						const sFTColorBGRA * const bg = (sFTColorBGRA*)bd;
-						for(x=0; x<width; x++){
-							dg[x].red = bg[x].red;
-							dg[x].green = bg[x].green;
-							dg[x].blue = bg[x].blue;
-							dg[x].alpha = bg[x].alpha;
-						}
-						dg += strideY;
-						bd += pitch;
-					}
-				}
-			}
-			charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
-		}
-	}
-}
-
 
 unsigned long deftFont::fStreamRead(FT_Stream stream, unsigned long offset,
 unsigned char *buffer, unsigned long count){

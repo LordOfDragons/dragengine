@@ -109,6 +109,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerRemove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetDefaultValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetLower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -304,6 +307,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerRemove.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetDefaultValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\particleEmitter\src\undosys\controller\peeUControllerSetLower.h">

@@ -84,6 +84,7 @@ private:
 	sShadowLayer pShadowLayers[4];
 	deoglCollideList pSLCollideList1;
 	deoglCollideList pSLCollideList2;
+	int pFRSlot;
 	
 	deoglCollideList pGICollideList;
 // 	decVector pGIBoxMinExtend;
@@ -159,6 +160,12 @@ public:
 	
 	/** Set frustom box extends. */
 	void SetFrustumBoxExtend(const decVector &minExtend, const decVector &maxExtend);
+	
+	/** Forward render slot. */
+	inline int GetFRSlot() const{ return pFRSlot; }
+	
+	/** Set forward render slot. */
+	void SetFRSlot(int slot);
 	
 	
 	

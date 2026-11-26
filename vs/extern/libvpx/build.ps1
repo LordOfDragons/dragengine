@@ -15,4 +15,6 @@ if (Test-Path $ExpandedDir) {
 
 DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libvpx-1.12.0-vc64.zip" -UrlPath "libvpx"
 
-Expand-Archive -Path "$ProjectDir\libvpx-1.12.0-vc64.zip" -DestinationPath $ProjectDir
+# workaround for powershell bug under github
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory("$ProjectDir\libvpx-1.12.0-vc64.zip", $ProjectDir)

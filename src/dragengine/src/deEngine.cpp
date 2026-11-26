@@ -1360,16 +1360,30 @@ void deEngine::pUpdateFPSRate(){
 
 bool deEngine::pClearPermanents(){
 	bool success = true;
-	pSystems.VisitReverse([&](deBaseSystem &s){
+	pSystems.VisitReverse([&](deBaseSystem &each){
 		try{
-			s.ClearPermanents();
+			each.ClearPermanents();
 			
 		}catch(const deException &e){
 			pLogger->LogException(LOGGING_NAME, e);
-			s.LogError("Clearing permanents failed.");
+			each.LogError("Clearing permanents failed.");
 			success = false;
 		}
 	});
+	
+	pModSys->GetModules().VisitReverse([&](deLoadableModule &each){
+		if(each.GetModule()){
+			try{
+				each.GetModule()->DropResourceReferences();
+				
+			}catch(const deException &e){
+				pLogger->LogException(LOGGING_NAME, e);
+				each.GetModule()->LogError("Dropping resource references failed.");
+				success = false;
+			}
+		}
+	});
+	
 	return success;
 }
 

@@ -83,7 +83,8 @@ class Widget
 	var Border pBorder
 	var Point pPosition, pSize, pMinSize
 	var bool pVisible, pEnabled, pHasFocus, pCanFocus, pCanFocusDirectional
-	var Color pTextColor
+	var Color pTextColor, pTextBorderColor
+	var float pTextBorderThickness, pTextDilation
 	var float pTransparency
 	var Font pFont
 	var String pTitle
@@ -149,8 +150,9 @@ class Widget
 		pTitle = ""
 		
 		pTransparency = 1
-		pIsDesignerSet = false
 		pPadding = BorderSize.new()
+		
+		pTextBorderColor = Color.black
 		
 		pKeyListeners = Array.new()
 		pMouseListeners = Array.new()
@@ -779,6 +781,72 @@ class Widget
 		pCanvasWidget.setColorTransform(transformation)
 	end
 	
+	/**
+	 * \brief Text border color.
+	 * \version 1.35
+	 */
+	func Color getTextBorderColor()
+		return pTextBorderColor
+	end
+	
+	/**
+	 * \brief Set text border color.
+	 * \version 1.35
+	 */
+	func void setTextBorderColor(Color color)
+		if color.equals(pTextBorderColor)
+			return
+		end
+		
+		pTextBorderColor = color
+		onSetTextColor()
+	end
+	
+	/**
+	 * \brief Text border thickness in percentage of the font size or null.
+	 * \version 1.35
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	func float getTextBorderThickness()
+		return pTextBorderThickness
+	end
+	
+	/**
+	 * \brief Set text border thickness in percentage of the font size or null.
+	 * \version 1.35
+	 * 
+	 * A good starting value for balanced border size is 0.025 (2.5%) or 0.03 (3%).
+	 */
+	func void setTextBorderThickness(float thickness)
+		if DEMath.fabs(thickness - pTextBorderThickness) < 0.0001
+			return
+		end
+		
+		pTextBorderThickness = thickness
+		onSetTextDilation()
+	end
+	
+	/**
+	 * \brief Text dilation in percentage of the font size.
+	 * \version 1.35
+	 */
+	func float getTextDilation()
+		return pTextDilation
+	end
+	
+	/**
+	 * \brief Set text dilation in percentage of the font size.
+	 * \version 1.35
+	 */
+	func void setTextDilation(float dilation)
+		if DEMath.fabs(dilation - pTextDilation) < 0.0001
+			return
+		end
+		
+		pTextDilation = dilation
+		onSetTextDilation()
+	end
 	
 	
 	/**
@@ -2444,8 +2512,24 @@ class Widget
 		sendEventToListeners(event, false)
 	end
 	
-	/** \brief Text color changed. */
+	/**
+	 * \brief Text parameters changed.
+	 * 
+	 * Called if one of these parameters changed:
+	 * - Text color
+	 * - Text border color
+	 */
 	func void onSetTextColor()
+	end
+	
+	/**
+	 * \brief Text parameters changed that affect text dilation.
+	 * 
+	 * Called if one of these parameters changed:
+	 * - Text border thickness
+	 * - Text dilation
+	 */
+	func void onSetTextDilation()
 	end
 	
 	/** Notification that the widget font changed. */

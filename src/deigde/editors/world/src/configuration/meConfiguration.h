@@ -177,7 +177,6 @@ public:
 	void SetSensitivity(float sensitivity);
 	
 	
-	
 	/** \brief Enable GI in cameras. */
 	inline bool GetEnableGI() const{ return pEnableGI; }
 	

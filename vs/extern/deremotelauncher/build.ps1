@@ -7,9 +7,7 @@
 
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
-
 $DERemoteLauncherVersion = "1.1"
-
 
 $ExpandedDir = "$ProjectDir\build"
 if (Test-Path $ExpandedDir) {
@@ -23,4 +21,6 @@ if (!(Test-Path $ArchiveFile)) {
     Invoke-WebRequestWithRetry -Uri "$BaseUrl/DERemoteLauncherSDK-$DERemoteLauncherVersion.zip" -OutFile $ArchiveFile
 }
 
-Expand-Archive -Path $ArchiveFile -DestinationPath $ExpandedDir
+# workaround for powershell bug under github
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($ArchiveFile, $ExpandedDir)

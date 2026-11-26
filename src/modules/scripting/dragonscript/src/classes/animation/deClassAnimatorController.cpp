@@ -544,7 +544,8 @@ void deClassAnimatorController::nfReverse::RunFunction(dsRunTime *rt, dsValue *m
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
 	
-	controller.SetCurrentValue(controller.GetMaximumValue() - controller.GetCurrentValue());
+	controller.SetCurrentValue(controller.GetMaximumValue()
+		- (controller.GetCurrentValue() - controller.GetMinimumValue()));
 	
 	if(nd.instance){
 		nd.instance->NotifyControllerChangedAt(nd.index);

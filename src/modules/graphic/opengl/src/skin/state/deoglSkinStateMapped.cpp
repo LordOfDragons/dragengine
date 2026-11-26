@@ -44,12 +44,11 @@ pValue(0.0f),
 pMapped(nullptr),
 pComponent(nullptr),
 pBone(-1),
-pBoneInputValue(0.0f){
+pBoneInputValue(0.0f),
+pRenderable(nullptr){
 }
 
-deoglSkinStateMapped::~deoglSkinStateMapped(){
-}
-
+deoglSkinStateMapped::~deoglSkinStateMapped() = default;
 
 
 // Management
@@ -130,9 +129,12 @@ void deoglSkinStateMapped::UpdateBone(const deComponent &component){
 
 void deoglSkinStateMapped::Update(deoglSkinState &skinState){
 	if(pMapped){
-		pValue = pMapped->Calculate(skinState, *this);
+		const deoglSkinMapped::Result result = pMapped->Calculate(skinState, *this);
+		pValue = result.value;
+		pRenderable = result.renderable;
 		
 	}else{
 		pValue = 0.0f;
+		pRenderable = nullptr;
 	}
 }

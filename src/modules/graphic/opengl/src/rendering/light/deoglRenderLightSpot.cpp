@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglRenderLight.h"
 #include "deoglRenderLightSpot.h"
 #include "deoglRenderGI.h"
@@ -76,10 +72,12 @@
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../../shaders/paramblock/deoglSPBAccessor.h"
 #include "../../shadow/deoglSCSolid.h"
 #include "../../shadow/deoglSCTransparent.h"
 #include "../../shadow/deoglShadowCaster.h"
 #include "../../shadow/deoglShadowMapper.h"
+#include "../../shadow/deoglFRShadowManager.h"
 #include "../../shapes/deoglShape.h"
 #include "../../shapes/deoglShapeManager.h"
 #include "../../skin/channel/deoglSkinChannel.h"
@@ -591,6 +589,7 @@ const deoglRenderPlanMasked *mask, bool xray){
 	
 	// determine if we need transparent shadow casting
 	sShadowParams shadowParams;
+	shadowParams.solid = solid;
 	
 	if(useShadow){
 		//if( ! plan.GetTransparentShadow() ){
@@ -1030,7 +1029,7 @@ void deoglRenderLightSpot::RenderShadows(deoglRenderPlanLight &planLight, sShado
 	
 	// static shadow map
 	if(shadowType == deoglShadowCaster::estStaticOnly
-	||  shadowType == deoglShadowCaster::estStaticAndDynamic){
+	|| shadowType == deoglShadowCaster::estStaticAndDynamic){
 		// check if an update is required
 		bool requiresUpdate = false;
 		
@@ -1509,6 +1508,13 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams) {
 
 void deoglRenderLightSpot::UpdateLightParamBlock(deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight){
+	const deoglSPBMapBuffer mapped(paramBlock);
+	deoglSPBAccessor accessor(paramBlock);
+	UpdateLightParamBlock(lightShader, accessor, planLight);
+}
+
+void deoglRenderLightSpot::UpdateLightParamBlock(deoglLightShader &lightShader,
+deoglSPBAccessor &accessor, deoglRenderPlanLight &planLight){
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglRenderPlan &plan = planLight.GetPlan();
 	int target;
@@ -1567,26 +1573,25 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight){
 	}
 	
 	// set values
-	const deoglSPBMapBuffer mapped(paramBlock);
 	const bool hasGIState = plan.GetRenderGIState() != nullptr;
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightColor);
 	if(target != -1){
-		paramBlock.SetParameterDataVec3(target, lightColor * light.GetIntensity());
+		accessor.SetVec3(target, lightColor * light.GetIntensity());
 	}
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightRange);
 	if(target != -1){
-		paramBlock.SetParameterDataFloat(target, light.GetRange());
+		accessor.SetFloat(target, light.GetRange());
 	}
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightAmbientRatio);
 	if(target != -1){
 		if(hasGIState || plan.GetNoAmbientLight()){
-			paramBlock.SetParameterDataFloat(target, 0.0f);
+			accessor.SetFloat(target, 0.0f);
 			
 		}else{
-			paramBlock.SetParameterDataFloat(target, light.GetAmbientRatio());
+			accessor.SetFloat(target, light.GetAmbientRatio());
 			// this happens usually only for env-maps. better be dark than wrong lit
 			//paramBlock.SetParameterDataFloat( target, 0.0f );
 		}
@@ -1595,52 +1600,60 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight){
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightColorAmbientGI);
 	if(target != -1){
 		if(plan.GetNoAmbientLight()){
-			paramBlock.SetParameterDataVec3(target, 0.0f, 0.0f, 0.0f);
+			accessor.SetVec3(target, 0.0f, 0.0f, 0.0f);
 			
 		}else{
-			paramBlock.SetParameterDataVec3(target,
+			accessor.SetVec3(target,
 				lightColor * (light.GetIntensity() * light.GetAmbientRatio()));
 		}
 	}
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightAttenuationCoefficient);
 	if(target != -1){
-		paramBlock.SetParameterDataFloat(target, light.GetAttenuationCoefficient());
+		accessor.SetFloat(target, light.GetAttenuationCoefficient());
 	}
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightDampingCoefficient);
 	if(target != -1){
-		paramBlock.SetParameterDataFloat(target, light.GetDampingCoefficient());
+		accessor.SetFloat(target, light.GetDampingCoefficient());
 	}
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightDampingThreshold);
 	if(target != -1){
-		paramBlock.SetParameterDataFloat(target, light.GetDampingThreshold());
+		accessor.SetFloat(target, light.GetDampingThreshold());
 	}
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightImageGamma);
 	if(target != -1){
-		paramBlock.SetParameterDataFloat(target, decMath::max(lightImageGamma, 0.0f));
+		accessor.SetFloat(target, decMath::max(lightImageGamma, 0.0f));
 	}
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightSpotFactor);
 	if(target != -1){
-		paramBlock.SetParameterDataFloat(target, spotFactor);
+		accessor.SetFloat(target, spotFactor);
 	}
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightSpotBase);
 	if(target != -1){
-		paramBlock.SetParameterDataFloat(target, spotBase);
+		accessor.SetFloat(target, spotBase);
 	}
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightSpotExponent);
 	if(target != -1){
-		paramBlock.SetParameterDataFloat(target, spotExponent);
+		accessor.SetFloat(target, spotExponent);
 	}
 }
 
 void deoglRenderLightSpot::UpdateInstanceParamBlock(deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, const deoglCollideListLight &cllight,
+sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP){
+	const deoglSPBMapBuffer mapped(paramBlock);
+	deoglSPBAccessor accessor(paramBlock);
+	UpdateInstanceParamBlock(lightShader, accessor, plan, cllight, shadowDepthMaps, matrixLP);
+}
+
+void deoglRenderLightSpot::UpdateInstanceParamBlock(deoglLightShader &lightShader,
+deoglSPBAccessor &accessor, deoglRenderPlan &plan, const deoglCollideListLight &cllight,
 sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP){
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	const deoglRLight &light = *cllight.GetLight();
@@ -1680,49 +1693,47 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP){
 	const decDMatrix matrixShadowStereo(matrixMVStereo.Invert() * matrixLPBias);
 	
 	// set values
-	const deoglSPBMapBuffer mapped(paramBlock);
-	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutMatrixMVP);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayMat4x4(target, 0, matrixMVP);
-		paramBlock.SetParameterDataArrayMat4x4(target, 1, matrixMVPStereo);
+		accessor.SetArrayMat4x4(target, 0, matrixMVP);
+		accessor.SetArrayMat4x4(target, 1, matrixMVPStereo);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutMatrixMV);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayMat4x3(target, 0, matrixMV);
-		paramBlock.SetParameterDataArrayMat4x3(target, 1, matrixMVStereo);
+		accessor.SetArrayMat4x3(target, 0, matrixMV);
+		accessor.SetArrayMat4x3(target, 1, matrixMVStereo);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutLightPosition);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayVec3(target, 0, matrixMV.GetPosition());
-		paramBlock.SetParameterDataArrayVec3(target, 1, matrixMVStereo.GetPosition());
+		accessor.SetArrayVec3(target, 0, matrixMV.GetPosition());
+		accessor.SetArrayVec3(target, 1, matrixMVStereo.GetPosition());
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutLightView);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayVec3(target, 0, matrixMV.TransformView());
-		paramBlock.SetParameterDataArrayVec3(target, 1, matrixMVStereo.TransformView());
+		accessor.SetArrayVec3(target, 0, matrixMV.TransformView());
+		accessor.SetArrayVec3(target, 1, matrixMVStereo.TransformView());
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutLightParams);
 	if(target != -1){
-		paramBlock.SetParameterDataVec4(target,
+		accessor.SetVec4(target,
 			isCameraInside ? 0.0f : (isDepthCompareLEqual ? 1.0f : -1.0f),
 			OGL_REN_LIG_ZNEAR, 0.0f, 0.0f);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadowMatrix1);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayMat4x4(target, 0, matrixShadow);
-		paramBlock.SetParameterDataArrayMat4x4(target, 1, matrixShadowStereo);
+		accessor.SetArrayMat4x4(target, 0, matrixShadow);
+		accessor.SetArrayMat4x4(target, 1, matrixShadowStereo);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadowMatrix2);
 	if(target != -1){
-		paramBlock.SetParameterDataArrayMat4x4(target, 0, matrixShadow);
-		paramBlock.SetParameterDataArrayMat4x4(target, 1, matrixShadowStereo);
+		accessor.SetArrayMat4x4(target, 0, matrixShadow);
+		accessor.SetArrayMat4x4(target, 1, matrixShadowStereo);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutLightImageOmniMatrix);
@@ -1747,7 +1758,7 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP){
 		// y-flipping (1-y) required. for point light use shadow coordinates and apply rotation
 		// matrix to go from world to local space and also flip (1-y)
 		
-		paramBlock.SetParameterDataArrayMat4x3(target, 0, matrix);
+		accessor.SetArrayMat4x3(target, 0, matrix);
 		...
 		*/
 		
@@ -1756,8 +1767,8 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP){
 			matrixRotate = decMatrix::CreateRotation(light.GetUseSkinTexture()->GetOmniDirRotate() * TWO_PI)
 				.QuickMultiply(decMatrix::CreateRotation(light.GetUseSkinTexture()->GetOmniDirRotateSpot() * TWO_PI));
 		}
-		paramBlock.SetParameterDataArrayMat4x3(target, 0, matrixRotate.QuickMultiply(matrixMV).QuickInvert());
-		paramBlock.SetParameterDataArrayMat4x3(target, 1, matrixRotate.QuickMultiply(matrixMVStereo).QuickInvert());
+		accessor.SetArrayMat4x3(target, 0, matrixRotate.QuickMultiply(matrixMV).QuickInvert());
+		accessor.SetArrayMat4x3(target, 1, matrixRotate.QuickMultiply(matrixMVStereo).QuickInvert());
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadow1Solid);
@@ -1771,7 +1782,7 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP){
 			noiseScale = config.GetShadowCubePCFSize() / 1024.0f;
 		}
 		
-		paramBlock.SetParameterDataVec3(target, pixelSize, pixelSize, noiseScale);
+		accessor.SetVec3(target, pixelSize, pixelSize, noiseScale);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadow1Transparent);
@@ -1785,7 +1796,7 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP){
 			noiseScale = config.GetShadowCubePCFSize() / 1024.0f;
 		}
 		
-		paramBlock.SetParameterDataVec3(target, pixelSize, pixelSize, noiseScale);
+		accessor.SetVec3(target, pixelSize, pixelSize, noiseScale);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadow2Solid);
@@ -1799,7 +1810,7 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP){
 			noiseScale = config.GetShadowCubePCFSize() / 1024.0f;
 		}
 		
-		paramBlock.SetParameterDataVec3(target, pixelSize, pixelSize, noiseScale);
+		accessor.SetVec3(target, pixelSize, pixelSize, noiseScale);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadow2Transparent);
@@ -1813,7 +1824,7 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP){
 			noiseScale = config.GetShadowCubePCFSize() / 1024.0f;
 		}
 		
-		paramBlock.SetParameterDataVec3(target, pixelSize, pixelSize, noiseScale);
+		accessor.SetVec3(target, pixelSize, pixelSize, noiseScale);
 	}
 	
 	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutShadowDepthTransform);
@@ -1822,14 +1833,211 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP){
 		//const float zfar = light.GetRange();
 		
 		if(GetRenderThread().GetChoices().GetUseInverseDepth()){
-			paramBlock.SetParameterDataVec4(target, 0.0f, znear, -znear, 0.0f);
+			accessor.SetVec4(target, 0.0f, znear, -znear, 0.0f);
 			
 		}else{
-			paramBlock.SetParameterDataVec4(target, 1.0f, -2.0f * znear, znear, 1.0f);
+			accessor.SetVec4(target, 1.0f, -2.0f * znear, znear, 1.0f);
 		}
 	}
 }
 
+void deoglRenderLightSpot::RenderForward(deoglRenderPlan &plan){
+	const deoglDebugTraceGroup debugTrace(GetRenderThread(), "LightSpot.RenderForward");
+	
+	DebugTimersReset(plan, false);
+	
+	plan.GetLights().Visit(0, plan.GetLightCount(), [&](deoglRenderPlanLight &light){
+		switch(light.GetLight()->GetLight()->GetLightType()){
+		case deLight::eltSpot:
+		case deLight::eltProjector:
+			RenderForward(light);
+			break;
+			
+		default:
+			break;
+		}
+	});
+	
+	DebugTimer1Sample(plan, *pDebugInfoSolid, true);
+}
+
+void deoglRenderLightSpot::RenderForward(deoglRenderPlanLight &planLight){
+	auto &cllight = *planLight.GetLight();
+	if(!cllight.GetCulled() && cllight.IsHiddenByOccQuery()){
+		cllight.SetCulled(true);
+	}
+	
+	deoglRenderPlan &plan = planLight.GetPlan();
+	auto giState = plan.GetUpdateGIState();
+	
+	if(cllight.GetCulled() && !giState){
+		return;
+	}
+	
+	auto &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace(renderThread, "LightSpot.RenderForward2");
+	auto &light = *cllight.GetLight();
+	auto &shadowCaster = *light.GetShadowCaster();
+	auto &scsolid = shadowCaster.GetSolid();
+	auto &shadowMapper = renderThread.GetShadowMapper();
+	auto &defren = renderThread.GetDeferredRendering();
+	auto planDebug = plan.GetDebug();
+	auto shadowType = shadowCaster.GetShadowType();
+	deoglTexture *texSolidDepth1 = nullptr;
+	deoglTexture *texSolidDepth2 = nullptr;
+	
+	const bool useTemporary = planLight.GetUseShadowTemporary();
+	const bool useShadow = planLight.GetUseShadow();
+	
+	bool copyShadowMaps = false;
+	
+	if(useShadow && useTemporary){
+		shadowType = deoglShadowCaster::estDynamicOnly;
+	}
+	
+	if(plan.GetRenderPassNumber() == 1 && planDebug){
+		planDebug->IncrementRenderedLights();
+	}
+	
+	// calculate light volume matrices
+	sShadowParams shadowParams;
+	shadowParams.solid = true;
+	shadowParams.lodFovX = light.GetSpotAngle();
+	shadowParams.lodFovY = light.GetSpotRatio();
+	shadowParams.matrixProjection = defren.CreateProjectionDMatrix(1, 1,
+		light.GetSpotAngle(), light.GetSpotRatio(), OGL_REN_LIG_ZNEAR, light.GetRange());
+	
+	if(useShadow){
+		DebugTimer2Reset(plan, true);
+		RenderShadows(planLight, shadowParams);
+		
+		SetViewport(plan);
+		RestoreFBO(plan);
+		
+		// determine shadow maps to use
+		switch(shadowType){
+		case deoglShadowCaster::estStaticOnly:
+			texSolidDepth1 = scsolid.GetStaticMap();
+			break;
+			
+		case deoglShadowCaster::estDynamicOnly:
+			if(useTemporary){
+				texSolidDepth1 = scsolid.GetTemporaryMap()->GetTexture();
+				
+			}else{
+				texSolidDepth1 = scsolid.GetDynamicMap();
+			}
+			break;
+			
+		case deoglShadowCaster::estStaticAndDynamic:
+			if(copyShadowMaps){
+				// WARNING! THIS CODE IS NOT WORKING! DISABLED!
+				texSolidDepth1 = shadowMapper.GetSolidDepthTexture();
+				break;
+			}
+			
+			texSolidDepth1 = scsolid.GetStaticMap();
+			texSolidDepth2 = scsolid.GetDynamicMap();
+			break;
+			
+		default:
+			break;
+		}
+		
+		DebugTimer2SampleCount(plan, *pDebugInfoSolidShadow, 1, true);
+		
+	}else if(giState){
+		// gi state lighting changes FBO and other parameters
+		SetViewport(plan);
+		RestoreFBO(plan);
+	}
+	
+	// set parameters
+	const int pipmods = pPipelineModifiers(planLight, true, false);
+	const deoglLightPipeline *pipeline;
+	
+	if(useShadow){
+		if(texSolidDepth2){
+			pipeline = &light.GetPipelines().GetWithRef(deoglLightPipelines::etSolid2, pipmods);
+			
+		}else{
+			pipeline = &light.GetPipelines().GetWithRef(deoglLightPipelines::etSolid1, pipmods);
+		}
+		
+	}else{
+		pipeline = &light.GetPipelines().GetWithRef(deoglLightPipelines::etNoShadow, pipmods);
+	}
+	
+	sShadowDepthMaps shadowDepthMaps;
+	shadowDepthMaps.shadow1Solid = texSolidDepth1;
+	shadowDepthMaps.shadow2Solid = texSolidDepth2;
+	
+	deoglLightShader &lightShader = pipeline->GetShader();
+	if(planLight.GetFRSlot() != -1){
+		auto &spb = renderThread.GetRenderers().GetWorld().GetRenderPB();
+		deoglSPBMapBuffer mapped(spb);
+		mapped.SetDelayUpload(true);
+		deoglSPBAccessor accessorPb(spb);
+		auto accessorLight = accessorPb.GetStructAt(deoglSkinShader::erutFRLights, planLight.GetFRSlot());
+		
+		if(light.GetLightType() == deLight::eltProjector){
+			accessorLight.SetInt(deoglFRShadowManager::eflpType, (int)deoglLightShaderConfig::elmProjector);
+			
+		}else{
+			accessorLight.SetInt(deoglFRShadowManager::eflpType, (int)deoglLightShaderConfig::elmSpot);
+		}
+		accessorLight.SetInt(deoglFRShadowManager::eflpArrayIndex, shadowCaster.GetFRSpotLayer());
+		accessorLight.SetInt(deoglFRShadowManager::eflpPcfMode, (int)deoglLightShaderConfig::estmPcf9);
+		accessorLight.SetBVec2(deoglFRShadowManager::eflpHasTextureShadow, texSolidDepth1, texSolidDepth2);
+		
+		auto accessorLigParam = accessorLight.GetStructAt(deoglFRShadowManager::eflpLight);
+		UpdateLightParamBlock(lightShader, accessorLigParam, planLight);
+		
+		auto accessorInstParam = accessorLight.GetStructAt(deoglFRShadowManager::eflpInstance);
+		UpdateInstanceParamBlock(lightShader, accessorInstParam, plan,
+			cllight, shadowDepthMaps, shadowParams.matrixProjection);
+	}
+	
+	// GI rays
+	if(giState){
+		pipeline = nullptr;
+		if(useShadow){
+			if(texSolidDepth2){
+				pipeline = light.GetPipelines().GetWith(deoglLightPipelines::etGIRaySolid2, 0);
+				
+			}else{
+				pipeline = light.GetPipelines().GetWith(deoglLightPipelines::etGIRaySolid1, 0);
+			}
+			
+		}else{
+			pipeline = light.GetPipelines().GetWith(deoglLightPipelines::etGIRayNoShadow, 0);
+		}
+		
+		if(pipeline){
+			// set program parameters
+			deoglSPBlockUBO &spbInstance = light.GetInstanceParameterBlock();
+			deoglSPBlockUBO &spbLight = light.GetLightParameterBlock();
+			UpdateLightParamBlock(lightShader, spbLight, planLight);
+			UpdateInstanceParamBlock(lightShader, spbInstance, plan, cllight,
+				shadowDepthMaps, shadowParams.matrixProjection);
+			
+			// light rays
+			RestoreFBOGITraceRays(*giState);
+			
+			pipeline->GetPipeline()->Activate();
+			
+			// WARNING always non-stereo!
+			renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+			
+			spbLight.Activate();
+			spbInstance.Activate();
+			
+			ActivateTextures(planLight, pipeline->GetShader(), shadowDepthMaps);
+			
+			RenderFullScreenQuadVAO();
+		}
+	}
+}
 
 
 void deoglRenderLightSpot::ResetDebugInfo(){

@@ -270,3 +270,21 @@ deAnimatorRule::Ref aeRuleForeignState::CreateEngineRule(){
 aeRule::Ref aeRuleForeignState::CreateCopy() const{
 	return Ref::New(*this);
 }
+
+void aeRuleForeignState::CreateLinkCopies(){
+	aeRule::CreateLinkCopies();
+	mpTargetPosition.CreateLinkCopies();
+	mpTargetOrientation.CreateLinkCopies();
+	mpTargetSize.CreateLinkCopies();
+	mpTargetVertexPositionSet.CreateLinkCopies();
+}
+
+void aeRuleForeignState::EnsureValidLinks(const aeAnimator &animator,
+decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	aeRule::EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetPosition.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetOrientation.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetSize.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetVertexPositionSet.EnsureValidLinks(animator, addLinks, addControllers);
+}

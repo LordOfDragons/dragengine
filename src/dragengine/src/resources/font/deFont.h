@@ -42,8 +42,15 @@ class cFontSize;
 /**
  * \brief Font for use by text output.
  * 
- * Fonts are image based and can be colored or not colored in which case they can be
- * colorized. Colored fonts can not be colorized.
+ * Fonts are image based and can be colored or not colored in which case they can be colorized.
+ * Colored fonts can not be colorized.
+ * 
+ * \ref MSDF Support
+ * 
+ * Fonts can be stored in multi channel SDF format. To do so assign an image with depth 1 or
+ * higher, for color fonts. Then assign the colors for each layer of the SDF image. For non-color
+ * fonts it is not required to add white color as layer color as it is implicit if empty. If not
+ * enough colors are defined the last color is repeated. Eventually set SDF to true.
  */
 class DE_DLL_EXPORT deFont : public deFileResource{
 public:
@@ -54,10 +61,9 @@ public:
 private:
 	deFontGlyph pUndefinedGlyph;
 	decTList<deFontGlyph> pGlyphs;
-	decTList<unsigned short> pGlyphGroups;
-	decTList<unsigned short> pGlyphMap;
-	int pFontWidth, pLineHeight, pBaseLine;
-	bool pColorFont, pScalable;
+	decTList<unsigned short> pGlyphGroups, pGlyphMap;
+	int pFontWidth, pLineHeight, pBaseLine, pAvrCharWidth;
+	bool pColorFont, pScalable, pSdf;
 	
 	decString pImagePath;
 	deImage::Ref pImage;
@@ -108,6 +114,12 @@ public:
 	/** \brief Maximum width of all glyphs in pixels. */
 	inline int GetFontWidth() const{ return pFontWidth; }
 	
+	/** \brief Average character width in pixels. */
+	inline int GetAvgCharWidth() const{ return pAvrCharWidth; }
+	
+	/** \brief Set average character width in pixels. */
+	void SetAvgCharWidth(int averageCharacterWidth);
+	
 	/** \brief Font is scalable. */
 	inline bool GetScalable() const{ return pScalable; }
 	
@@ -120,6 +132,11 @@ public:
 	/** \brief Set base line position in pixels from top. */
 	void SetBaseLine(int baseLine);
 	
+	/** \brief Font is stored in multi channel SDF format. */
+	inline bool GetIsSdf() const{ return pSdf; }
+	
+	/** \brief Set if font is stored in multi channel SDF format. */
+	void SetIsSdf(bool sdf);
 	
 	/** \brief Undefined glyph. */
 	inline deFontGlyph &GetUndefinedGlyph(){ return pUndefinedGlyph; }
@@ -251,11 +268,13 @@ public:
 	deFontSize *EnsureSizePrepared(int lineHeight);
 	
 	
-	/** \brief Measure size of text. */
-	decPoint TextSize(const decUnicodeString &text, const deFontSize *size = nullptr) const;
+	/** \brief Measure size of text scaled to line height. */
+	decPoint TextSize(const decUnicodeString &text, const deFontSize &fontSize,
+		int lineHeight, float dilation = 0.0f) const;
 	
-	/** \brief Measure size of text. */
-	decPoint TextSize(const char *text, const deFontSize *size = nullptr) const;
+	/** \brief Measure size of text scaled to line height. */
+	decPoint TextSize(const char *text, const deFontSize &fontSize,
+		int lineHeight, float dilation = 0.0f) const;
 	/*@}*/
 	
 	

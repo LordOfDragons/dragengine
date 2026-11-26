@@ -28,6 +28,8 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "cache/deftCaches.h"
+
 #include <dragengine/systems/modules/font/deBaseFontModule.h>
 
 class deFontGlyph;
@@ -39,6 +41,9 @@ class deFontGlyph;
 class deftModule : public deBaseFontModule {
 private:
 	FT_Library pFTLib;
+	deftCaches::Ref pCaches;
+	bool pCreateSdfFont;
+	int pMaxImageSize, pLineHeightLimit, pGlyphSpacing;
 	
 	
 public:
@@ -57,8 +62,36 @@ public:
 	/** Freetype library. */
 	inline FT_Library GetFTLibrary() const{ return pFTLib; }
 	
+	/** Caches. */
+	inline const deftCaches::Ref &GetCaches() const{ return pCaches; }
+	
 	/** Assert Freetype call. */
 	void AssertFT(FT_Error error, const char *function);
+	
+	/** Create SDF fonts. */
+	inline bool GetCreateSdfFont() const { return pCreateSdfFont; }
+	
+	/** Set to create SDF fonts. */
+	void SetCreateSdfFont(bool createSdf);
+	
+	/** Maximum image size. */
+	inline int GetMaxImageSize() const { return pMaxImageSize; }
+	
+	/** Set maximum image size. */
+	void SetMaxImageSize(int maxImageSize);
+	
+	/** Line height limit. */
+	inline int GetLineHeightLimit() const { return pLineHeightLimit; }
+	
+	/** Set line height limit. */
+	void SetLineHeightLimit(int lineHeightLimit);
+	
+	/** Glyph spacing. */
+	inline int GetGlyphSpacing() const { return pGlyphSpacing; }
+
+	/** Set glyph spacing. */
+	void SetGlyphSpacing(int glyphSpacing);
+	
 	
 	/** Load font. */
 	void LoadFont(decBaseFileReader &reader, deFont &font) override;
@@ -83,6 +116,13 @@ public:
 	
 	/** Save font. */
 	void SaveFont(decBaseFileWriter &writer, const deFont &font) override;
+	
+	
+	/**
+	 * \brief Drop all resource references held, for example in caches.
+	 * \version 1.35
+	 */
+	void DropResourceReferences() override;
 	/*@}*/
 };
 

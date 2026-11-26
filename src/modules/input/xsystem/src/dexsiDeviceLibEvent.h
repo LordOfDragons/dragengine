@@ -46,6 +46,7 @@ private:
 	decTList<short> pEvdevMapRelAxis;
 	decTList<short> pEvdevMapAbsAxis;
 	decTList<short> pEvdevMapKeys;
+	bool pHasUniqueId;
 	
 	
 	
@@ -71,6 +72,8 @@ public:
 	/** \brief Libevdev device or \em NULL if not using libevdev. */
 	inline libevdev *GetEvdevDevice() const{ return pEvdevDevice; }
 	
+	/** \brief Libevdev provided a unique identifier for the device. */
+	inline bool HasUniqueId() const{ return pHasUniqueId; }
 	
 	
 	/** \brief Update device state. */

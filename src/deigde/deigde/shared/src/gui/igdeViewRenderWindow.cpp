@@ -75,6 +75,13 @@ decPoint igdeViewRenderWindow::GetRenderAreaSize() const{
 	return pNativeViewRenderWindow ? pNativeViewRenderWindow->GetSize() : decPoint();
 }
 
+const igdeInfoBubbleToast::Ref &igdeViewRenderWindow::GetToastBubble(){
+	if(!pToastBubble){
+		pToastBubble = igdeInfoBubbleToast::Ref::New(*this);
+	}
+	return pToastBubble;
+}
+
 
 void igdeViewRenderWindow::ClearErrorRenderWindow(){
 	// TODO
@@ -135,6 +142,16 @@ void igdeViewRenderWindow::RemoveCanvas(deCanvas *canvas){
 	if(canvasView){
 		canvasView->RemoveCanvas(canvas);
 	}
+}
+
+float igdeViewRenderWindow::GetHighestCanvasOrder() const{
+	float order = 0.0f;
+	if(pRenderWindow && pRenderWindow->GetCanvasView()){
+		pRenderWindow->GetCanvasView()->GetCanvas().Visit([&](const deCanvas *canvas){
+			order = decMath::max(order, canvas->GetOrder());
+		});
+	}
+	return order;
 }
 
 deCanvasView *igdeViewRenderWindow::GetRenderWindowCanvas() const{

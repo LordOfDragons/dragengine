@@ -2,7 +2,7 @@
 	vec2 tcnoise = gl_FragCoord.xy / vec2(32.0);
 	float shadow;
 	
-	if(PcfMode == PcfModeVarTap){
+	if(pcfMode == PcfModeVarTap){
 		vec2 shascale = params.xy * vec2(clamp(position.p * 5.0, 0.5, 5.0));
 		
 		// problem is that position.q is perspective in the shadow map. for the var-tap though
@@ -27,19 +27,19 @@
 		
 		shadow /= vtweight;
 		
-	}else if(PcfMode == PcfMode9Tap){
+	}else if(pcfMode == PcfMode9Tap){
 		shadow = SSM(texsm, position, tcnoise, params.zz);
 		
-	}else if(PcfMode == PcfMode4Tap){
+	}else if(pcfMode == PcfMode4Tap){
 		shadow = 0.0;
 		
-	}else{ // PcfMode == PcfMode1Tap
+	}else{ // pcfMode == PcfMode1Tap
 		shadow = SSM(texsm, position, tcnoise, params.zz);
 	}
 	
 	vec4 tcoffset;
-	if(PcfMode == PcfMode4Tap || PcfMode == PcfMode9Tap){
-		if(PcfMode == PcfMode4Tap){
+	if(pcfMode == PcfMode4Tap || pcfMode == PcfMode9Tap){
+		if(pcfMode == PcfMode4Tap){
 			tcoffset = params.xyxy * pcf4TapTCScale; // (u/2,v/2) (u/2,-v/2) (-u/2,v/2) (-u/2,-v/2)
 			
 		}else{
@@ -52,7 +52,7 @@
 		shadow += SSM2(texsm, position, tcoffset.zw, tcnoise, ivec2(-1,-1), params.zz);
 	}
 	
-	if(PcfMode == PcfMode9Tap){
+	if(pcfMode == PcfMode9Tap){
 		tcoffset = params.xyxy * pcf9TapTCScale2; // (u, 0) (-u, 0) (0, v) (0, -v)
 		
 		shadow += SSM2(texsm, position,  tcoffset.xw, tcnoise, ivec2(1,0), params.zz);
@@ -61,10 +61,10 @@
 		shadow += SSM2(texsm, position, -tcoffset.zy, tcnoise, ivec2(0,-1), params.zz);
 	}
 	
-	if(PcfMode == PcfMode4Tap){
+	if(pcfMode == PcfMode4Tap){
 		shadow *= pcf4TapWeight;
 		
-	}else if(PcfMode == PcfMode9Tap){
+	}else if(pcfMode == PcfMode9Tap){
 		shadow *= pcf9TapWeight;
 	}
 	

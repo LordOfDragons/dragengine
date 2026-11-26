@@ -104,7 +104,7 @@
 	-->
 	
 	<designer name='Label.MMPanelModInfo.HeaderTitle' extendNamed='Label'>
-		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='0.1' g='0.1' b='0.1'/>
 		<string parameter='normal.alignment'>left,middle</string>
 	</designer>
@@ -167,7 +167,7 @@
 				<color parameter='colorHighlight' r='0.9' g='0.9' b='0.9'/>
 				<color parameter='colorShadow' r='0.7' g='0.7' b='0.7'/>
 				<color parameter='textColor' r='0.25' g='0.25' b='0.25'/>
-				<font parameter='font' size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+				<font parameter='font' size='15'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 			</border>
 		</border>
 		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
@@ -225,7 +225,7 @@
 	
 	<designer name='StyledTextStyle.MMPanelModInfo.Description.Header1'
 			extendNamed='StyledTextStyle.MMPanelModInfo.Description.Base'>
-		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<borderSize parameter='normal.padding' left='0' top='15' right='0' bottom='0'/>
 	</designer>
@@ -289,7 +289,7 @@
 	
 	<designer name='Label.ListRenderer.MMModificationListRenderer.Name'
 			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
-		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='0.2' g='0.1' b='1'/>
 	</designer>
 	
@@ -422,7 +422,7 @@
 	
 	<designer name='Label.ListRenderer.MMTransferListRenderer.Name'
 			extendNamed='Label.ListRenderer.MMTransferListRenderer'>
-		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='0.2' g='0.1' b='1'/>
 		<borderSize parameter='normal.padding' bottom='5'/>
 	</designer>
@@ -512,7 +512,7 @@
 				<color parameter='colorHighlight' r='0.9' g='0.9' b='0.9'/>
 				<color parameter='colorShadow' r='0.7' g='0.7' b='0.7'/>
 				<color parameter='textColor' r='0.25' g='0.25' b='0.25'/>
-				<font parameter='font' size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+				<font parameter='font' size='15'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 			</border>
 		</border>
 		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
@@ -546,14 +546,14 @@
 	</designer>
 	
 	<designer name='Label.MMPanelModUserAccount.Name' extendNamed='Label'>
-		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<string parameter='normal.alignment'>center,middle</string>
 		<borderSize parameter='normal.padding' top='10'/>
 	</designer>
 	
 	<designer name='Label.MMPanelModUserAccount.ProfileUrl' extendNamed='Label'>
-		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='0' g='0' b='0.75'/>
 		<mousePointer parameter='normal.mousePointer' type='Image'>
 			<image parameter='image'>/shareddata/guithemes/modern/mousepointer/hover_link.webp</image>
@@ -574,7 +574,7 @@
 	</designer>
 	
 	<designer name='Label.MMPanelModUserAccount.WalletBalanceAmount' extendNamed='Label'>
-		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 		<string parameter='normal.alignment'>center,middle</string>
 		<borderSize parameter='normal.padding' left='10'/>
 	</designer>
@@ -584,7 +584,7 @@
 	</designer>
 	
 	<designer name='Label.ModManagementUserAccount.SelectAuthProvider' extendNamed='Label'>
-		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<string parameter='normal.alignment'>center,top</string>
 		<borderSize parameter='normal.padding' bottom='10'/>
@@ -625,7 +625,7 @@
 	</designer>
 	
 	<designer name='Label.ListRenderer.MMAuthProviderListRenderer' extendNamed='Label'>
-		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<borderSize parameter='normal.padding' left='20'/>
 		<string parameter='normal.alignment'>left,middle</string>
@@ -650,7 +650,7 @@
 	-->
 	
 	<designer name='Label.WindowDialog.UserAcceptTos.Link' extendNamed='Label'>
-		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='0' g='0' b='0.75'/>
 		<mousePointer parameter='normal.mousePointer' type='Image'>
 			<image parameter='image'>/shareddata/guithemes/modern/mousepointer/hover_link.webp</image>

@@ -214,3 +214,17 @@ deAnimatorRule::Ref aeRuleAnimationDifference::CreateEngineRule(){
 aeRule::Ref aeRuleAnimationDifference::CreateCopy() const{
 	return Ref::New(*this);
 }
+
+void aeRuleAnimationDifference::CreateLinkCopies(){
+	aeRule::CreateLinkCopies();
+	mpTargetLeadingMoveTime.CreateLinkCopies();
+	mpTargetReferenceMoveTime.CreateLinkCopies();
+}
+
+void aeRuleAnimationDifference::EnsureValidLinks(const aeAnimator &animator,
+decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	aeRule::EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetLeadingMoveTime.EnsureValidLinks(animator, addLinks, addControllers);
+	mpTargetReferenceMoveTime.EnsureValidLinks(animator, addLinks, addControllers);
+}

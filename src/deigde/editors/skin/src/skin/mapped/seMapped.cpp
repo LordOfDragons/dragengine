@@ -51,6 +51,7 @@ pSelected(false),
 pActive(false)
 {
 	DEASSERT_FALSE(pName.IsEmpty())
+	pCurve.SetDefaultLinear();
 }
 
 seMapped::seMapped(const seMapped &mapped) :

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRCanvasView.h"
 #include "../../rendering/deoglRenderCanvas.h"
 #include "../../rendering/deoglRenderCanvasContext.h"

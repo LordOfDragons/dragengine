@@ -55,6 +55,9 @@ void deBasePhysicsParticleEmitterInstance::OrientationChanged(){
 void deBasePhysicsParticleEmitterInstance::EnableCastingChanged(){
 }
 
+void deBasePhysicsParticleEmitterInstance::RemoveAfterLastParticleDiedChanged(){
+}
+
 void deBasePhysicsParticleEmitterInstance::WarmUpTimeChanged(){
 }
 

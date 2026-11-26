@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-
 #include "seWPNode.h"
 #include "seWPNodeListener.h"
 #include "seWindowProperties.h"
@@ -57,6 +52,9 @@
 #include "../../undosys/property/node/shape/seUPropertyNodeShapeSetThickness.h"
 #include "../../undosys/property/node/shape/seUPropertyNodeShapeSetType.h"
 #include "../../undosys/property/node/text/seUPropertyNodeTextSetColor.h"
+#include "../../undosys/property/node/text/seUPropertyNodeTextSetBorderColor.h"
+#include "../../undosys/property/node/text/seUPropertyNodeTextSetBorderThickness.h"
+#include "../../undosys/property/node/text/seUPropertyNodeTextSetDilation.h"
 #include "../../undosys/property/node/text/seUPropertyNodeTextSetPath.h"
 #include "../../undosys/property/node/text/seUPropertyNodeTextSetSize.h"
 #include "../../undosys/property/node/text/seUPropertyNodeTextSetText.h"
@@ -671,7 +669,7 @@ public:
 
 class cTextText : public igdeTextFieldListener{
 	seWPNode &pPanel;
-	igdeUndo::Ref pUndo;
+	seUPropertyNodeTextSetText::Ref pUndo;
 public:
 	typedef deTObjectReference<cTextText> Ref;
 	cTextText(seWPNode &panel) : pPanel(panel){}
@@ -684,7 +682,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		if(GetNodeText()){
 			UpdateChanged(textField->GetText(), GetNodeText());
-			pUndo = nullptr;
+			pUndo.Clear();
 		}
 	}
 	
@@ -700,7 +698,7 @@ public:
 		}
 		
 		if(pUndo){
-			pUndo.DynamicCast<seUPropertyNodeTextSetText>()->SetNewValue(text);
+			pUndo->SetNewValue(text);
 			pUndo->Redo();
 			
 		}else{
@@ -723,6 +721,70 @@ public:
 	}
 };
 
+class cColorTextBorder : public cBaseColorBoxListener{
+public:
+	typedef deTObjectReference<cColorTextBorder> Ref;
+	cColorTextBorder(seWPNode &panel) : cBaseColorBoxListener(panel){}
+	
+	virtual igdeUndo::Ref OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
+	seProperty*, sePropertyNode *node){
+		return node->GetNodeType() == sePropertyNode::entText
+			&& !((sePropertyNodeText*)node)->GetBorderColor().IsEqualTo(colorBox.GetColor())
+			? seUPropertyNodeTextSetBorderColor::Ref::New((sePropertyNodeText*)node, colorBox.GetColor()) : igdeUndo::Ref();
+	}
+};
+
+class cEditTextBorderThickness : public igdeTextFieldListener{
+	seWPNode &pPanel;
+public:
+	typedef deTObjectReference<cEditTextBorderThickness> Ref;
+	cEditTextBorderThickness(seWPNode &panel) : pPanel(panel){}
+	
+	sePropertyNodeText *GetNodeText() const{
+		return pPanel.GetNode() && pPanel.GetNode()->GetNodeType() == sePropertyNode::entText
+			? (sePropertyNodeText*)pPanel.GetNode() : nullptr;
+	}
+	
+	virtual void OnTextChanged(igdeTextField *textField){
+		if(!GetNodeText()){
+			return;
+		}
+		
+		const float value = textField->GetText().ToFloat();
+		if(fabsf(GetNodeText()->GetBorderThickness() - value) < FLOAT_SAFE_EPSILON){
+			return;
+		}
+		
+		pPanel.GetSkin()->GetUndoSystem()->Add(
+			seUPropertyNodeTextSetBorderThickness::Ref::New(GetNodeText(), value));
+	}
+};
+
+class cEditTextDilation : public igdeTextFieldListener{
+	seWPNode &pPanel;
+public:
+	typedef deTObjectReference<cEditTextDilation> Ref;
+	cEditTextDilation(seWPNode &panel) : pPanel(panel){}
+	
+	sePropertyNodeText *GetNodeText() const{
+		return pPanel.GetNode() && pPanel.GetNode()->GetNodeType() == sePropertyNode::entText
+			? (sePropertyNodeText*)pPanel.GetNode() : nullptr;
+	}
+	
+	virtual void OnTextChanged(igdeTextField *textField){
+		if(!GetNodeText()){
+			return;
+		}
+		
+		const float value = textField->GetText().ToFloat();
+		if(fabsf(GetNodeText()->GetDilation() - value) < FLOAT_SAFE_EPSILON){
+			return;
+		}
+		
+		pPanel.GetSkin()->GetUndoSystem()->Add(
+			seUPropertyNodeTextSetDilation::Ref::New(GetNodeText(), value));
+	}
+};
 
 
 class cComboMappedType : public igdeComboBoxListener{
@@ -868,6 +930,7 @@ pPreventUpdate(false)
 	helper.ComboBox(groupBox, "@Skin.WPNode.ShapeType", "@Skin.WPNode.ShapeType.ToolTip", pShapeCBType, cComboShapeType::Ref::New(*this));
 	pShapeCBType->AddItem("@Skin.WPNode.ShapeType.Rectangle", nullptr, (void*)(intptr_t)deSkinPropertyNodeShape::estRectangle);
 	pShapeCBType->AddItem("@Skin.WPNode.ShapeType.Ellipse", nullptr, (void*)(intptr_t)deSkinPropertyNodeShape::estEllipse);
+	pShapeCBType->SetAutoTranslateItems(true);
 	
 	helper.ColorBox(groupBox, "@Skin.WPNode.LineColor", "@Skin.WPNode.LineColor.ToolTip", pShapeClrLine, cColorShapeLineColor::Ref::New(*this));
 	helper.ColorBox(groupBox, "@Skin.WPNode.FillColor", "@Skin.WPNode.FillColor.ToolTip", pShapeClrFill, cColorShapeFillColor::Ref::New(*this));
@@ -889,6 +952,11 @@ pPreventUpdate(false)
 		pTextEditFontSize, cTextFontSize::Ref::New(*this));
 	helper.EditString(groupBox, "@Skin.WPNode.Text", "@Skin.WPNode.Text.ToolTip", pTextEditText, cTextText::Ref::New(*this));
 	helper.ColorBox(groupBox, "@Skin.WPNode.TextColor", "@Skin.WPNode.TextColor.ToolTip", pTextClrColor, cColorText::Ref::New(*this));
+	helper.ColorBox(groupBox, "@Skin.WPNode.BorderColor", "@Skin.WPNode.BorderColor.ToolTip", pTextClrBorder, cColorTextBorder::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPNode.BorderThickness", "@Skin.WPNode.BorderThickness.ToolTip",
+		pTextEditBorderThickness, cEditTextBorderThickness::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPNode.Dilation", "@Skin.WPNode.Dilation.ToolTip",
+		pTextEditDilation, cEditTextDilation::Ref::New(*this));
 	
 	
 	// group node
@@ -1110,6 +1178,9 @@ void seWPNode::UpdateNode(){
 			
 			pTextEditText->SetText(nodeText.GetText());
 			pTextClrColor->SetColor(nodeText.GetColor());
+			pTextClrBorder->SetColor(nodeText.GetBorderColor());
+			pTextEditBorderThickness->SetFloat(nodeText.GetBorderThickness());
+			pTextEditDilation->SetFloat(nodeText.GetDilation());
 			}break;
 			
 		default:
@@ -1254,6 +1325,10 @@ void seWPNode::UpdateMappedTypeList(){
 		pCBMappedType->AddItem("@Skin.WPNode.MappedType.ColorRed", nullptr, (void*)(intptr_t)sePropertyNodeText::etmColorRed);
 		pCBMappedType->AddItem("@Skin.WPNode.MappedType.ColorGreen", nullptr, (void*)(intptr_t)sePropertyNodeText::etmColorGreen);
 		pCBMappedType->AddItem("@Skin.WPNode.MappedType.ColorBlue", nullptr, (void*)(intptr_t)sePropertyNodeText::etmColorBlue);
+		break;
+		
+	case sePropertyNode::entImage:
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.Image", nullptr, (void*)(intptr_t)sePropertyNode::emImage);
 		break;
 		
 	default:

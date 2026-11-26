@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
-
 pin Dragengine.Gui
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.Scenery
-
 
 /**
  * \brief Behavior element behavior adding anchor element support.
@@ -37,7 +34,7 @@ pin Dragengine.Scenery
  * Anchoring elements allows to locate elements in a GameWorld using a unique name set by the
  * mapper. This is useful for game commands send by conversations scripts.
  * 
- * Element class property has name "anchorID".
+ * Element class property has name "anchorID" and "anchorGroupID".
  * 
  * This element behavior can be present only once in a BehaviorElement. Trying to add more
  * than one instance results in an exception thrown.
@@ -67,16 +64,19 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorAnchorElement.new(eclass, parameters.getAt("propertyName", "anchorID") cast String)
+			
+			var ECBehaviorAnchorElement behavior = ECBehaviorAnchorElement.new(eclass,\
+				parameters.getAt("propertyName", "anchorID") cast String,\
+				parameters.getAt("groupPropertyName", "anchorGroupID") cast String)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "")
+			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		var ECBehaviorAnchorElement pECBehavior
-		var StringID pAnchorID
-		var bool pAnchorAdded
-		
+		var StringID pAnchorID, pGroupID
 		
 		
 		/** \brief Create element. */
@@ -85,12 +85,11 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 		end
 		
 		
-		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
 			pAnchorID = pECBehavior.getAnchorID().getValue(stub)
+			pGroupID = pECBehavior.getGroupID().getValue(stub)
 		end
-		
 		
 		
 		/** \brief Behavior. */
@@ -103,51 +102,66 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 			return pAnchorID
 		end
 		
+		/**
+		 * \brief Anchor group ID or null to not anchor.
+		 * \version 1.35
+		 */
+		func StringID getGroupID()
+			return pGroupID
+		end
 		
 		
 		/** \brief Add element to game world. */
 		func void addToGameWorld()
-			// pAnchorAdded is used to avoid exceptions thrown in removeFromGameWorld
-			// in case adding the anchor here throws an exception (duplicate ID).
-			// this avoids disposing of a game world after an exception ending up in
-			// another exception causing huge leak reports that are useless
-			if pAnchorID != null and not pAnchorAdded
-				var BehaviorElement element = getElement()
-				element.getGameWorld().getAnchoredElementList().add(pAnchorID, element)
-				pAnchorAdded = true
+			if pAnchorID != null
+				var BehaviorElement el = getElement()
+				el.getGameWorld().getBehaviorAnchoredElements().getElements().add(pAnchorID, el)
+			end
+			if pGroupID != null
+				var BehaviorElement el = getElement()
+				el.getGameWorld().getBehaviorAnchoredElements().addGroupElement(pGroupID, el)
 			end
 		end
 		
 		/** \brief Remove element from game world. */
 		func void removeFromGameWorld()
-			if pAnchorAdded
-				getElement().getGameWorld().getAnchoredElementList().remove(pAnchorID)
-				pAnchorAdded = false
+			if pGroupID != null
+				var BehaviorElement el = getElement()
+				el.getGameWorld().getBehaviorAnchoredElements().removeGroupElement(pGroupID, el)
+			end
+			if pAnchorID != null
+				var BehaviorElement el = getElement()
+				el.getGameWorld().getBehaviorAnchoredElements().getElements().removeIfPresent(pAnchorID)
 			end
 		end
 	end
 	
 	
-	
-	var ECPStringID pAnchorID
-	
+	var ECPStringID pAnchorID, pGroupID
 	
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass) this(eclass, "anchorID")
 	end
 	
-	func new(BehaviorElementClass eclass, String propertyName) super(eclass)
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, String propertyName) this(eclass, propertyName, "anchorGroupID")
+	end
+	
+	/**
+	 * \brief Create behavior element class.
+	 * \version 1.35
+	 */
+	func new(BehaviorElementClass eclass, String propertyName, String groupPropertyName) super(eclass)
 		if getBehaviorIn(eclass) != null
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		pAnchorID = ECPStringID.new(propertyName)
-		eclass.addProperty(pAnchorID)
+		eclass.addProperty(pAnchorID = ECPStringID.new(propertyName))
+		eclass.addProperty(pGroupID = ECPStringID.new(groupPropertyName))
 		
 		eclass.addBehavior(this)
 	end
-	
 	
 	
 	/** \brief Anchor name or empty string to not anchor. */
@@ -155,13 +169,19 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 		return pAnchorID
 	end
 	
+	/**
+	 * \brief Anchor group ID or empty string to not anchor.
+	 * \version 1.35
+	 */
+	func ECPStringID getGroupID()
+		return pGroupID
+	end
 	
 	
 	/** \brief Get instance in element from owner element class. */
 	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
-	
 	
 	
 	/**
@@ -188,7 +208,6 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 			return true
 		end) cast Instance
 	end
-	
 	
 	
 	/** \brief Create Behavior instance. */

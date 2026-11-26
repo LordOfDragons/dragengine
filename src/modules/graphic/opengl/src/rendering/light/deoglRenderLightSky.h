@@ -35,6 +35,7 @@ class deoglRenderPlan;
 class deoglRLight;
 class deoglRSkyLayer;
 class deoglSPBlockUBO;
+class deoglSPBAccessor;
 class deoglShadowMapper;
 class deoglRSkyInstanceLayer;
 class deoglRenderPlanSkyLight;
@@ -92,6 +93,9 @@ public:
 	/** Occlusion mesh shader. */
 	inline const deoglPipeline *GetPipelineOccMesh() const{ return pPipelineOccMesh; }
 	
+	/** Solid shadow map. */
+	inline deoglRenderableDepthArrayTexture *GetSolidShadowMap() const{ return pSolidShadowMap; }
+	
 	/** Render lights. */
 	void RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray);
 	
@@ -123,9 +127,21 @@ public:
 	void UpdateLightParamBlock(const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanSkyLight &plan);
 	
+	void UpdateLightParamBlock(const deoglLightShader &lightShader, deoglSPBAccessor &acessor,
+		deoglRenderPlanSkyLight &plan);
+	
 	/** Updates instance shader parameter block. */
 	void UpdateInstanceParamBlock(const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount);
+	
+	void UpdateInstanceParamBlock(const deoglLightShader &lightShader, deoglSPBAccessor &accessor,
+		deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount);
+	
+	/** Forward rendering. */
+	void RenderForward(deoglRenderPlan &plan);
+	
+	/** Forward rendering. */
+	void RenderForward(deoglRenderPlanSkyLight &plan);
 	
 	
 	

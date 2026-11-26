@@ -94,11 +94,12 @@ void ceTextBoxText::Layout(const ceTextBox &textBox){
 	const int offset = igdeApplication::app().DisplayScaled(textBox.GetTextOffset());
 	
 	const int fontSize = igdeApplication::app().DisplayScaled(textBox.GetTextSize());
+	const int dilate = (int)ceilf(textBox.GetBorderThickness() * (float)fontSize * 2.0f);
 	const int top = 0;
 	const int left = padding;
 	const int right = parentSize.x - padding;
 	
-	pCanvasView->SetSize(decPoint(parentSize.x, fontSize));
+	pCanvasView->SetSize(decPoint(parentSize.x + dilate, fontSize + dilate));
 	
 	try{
 		// create name canvas
@@ -106,10 +107,12 @@ void ceTextBoxText::Layout(const ceTextBox &textBox){
 		canvasText->SetColor(textBox.GetTextColor());
 		canvasText->SetFont(font);
 		canvasText->SetFontSize((float)fontSize);
+		canvasText->SetBorderColor(textBox.GetBorderColor());
+		canvasText->SetBorderThickness(textBox.GetBorderThickness());
 		canvasText->SetText(name);
 		canvasText->SetOrder(0.0f);
 		canvasText->SetPosition(decPoint(left, top));
-		canvasText->SetSize(decPoint(offset, fontSize));
+		canvasText->SetSize(decPoint(offset + dilate, fontSize + dilate));
 		pCanvasView->AddCanvas(canvasText);
 		canvasText = nullptr;
 		
@@ -118,10 +121,12 @@ void ceTextBoxText::Layout(const ceTextBox &textBox){
 		canvasText->SetColor(textBox.GetTextColor());
 		canvasText->SetFont(font);
 		canvasText->SetFontSize((float)fontSize);
+		canvasText->SetBorderColor(textBox.GetBorderColor());
+		canvasText->SetBorderThickness(textBox.GetBorderThickness());
 		canvasText->SetText(text);
 		canvasText->SetOrder(1.0f);
 		canvasText->SetPosition(decPoint(left + offset, top));
-		canvasText->SetSize(decPoint(right - offset - left, fontSize));
+		canvasText->SetSize(decPoint(right - (offset + dilate) - left, fontSize + dilate));
 		pCanvasView->AddCanvas(canvasText);
 		canvasText = nullptr;
 		

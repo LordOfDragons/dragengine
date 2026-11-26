@@ -401,7 +401,8 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 		ccollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
 		ccollider.getLocalGravity().setVector(Vector.new())
 		
-		ccollider.collisionCategoryReplace(LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic))
+		ccollider.getCollisionFilterProperty().collisionCategorySet(\
+			LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic))
 		
 		// ensure component is dynamic if present
 		if collider.getComponent() != null

@@ -1417,6 +1417,7 @@ const decPoint &viewport, const decPoint &position, decPoint &size){
 	
 	// textures 2d
 	const deoglMemoryConsumptionTexture &consumptionTexture2D = consumption.texture2D;
+	{
 	const int textureCount = consumptionTexture2D.all.GetCount();
 	const int textureColorCount = consumptionTexture2D.color.GetCount();
 	const int textureDepthCount = consumptionTexture2D.depth.GetCount();
@@ -1467,9 +1468,11 @@ const decPoint &viewport, const decPoint &position, decPoint &size){
 	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
+	}
 	
 	// textures array
 	const deoglMemoryConsumptionTexture &consumptionTextureArray = consumption.textureArray;
+	{
 	const int textureArrayCount = consumptionTextureArray.all.GetCount();
 	const int textureArrayColorCount = consumptionTextureArray.color.GetCount();
 	const int textureArrayDepthCount = consumptionTextureArray.depth.GetCount();
@@ -1518,9 +1521,11 @@ const decPoint &viewport, const decPoint &position, decPoint &size){
 	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
+	}
 	
 	// cube maps
 	const deoglMemoryConsumptionTexture &consumptionTextureCube = consumption.textureCube;
+	{
 	const int cubemapCount = consumptionTextureCube.all.GetCount();
 	const int cubemapColorCount = consumptionTextureCube.color.GetCount();
 	const int cubemapDepthCount = consumptionTextureCube.depth.GetCount();
@@ -1569,9 +1574,64 @@ const decPoint &viewport, const decPoint &position, decPoint &size){
 	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
+	}
+	
+	// cubemap textures array
+	const deoglMemoryConsumptionTexture &consumptionTextureArrayCube = consumption.textureArrayCube;
+	{
+	const int textureArrayCubeCount = consumptionTextureArrayCube.all.GetCount();
+	const int textureArrayCubeColorCount = consumptionTextureArrayCube.color.GetCount();
+	const int textureArrayCubeDepthCount = consumptionTextureArrayCube.depth.GetCount();
+	unsigned long long textureArrayCubeGPU = consumptionTextureArrayCube.all.GetConsumption();
+	unsigned long long textureArrayCubeGPUCompressed = consumptionTextureArrayCube.allCompressed.GetConsumption();
+	unsigned long long textureArrayCubeGPUUncompressed = consumptionTextureArrayCube.allUncompressed.GetConsumption();
+	unsigned long long textureArrayCubeColorGPU = consumptionTextureArrayCube.color.GetConsumption();
+	unsigned long long textureArrayCubeColorGPUCompressed = consumptionTextureArrayCube.colorCompressed.GetConsumption();
+	unsigned long long textureArrayCubeColorGPUUncompressed = consumptionTextureArrayCube.colorUncompressed.GetConsumption();
+	unsigned long long textureArrayCubeDepthGPU = consumptionTextureArrayCube.depth.GetConsumption();
+	//unsigned long long textureArrayCubeDepthGPUCompressed = consumptionTextureArrayCube.depthCompressed.GetConsumption();
+	//unsigned long long textureArrayCubeDepthGPUUncompressed = consumptionTextureArrayCube.depthUncompressed.GetConsumption();
+	double textureArrayCubeRatioCompressed = 0.0;
+	double textureArrayCubeColorRatioCompressed = 0.0;
+	//double textureArrayDepthRatioCompressed = 0.0;
+	
+	if(textureArrayCubeGPU > 0){
+		textureArrayCubeRatioCompressed = 100.0 * ((double)textureArrayCubeGPUCompressed / (double)textureArrayCubeGPU);
+		if(textureArrayCubeRatioCompressed > 99){
+			textureArrayCubeRatioCompressed = 99; // just so we can use at most 2 digits
+		}
+	}
+	if(textureArrayCubeColorGPU > 0){
+		textureArrayCubeColorRatioCompressed = 100.0 * ((double)textureArrayCubeColorGPUCompressed / (double)textureArrayCubeColorGPU);
+		if(textureArrayCubeColorRatioCompressed > 99){
+			textureArrayCubeColorRatioCompressed = 99; // just so we can use at most 2 digits
+		}
+	}
+	//if( textureArrayDepthGPU > 0 ){
+	//	textureArrayDepthRatioCompressed = 100.0 * ( ( double )textureArrayDepthGPUCompressed / ( double )textureArrayDepthGPU );
+	//}
+	
+	textureArrayCubeGPU /= 1000000ull;
+	textureArrayCubeGPUCompressed /= 1000000ull;
+	textureArrayCubeGPUUncompressed /= 1000000ull;
+	textureArrayCubeColorGPU /= 1000000ull;
+	textureArrayCubeColorGPUCompressed /= 1000000ull;
+	textureArrayCubeColorGPUUncompressed /= 1000000ull;
+	textureArrayCubeDepthGPU /= 1000000ull;
+	//textureArrayCubeDepthGPUCompressed /= 1000000ull;
+	//textureArrayCubeDepthGPUUncompressed /= 1000000ull;
+	
+	text.Format(fmtTexArr, textureArrayCubeCount, textureArrayCubeGPU, textureArrayCubeGPUCompressed, (int)textureArrayCubeRatioCompressed,
+		textureArrayCubeGPUUncompressed, textureArrayCubeColorCount, textureArrayCubeColorGPU, textureArrayCubeColorGPUCompressed,
+		(int)textureArrayCubeColorRatioCompressed, textureArrayCubeColorGPUUncompressed, textureArrayCubeDepthCount, textureArrayCubeDepthGPU);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
+	size.y += fontHeight;
+	y += fontHeight;
+	}
 	
 	// skin memory consumption
 	const deoglMemoryConsumptionSkin &consumptionSkin = consumption.skin;
+	{
 	const int skinCount = consumptionSkin.all.GetCount();
 	unsigned long long skinGPU = consumptionSkin.all.GetConsumption();
 	unsigned long long skinGPUCompressed = consumptionSkin.allCompressed.GetConsumption();
@@ -1593,8 +1653,10 @@ const decPoint &viewport, const decPoint &position, decPoint &size){
 	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
+	}
 	
 	// renderable memory consumption
+	{
 	const int renderable2DColorCount = renderThread.GetTexture().GetRenderableColorTexture().GetTextureCount();
 	const int renderable2DDepthCount = renderThread.GetTexture().GetRenderableDepthTexture().GetTextureCount();
 	const int renderableArrayColorCount = renderThread.GetTexture().GetRenderableColorArrayTexture().GetCount();
@@ -1615,9 +1677,11 @@ const decPoint &viewport, const decPoint &position, decPoint &size){
 	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
+	}
 	
 	// vbo
 	const deoglMemoryConsumptionBufferObject &consumptionBO = consumption.bufferObject;
+	{
 	const int vboCount = consumptionBO.vbo.GetCount();
 	const int vboSharedCount = consumptionBO.vboShared.GetCount();
 	const int iboCount = consumptionBO.ibo.GetCount();
@@ -1634,8 +1698,10 @@ const decPoint &viewport, const decPoint &position, decPoint &size){
 	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
+	}
 	
 	// deferred rendering system
+	{
 	const deoglMemoryConsumptionDeferredRendering &consumptionDefren = consumption.deferredRendering;
 	unsigned int defrenGPU = consumptionDefren.target.GetConsumptionMB();
 	unsigned int defrenGPUTexture = consumptionDefren.texture.GetConsumptionMB();
@@ -1644,6 +1710,7 @@ const decPoint &viewport, const decPoint &position, decPoint &size){
 	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
+	}
 	
 	// grand total of all above
 	unsigned long long totalGPU;
@@ -1651,6 +1718,7 @@ const decPoint &viewport, const decPoint &position, decPoint &size){
 	totalGPU = consumptionTexture2D.all.GetConsumption();
 	totalGPU += consumptionTextureArray.all.GetConsumption();
 	totalGPU += consumptionTextureCube.all.GetConsumption();
+	totalGPU += consumptionTextureArrayCube.all.GetConsumption();
 	totalGPU += consumptionBO.vbo.GetConsumption();
 	totalGPU += consumptionBO.ibo.GetConsumption();
 	totalGPU += consumptionBO.ubo.GetConsumption();

@@ -495,6 +495,16 @@ void deoglSCBuildConstructed::VisitText(deSkinPropertyNodeText &node){
 	const int len = utf8Decoder.GetLength();
 	const float fontScale = textSize / (float)lineHeight;
 	
+	const bool isSdf = size && font->GetIsSdf();
+	const float sdfPixelRange = isSdf ? size->GetSdfPixelRange() : 1.0f;
+	const decVector2 sdfDistanceRange = isSdf ? size->GetSdfDistanceRange() : decVector2(0.0f, 1.0f);
+	const decVector2 sdfDistanceRemap(sdfDistanceRange.y - sdfDistanceRange.x, sdfDistanceRange.x);
+	const float sdfScaleFactor = (float)lineHeight / sdfPixelRange;
+	const float sdfDilation = decMath::min(node.GetDilation() * sdfScaleFactor, 0.48f);
+	const float sdfBorderSize = node.GetBorderThickness() * sdfScaleFactor;
+	const float sdfEnlarge = textSize * decMath::max(0.0f, node.GetDilation() + node.GetBorderThickness());
+	const decColor sdfFillColor(font->GetIsColorFont() ? decColor(1.0f, 1.0f, 1.0f) : node.GetColor());
+	
 	// image parameters required for painting
 	const decTexMatrix2 transformInverse(context.transformInverse);
 	const decVector2 tcScale((float)lineHeight / textSize, (float)lineHeight / textSize);
@@ -504,7 +514,7 @@ void deoglSCBuildConstructed::VisitText(deSkinPropertyNodeText &node){
 	
 	// context.clamp.y = (int)(textSize - 0.5f); // (fontsize - 1) + 0.5
 	
-	if(!font->GetIsColorFont()){
+	if(!font->GetIsColorFont() && !isSdf){
 		decColor fontColor(node.GetColor());
 		fontColor.r = powf(fontColor.r, node.GetGamma());
 		fontColor.g = powf(fontColor.g, node.GetGamma());
@@ -520,39 +530,79 @@ void deoglSCBuildConstructed::VisitText(deSkinPropertyNodeText &node){
 		
 		const deFontGlyph &glyph = font->GetGlyph(character, size);
 		if(glyph.GetWidth() == 0 || glyph.GetHeight() == 0){
+			glyphPosition += (float)glyph.GetAdvance() * fontScale;
 			continue;
 		}
 		
-		// adjust transformation and clamping
-		const float realGlyphPosition = glyphPosition - (float)glyph.GetBearing() * fontScale;
-		const float glyphWidth = (float)glyph.GetWidth() * fontScale;
-		const float glyphHeight = (float)glyph.GetHeight() * fontScale;
-		const float glyphY = -(float)glyph.GetBearingY() * fontScale;
-		
-		context.transformInverse.a13 = transformInverse.a13 - realGlyphPosition;
-		context.transformInverse.a23 = transformInverse.a23 - glyphY;
-		context.clamp.x = (int)(glyphWidth - 0.5f); // (glyphWidth - 1) + 0.5
-		context.clamp.y = (int)(glyphY + glyphHeight - 0.5f);
-		
-		// calculate clip boundaries
-		const float x2 = realGlyphPosition + glyphWidth - 1.0f;
-		
-		const decVector2 p1(context.transformScreen * decVector2(realGlyphPosition, glyphY));
-		const decVector2 p2(context.transformScreen * decVector2(x2, glyphY));
-		const decVector2 p3(context.transformScreen * decVector2(realGlyphPosition, (float)context.clamp.y));
-		const decVector2 p4(context.transformScreen * decVector2(x2, (float)context.clamp.y));
-		
-		const decPoint smallest(p1.Smallest(p2).Smallest(p3).Smallest(p4).Round());
-		const decPoint largest(p1.Largest(p2).Largest(p3).Largest(p4).Round());
-		
-		context.clipFrom = decPoint3(smallest.x, smallest.y, clipFrom.z).Largest(clipFrom);
-		context.clipTo = decPoint3(largest.x, largest.y, clipTo.z).Smallest(clipTo);
-		
-		// draw glyph and advance to next position
-		const decVector2 tcOffset((float)glyph.GetX(), (float)glyph.GetY());
-		pDrawImage(context, *image, tcScale, tcOffset, glyph.GetZ());
-		
-		glyphPosition += (float)glyph.GetAdvance() * fontScale;
+		if(isSdf){
+			// enlarge glyph bounds so that dilation and border are not clipped
+			const float glyphLeft = glyphPosition - (float)glyph.GetBearing() * fontScale;
+			const float glyphTop = -(float)glyph.GetBearingY() * fontScale;
+			const float left = glyphLeft - sdfEnlarge;
+			const float top = glyphTop - sdfEnlarge;
+			const float right = glyphLeft + (float)glyph.GetWidth() * fontScale - 1.0f + sdfEnlarge;
+			const float bottom = glyphTop + (float)glyph.GetHeight() * fontScale - 1.0f + sdfEnlarge;
+			
+			context.transformInverse.a13 = transformInverse.a13 - left;
+			context.transformInverse.a23 = transformInverse.a23 - top;
+			context.clamp.x = (int)(right - left + 0.5f);
+			context.clamp.y = (int)(bottom - top + 0.5f);
+			
+			const decVector2 p1(context.transformScreen * decVector2(left, top));
+			const decVector2 p2(context.transformScreen * decVector2(right, top));
+			const decVector2 p3(context.transformScreen * decVector2(left, bottom));
+			const decVector2 p4(context.transformScreen * decVector2(right, bottom));
+			
+			const decPoint smallest(p1.Smallest(p2).Smallest(p3).Smallest(p4).Round());
+			const decPoint largest(p1.Largest(p2).Largest(p3).Largest(p4).Round());
+			
+			context.clipFrom = decPoint3(smallest.x, smallest.y, clipFrom.z).Largest(clipFrom);
+			context.clipTo = decPoint3(largest.x, largest.y, clipTo.z).Smallest(clipTo);
+			
+			// local coordinates start at the enlarged origin, so shift texture offset back by the enlargement
+			const decVector2 tcOffsetSdf((float)glyph.GetX() - sdfEnlarge * tcScale.x,
+				(float)glyph.GetY() - sdfEnlarge * tcScale.y);
+			const decPoint tcClampMin(glyph.GetX(), glyph.GetY());
+			const decPoint tcClampMax(glyph.GetX() + glyph.GetWidth() - 1, glyph.GetY() + glyph.GetHeight() - 1);
+			
+			pDrawGlyphSdf(context, *image, tcScale, tcOffsetSdf, tcClampMin, tcClampMax,
+				glyph.GetZ(), sdfPixelRange, sdfDistanceRemap, sdfDilation, sdfBorderSize,
+				sdfFillColor, node.GetBorderColor());
+			
+			glyphPosition += (float)glyph.GetAdvance() * fontScale;
+			
+		}else{
+			// adjust transformation and clamping
+			const float realGlyphPosition = glyphPosition - (float)glyph.GetBearing() * fontScale;
+			const float glyphWidth = (float)glyph.GetWidth() * fontScale;
+			const float glyphHeight = (float)glyph.GetHeight() * fontScale;
+			const float glyphY = -(float)glyph.GetBearingY() * fontScale;
+			
+			context.transformInverse.a13 = transformInverse.a13 - realGlyphPosition;
+			context.transformInverse.a23 = transformInverse.a23 - glyphY;
+			context.clamp.x = (int)(glyphWidth - 0.5f); // (glyphWidth - 1) + 0.5
+			context.clamp.y = (int)(glyphY + glyphHeight - 0.5f);
+			
+			// calculate clip boundaries
+			const float x2 = realGlyphPosition + glyphWidth - 1.0f;
+			
+			const decVector2 p1(context.transformScreen * decVector2(realGlyphPosition, glyphY));
+			const decVector2 p2(context.transformScreen * decVector2(x2, glyphY));
+			const decVector2 p3(context.transformScreen * decVector2(realGlyphPosition, (float)context.clamp.y));
+			const decVector2 p4(context.transformScreen * decVector2(x2, (float)context.clamp.y));
+			
+			const decPoint smallest(p1.Smallest(p2).Smallest(p3).Smallest(p4).Round());
+			const decPoint largest(p1.Largest(p2).Largest(p3).Largest(p4).Round());
+			
+			context.clipFrom = decPoint3(smallest.x, smallest.y, clipFrom.z).Largest(clipFrom);
+			context.clipTo = decPoint3(largest.x, largest.y, clipTo.z).Smallest(clipTo);
+			
+			// draw glyph and advance to next position
+			const decVector2 tcOffset((float)glyph.GetX(), (float)glyph.GetY());
+			pDrawImage(context, *image, tcScale, tcOffset, glyph.GetZ());
+			
+			glyphPosition += (float)glyph.GetAdvance() * fontScale;
+		}
 	}
 }
 
@@ -1082,6 +1132,185 @@ const decVector2 &tcScale, const decVector2 &tcOffset, int layer){
 					color.a += imgRGBA32[imgOffset].alpha * boxFilterBlends[j];
 				}
 			}
+			
+			// write pixel
+			color.a *= maskAlpha;
+			
+			for(z=0; z<depth; z++){
+				pWritePixel(context, offset + strideImage * z, color);
+			}
+			
+			offset += pixBufComponentCount;
+		}
+	}
+}
+
+void deoglSCBuildConstructed::pDrawGlyphSdf(const sContext &context, const deImage &image,
+const decVector2 &tcScale, const decVector2 &tcOffset, const decPoint &tcClampMin,
+const decPoint &tcClampMax, int layer, float sdfPixelRange, const decVector2 &distanceRemap,
+float dilation, float borderSize, const decColor &fillColor, const decColor &borderColor){
+	// obtain appropriate data pointer for SDF image. SDF images always have four components
+	const deoglPixelBuffer::sByte4 *imgPbByte4 = nullptr;
+	const deoglPixelBuffer::sFloat4 *imgPbFloat4 = nullptr;
+	const sRGBA8 *imgRGBA8 = nullptr;
+	const sRGBA16 *imgRGBA16 = nullptr;
+	const sRGBA32 *imgRGBA32 = nullptr;
+	
+	deoglPixelBuffer * const pixelBuffer = ((deoglImage*)image.GetPeerGraphic())->GetPixelBuffer();
+	
+	if(pixelBuffer){
+		switch(pixelBuffer->GetFormat()){
+		case deoglPixelBuffer::epfByte4:
+			imgPbByte4 = pixelBuffer->GetPointerByte4();
+			break;
+			
+		case deoglPixelBuffer::epfFloat4:
+			imgPbFloat4 = pixelBuffer->GetPointerFloat4();
+			break;
+			
+		default:
+			DETHROW(deeInvalidParam);
+		}
+		
+	}else if(image.GetData() && image.GetComponentCount() == 4){
+		if(image.GetBitCount() == 8){
+			imgRGBA8 = image.GetDataRGBA8();
+			
+		}else if(image.GetBitCount() == 16){
+			imgRGBA16 = image.GetDataRGBA16();
+			
+		}else{
+			imgRGBA32 = image.GetDataRGBA32();
+		}
+		
+	}else{
+		DETHROW(deeInvalidParam);
+	}
+	
+	const int imgWidth = image.GetWidth();
+	const int imgSize = imgWidth * image.GetHeight();
+	const auto fetchTexel = [&](int x, int y) -> decColor{
+		const int imgOffset = imgSize * layer + imgWidth * y + x;
+		
+		if(imgPbByte4){
+			return decColor((float)imgPbByte4[imgOffset].r * IMG_CONVERT8, (float)imgPbByte4[imgOffset].g * IMG_CONVERT8,
+				(float)imgPbByte4[imgOffset].b * IMG_CONVERT8, (float)imgPbByte4[imgOffset].a * IMG_CONVERT8);
+		}
+		if(imgPbFloat4){
+			return decColor(imgPbFloat4[imgOffset].r, imgPbFloat4[imgOffset].g,
+				imgPbFloat4[imgOffset].b, imgPbFloat4[imgOffset].a);
+		}
+		if(imgRGBA8){
+			return decColor((float)imgRGBA8[imgOffset].red * IMG_CONVERT8, (float)imgRGBA8[imgOffset].green * IMG_CONVERT8,
+				(float)imgRGBA8[imgOffset].blue * IMG_CONVERT8, (float)imgRGBA8[imgOffset].alpha * IMG_CONVERT8);
+		}
+		if(imgRGBA16){
+			return decColor((float)imgRGBA16[imgOffset].red * IMG_CONVERT16, (float)imgRGBA16[imgOffset].green * IMG_CONVERT16,
+				(float)imgRGBA16[imgOffset].blue * IMG_CONVERT16, (float)imgRGBA16[imgOffset].alpha * IMG_CONVERT16);
+		}
+		return decColor(imgRGBA32[imgOffset].red, imgRGBA32[imgOffset].green,
+			imgRGBA32[imgOffset].blue, imgRGBA32[imgOffset].alpha);
+	};
+	
+	// paint glyph
+	const int strideLine = pTarget->pixBufWidth * pTarget->pixBufComponentCount;
+	const int strideImage = strideLine * pTarget->pixBufHeight;
+	const int pixBufComponentCount = pTarget->pixBufComponentCount;
+	const int depth = context.clipTo.z - context.clipFrom.z;
+	
+	// target pixels per SDF texel with one target pixel per local unit
+	const float pixPerU = decVector2(context.transformScreen.a11, context.transformScreen.a21).Length();
+	const float pixPerV = decVector2(context.transformScreen.a12, context.transformScreen.a22).Length();
+	float pixelRange = decMath::max(sdfPixelRange * 0.5f * (pixPerU / tcScale.x + pixPerV / tcScale.y), 1.0f);
+	
+	// ensure the anti-aliasing transition zone doesn't cross below dist = 0
+	const float distToZero = 0.5f - borderSize - dilation;
+	if(distToZero > 0.001f){
+		pixelRange = decMath::max(pixelRange, 0.5f / distToZero);
+	}
+	
+	decPoint i;
+	decVector2 position;
+	decPoint center;
+	float maskAlpha;
+	int j, z;
+	
+	for(i.y=context.clipFrom.y; i.y<=context.clipTo.y; i.y++){
+		int offset = strideImage * context.clipFrom.z + strideLine * i.y
+			+ pixBufComponentCount * context.clipFrom.x;
+		
+		for(i.x=context.clipFrom.x; i.x<=context.clipTo.x; i.x++){
+			// transform position from root up to this context clipping at each step
+			sContext *marchContext = context.root;
+			
+			position.x = (float)i.x;
+			position.y = (float)i.y;
+			maskAlpha = 1.0f;
+			
+			while(marchContext){
+				position = marchContext->transformInverse * position;
+				center = position.Round();
+				
+				if(!(center >= decPoint() && center <= marchContext->clamp)){
+					break;
+				}
+				
+				if(marchContext->mask){
+					maskAlpha *= (float)marchContext->mask->pixBufDataFloat[
+						marchContext->mask->pixBufWidth * center.y + center.x];
+				}
+				
+				marchContext = marchContext->child;
+			}
+			
+			if(marchContext){
+				offset += pixBufComponentCount;
+				continue;
+			}
+			
+			// clamp texture coordinates to the glyph. distance outside the glyph adds to the border
+			const float imgRealX = (float)center.x * tcScale.x + tcOffset.x;
+			const float imgRealY = (float)center.y * tcScale.y + tcOffset.y;
+			const float imgClampX = decMath::clamp(imgRealX, (float)tcClampMin.x, (float)tcClampMax.x);
+			const float imgClampY = decMath::clamp(imgRealY, (float)tcClampMin.y, (float)tcClampMax.y);
+			const float outsideDist = decVector2(imgClampX - imgRealX, imgClampY - imgRealY).Length() / sdfPixelRange;
+			
+			// bilinear sampling of the SDF texels inside the glyph
+			const int x0 = (int)(imgClampX + 0.0001f);
+			const int y0 = (int)(imgClampY + 0.0001f);
+			const int x1 = decMath::min(x0 + 1, tcClampMax.x);
+			const int y1 = decMath::min(y0 + 1, tcClampMax.y);
+			const float blendX = decMath::clamp(imgClampX - (float)x0, 0.0f, 1.0f);
+			const float blendY = decMath::clamp(imgClampY - (float)y0, 0.0f, 1.0f);
+			
+			const decColor texels[4] = {fetchTexel(x0, y0), fetchTexel(x1, y0), fetchTexel(x0, y1), fetchTexel(x1, y1)};
+			const float blends[4] = {
+				(1.0f - blendX) * (1.0f - blendY), blendX * (1.0f - blendY),
+				(1.0f - blendX) * blendY, blendX * blendY};
+			
+			decColor sdf(0.0f, 0.0f, 0.0f, 0.0f);
+			for(j=0; j<4; j++){
+				sdf.r += texels[j].r * blends[j];
+				sdf.g += texels[j].g * blends[j];
+				sdf.b += texels[j].b * blends[j];
+				sdf.a += texels[j].a * blends[j];
+			}
+			
+			// fill and border coverage as in the shared SDF shader code
+			const float dist = decMath::max(decMath::min(sdf.r, sdf.g),
+				decMath::min(decMath::max(sdf.r, sdf.g), sdf.b));
+			const float fillCoverage = decMath::clamp(pixelRange * (dist - (0.5f - dilation)) + 0.5f, 0.0f, 1.0f);
+			
+			const float borderSdf = sdf.a * distanceRemap.x + distanceRemap.y - outsideDist;
+			const float borderCoverage = decMath::clamp(
+				pixelRange * (borderSdf - (0.5f - (dilation + borderSize))) + 0.5f, 0.0f, 1.0f);
+			
+			const float borderMix = decMath::max(borderCoverage - fillCoverage, 0.0f);
+			decColor color(
+				decMath::mix(fillColor.r, borderColor.r, borderMix),
+				decMath::mix(fillColor.g, borderColor.g, borderMix),
+				decMath::mix(fillColor.b, borderColor.b, borderMix),
+				decMath::mix(fillColor.a * fillCoverage, borderColor.a * borderCoverage, borderMix));
 			
 			// write pixel
 			color.a *= maskAlpha;

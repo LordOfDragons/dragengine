@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSPBMapBuffer.h"
 #include "deoglShaderParameterBlock.h"
 
@@ -36,12 +32,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-
 deoglSPBMapBuffer::deoglSPBMapBuffer(deoglShaderParameterBlock &block) :
 pBlock(block),
 pElement(0),
 pCount(block.GetElementCount()),
-pMapped(false)
+pMapped(false),
+pDelayUpload(false)
 {
 	Map();
 }
@@ -50,7 +46,8 @@ deoglSPBMapBuffer::deoglSPBMapBuffer(deoglShaderParameterBlock &block, int eleme
 pBlock(block),
 pElement(element),
 pCount(1),
-pMapped(false)
+pMapped(false),
+pDelayUpload(false)
 {
 	Map();
 }
@@ -59,7 +56,8 @@ deoglSPBMapBuffer::deoglSPBMapBuffer(deoglShaderParameterBlock &block, int eleme
 pBlock(block),
 pElement(element),
 pCount(count),
-pMapped(false)
+pMapped(false),
+pDelayUpload(false)
 {
 	Map();
 }
@@ -67,7 +65,6 @@ pMapped(false)
 deoglSPBMapBuffer::~deoglSPBMapBuffer(){
 	Unmap();
 }
-
 
 
 // Management
@@ -87,6 +84,10 @@ void deoglSPBMapBuffer::Unmap(){
 		return;
 	}
 	
-	pBlock.UnmapBuffer();
+	pBlock.UnmapBuffer(pDelayUpload);
 	pMapped = false;
+}
+
+void deoglSPBMapBuffer::SetDelayUpload(bool delay){
+	pDelayUpload = delay;
 }

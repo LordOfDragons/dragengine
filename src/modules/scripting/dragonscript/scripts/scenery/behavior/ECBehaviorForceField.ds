@@ -164,17 +164,6 @@ class ECBehaviorForceField extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorForceField'>
-	 *   <!-- optional: set collision filter. default value '6:0 1 2 3 5' which means
-	 *                  category BaseGameApp.CollisionFilterBit.forceField
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actor,
-	 *                         BaseGameApp.CollisionFilterBit.actorAI,
-	 *                         BaseGameApp.CollisionFilterBit.particle.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>6:0 1 2 3 5</string>
-	 * 
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more
 	 *                  supported values. default value is 'default' -->
 	 *   <string name='triggerTable'>default</string>
@@ -218,8 +207,9 @@ class ECBehaviorForceField extends DefaultECBehavior
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			if parameters.has("collisionFilter")
-				behavior.getForceField().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getForceField().getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			if parameters.has("syncTrigger")
@@ -268,25 +258,14 @@ class ECBehaviorForceField extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "forceField{(id)}.check".
 		 * \version 1.26
 		 */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
 				var bool result = true
 				var Object value
 				
@@ -377,6 +356,11 @@ class ECBehaviorForceField extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachForceField(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pForceField.setPosition(matrix.getPosition())
+				pForceField.setOrientation(matrix.toQuaternion())
 			end
 			
 			if pECBehavior.getBTSMs().hasAny()
@@ -418,7 +402,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 		/**
 		 * \brief Attach force field to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachForceField(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pForceField, stub)

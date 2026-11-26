@@ -69,6 +69,7 @@ pInternalModulesLibrary(nullptr),
 pVFSAssetLibraries(deVirtualFileSystem::Ref::New())
 {
 	DEASSERT_NOTNULL(engine)
+	pVFSAssetLibraries->SetIdentifier("asset-libraries");
 }
 
 deModuleSystem::~deModuleSystem(){

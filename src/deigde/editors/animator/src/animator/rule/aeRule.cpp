@@ -55,6 +55,60 @@
 #define LOGSOURCE "Animator Editor"
 
 
+// Class aeRule::LinkStorage
+//////////////////////////////
+
+void aeRule::LinkStorage::SetValue(const LinkStorage &value, bool notify){
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage::SetValue(value, notify);
+	pLinkCopies = value.pLinkCopies;
+}
+
+void aeRule::LinkStorage::CreateLinkCopies(){
+	pLinkCopies.RemoveAll();
+	this->GetValue().Visit([this](const aeLink::Ref &link){
+		auto copy = aeLink::Ref::New(link);
+		copy->mpController.CreateControllerCopy();
+		pLinkCopies.SetAt(link, copy);
+	});
+}
+
+void aeRule::LinkStorage::EnsureValidLinks(const aeAnimator &animator,
+decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	const auto &animatorLinks = animator.mpLinks.GetValue();
+	SetType links;
+	this->GetValue().Visit([&](const aeLink::Ref &link){
+		if(animator.mpLinks.GetValue().Has(link)){
+			links.Add(link);
+			return;
+		}
+		
+		auto found = animatorLinks.FindOrDefault([&](const aeLink &other){
+			return other.mpName.GetValue() == link->mpName.GetValue();
+		});
+		if(found){
+			links.Add(found);
+			return;
+		}
+		
+		found = addLinks.GetAtOrDefault(link);
+		if(found){
+			links.Add(found);
+			return;
+		}
+		
+		found = pLinkCopies.GetAtOrDefault(link);
+		if(found){
+			addLinks.SetAt(link, found);
+			links.Add(found);
+		}
+	});
+	links.Visit([&](const aeLink::Ref &link){
+		link->mpController.EnsureValidController(animator, addControllers);
+	});
+	this->SetValue(links);
+}
+
 
 // Class aeRule
 /////////////////
@@ -259,6 +313,15 @@ void aeRule::NotifyRuleChanged(){
 void aeRule::OnParentAnimatorChanged(){
 }
 
+void aeRule::CreateLinkCopies(){
+	mpTargetBlendFactor.CreateLinkCopies();
+}
+
+void aeRule::EnsureValidLinks(const aeAnimator &animator,
+decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	mpTargetBlendFactor.EnsureValidLinks(animator, addLinks, addControllers);
+}
 
 
 // Helper

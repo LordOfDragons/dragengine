@@ -8,19 +8,20 @@
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 
-$DERemoteLauncherVersion = "1.2"
-
+$DENetworkVersion = "1.2"
 
 $ExpandedDir = "$ProjectDir\build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-$ArchiveFile = "$ProjectDir\DENetworkSDK-$DERemoteLauncherVersion.zip"
-$BaseUrl = "https://github.com/LordOfDragons/denetwork/releases/download/v$DERemoteLauncherVersion"
+$ArchiveFile = "$ProjectDir\DENetworkSDK-$DENetworkVersion.zip"
+$BaseUrl = "https://github.com/LordOfDragons/denetwork/releases/download/v$DENetworkVersion"
 
 if (!(Test-Path $ArchiveFile)) {
-    Invoke-WebRequestWithRetry -Uri "$BaseUrl/DENetworkSDK-$DERemoteLauncherVersion.zip" -OutFile $ArchiveFile
+    Invoke-WebRequestWithRetry -Uri "$BaseUrl/DENetworkSDK-$DENetworkVersion.zip" -OutFile $ArchiveFile
 }
 
-Expand-Archive -Path $ArchiveFile -DestinationPath $ExpandedDir
+# workaround for powershell bug under github
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($ArchiveFile, $ExpandedDir)

@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
-
 pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
@@ -55,74 +53,60 @@ pin Dragengine.Utils
  * affects the physics element.
  */
 class PhysicsElementClass extends BehaviorElementClass
-	private var ECBehaviorComponent pComponent
-	private var ECBehaviorCollider pCollider
-	private var ECBehaviorAttachToParent pAttachToParent
-	
+	var ECBehaviorComponent pComponent
+	var ECBehaviorCollider pCollider
+	var ECBehaviorAttachToParent pAttachToParent
 	
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new() this( "PhysicsElement" )
+	func new() this("PhysicsElement")
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new( String className ) super( className )
-		this.pComponent = ECBehaviorComponent.new( this, null )
+	func new(String className) super(className)
+		pComponent = ECBehaviorComponent.new(this, null)
 		
-		this.pCollider = ECBehaviorCollider.new( this, this.pComponent )
+		pCollider = ECBehaviorCollider.new(this, pComponent)
 		
-		var ECComposeCollider collider = this.pCollider.getCollider()
-		collider.getPhysicsType().setEnumeration( CollisionResponse.dynamic )
+		var ECComposeCollider collider = pCollider.getCollider()
+		collider.getPhysicsType().setEnumeration(CollisionResponse.dynamic)
 		
-		var LayerMask lmCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.dynamic )
+		var LayerMask lmCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)
 		
 		var LayerMask lmFilter = LayerMask.new()
-		lmFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
-		lmFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
-		lmFilter.setBit( BaseGameApp.CollisionFilterBit.actor )
-		lmFilter.setBit( BaseGameApp.CollisionFilterBit.particle )
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.actor)
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.particle)
 		
-		collider.setCollisionFilter( CollisionFilter.new( lmCategory, lmFilter ) )
+		collider.getCollisionFilterProperty().setCollisionFilter(CollisionFilter.new(lmCategory, lmFilter))
 		
-		this.pAttachToParent = ECBehaviorAttachToParent.new( this, this.pCollider, null )
+		pAttachToParent = ECBehaviorAttachToParent.new(this, pCollider, null)
 	end
-	
 	
 	
 	/** \brief Component behavior. */
-	public func ECBehaviorComponent getComponent()
-		return this.pComponent
+	func ECBehaviorComponent getComponent()
+		return pComponent
 	end
 	
 	/** \brief Collider behavior. */
-	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+	func ECBehaviorCollider getCollider()
+		return pCollider
 	end
 	
 	/** \brief Attach to parent behavior. */
-	public func ECBehaviorAttachToParent getAttachToParent()
-		return this.pAttachToParent
+	func ECBehaviorAttachToParent getAttachToParent()
+		return pAttachToParent
 	end
 	
 	
-	
-	/** \brief Create copy of element class. */
-	public func ElementClass duplicateNamed( String classname )
-		return PhysicsElementClass.new( classname )
+	func ElementClass duplicateNamed(String classname)
+		return PhysicsElementClass.new(classname)
 	end
 	
 	
-	
-	/**
-	 * \brief Create element instance.
-	 * 
-	 * If this element class does not support creating elements, for example because
-	 * the result is not an element, \em null has to be returned. The default
-	 * implementation returns \em null. Subclasses not intending to create elements
-	 * or requiring special creation handling should subclass createAndAddElement()
-	 * and loadAndAddElement() bypassing this method.
-	 */
 	protected func Element createElement()
-		return PhysicsElement.new( this )
+		return PhysicsElement.new(this)
 	end
 end

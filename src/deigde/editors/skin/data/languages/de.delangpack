@@ -211,6 +211,7 @@ geben Sie einen benutzerdefinierten Namen ein.</translation>
 	<translation name="Skin.WPNode.MappedType.ColorRed">Farbe Rot</translation>
 	<translation name="Skin.WPNode.MappedType.ColorGreen">Farbe Grün</translation>
 	<translation name="Skin.WPNode.MappedType.ColorBlue">Farbe Blau</translation>
+	<translation name="Skin.WPNode.MappedType.Image">Bild</translation>
 	<translation name="Skin.WPNode.GroupImage">Bild:</translation>
 	<translation name="Skin.WPNode.Image">Bild:</translation>
 	<translation name="Skin.WPNode.Image.ToolTip">Anzuzeigende Bildressource</translation>
@@ -239,6 +240,12 @@ geben Sie einen benutzerdefinierten Namen ein.</translation>
 	<translation name="Skin.WPNode.Text.ToolTip">Text</translation>
 	<translation name="Skin.WPNode.TextColor">Farbe:</translation>
 	<translation name="Skin.WPNode.TextColor.ToolTip">Textfarbe</translation>
+	<translation name="Skin.WPNode.BorderColor">Rahmenfarbe:</translation>
+	<translation name="Skin.WPNode.BorderColor.ToolTip">Rahmenfarbe</translation>
+	<translation name="Skin.WPNode.BorderThickness">Rahmenstärke:</translation>
+	<translation name="Skin.WPNode.BorderThickness.ToolTip">Rahmenstärke in Pixeln</translation>
+	<translation name="Skin.WPNode.Dilation">Dilatation:</translation>
+	<translation name="Skin.WPNode.Dilation.ToolTip">Dilatation des Textes</translation>
 	<translation name="Skin.WPNode.GroupGroup">Gruppe:</translation>
 	<translation name="Skin.WPNode.Outline.Group">Gruppe</translation>
 	<translation name="Skin.WPNode.Outline.Image">Bild</translation>
@@ -371,6 +378,9 @@ geben Sie einen benutzerdefinierten Namen ein.</translation>
 	<translation name="Skin.Undo.NodeTextSetFontSize">Knoten: Text: Schriftgrösse festlegen</translation>
 	<translation name="Skin.Undo.NodeTextSetPath">Knoten: Text: Pfad festlegen</translation>
 	<translation name="Skin.Undo.NodeTextSetText">Knoten: Text: Inhalt festlegen</translation>
+	<translation name="Skin.Undo.NodeTextSetBorderColor">Knoten: Text: Rahmenfarbe festlegen</translation>
+	<translation name="Skin.Undo.NodeTextSetBorderThickness">Knoten: Text: Rahmendicke festlegen</translation>
+	<translation name="Skin.Undo.NodeTextSetDilation">Knoten: Text: Aufweitung festlegen</translation>
 	<translation name="Skin.Undo.NodeGroupAddNode">Knoten: Gruppe: Knoten hinzufügen</translation>
 	<translation name="Skin.Undo.NodeGroupPasteNodes">Knoten: Gruppe: Knoten einfügen</translation>
 	<translation name="Skin.Undo.NodeGroupRemoveNodes">Knoten: Gruppe: Knoten entfernen</translation>

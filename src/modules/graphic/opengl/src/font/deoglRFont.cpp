@@ -37,8 +37,10 @@
 ////////////////////////////
 
 deoglRFont::deoglRFont(deoglRenderThread &renderThread, const deFont &font) :
+pRenderThread(renderThread),
 pFilename(font.GetFilename()),
 pIsColorFont(font.GetIsColorFont()),
+pIsSdfFont(font.GetIsSdf()),
 pGlyphs(renderThread, font)
 {
 	pGlyphs.SetImage(font.GetImage());
@@ -62,7 +64,6 @@ deoglRFont::~deoglRFont(){
 void deoglRFont::FinalizeAsyncResLoading(){
 	pGlyphs.FinalizeAsyncResLoading();
 }
-
 
 deoglRFontSize *deoglRFont::GetFontSizeFor(deFont &font, int lineHeight){
 	const deFontSize * const size = font.EnsureSizePrepared(lineHeight);

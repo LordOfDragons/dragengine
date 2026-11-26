@@ -25,6 +25,7 @@
 #ifndef _DEOGLSPBPARAMETER_H_
 #define _DEOGLSPBPARAMETER_H_
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -41,9 +42,14 @@ public:
 		evtInt,
 		
 		/** Boolean values. */
-		evtBool
+		evtBool,
+		
+		/** Struct. */
+		evtStruct
 	};
 	
+	/** List of parameters. */
+	using ParameterList = decTList<deoglSPBParameter>;
 	
 	
 private:
@@ -57,6 +63,7 @@ private:
 	int pArrayStride;
 	int pDataSize;
 	
+	decTList<deoglSPBParameter> pMembers;
 	
 	
 public:
@@ -64,10 +71,15 @@ public:
 	/*@{*/
 	/** Create shader parameter. */
 	deoglSPBParameter();
+	deoglSPBParameter(eValueTypes valueType, int componentCount, int vectorCount, int arrayCount);
 	
 	/** Copy shader parameter. */
 	deoglSPBParameter(const deoglSPBParameter &parameter);
 	deoglSPBParameter &operator=(const deoglSPBParameter &parameter);
+	
+	/** Move shader parameter. */
+	deoglSPBParameter(deoglSPBParameter &&parameter) noexcept;
+	deoglSPBParameter &operator=(deoglSPBParameter &&parameter) noexcept;
 	
 	/** Clean up shader parameter. */
 	~deoglSPBParameter();
@@ -102,8 +114,9 @@ public:
 	void SetArrayCount(int arrayCount);
 	
 	/** Set all parameters. */
-	void SetAll(eValueTypes valueType, int componentCount,
-		int vectorCount, int arrayCount);
+	void SetAll(eValueTypes valueType, int componentCount, int vectorCount, int arrayCount);
+	void SetStruct(const ParameterList &members, int arrayCount);
+	void SetStruct(ParameterList &&members, int arrayCount);
 	
 	/** Offset to first value component in data block. */
 	inline int GetOffset() const{ return pOffset; }
@@ -128,6 +141,10 @@ public:
 	
 	/** Set size of data in block. */
 	void SetDataSize(int size);
+	
+	/** Struct members. */
+	inline decTList<deoglSPBParameter> &GetMembers(){ return pMembers; }
+	inline const decTList<deoglSPBParameter> &GetMembers() const{ return pMembers; }
 	/*@}*/
 };
 

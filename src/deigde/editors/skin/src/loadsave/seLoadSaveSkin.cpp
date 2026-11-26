@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "seLoadSaveSkin.h"
 #include "../skin/seSkin.h"
 #include "../skin/mapped/seMapped.h"
@@ -62,7 +58,6 @@
 #include <dragengine/systems/modules/skin/deBaseSkinModule.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 #include <dragengine/deEngine.h>
-#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/math/decMath.h>
@@ -310,6 +305,9 @@ sePropertyNode::Ref seLoadSaveSkin::LoadPropertyNode(seSkin &skin, deSkinPropert
 		childText->SetTextSize(engNodeText.GetFontSize());
 		childText->SetText(engNodeText.GetText());
 		childText->SetColor(engNodeText.GetColor());
+		childText->SetBorderColor(engNodeText.GetBorderColor());
+		childText->SetBorderThickness(engNodeText.GetBorderThickness());
+		childText->SetDilation(engNodeText.GetDilation());
 		
 		const struct sMappedText{
 			sePropertyNodeText::eTextMapped to;
@@ -357,10 +355,10 @@ const deSkinPropertyNode &engNode){
 		node.SetMask(LoadPropertyNode(skin, *engNode.GetMask()));
 	}
 	
-	const struct sMapped{
+	static const struct sMapped{
 		sePropertyNode::eMapped to;
 		deSkinPropertyNode::eMapped from;
-	} mappings[15] = {
+	} mappings[16] = {
 		{sePropertyNode::emPositionX, deSkinPropertyNode::emPositionX},
 		{sePropertyNode::emPositionY, deSkinPropertyNode::emPositionY},
 		{sePropertyNode::emPositionZ, deSkinPropertyNode::emPositionZ},
@@ -375,11 +373,12 @@ const deSkinPropertyNode &engNode){
 		{sePropertyNode::emColorizeRed, deSkinPropertyNode::emColorizeRed},
 		{sePropertyNode::emColorizeGreen, deSkinPropertyNode::emColorizeGreen},
 		{sePropertyNode::emColorizeBlue, deSkinPropertyNode::emColorizeBlue},
-		{sePropertyNode::emTransparency, deSkinPropertyNode::emTransparency}
+		{sePropertyNode::emTransparency, deSkinPropertyNode::emTransparency},
+		{sePropertyNode::emImage, deSkinPropertyNode::emImage}
 	};
 	
 	int i;
-	for(i=0; i<15; i++){
+	for(i=0; i<16; i++){
 		const int index = engNode.GetMappedFor(mappings[i].from);
 		if(index != -1){
 			node.SetMappedFor(mappings[i].to, skin.GetMapped().GetAt(index));

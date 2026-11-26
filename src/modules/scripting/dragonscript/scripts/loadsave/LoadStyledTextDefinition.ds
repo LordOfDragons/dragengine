@@ -146,6 +146,15 @@ class LoadStyledTextDefinition extends BaseXmlLoader
 			elif tagName.equals("textColor")
 				stdstyle.setTextColor(readColor(element))
 				
+			elif tagName.equals("textBorderColor")
+				stdstyle.setTextBorderColor(readColor(element))
+				
+			elif tagName.equals("textBorderThickness")
+				stdstyle.setTextBorderThickness(element.getFirstCDataFloat())
+				
+			elif tagName.equals("textDilation")
+				stdstyle.setTextDilation(element.getFirstCDataFloat())
+				
 			elif tagName.equals("backgroundColor")
 				stdstyle.setBackgroundColor(readColor(element))
 				

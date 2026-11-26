@@ -26,8 +26,8 @@
 #define _IGDECAMERAINTERACTIONLISTENER_H_
 
 #include "igdeMouseDragListener.h"
-#include "igdeFrameUpdateListener.h"
 #include "../igdeCamera.h"
+#include "../../environment/igdeEnvironmentListener.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/math/smooth/decSmoothVector.h>
@@ -35,7 +35,6 @@
 
 class igdeEnvironment;
 class igdeViewRenderWindow;
-class igdeEditorWindow;
 
 
 /**
@@ -89,6 +88,7 @@ private:
 		void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override;
 		void OnButtonRelease(igdeWidget *widget, int button,
 			const decPoint &position, int modifiers) override;
+		void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers) override;
 		void OnKeyPress(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
 		void OnKeyRelease(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
 		
@@ -96,15 +96,15 @@ private:
 		~MouseDragListener() override;
 	};
 	
-	class FrameUpdateListener : public igdeFrameUpdateListener{
+	class EnvironmentListener : public igdeEnvironmentListener{
 	public:
 		igdeCameraInteractionListener *owner;
 		
-		FrameUpdateListener(igdeCameraInteractionListener *owner);
-		void OnFrameUpdate(igdeWidget *widget, float elapsed) override;
+		EnvironmentListener(igdeCameraInteractionListener *owner);
+		void OnFrameUpdate(float elapsed) override;
 		
 	protected:
-		~FrameUpdateListener() override;
+		~EnvironmentListener() override;
 	};
 	
 	
@@ -114,6 +114,7 @@ private:
 	bool pEnableRotate, pEnablePan, pEnableMove, pEnableZoom;
 	
 	float pSpeedRotate, pSpeedPan, pSpeedMove, pSpeedZoom, pSpeedFly;
+	int pFlySpeedModifier;
 	
 	eInteraction pInteraction;
 	
@@ -126,8 +127,10 @@ private:
 	decPoint pFlyMouseLastPosition, pFlyMouseCurrentPosition;
 	int pRightMouseButtonPressed;
 	
+	deTWeakObjectReference<igdeViewRenderWindow> pViewRenderWindow;
+	
 	deTObjectReference<MouseDragListener> pMouseDragListener;
-	deTObjectReference<FrameUpdateListener> pFrameUpdateListener;
+	deTObjectReference<EnvironmentListener> pEnvironmentListener;
 	
 	
 public:
@@ -220,6 +223,31 @@ public:
 	/** \brief Set fly speed in meters per second. */
 	void SetSpeedFly(float metersPerSecond);
 	
+	/**
+	 * \brief Fly speed modifier.
+	 * 
+	 * 0 is normal speed. Every +1 increases speed by 25%. Every -1 decreases speed by 25%.
+	 * Minimum is -20 and maximum is 25.
+	 */
+	inline int GetSpeedFlyModifier() const{ return pFlySpeedModifier; }
+	
+	/**
+	 * \brief Set fly speed modifier.
+	 * 
+	 * 0 is normal speed. Every +1 increases speed by 25%. Every -1 decreases speed by 25%.
+	 * Minimum is -20 and maximum is 25.
+	 */
+	void SetSpeedFlyModifier(int multiplier);
+	
+	/**
+	 * \brief Fly speed after applying multiplier.
+	 * 
+	 * The fly speed is multiplied by "pow(1.25, modifier)". For 3m/s fly speed this results
+	 * in a range from 0.01m/s to 260m/s.
+	 */
+	float GetSpeedFlyModified() const;
+	
+	
 	
 	/** \brief Interaction in progress. */
 	inline eInteraction GetInteraction() const{ return pInteraction; }
@@ -271,10 +299,10 @@ public:
 	void SetMoveMatrix(const decDMatrix &matrix);
 	
 	
-	/** \brief Add listener to widget. */
-	void AddListeners(igdeViewRenderWindow &widget, igdeEditorWindow &window);
+	/** \brief Add listeners. */
+	void AddListeners(igdeViewRenderWindow &widget);
 	
-	/** \brief Remove listener from widget. */
+	/** \brief Remove listeners. */
 	void RemoveListeners(igdeViewRenderWindow &widget);
 	/*@}*/
 	
@@ -383,6 +411,7 @@ public:
 	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
 	void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override;
 	void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
+	void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers) override;
 	void OnKeyPress(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
 	void OnKeyRelease(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
 	

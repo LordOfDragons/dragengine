@@ -169,22 +169,14 @@ public:
 	}
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule,
-	igdeMetaContextItemInfo &info) const override{
-		info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->mpName.GetValue()));
-	}
+		igdeMetaContextItemInfo &info) const override;
 	
 	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeRule::List &existingObjects,
-	const ObjectTypeRef &object) const override{
-		auto &rule = Owner(context);
-		auto copied = object->CreateCopy();
-		copied->mpName.SetValue(rule.uniqueNameRule.Generate(
-			[&](const decString &name){
-				return existingObjects.NoneMatching([&](const aeRule &existing){
-					return existing.mpName == name;
-				});
-			}, copied->mpName), false);
-		return copied;
-	}
+		const ObjectTypeRef &object) const override;
+	
+	deTObjectReference<igdeMetaPropertyListUndo> ChangePropertyValue(
+		const ContextRef &context, const List &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr) override;
 };
 
 #endif

@@ -1083,6 +1083,9 @@ const deSkin &skin, deSkinPropertyNode &node){
 		}else if(strcmp(name, "transparency") == 0){
 			node.SetMappedFor(deSkinPropertyNode::emTransparency, index);
 			
+		}else if(strcmp(name, "image") == 0){
+			node.SetMappedFor(deSkinPropertyNode::emImage, index);
+			
 		}else{
 			LogWarnFormat("node(%i:%i): Unknown Tag %s, ignoring",
 				tag.GetLineNumber(), tag.GetPositionNumber(), tag.GetName().GetString());
@@ -1337,7 +1340,37 @@ const deSkin &skin, deSkinPropertyNodeText &text){
 			color.Normalize();
 			
 			text.SetColor(color);
-		
+			
+		}else if(tagName == "borderColor"){
+			decColor borderColor;
+			if(pFindAttribute(*tag, "r")){
+				borderColor.r = pGetAttributeFloat(*tag, "r");
+			}
+			if(pFindAttribute(*tag, "g")){
+				borderColor.g = pGetAttributeFloat(*tag, "g");
+			}
+			if(pFindAttribute(*tag, "b")){
+				borderColor.b = pGetAttributeFloat(*tag, "b");
+			}
+			if(pFindAttribute(*tag, "a")){
+				borderColor.a = pGetAttributeFloat(*tag, "a");
+			}
+			borderColor.Normalize();
+			
+			text.SetBorderColor(borderColor);
+			
+		}else if(tagName == "borderThickness"){
+			auto cdata = tag->GetFirstData();
+			if(cdata){
+				text.SetBorderThickness(cdata->GetData().ToFloat());
+			}
+			
+		}else if(tagName == "dilation"){
+			auto cdata = tag->GetFirstData();
+			if(cdata){
+				text.SetDilation(cdata->GetData().ToFloat());
+			}
+			
 		}else if(tagName == "textMapped"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if(!cdata){
