@@ -22,11 +22,9 @@
  * SOFTWARE.
  */
 
-#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <linux/limits.h>
 
 #include "dexsiDevice.h"
 #include "dexsiDeviceAxis.h"
@@ -406,7 +404,7 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 					if(device->HasUniqueId()){
 						pModule.LogInfoFormat("LibEvDev: Ignore device with duplicate: %s",
 							device->GetID().GetString());
-							continue;
+						continue;
 					}
 					
 					int number = 2;

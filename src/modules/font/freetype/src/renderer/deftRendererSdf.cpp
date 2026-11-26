@@ -33,6 +33,7 @@
 #include <dragengine/resources/image/deImageManager.h>
 
 #include <algorithm>
+#include <exception>
 #include <future>
 #include <thread>
 #include <vector>
@@ -416,7 +417,19 @@ void deftRendererSdf::pRenderSdfParallel(const deftLayout &layout, deImage &imag
 			});
 		}));
 	}
+	
+	std::exception_ptr firstError;
 	for(auto &future : futures){
-		future.get();
+		try{
+			future.get();
+			
+		}catch(...){
+			if(!firstError){
+				firstError = std::current_exception();
+			}
+		}
+	}
+	if(firstError){
+		std::rethrow_exception(firstError);
 	}
 }

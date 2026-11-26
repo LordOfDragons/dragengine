@@ -52,7 +52,7 @@
 				"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/guitheme.xsd"
 			},
 			{
-				"pattern": "**/*.decam",
+				"pattern": "**/*.decamera",
 				"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/camera.xsd"
 			},
 			{
