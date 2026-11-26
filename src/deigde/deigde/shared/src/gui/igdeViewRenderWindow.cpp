@@ -82,6 +82,7 @@ const igdeInfoBubbleToast::Ref &igdeViewRenderWindow::GetToastBubble(){
 	return pToastBubble;
 }
 
+
 void igdeViewRenderWindow::ClearErrorRenderWindow(){
 	// TODO
 }

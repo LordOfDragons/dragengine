@@ -22,52 +22,18 @@
  * SOFTWARE.
  */
 
-<<<<<<<< HEAD:src/modules/graphic/opengl/src/parameters/vr/deoglPVRSubmitDepth.cpp
-#include "deoglPVRSubmitDepth.h"
-#include "../../deGraphicOpenGl.h"
-#include "../../configuration/deoglConfiguration.h"
-========
 #include "meUSetWorldBehaviors.h"
 #include "../../../world/meWorld.h"
->>>>>>>> origin/master:src/deigde/editors/world/src/undosys/properties/worldbehavior/meUSetWorldBehaviors.cpp
 
 #include <dragengine/common/exceptions.h>
 
 
-<<<<<<<< HEAD:src/modules/graphic/opengl/src/parameters/vr/deoglPVRSubmitDepth.cpp
-// Class deoglPVRSubmitDepth
-//////////////////////////////
-========
 // Class meUSetWorldBehaviors
 ///////////////////////////////
->>>>>>>> origin/master:src/deigde/editors/world/src/undosys/properties/worldbehavior/meUSetWorldBehaviors.cpp
 
 // Constructor, destructor
 ////////////////////////////
 
-<<<<<<<< HEAD:src/modules/graphic/opengl/src/parameters/vr/deoglPVRSubmitDepth.cpp
-deoglPVRSubmitDepth::deoglPVRSubmitDepth(deGraphicOpenGl &ogl) :
-deoglParameterBool(ogl)
-{
-	SetName("vrSubmitDepth");
-	SetDescription("Submit depth images to VR headset if supported.");
-	SetCategory(ecAdvanced);
-	SetDisplayName("VR Submit Depth");
-}
-
-deoglPVRSubmitDepth::~deoglPVRSubmitDepth() = default;
-
-
-// Parameter Value
-////////////////////
-
-bool deoglPVRSubmitDepth::GetParameterBool(){
-	return pOgl.GetConfiguration().GetVRSubmitDepth();
-}
-
-void deoglPVRSubmitDepth::SetParameterBool(bool value){
-	pOgl.GetConfiguration().SetVRSubmitDepth(value);
-========
 meUSetWorldBehaviors::meUSetWorldBehaviors(meWorld *world, const meWorldBehavior::List &newValue) :
 pWorld(world),
 pNewValue(newValue)
@@ -92,5 +58,4 @@ void meUSetWorldBehaviors::Undo(){
 
 void meUSetWorldBehaviors::Redo(){
 	pWorld->SetWorldBehaviors(pNewValue);
->>>>>>>> origin/master:src/deigde/editors/world/src/undosys/properties/worldbehavior/meUSetWorldBehaviors.cpp
 }

@@ -138,11 +138,6 @@ bool igdeDialogSettings::Accept(){
 		});
 	}
 	
-	const bool flyMode = pChk3DViewFlyMode->GetChecked();
-	if(flyMode != pWindowMain.GetEnvironment().Get3DViewFlyMode()){
-		pWindowMain.GetConfiguration().Set3DViewFlyMode(flyMode);
-	}
-	
 	return igdeDialog::Accept();
 }
 

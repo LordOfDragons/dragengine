@@ -22,26 +22,6 @@
  * SOFTWARE.
  */
 
-<<<<<<<< HEAD:src/modules/graphic/opengl/src/parameters/vr/deoglPVRSubmitDepth.h
-#ifndef _DEOGLPVRSUBMITDEPTH_H_
-#define _DEOGLPVRSUBMITDEPTH_H_
-
-#include "../deoglParameterBool.h"
-
-
-/**
- * VR submit depth parameter.
- */
-class deoglPVRSubmitDepth : public deoglParameterBool{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create parameter. */
-	explicit deoglPVRSubmitDepth(deGraphicOpenGl &ogl);
-	
-	/** Clean up parameter. */
-	~deoglPVRSubmitDepth() override;
-========
 #ifndef _MEUSETWORLDBEHAVIORS_H_
 #define _MEUSETWORLDBEHAVIORS_H_
 
@@ -71,20 +51,10 @@ public:
 protected:
 	/** Clean up undo. */
 	~meUSetWorldBehaviors() override;
->>>>>>>> origin/master:src/deigde/editors/world/src/undosys/properties/worldbehavior/meUSetWorldBehaviors.h
 	/*@}*/
 	
 	
 public:
-<<<<<<<< HEAD:src/modules/graphic/opengl/src/parameters/vr/deoglPVRSubmitDepth.h
-	/** \name Parameter Value */
-	/*@{*/
-	/** Current value. */
-	bool GetParameterBool() override;
-	
-	/** Set current value. */
-	void SetParameterBool(bool value) override;
-========
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
@@ -92,7 +62,6 @@ public:
 	
 	/** Redo. */
 	void Redo() override;
->>>>>>>> origin/master:src/deigde/editors/world/src/undosys/properties/worldbehavior/meUSetWorldBehaviors.h
 	/*@}*/
 };
 
