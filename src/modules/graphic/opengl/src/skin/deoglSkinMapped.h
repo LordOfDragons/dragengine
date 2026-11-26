@@ -31,7 +31,7 @@
 
 class deoglSkinState;
 class deoglSkinStateMapped;
-class deoglTexture;
+class deoglRDSRenderable;
 
 
 /**
@@ -44,7 +44,7 @@ public:
 	
 	struct Result{
 		float value = 0.0f;
-		deoglTexture *texture = nullptr;
+		deoglRDSRenderable *renderable = nullptr;
 	};
 	
 	

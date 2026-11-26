@@ -24,7 +24,8 @@
 
 #include "deoglSkinStateCNImage.h"
 #include "../deoglSkinState.h"
-#include "../deoglSkinStateMapped.h"
+#include "../../state/deoglSkinStateMapped.h"
+#include "../../dynamic/renderables/render/deoglRDSRenderable.h"
 #include "../../../texture/deoglImage.h"
 #include "../../../rendering/deoglRenderCanvasContext.h"
 #include "../../../rendering/deoglRenderConstructed.h"
@@ -48,6 +49,7 @@ pSyncImage(node.GetImage()),
 pImage(pSyncImage && pSyncImage->GetPeerGraphic()
 	? (static_cast<deoglImage*>(pSyncImage->GetPeerGraphic()))->GetRImage().Pointer() : nullptr),
 pRepeat(node.GetRepeat()),
+pRenderable(nullptr),
 pTexture(nullptr),
 pDirtyTCTransform(true){
 }
@@ -57,6 +59,7 @@ deoglSkinStateConstructedNode(node),
 pSyncImage(node.pSyncImage),
 pImage(node.pImage),
 pRepeat(node.pRepeat),
+pRenderable(nullptr),
 pTexture(nullptr),
 pTCTransform(node.pTCTransform),
 pDirtyTCTransform(true){
@@ -80,16 +83,16 @@ void deoglSkinStateCNImage::Update(deoglSkinState &state){
 		}
 	}
 	
-	if(pMapped[deSkinPropertyNode::emImage] != -1){
-		pTexture = state.GetMappedAt(pMapped[deSkinPropertyNode::emImage]).GetTexture();
-		
-	}else{
-		pTexture = nullptr;
-	}
+	pTexture = nullptr;
+	const int index = pMapped[deSkinPropertyNode::emImage];
+	pRenderable = index != -1 ? state.GetMappedAt(index).GetRenderable() : nullptr;
 }
 
 void deoglSkinStateCNImage::PrepareForRender(deoglSkinState &state){
 	deoglSkinStateConstructedNode::PrepareForRender(state);
+	
+	// GetRenderTexture() potentially creates texture so it has to be called before rendering
+	pTexture = pRenderable ? pRenderable->GetRenderTexture() : nullptr;
 	
 	if(pImage){
 		pImage->PrepareForRender();
