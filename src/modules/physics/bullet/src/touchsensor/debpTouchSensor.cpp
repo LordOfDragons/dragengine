@@ -311,7 +311,9 @@ void debpTouchSensor::ApplyChanges(){
 		// notify enter colliders. this can remove or add colliders which in turn modify the
 		// ghost overlapping object list. doing this in the loop above can result in segfaults
 		pNotifyEnterColliders.Visit([&](deCollider *collider){
-			pTouchSensor.NotifyColliderEntered(collider);
+			if(collider->GetParentWorld()){ // just in case an enter collider removes another
+				pTouchSensor.NotifyColliderEntered(collider);
+			}
 		});
 		pNotifyEnterColliders.RemoveAll();
 		
