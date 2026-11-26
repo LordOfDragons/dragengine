@@ -26,22 +26,28 @@
 	
 	<!-- UI: Path Pattern Types -->
 	<translation name="GameDefinition.PathPatternType.All">Alle Dateien</translation>
-	<translation name="GameDefinition.PathPatternType.Model">Modellressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Skin">Skin-Ressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Rig">Rig-Ressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Animation">Animationsressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Animator">Animator-Ressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Image">Bildressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.OcclusionMesh">Okklusions-Mesh-Ressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.NavigationSpace">Navigationsbereich-Ressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.ParticleEmitter">Partikelemitter-Ressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Sound">Sound-Ressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Synthesizer">Synthesizer-Ressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Video">Video-Ressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Font">Schriftartenressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Sky">Himmelsressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.Camera">Kamera-Ressourcen</translation>
-	<translation name="GameDefinition.PathPatternType.World">Weltressourcen</translation>
+	<translation name="GameDefinition.PathPatternType.Model">Modell</translation>
+	<translation name="GameDefinition.PathPatternType.Skin">Skin</translation>
+	<translation name="GameDefinition.PathPatternType.Rig">Rig</translation>
+	<translation name="GameDefinition.PathPatternType.Animation">Animation</translation>
+	<translation name="GameDefinition.PathPatternType.Animator">Animator</translation>
+	<translation name="GameDefinition.PathPatternType.Image">Bild</translation>
+	<translation name="GameDefinition.PathPatternType.OcclusionMesh">Okklusions-Mesh</translation>
+	<translation name="GameDefinition.PathPatternType.NavigationSpace">Navigationsbereich</translation>
+	<translation name="GameDefinition.PathPatternType.ParticleEmitter">Partikelemitter</translation>
+	<translation name="GameDefinition.PathPatternType.Sound">Sound</translation>
+	<translation name="GameDefinition.PathPatternType.Synthesizer">Synthesizer</translation>
+	<translation name="GameDefinition.PathPatternType.Video">Video</translation>
+	<translation name="GameDefinition.PathPatternType.Font">Schriftarten</translation>
+	<translation name="GameDefinition.PathPatternType.Sky">Himmel</translation>
+	<translation name="GameDefinition.PathPatternType.Camera">Kamera</translation>
+	<translation name="GameDefinition.PathPatternType.World">Welt</translation>
+	<translation name="GameDefinition.PathPatternType.ParameterTree">Parameterbaum</translation>
+	<translation name="GameDefinition.PathPatternType.StateMachine">Zustandsmaschine</translation>
+	<translation name="GameDefinition.PathPatternType.BehaviorTree">Verhaltensbaum</translation>
+	<translation name="GameDefinition.PathPatternType.GuiTheme">GUI-Thema</translation>
+	<translation name="GameDefinition.PathPatternType.Conversation">Konversation</translation>
+	<translation name="GameDefinition.PathPatternType.SimpleConversation">Einfache Konversation</translation>
 	<translation name="GameDefinition.PathPatternType.Custom">Benutzerdefiniert</translation>
 	
 	<!-- Menu Actions: Category -->

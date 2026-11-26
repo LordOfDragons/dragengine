@@ -153,6 +153,16 @@ void meLSXMLWorld::pWriteWorld(decXmlWriter &writer, const meWorld &world){
 	
 	pWriteProperties(writer, world.GetProperties());
 	
+	world.GetWorldBehaviors().Visit([&](const meWorldBehavior &behavior){
+		writer.WriteOpeningTagStart("behavior");
+		if(!behavior.GetId().IsEmpty()){
+			writer.WriteAttributeString("id", behavior.GetId());
+		}
+		writer.WriteOpeningTagEnd(false, false);
+		writer.WriteTextString(behavior.GetName());
+		writer.WriteClosingTag("behavior", false);
+	});
+	
 	meHeightTerrain * const heightTerrain = world.GetHeightTerrain();
 	if(!heightTerrain->GetPathHT().IsEmpty()){
 		writer.WriteDataTagString("heightTerrain", heightTerrain->GetPathHT());

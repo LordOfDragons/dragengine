@@ -23,12 +23,10 @@
  */
 
 namespace Dragengine.Scenery
-
 pin Dragengine.Gui
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.Scenery
-
 
 /**
  * \brief Attachable behavior element behavior adding anchor element support.
@@ -37,7 +35,7 @@ pin Dragengine.Scenery
  * Anchoring elements allows to locate elements in a GameWorld using a unique name set by the
  * mapper. This is useful for game commands send by conversations scripts.
  * 
- * Element class property has name "anchorID".
+ * Element class property has name "anchorID" and "anchorGroupID".
  * 
  * This element behavior can be present only once in a BehaviorElement. Trying to add more
  * than one instance results in an exception thrown.
@@ -50,6 +48,8 @@ pin Dragengine.Scenery
  * 
  * Upon adding behavior to element these properties are evaluated if present:
  * - "anchorID" (string): anchor name to use. If not present the element is not anchored.
+ * - "anchorGroupID" (string): anchor group name to use. If not present the element is
+ *                             not added to any group.
  * 
  * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachable_anchorelement
  */
@@ -74,8 +74,7 @@ class ECABehaviorAnchorElement extends DefaultECAttachableBehavior
 	end
 	
 	
-	var StringID pAnchorID
-	var bool pAnchorAdded
+	var StringID pAnchorID, pGroupID
 	
 	
 	/** \brief Create behavior. */
@@ -85,9 +84,15 @@ class ECABehaviorAnchorElement extends DefaultECAttachableBehavior
 	
 	func void onAddToElement()
 		var BehaviorElement element = getElement()
-		var String anchorId = element.getStub().getPropertyValueFor("anchorID", null)
-		if anchorId != null and not anchorId.empty()
-			pAnchorID = StringID.new(anchorId)
+		
+		var String id = element.getStub().getPropertyValueFor("anchorID", null)
+		if id != null and not id.empty()
+			pAnchorID = StringID.new(id)
+		end
+		
+		id = element.getStub().getPropertyValueFor("anchorGroupID", null)
+		if id != null and not id.empty()
+			pGroupID = StringID.new(id)
 		end
 		
 		if element.getGameWorld() != null
@@ -105,19 +110,34 @@ class ECABehaviorAnchorElement extends DefaultECAttachableBehavior
 		return pAnchorID
 	end
 	
+	/**
+	 * \brief Anchor group ID or null to not anchor.
+	 * \version 1.35
+	 */
+	func StringID getGroupID()
+		return pGroupID
+	end
+	
 	
 	func void addToGameWorld()
-		if pAnchorID != null and not pAnchorAdded
-			var BehaviorElement element = getElement()
-			element.getGameWorld().getAnchoredElementList().add(pAnchorID, element)
-			pAnchorAdded = true
+		if pAnchorID != null
+			var BehaviorElement el = getElement()
+			el.getGameWorld().getBehaviorAnchoredElements().getElements().add(pAnchorID, el)
+		end
+		if pGroupID != null
+			var BehaviorElement el = getElement()
+			el.getGameWorld().getBehaviorAnchoredElements().addGroupElement(pGroupID, el)
 		end
 	end
 	
 	func void removeFromGameWorld()
-		if pAnchorAdded
-			getElement().getGameWorld().getAnchoredElementList().remove(pAnchorID)
-			pAnchorAdded = false
+		if pGroupID != null
+			var BehaviorElement el = getElement()
+			el.getGameWorld().getBehaviorAnchoredElements().removeGroupElement(pGroupID, el)
+		end
+		if pAnchorID != null
+			var BehaviorElement el = getElement()
+			el.getGameWorld().getBehaviorAnchoredElements().getElements().removeIfPresent(pAnchorID)
 		end
 	end
 end

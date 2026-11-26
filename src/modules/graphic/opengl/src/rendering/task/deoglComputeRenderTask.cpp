@@ -231,7 +231,7 @@ void deoglComputeRenderTask::EndPrepare(const deoglWorldCompute &worldCompute){
 		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.EndPrepare: this=%p state=%d", this, pState);
 	#endif
 	
-	pUBOConfig->UnmapBuffer();
+	pUBOConfig->UnmapBuffer(false);
 	pClearCounters();
 }
 

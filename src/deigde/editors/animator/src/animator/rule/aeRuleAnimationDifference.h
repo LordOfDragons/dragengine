@@ -55,8 +55,7 @@ public:
 	igdeMetaPropertyBooleanStorage::Storage mpEnableOrientation;
 	igdeMetaPropertyBooleanStorage::Storage mpEnableSize;
 	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetLeadingMoveTime;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetReferenceMoveTime;
+	LinkStorage mpTargetLeadingMoveTime, mpTargetReferenceMoveTime;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -86,6 +85,14 @@ public:
 	
 	/** Create a copy of this rule. */
 	aeRule::Ref CreateCopy() const override;
+	
+	/** Create link copies. Required for rules copied to clipboard. */
+	void CreateLinkCopies() override;
+	
+	/** Ensure links are valid. Required for rules pasted from clipboard. */
+	void EnsureValidLinks(const aeAnimator &animator,
+		decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+		decTDictionary<aeController::Ref,aeController::Ref> &addControllers) override;
 	/*@}*/
 	
 	/** \name Operators */

@@ -143,6 +143,10 @@ private:
 		const decTexMatrix2 &transformInverse, deSkinPropertyNode &childNode);
 	void pDrawImage(const sContext &context, const deImage &image,
 		const decVector2 &tcScale, const decVector2 &tcOffset, int layer);
+	void pDrawGlyphSdf(const sContext &context, const deImage &image,
+		const decVector2 &tcScale, const decVector2 &tcOffset, const decPoint &tcClampMin,
+		const decPoint &tcClampMax, int layer, float sdfPixelRange, const decVector2 &distanceRemap,
+		float dilation, float borderSize, const decColor &fillColor, const decColor &borderColor);
 	void pWritePixel(const sContext &context, int offset, const decColor &color);
 	void pWritePixelSet(int offset, const decColor &color);
 	void pWritePixelBlend(int offset, const decColor &color, float alpha);

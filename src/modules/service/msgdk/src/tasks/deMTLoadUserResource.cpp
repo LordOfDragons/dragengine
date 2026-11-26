@@ -40,6 +40,7 @@ public:
 	pRequestId(requestId),
 	pVFS(deVirtualFileSystem::Ref::New())
 	{
+		pVFS->SetIdentifier("mssdk:res");
 		SetEmptyRun(true);
 
 		const deVFSMemoryFiles::Ref container(deVFSMemoryFiles::Ref::New(decPath::CreatePathUnix("/")));

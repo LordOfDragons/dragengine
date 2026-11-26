@@ -38,9 +38,10 @@
 ////////////////////////////
 
 deadArchiveFile::deadArchiveFile(deArchiveDelga &module, const char *filename,
-const unz_file_info &info, const unz_file_pos &archivePosition) :
+	const char *fullFilename, const unz_file_info &info, const unz_file_pos &archivePosition) :
 pModule(module),
 pFilename(filename),
+pFullFilename(fullFilename),
 pArchivePosition(archivePosition),
 pFileSize((int)info.uncompressed_size),
 pCompressedSize((int)info.compressed_size),

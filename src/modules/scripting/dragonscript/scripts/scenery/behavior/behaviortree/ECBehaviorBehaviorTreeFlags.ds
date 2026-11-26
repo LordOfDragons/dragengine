@@ -33,6 +33,7 @@ pin Dragengine.Utils
 
 /**
  * \brief Behavior element behavior adding flags support to behavior tree support.
+ * \deprecated Use \ref ECBehaviorBTSMFlags instead.
  * 
  * Behavior adds behavior tree actions and conditions to an ECBehaviorBehaviorTree allowing
  * scripts and behavior trees to set, clear and check flags. This can be used to signal events

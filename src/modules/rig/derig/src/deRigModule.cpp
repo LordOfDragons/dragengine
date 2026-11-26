@@ -857,93 +857,96 @@ void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decVector vector;
-	int i;
 	
-	try{
-		auto constraint = deTUniqueReference<deRigConstraint>::New();
-		
-		for(i=0; i<root->GetElementCount(); i++){
-			tag = pGetTagAt(root, i);
-			if(tag){
-				if(strcmp(tag->GetName(), "position") == 0){
-					vector.Set(0.0f, 0.0f, 0.0f);
-					pParseVector(tag, vector);
-					constraint->SetReferencePosition(vector);
+	auto constraint = deTUniqueReference<deRigConstraint>::New();
+	
+	for(int i=0; i<root->GetElementCount(); i++){
+		tag = pGetTagAt(root, i);
+		if(tag){
+			if(strcmp(tag->GetName(), "position") == 0){
+				vector.Set(0.0f, 0.0f, 0.0f);
+				pParseVector(tag, vector);
+				constraint->SetReferencePosition(vector);
+				
+			}else if(strcmp(tag->GetName(), "rotation") == 0){
+				vector.Set(0.0f, 0.0f, 0.0f);
+				pParseVector(tag, vector);
+				constraint->SetReferenceOrientation(decMatrix::CreateRotation(vector * DEG2RAD).ToQuaternion());
+				
+			}else if(strcmp(tag->GetName(), "position2") == 0){ // DEPRECATED
+				
+			}else if(strcmp(tag->GetName(), "offset") == 0){
+				vector.Set(0.0f, 0.0f, 0.0f);
+				pParseVector(tag, vector);
+				constraint->SetBoneOffset(vector);
+				
+			}else if(strcmp(tag->GetName(), "rotation2") == 0){ // DEPRECATED
+				
+			}else if(strcmp(tag->GetName(), "bone") == 0){
+				cdata = tag->GetFirstData();
+				
+				if(cdata){
+					if(cdata->GetData() == bone->GetName()){
+						LogErrorFormat("Constraint of bone '%s' references its own bone\n",
+							bone->GetName().GetString());
+						DETHROW(deeInvalidFileFormat);
+					}
+					constraint->SetParentBone(boneNameList.AddName(cdata->GetData()));
 					
-				}else if(strcmp(tag->GetName(), "rotation") == 0){
-					vector.Set(0.0f, 0.0f, 0.0f);
-					pParseVector(tag, vector);
-					constraint->SetReferenceOrientation(decMatrix::CreateRotation(vector * DEG2RAD).ToQuaternion());
-					
-				}else if(strcmp(tag->GetName(), "position2") == 0){ // DEPRECATED
-					
-				}else if(strcmp(tag->GetName(), "offset") == 0){
-					vector.Set(0.0f, 0.0f, 0.0f);
-					pParseVector(tag, vector);
-					constraint->SetBoneOffset(vector);
-					
-				}else if(strcmp(tag->GetName(), "rotation2") == 0){ // DEPRECATED
-					
-				}else if(strcmp(tag->GetName(), "bone") == 0){
-					cdata = tag->GetFirstData();
-					
-					if(cdata){
-						constraint->SetParentBone(boneNameList.AddName(cdata->GetData()));
+				}else{
+					constraint->SetParentBone(-1);
+				}
+				
+			}else if(strcmp(tag->GetName(), "rope") == 0){
+				cdata = tag->GetFirstData();
+				
+				if(cdata){
+					if(strcmp(cdata->GetData(), "true") == 0){
+						constraint->SetIsRope(true);
+						
+					}else if(strcmp(cdata->GetData(), "false") == 0){
+						constraint->SetIsRope(false);
 						
 					}else{
-						constraint->SetParentBone(-1);
+						LogErrorFormat("Unknown value '%s' in tag '%s'\n",
+							cdata->GetData().GetString(), tag->GetName().GetString());
 					}
 					
-				}else if(strcmp(tag->GetName(), "rope") == 0){
-					cdata = tag->GetFirstData();
-					
-					if(cdata){
-						if(strcmp(cdata->GetData(), "true") == 0){
-							constraint->SetIsRope(true);
-							
-						}else if(strcmp(cdata->GetData(), "false") == 0){
-							constraint->SetIsRope(false);
-							
-						}else{
-							LogErrorFormat("Unknown value '%s' in tag '%s'\n",
-								cdata->GetData().GetString(), tag->GetName().GetString());
-						}
-						
-					}else{
-						LogErrorFormat("Unknown value '' in tag '%s'\n",
-							tag->GetName().GetString());
-					}
-					
-				}else if(strcmp(tag->GetName(), "breakingThreshold") == 0){
-					cdata = tag->GetFirstData();
-					if(cdata){
-						constraint->SetBreakingThreshold(strtof(cdata->GetData(), nullptr));
-					}
-					
-				}else if(strcmp(tag->GetName(), "limits") == 0){
-					pParseConstraintLimits(tag, constraint);
-					
-				}else if(strcmp(tag->GetName(), "springStiffness") == 0){
-					pParseConstraintSpringStiffness(tag, constraint);
-					
-				}else if(strcmp(tag->GetName(), "damping") == 0){
-					pParseConstraintDamping(tag, constraint);
-					
-				}else if(strcmp(tag->GetName(), "linearX") == 0){
-					pParseConstraintDof(*tag, constraint->GetDofLinearX(), true);
-					
-				}else if(strcmp(tag->GetName(), "linearY") == 0){
-					pParseConstraintDof(*tag, constraint->GetDofLinearY(), true);
-					
-				}else if(strcmp(tag->GetName(), "linearZ") == 0){
-					pParseConstraintDof(*tag, constraint->GetDofLinearZ(), true);
-					
-				}else if(strcmp(tag->GetName(), "angularX") == 0){
-					pParseConstraintDof(*tag, constraint->GetDofAngularX(), false);
-					
-				}else if(strcmp(tag->GetName(), "angularY") == 0){
-					pParseConstraintDof(*tag, constraint->GetDofAngularY(), false);
-					
+				}else{
+					LogErrorFormat("Unknown value '' in tag '%s'\n",
+						tag->GetName().GetString());
+				}
+				
+			}else if(strcmp(tag->GetName(), "breakingThreshold") == 0){
+				cdata = tag->GetFirstData();
+				if(cdata){
+					constraint->SetBreakingThreshold(strtof(cdata->GetData(), nullptr));
+				}
+				
+			}else if(strcmp(tag->GetName(), "limits") == 0){
+				pParseConstraintLimits(tag, constraint);
+				
+			}else if(strcmp(tag->GetName(), "springStiffness") == 0){
+				pParseConstraintSpringStiffness(tag, constraint);
+				
+			}else if(strcmp(tag->GetName(), "damping") == 0){
+				pParseConstraintDamping(tag, constraint);
+				
+			}else if(strcmp(tag->GetName(), "linearX") == 0){
+				pParseConstraintDof(*tag, constraint->GetDofLinearX(), true);
+				
+			}else if(strcmp(tag->GetName(), "linearY") == 0){
+				pParseConstraintDof(*tag, constraint->GetDofLinearY(), true);
+				
+			}else if(strcmp(tag->GetName(), "linearZ") == 0){
+				pParseConstraintDof(*tag, constraint->GetDofLinearZ(), true);
+				
+			}else if(strcmp(tag->GetName(), "angularX") == 0){
+				pParseConstraintDof(*tag, constraint->GetDofAngularX(), false);
+				
+			}else if(strcmp(tag->GetName(), "angularY") == 0){
+				pParseConstraintDof(*tag, constraint->GetDofAngularY(), false);
+				
 			}else if(strcmp(tag->GetName(), "angularZ") == 0){
 				pParseConstraintDof(*tag, constraint->GetDofAngularZ(), false);
 			}
@@ -951,11 +954,9 @@ void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone
 	}
 	
 	bone->AddConstraint(std::move(constraint));
-	
-	}catch(const deException &){
-		throw;
-	}
-}void deRigModule::pParseConstraintDof(const decXmlElementTag &root,
+}
+
+void deRigModule::pParseConstraintDof(const decXmlElementTag &root,
 deColliderConstraintDof &dof, bool linearConstraint){
 	const int count = root.GetElementCount();
 	float value;

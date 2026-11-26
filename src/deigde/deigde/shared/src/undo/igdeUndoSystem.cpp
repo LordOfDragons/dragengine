@@ -60,7 +60,7 @@ int igdeUndoSystem::GetCount() const{
 }
 
 const igdeUndo::Ref &igdeUndoSystem::GetAt(int index) const{
-	return pUndos.GetAt(pUndos.GetCount() - 1 - index);
+	return pUndos[pUndos.GetCount() - 1 - index];
 }
 
 const igdeUndo::Ref &igdeUndoSystem::GetTop() const{
@@ -75,6 +75,7 @@ void igdeUndoSystem::Add(igdeUndo *undo, bool runRedo){
 		return;
 	}
 	
+	const igdeUndo::Ref guard(undo);
 	RemoveAllRedoable();
 	
 	if(runRedo){
@@ -89,7 +90,7 @@ void igdeUndoSystem::Add(igdeUndo *undo, bool runRedo){
 }
 
 void igdeUndoSystem::RemoveAll(){
-	if(pUndos.GetCount() == 0){
+	if(pUndos.IsEmpty()){
 		return;
 	}
 	
@@ -101,9 +102,7 @@ void igdeUndoSystem::RemoveAll(){
 
 
 void igdeUndoSystem::SetMaxUndoCount(int maxUndos){
-	if(maxUndos < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(maxUndos >= 0)
 	
 	if(maxUndos == pMaxUndos){
 		return;
@@ -114,9 +113,7 @@ void igdeUndoSystem::SetMaxUndoCount(int maxUndos){
 }
 
 void igdeUndoSystem::SetMaxMemory(int maxMemory){
-	if(maxMemory < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(maxMemory >= 0)
 	
 	pMaxMemory = maxMemory;
 }
@@ -132,15 +129,13 @@ void igdeUndoSystem::Undo(){
 		return;
 	}
 	
-	igdeUndo &undo = pUndos.GetAt(pUndos.GetCount() - 1 - pRedoCount);
-	
 	// undo the given action. the undo action is responsible to do its work alike that in
 	// the case of an exception the system is still in a working state but not necessary
 	// in an undoable state. hence in the case of an exception we reset the undo system.
 	// better loose the possibility to undo than loosing a stable system and accidently
 	// save it.
 	try{
-		undo.Undo();
+		pUndos[pUndos.GetCount() - 1 - pRedoCount]->Undo();
 		
 	}catch(const deException &){
 		RemoveAll();
@@ -156,14 +151,12 @@ void igdeUndoSystem::Redo(){
 		return;
 	}
 	
-	igdeUndo &undo = pUndos.GetAt(pUndos.GetCount() - pRedoCount);
-	
 	// redo the given action. the redo action is responsible to do its work alike that in the
 	// case of an exception the system is still in a working state but not necessary in a
 	// redoable state. hence in the case of an exception we reset the undo system. better
 	// loose the possibility to / redo than loosing a stable system and accidently save it.
 	try{
-		undo.Redo();
+		pUndos[pUndos.GetCount() - pRedoCount]->Redo();
 		
 	}catch(const deException &){
 		RemoveAll();

@@ -58,6 +58,9 @@ void deBaseGraphicParticleEmitterInstance::ReferencePositionChanged(){
 void deBaseGraphicParticleEmitterInstance::EnableCastingChanged(){
 }
 
+void deBaseGraphicParticleEmitterInstance::RemoveAfterLastParticleDiedChanged(){
+}
+
 void deBaseGraphicParticleEmitterInstance::CollisionFilterChanged(){
 }
 

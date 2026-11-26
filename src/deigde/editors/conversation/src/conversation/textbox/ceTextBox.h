@@ -55,8 +55,8 @@ private:
 	deFontSize::Ref pEngFontSize;
 	
 	decString pPathFont;
-	decColor pBackgroundColor;
-	decColor pTextColor;
+	decColor pBackgroundColor, pTextColor, pBorderColor;
+	float pBorderThickness;
 	int pTextSize;
 	int pPadding;
 	int pTextOffset;
@@ -110,6 +110,18 @@ public:
 	
 	/** \brief Set text color. */
 	void SetTextColor(const decColor &color);
+	
+	/** \brief Border color. */
+	inline const decColor &GetBorderColor() const{ return pBorderColor; }
+	
+	/** \brief Set border color. */
+	void SetBorderColor(const decColor &color);
+	
+	/** \brief Border thickness. */
+	inline float GetBorderThickness() const{ return pBorderThickness; }
+	
+	/** \brief Set border thickness. */
+	void SetBorderThickness(float thickness);
 	
 	/** \brief Text size. */
 	inline int GetTextSize() const{ return pTextSize; }

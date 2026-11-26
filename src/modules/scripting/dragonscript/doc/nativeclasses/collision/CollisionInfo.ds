@@ -23,6 +23,8 @@ class CollisionInfo
 	/**
 	 * \brief Create copy of collision information.
 	 * \version 1.33
+	 * 
+	 * Collision history is deep copied.
 	 */
 	func CollisionInfo copy()
 		return null
@@ -50,7 +52,7 @@ class CollisionInfo
 	
 	
 	
-	/** \brief Ccollider or \em null if hit something else. */
+	/** \brief Collider or \em null if hit something else. */
 	func Collider getCollider()
 		return null
 	end
@@ -183,5 +185,114 @@ class CollisionInfo
 	/** \brief Set if collision detection has to stop. */
 	func void setStopTesting( bool stopTesting )
 	end
+	
+	
+	
+	/**
+	 * \brief Original position before the collision.
+	 * \version 1.35
+	 */
+	func DVector getOrgPosition()
+		return null
+	end
+	
+	/**
+	 * \brief Original orientation before the collision.
+	 * \version 1.35
+	 */
+	func Quaternion getOrgOrientation()
+		return null
+	end
+
+	/**
+	 * \brief Original displacement before the collision.
+	 * \version 1.35
+	 */
+	func DVector getOrgDisplacement()
+		return null
+	end
+	
+	/**
+	 * \brief Original rotation before the collision.
+	 * \version 1.35
+	 */
+	func DVector getOrgRotation()
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Blocker position before the collision.
+	 * \version 1.35
+	 */
+	func DVector getBlockerPosition()
+		return null
+	end
+	
+	/**
+	 * \brief Blocker orientation before the collision.
+	 * \version 1.35
+	 */
+	func Quaternion getBlockerOrientation()
+		return null
+	end
+
+	/**
+	 * \brief Blocker displacement before the collision.
+	 * \version 1.35
+	 */
+	func DVector getBlockerDisplacement()
+		return null
+	end
+	
+	/**
+	 * \brief Blocker rotation before the collision.
+	 * \version 1.35
+	 */
+	func DVector getBlockerRotation()
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Collision history count.
+	 * \version 1.35
+	 * 
+	 * Count of collision history entries.
+	 * 
+	 * Collision history can contain list of accumulated collisions in the same detection step.
+	 * Useful to detect and prevent stuck situations as well as improving collision response
+	 * by knowing more than just the current collision.
+	 */
+	func int historyGetCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Collision history entry at index.
+	 * \version 1.35
+	 * \throws EInvalidParam index is less than zero or greater than or equal to history count.
+	 * 
+	 * Collision history entry at index.
+	 * 
+	 * Collision history can contain list of accumulated collisions in the same detection step.
+	 * Useful to detect and prevent stuck situations as well as improving collision response
+	 * by knowing more than just the current collision.
+	 */
+	func CollisionInfo historyGetAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Collision is stuck.
+	 * 
+	 * Flag is set for the last collision response before the collider is considered stuck.
+	 */
+	func bool isStuck()
+		return false
+	end
+	
 	/*@}*/
 end

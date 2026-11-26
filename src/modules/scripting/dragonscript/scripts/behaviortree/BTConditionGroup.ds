@@ -1,0 +1,194 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.BehaviorTreeSystem
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+/**
+ * \brief Behavior tree condition group.
+ */
+class BTConditionGroup
+	var Array pConditions, pConditionGroups
+	var BTRule.ConditionMode pConditionMode
+	var Dictionary pParameters
+	
+	
+	/**
+	 * \brief Create behavior tree condition group.
+	 */
+	func new()
+		pConditions = Array.new()
+		pConditionGroups = Array.new()
+		pConditionMode = BTRule.ConditionMode.allTrue
+		pParameters = Dictionary.new()
+	end
+	
+	
+	/**
+	 * \brief Parameters as Dictionary of \ref String key and \ref String value.
+	 * \warning Do not change the content of the dictionary as it is shared.
+	 */
+	func Dictionary getParameters()
+		return pParameters
+	end
+	
+	
+	/** \brief Number of conditions. */
+	func int getConditionCount()
+		return pConditions.getCount()
+	end
+	
+	/** \brief Get condition at index. */
+	func String getConditionAt(int index)
+		return pConditions.getAt(index) cast String
+	end
+	
+	/** \brief Index of condition or -1 if absent. */
+	func int indexOfCondition(String condition)
+		return pConditions.indexOf(condition)
+	end
+	
+	/** \brief Add condition. */
+	func void addCondition(String condition)
+		if condition == null
+			throw EInvalidParam.new()
+		end
+		pConditions.add(condition)
+	end
+	
+	/** \brief Remove condition. */
+	func void removeCondition(String condition)
+		pConditions.remove(condition)
+	end
+	
+	/** \brief Remove all conditions. */
+	func void removeAllConditions()
+		pConditions.removeAll()
+	end
+	
+	/** \brief Visit conditions with block with parameter String. */
+	func void forEachCondition(Block ablock)
+		pConditions.forEach(ablock)
+	end
+	
+	/** \brief Find condition with block with parameter String. */
+	func String findCondition(Block ablock)
+		return pConditions.find(ablock) cast String
+	end
+	
+	/** \brief Condition mode from eConditionModes. */
+	func BTRule.ConditionMode getConditionMode()
+		return pConditionMode
+	end
+	
+	/** \brief Set condition mode from eConditionModes. */
+	func void setConditionMode(BTRule.ConditionMode mode)
+		pConditionMode = mode
+	end
+	
+	
+	/** \brief Get all condition groups as \ref Array of \ref BTConditionGroup. */
+	func Array getConditionGroups()
+		return pConditionGroups
+	end
+	
+	/** \brief Count of condition groups. */
+	func int getConditionGroupCount()
+		return pConditionGroups.getCount()
+	end
+	
+	/** \brief Get condition group at index. */
+	func BTConditionGroup getConditionGroupAt(int index)
+		return pConditionGroups.getAt(index) cast BTConditionGroup
+	end
+	
+	/** \brief Add condition group. */
+	func void addConditionGroup(BTConditionGroup group)
+		if group == null
+			throw ENullPointer.new("group")
+		end
+		
+		pConditionGroups.add(group)
+	end
+	
+	/** \brief Visit condition groups with block with parameter \ref BTConditionGroup. */
+	func void forEachConditionGroup(Block ablock)
+		pConditionGroups.forEach(ablock)
+	end
+	
+	/** \brief Find condition group with block with parameter \ref BTConditionGroup. */
+	func BTConditionGroup findConditionGroup(Block ablock)
+		return pConditionGroups.find(ablock) cast BTConditionGroup
+	end
+	
+	
+	/**
+	 * \brief Evaluate all conditions.
+	 * 
+	 * If no condition is present \em true is returned.
+	 */
+	func bool evaluateConditions(BTContext context)
+		if pConditions.getCount() == 0 and pConditionGroups.getCount() == 0
+			return true
+		end
+		
+		select pConditionMode
+		case BTRule.ConditionMode.allTrue
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
+			end) == null and pConditionGroups.find(block BTConditionGroup each
+				return not each.evaluateConditions(context)
+			end) == null
+			
+		case BTRule.ConditionMode.anyTrue
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
+			end) != null or pConditionGroups.find(block BTConditionGroup each
+				return each.evaluateConditions(context)
+			end) != null
+			
+		case BTRule.ConditionMode.anyFalse
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
+			end) != null or pConditionGroups.find(block BTConditionGroup each
+				return not each.evaluateConditions(context)
+			end) != null
+			
+		case BTRule.ConditionMode.allFalse
+			return pConditions.find(block String each
+				var BTCondition condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
+			end) == null and pConditionGroups.find(block BTConditionGroup each
+				return each.evaluateConditions(context)
+			end) == null
+			
+		else
+			return false
+		end
+	end
+end

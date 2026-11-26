@@ -156,7 +156,18 @@ void deParticleEmitterInstance::SetEnableCasting(bool enable){
 }
 
 void deParticleEmitterInstance::SetRemoveAfterLastParticleDied(bool remove){
+	if(remove == pRemoveAfterLastParticleDied){
+		return;
+	}
+	
 	pRemoveAfterLastParticleDied = remove;
+	
+	if(pPeerGraphic){
+		pPeerGraphic->EnableCastingChanged();
+	}
+	if(pPeerPhysics){
+		pPeerPhysics->EnableCastingChanged();
+	}
 }
 
 void deParticleEmitterInstance::SetTimeScale(float scale){

@@ -85,8 +85,9 @@
 	
 	<designer name='Label.DisplayInputSource' type='Label'>
 		<borderSize parameter='normal.padding' all='3'/>
-		<font parameter='normal.font' size='26'>../modern/fonts/binding.defont</font>
+		<font parameter='normal.font' size='26'>../modern/fonts/liberation/sans/bold.ttf</font>
 		<color parameter='normal.textColor' r='1' g='1' b='0'/>
+		<float parameter='normal.textBorderThickness'>0.075</float>
 	</designer>
 	
 	<designer name='Button.EditBindingsEntry.DeleteBinding' type='Button'>

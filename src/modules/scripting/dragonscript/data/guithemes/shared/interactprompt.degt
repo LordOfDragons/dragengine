@@ -21,7 +21,8 @@
 	</designer>
 	
 	<designer name='Label.InteractPromptEntry' type='Label'>
-		<font parameter='normal.font' size='31'>../modern/fonts/subtitle.defont</font>
+		<font parameter='normal.font' size='31'>../modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<float parameter='normal.textBorderThickness'>0.075</float>
 	</designer>
 </guiTheme>

@@ -218,16 +218,24 @@ class ProgressGauge extends Widget implements RangeModelListener
 	
 	
 	func void onSetFont()
+		super.onSetFont()
 		updateLabelCanvasParams()
 		updateProgress()
 	end
 	
 	func void onSetTextColor()
+		super.onSetTextColor()
 		updateLabelCanvasParams()
 		updateProgress()
 	end
 	
-	 func void onResize(WidgetEvent event)
+	func void onSetTextDilation()
+		super.onSetTextDilation()
+		updateLabelCanvasParams()
+		updateProgress()
+	end
+	
+	func void onResize(WidgetEvent event)
 		super.onResize(event)
 		updateProgress()
 	end
@@ -287,7 +295,7 @@ class ProgressGauge extends Widget implements RangeModelListener
 		var Point textSize = Point.new(1, 1)
 		
 		if font != null
-			textSize = font.getTextSize(text)
+			textSize = font.getTextSize(text, getTextDilation() + getTextBorderThickness())
 		end
 		
 		var Point position = (getSize() - textSize) / 2
@@ -322,6 +330,9 @@ class ProgressGauge extends Widget implements RangeModelListener
 		end
 		
 		pCanvasText.setColor(color)
+		pCanvasText.setBorderColor(getTextBorderColor())
+		pCanvasText.setBorderThickness(getTextBorderThickness())
+		pCanvasText.setDilation(getTextDilation())
 		
 		pCanvasText.setVisible(pShowPercentage)
 	end

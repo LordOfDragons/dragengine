@@ -398,6 +398,7 @@ void delLauncher::pLocatePath(){
 
 void delLauncher::pInitVFS(){
 	pVFS = deVirtualFileSystem::Ref::New();
+	pVFS->SetIdentifier("delauncher");
 	
 	// add the found path to the virtual file system. this makes it easier to find the
 	// files later on without having to deal with file system specific quirks

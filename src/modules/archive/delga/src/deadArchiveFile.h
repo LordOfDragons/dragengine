@@ -47,7 +47,7 @@ public:
 private:
 	deArchiveDelga &pModule;
 	
-	decString pFilename;
+	decString pFilename, pFullFilename;
 	unz_file_pos pArchivePosition;
 	int pFileSize;
 	TIME_SYSTEM pModificationTime;
@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file entry. */
-	deadArchiveFile(deArchiveDelga &module, const char *filename,
+	deadArchiveFile(deArchiveDelga &module, const char *filename, const char *fullFilename,
 		const unz_file_info &info, const unz_file_pos &archivePosition);
 	
 protected:
@@ -74,6 +74,9 @@ public:
 	/*@{*/
 	/** \brief Filename. */
 	inline const decString &GetFilename() const{ return pFilename; }
+	
+	/** \brief Full filename. */
+	inline const decString &GetFullFilename() const{ return pFullFilename; }
 	
 	/** \brief Position in zip file. */
 	inline const unz_file_pos &GetArchivePosition() const{ return pArchivePosition; }

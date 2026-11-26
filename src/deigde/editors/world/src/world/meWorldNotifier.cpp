@@ -368,3 +368,10 @@ void meWorldNotifier::ActiveCameraChanged(meWorld*){
 
 void meWorldNotifier::CameraChanged(meWorld*, meCamera*){
 }
+
+
+void meWorldNotifier::WorldBehaviorsChanged(meWorld*){
+}
+
+void meWorldNotifier::WorldBehaviorChanged(meWorld*, meWorldBehavior*){
+}

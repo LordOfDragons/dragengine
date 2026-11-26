@@ -29,6 +29,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/font/deFont.h>
+#include <dragengine/resources/font/deFontSize.h>
 
 class igdeEnvironment;
 
@@ -77,6 +78,7 @@ private:
 	float pSize;
 	bool pBold, pItalic, pUnderline, pStrikeThrough;
 	deFont::Ref pEngineFont;
+	deFontSize::Ref pEngineFontSize;
 	
 	
 protected:
@@ -143,6 +145,13 @@ public:
 	 * Engine font is created the first time it is requested.
 	 */
 	const deFont::Ref &GetEngineFont();
+	
+	/**
+	 * \brief Get engine font size.
+	 * 
+	 * Engine font size is created the first time it is requested.
+	 */
+	const deFontSize::Ref &GetEngineFontSize();
 	/*@}*/
 	
 	

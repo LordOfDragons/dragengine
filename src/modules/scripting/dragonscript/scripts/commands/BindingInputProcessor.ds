@@ -108,7 +108,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * Default implementation calls Command.start() .
 	 */
 	protected func void activate(Binding binding)
-		binding.getCommand().start()
+		binding.getCommand().start(binding)
 	end
 	
 	/**
@@ -117,7 +117,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * Default implementation calls Command.stop() .
 	 */
 	protected func void deactivate(Binding binding)
-		binding.getCommand().stop()
+		binding.getCommand().stop(binding)
 	end
 	
 	/**
@@ -126,7 +126,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * Default implementation calls Command.analogRelative() .
 	 */
 	protected func void analogRelative(Binding binding, float value)
-		binding.getCommand().analogRelative(value)
+		binding.getCommand().analogRelative(binding, value)
 	end
 	
 	/**
@@ -135,7 +135,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * Default implementation calls Command.analogRelative() .
 	 */
 	protected func void analogAbsolute(Binding binding, float value)
-		binding.getCommand().analogAbsolute(value)
+		binding.getCommand().analogAbsolute(binding, value)
 	end
 	
 	/**
@@ -144,7 +144,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * Default implementation calls Command.touch() .
 	 */
 	protected func void touch(Binding binding)
-		binding.getCommand().touch()
+		binding.getCommand().touch(binding)
 	end
 	
 	/**
@@ -153,7 +153,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * Default implementation calls Command.untouch() .
 	 */
 	protected func void untouch(Binding binding)
-		binding.getCommand().untouch()
+		binding.getCommand().untouch(binding)
 	end
 	
 	/**
@@ -163,7 +163,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * Default implementation calls Command.approach() .
 	 */
 	protected func void approach(Binding binding)
-		binding.getCommand().approach()
+		binding.getCommand().approach(binding)
 	end
 	
 	/**
@@ -173,7 +173,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * Default implementation calls Command.withdraw() .
 	 */
 	protected func void withdraw(Binding binding)
-		binding.getCommand().withdraw()
+		binding.getCommand().withdraw(binding)
 	end
 	
 	

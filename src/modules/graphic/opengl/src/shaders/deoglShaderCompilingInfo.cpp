@@ -41,7 +41,6 @@
 #include <dragengine/resources/loader/tasks/deResourceLoaderTask.h>
 #include <dragengine/resources/video/deVideoManager.h>
 #include <dragengine/resources/video/deVideoPlayerManager.h>
-#include <dragengine/threading/deMutexGuard.h>
 
 
 // Class deoglShaderCompilingInfo
@@ -64,6 +63,7 @@ pTransparency(0.0f),
 pMaxTransparency(1.0f), // 0.95f
 pHasLoadingShader(false),
 pHasCompilingShader(false),
+pTextEnlarge(0.0f),
 pVideoCompilePlayPosition(0.0f)
 {
 	pCreateCanvas();
@@ -138,8 +138,12 @@ void deoglShaderCompilingInfo::pCreateCanvas(){
 	*/
 	
 	const decColor textColor(0.85f, 0.85f, 0.85f);
+	const float borderThickness = 0.075f;
+	const float fontSize = 29.0f;
 	
-	pFontText = engine.GetFontManager()->LoadFont(&vfs, "loading.defont", "/share/fonts");
+	pFontText = engine.GetFontManager()->LoadFont(&vfs, "regular.ttf", "/share/fonts");
+	pFontSizeText = pFontText->PrepareSize(fontSize);
+	pTextEnlarge = borderThickness;
 	
 	pVideoCompile = engine.GetVideoManager()->LoadVideo(&vfs,
 		"compileShaders.webm", "/share/videos", false);
@@ -160,15 +164,17 @@ void deoglShaderCompilingInfo::pCreateCanvas(){
 	
 	pCanvasText1 = canvasManager.CreateCanvasText();
 	pCanvasText1->SetFont(pFontText);
-	pCanvasText1->SetFontSize((float)pFontText->GetLineHeight());
+	pCanvasText1->SetFontSize(fontSize);
 	pCanvasText1->SetColor(textColor);
+	pCanvasText1->SetBorderThickness(borderThickness);
 	pCanvasText1->SetOrder((float)pCanvasView->GetCanvasCount());
 	pCanvasView->AddCanvas(pCanvasText1);
 	
 	pCanvasText2 = canvasManager.CreateCanvasText();
 	pCanvasText2->SetFont(pFontText);
-	pCanvasText2->SetFontSize((float)pFontText->GetLineHeight());
+	pCanvasText2->SetFontSize(fontSize);
 	pCanvasText2->SetColor(textColor);
+	pCanvasText2->SetBorderThickness(borderThickness);
 	pCanvasText2->SetOrder((float)pCanvasView->GetCanvasCount());
 	pCanvasView->AddCanvas(pCanvasText2);
 	
@@ -337,13 +343,14 @@ void deoglShaderCompilingInfo::pUpdateText(){
 		break;
 	}
 	
-	const int lineHeight = pFontText->GetLineHeight() * 9 / 10;
-	const decPoint text1Size(pFontText->TextSize(text1));
-	const decPoint text2Size(pFontText->TextSize(text2));
+	const float fontSize = pCanvasText1->GetFontSize();
+	const int lineHeight = (int)ceilf(fontSize * 1.0f);
+	const auto text1Size = pFontText->TextSize(text1, pFontSizeText, fontSize, pTextEnlarge);
+	const auto text2Size = pFontText->TextSize(text2, pFontSizeText, fontSize, pTextEnlarge);
 	
 	const decVector2 ps(pCanvasView->GetSize());
-	const decPoint areaTL((int)(ps.x * 460.0f / 800.0f), (int)(ps.y * 168.0f / 400.0f));
-	const decPoint areaBR((int)(ps.x * 770.0f / 800.0f), (int)(ps.y * 378.0f / 400.0f));
+	const decPoint areaTL((int)(ps.x * 455.0f / 800.0f), (int)(ps.y * 168.0f / 400.0f));
+	const decPoint areaBR((int)(ps.x * 760.0f / 800.0f), (int)(ps.y * 378.0f / 400.0f));
 	const decPoint areaSize(areaBR - areaTL + decPoint(1, 1));
 	
 	const int top = areaTL.y + (areaSize.y - lineHeight * 2) / 2;

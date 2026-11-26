@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "sePropertyNodeText.h"
 #include "../seProperty.h"
 #include "../../seSkin.h"
@@ -47,7 +43,9 @@
 
 sePropertyNodeText::sePropertyNodeText(const deEngine &engine) :
 sePropertyNode(entText, engine, TextMappedCount),
-pTextSize(10.0f){
+pTextSize(10.0f),
+pBorderThickness(0.0f),
+pDilation(0.0f){
 }
 
 sePropertyNodeText::sePropertyNodeText(const sePropertyNodeText &node) :
@@ -57,7 +55,10 @@ pFont(node.pFont),
 pFontSize(node.pFontSize),
 pTextSize(node.pTextSize),
 pText(node.pText),
-pColor(node.pColor){
+pColor(node.pColor),
+pBorderColor(node.pBorderColor),
+pBorderThickness(node.pBorderThickness),
+pDilation(node.pDilation){
 }
 
 sePropertyNodeText::~sePropertyNodeText(){
@@ -91,7 +92,7 @@ void sePropertyNodeText::SetTextSize(float size){
 }
 
 void sePropertyNodeText::UpdateFont(){
-	pFontSize = nullptr;
+	pFontSize.Clear();
 	
 	if(!pPath.IsEmpty() && GetProperty() && GetProperty()->GetTexture()
 	&& GetProperty()->GetTexture()->GetSkin()){
@@ -108,7 +109,7 @@ void sePropertyNodeText::UpdateFont(){
 
 void sePropertyNodeText::UpdateFontSize(){
 	if(!pFont){
-		pFontSize = nullptr;
+		pFontSize.Clear();
 		return;
 	}
 	
@@ -138,6 +139,33 @@ void sePropertyNodeText::SetColor(const decColor &color){
 	NotifyChanged();
 }
 
+void sePropertyNodeText::SetBorderColor(const decColor &color){
+	if(color.IsEqualTo(pBorderColor)){
+		return;
+	}
+	
+	pBorderColor = color;
+	NotifyChanged();
+}
+
+void sePropertyNodeText::SetBorderThickness(float thickness){
+	thickness = decMath::max(thickness, 0.0f);
+	if(fabsf(thickness - pBorderThickness) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pBorderThickness = thickness;
+	NotifyChanged();
+}
+
+void sePropertyNodeText::SetDilation(float dilation){
+	if(fabsf(dilation - pDilation) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pDilation = dilation;
+	NotifyChanged();
+}
 
 
 sePropertyNode::Ref sePropertyNodeText::Copy() const{

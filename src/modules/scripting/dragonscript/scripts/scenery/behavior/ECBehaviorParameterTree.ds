@@ -1,0 +1,227 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Behavior element behavior adding support to access a parameter tree.
+ * \version 1.35
+ * 
+ * The parameter tree can be loaded individually for each element instance or using the one
+ * loaded by the \ref GWBehaviorParameterTree game world behavior. Using the game world behavior
+ * provided parameter tree multiple element data can be grouped and loaded and accessed using
+ * a tree path. When using the tree path into the game world behavior parameter tree the path
+ * should be a data tree itself but this is not mandatory. The accessor function assumes this
+ * to be true for convenience.
+ * 
+ * Element class properties have the prefix "parameterTree.".
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_parametertree
+ */
+class ECBehaviorParameterTree extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \version 1.35
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorParameterTree'>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
+	 */
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorParameterTree")
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorParameterTree behavior = ECBehaviorParameterTree.new(eclass)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "parameterTree")
+			return behavior
+		end
+	end
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		var ECBehaviorParameterTree pECBehavior
+		var ParameterTree pParameterTree
+		var String pDataPath
+		
+		
+		/** \brief Create element. */
+		func new(ECBehaviorParameterTree ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+		end
+		
+		func void init(StubElement stub)
+			pDataPath = pECBehavior.getDataPath().getValueOrEmpty(stub)
+			
+			var String path = pECBehavior.getPath().getValueOrNull(stub)
+			if path != null
+				var String basePath = getElement().getClass().getBasePath()
+				var LoadParameterTree loader = BehaviorElementClass.sharedFactoryHelper.\
+					defaultLoaders().getParameterTree()
+				
+				if basePath != null
+					pParameterTree = loader.loadFromFile(File.absolutePath(path, basePath).getPath())
+					
+				else
+					pParameterTree = loader.loadFromFile(path)
+				end
+			end
+		end
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorParameterTree getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Parameter tree or null if not defined or not loaded successfully. */
+		func ParameterTree getParameterTree()
+			return pParameterTree
+		end
+		
+		/** \brief Data path. */
+		func String getDataPath()
+			return pDataPath
+		end
+		
+		/**
+		 * \brief Data path tree or null if not found.
+		 * 
+		 * If parameter tree is present in this behavior the path is resolved inside. If parameter
+		 * tree is absent from this behavior and the element is in a game world the parameter tree
+		 * of \ref GWBehaviorParameterTree is used to look up the data path. If nothing is found,
+		 * null is returned.
+		 * 
+		 * This is a convenience method for accessing the data path and requires the data path
+		 * to point to a ParameterTree.
+		 */
+		func ParameterTree getDataPathTree()
+			if pParameterTree != null
+				return pParameterTree.getTreeAt(pDataPath, null)
+			end
+			
+			var GameWorld gameWorld = getElement().getGameWorld()
+			if gameWorld != null
+				var ParameterTree pt = gameWorld.getBehaviorParameterTree().getParameterTree()
+				if pt != null
+					return pt.getTreeAt(pDataPath, null)
+				end
+			end
+			
+			return null
+		end
+	end
+	
+	
+	var String pPrefix
+	var ECPString pPath, pDataPath
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass) this(eclass, "parameterTree.")
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
+		end
+		
+		pPrefix = prefix
+		
+		eclass.addProperty(pPath = ECPString.new(prefix + "path", null))
+		eclass.addProperty(pDataPath = ECPString.new(prefix + "dataPath", ""))
+		
+		eclass.addBehavior(this)
+	end
+	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/** \brief Parameter tree file path. */
+	func ECPString getPath()
+		return pPath
+	end
+	
+	/** \brief Data path within the parameter tree. */
+	func ECPString getDataPath()
+		return pDataPath
+	end
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	/**
+	 * \brief Get behavior in element class or null if absent.
+	 * 
+	 * Use this method to check if a particular \ref BehaviorElementClass contains a behavior
+	 * of type \ref ECBehaviorParameterTree.
+	 */
+	static func ECBehaviorParameterTree getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorParameterTree each
+			return true
+		end) cast ECBehaviorParameterTree
+	end
+	
+	/**
+	 * \brief Get instance in element or null if absent.
+	 * 
+	 * Use this method to check if a particular \ref BehaviorElement contains a behavior instance
+	 * of type \ref ECBehaviorParameterTree.Instance. If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	/** \brief Create behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

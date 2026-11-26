@@ -79,7 +79,7 @@ pWindowMain(windowMain)
 {
 	pCameraInteraction = deTObjectReference<cCameraInteraction>::New(*this);
 	
-	pCameraInteraction->AddListeners(*this, windowMain);
+	pCameraInteraction->AddListeners(*this);
 }
 
 peeViewEmitter::~peeViewEmitter(){

@@ -60,7 +60,9 @@ ceTextBox::ceTextBox(deEngine &engine, deLogger &logger) :
 pEngine(engine),
 pLogger(logger),
 pBackgroundColor(0.0f, 0.0f, 0.0f, 0.5f),
-pTextColor(1.0f, 1.0f, 1.0f, 1.0f),
+pTextColor(1.0f, 1.0f, 1.0f),
+pBorderColor(0.0f, 0.0f, 0.0f),
+pBorderThickness(0.075f),
 pTextSize(18),
 pPadding(10),
 pTextOffset(200)
@@ -69,7 +71,7 @@ pTextOffset(200)
 		pCanvasView = engine.GetCanvasManager()->CreateCanvasView();
 		pCanvasView->SetOrder(10.0f);
 		
-		SetPathFont("/igde/fonts/sans_9_border.defont");
+		SetPathFont("/igde/fonts/liberation/sans/regular.ttf");
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -112,6 +114,26 @@ void ceTextBox::SetTextColor(const decColor &color){
 	}
 	
 	pTextColor = color;
+	UpdateCanvas();
+}
+
+void ceTextBox::SetBorderColor(const decColor &color){
+	if(color.IsEqualTo(pBorderColor)){
+		return;
+	}
+	
+	pBorderColor = color;
+	UpdateCanvas();
+}
+
+void ceTextBox::SetBorderThickness(float thickness){
+	thickness = decMath::max(thickness, 0.0f);
+	
+	if(thickness == pBorderThickness){
+		return;
+	}
+	
+	pBorderThickness = thickness;
 	UpdateCanvas();
 }
 
@@ -176,7 +198,9 @@ void ceTextBox::UpdateCanvas(){
 	
 	// keep box at a height of at least 20 pixel
 	if(pEngFont){
-		boxHeight = decMath::max(boxHeight, padding * 2 + igdeApplication::app().DisplayScaled(pTextSize));
+		const int lineHeight = igdeApplication::app().DisplayScaled(pTextSize);
+		boxHeight = decMath::max(boxHeight, padding * 2 + lineHeight
+			+ (int)ceilf(pBorderThickness * (float)lineHeight * 2.0f));
 	}
 	
 	// resize canvas

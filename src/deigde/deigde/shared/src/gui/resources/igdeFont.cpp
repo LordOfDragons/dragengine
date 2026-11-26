@@ -129,3 +129,13 @@ const deFont::Ref &igdeFont::GetEngineFont(){
 	}
 	return pEngineFont;
 }
+
+const deFontSize::Ref &igdeFont::GetEngineFontSize(){
+	if(!pEngineFontSize){
+		auto &font = GetEngineFont();
+		if(font){
+			pEngineFontSize = font->GetSizeWith(font->GetLineHeight());
+		}
+	}
+	return pEngineFontSize;
+}

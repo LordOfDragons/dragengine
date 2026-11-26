@@ -120,7 +120,7 @@ class ConversationInputProcessor extends DefaultInputProcessor
 					event.getSource(), event.getDevice(), event.getCode())
 				
 				if binding != null and pAllowedCommands.has(binding.getCommand().getName())
-					binding.getCommand().start()
+					binding.getCommand().start(binding)
 				end
 			end
 			
@@ -130,7 +130,7 @@ class ConversationInputProcessor extends DefaultInputProcessor
 					event.getSource(), event.getDevice(), event.getCode())
 				
 				if binding != null and pAllowedCommands.has(binding.getCommand().getName())
-					binding.getCommand().stop()
+					binding.getCommand().stop(binding)
 					return
 				end
 			end

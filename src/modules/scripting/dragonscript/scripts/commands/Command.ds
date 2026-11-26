@@ -239,8 +239,26 @@ class Command
 	func void start()
 	end
 	
+	/**
+	 * \brief Input device key or button has been pressed.
+	 * \version 1.35
+	 * \param binding Binding producing the event or null if unknown or generated.
+	 */
+	func void start(Binding binding)
+		start()
+	end
+	
 	/** \brief Input device key or button has been released. */
 	func void stop()
+	end
+	
+	/**
+	 * \brief Input device key or button has been released.
+	 * \version 1.35
+	 * \param binding Binding producing the event or null if unknown or generated.
+	 */
+	func void stop(Binding binding)
+		stop()
 	end
 	
 	/**
@@ -251,6 +269,16 @@ class Command
 	func void pulse()
 		start()
 		stop()
+	end
+	
+	/**
+	 * \brief Convenience method calling start() and stop() in succession.
+	 * \version 1.35
+	 * \param binding Binding producing the event or null if unknown or generated.
+	 */
+	func void pulse(Binding binding)
+		start(binding)
+		stop(binding)
 	end
 	
 	/**
@@ -267,6 +295,22 @@ class Command
 	end
 	
 	/**
+	 * \brief Relative input device axis position changed.
+	 * \version 1.35
+	 * 
+	 * Value is the change in the relative axis. It is reset to 0 right after sending the
+	 * event. No event is sent for the reset. A typical device is mouse movement resulting
+	 * in this method to be called.
+	 * 
+	 * \param value Relative axis position change in axis units. Caller is responsible to
+	 *              adjust the range to make different input devices match in magnitude.
+	 * \param binding Binding producing the event or null if unknown or generated.
+	 */
+	func void analogRelative(Binding binding, float value)
+		analogRelative(value)
+	end
+	
+	/**
 	 * \brief Absolute input device axis position changed.
 	 * 
 	 * Axis keeps position until next event. Gamepad events typically send this method
@@ -278,10 +322,33 @@ class Command
 	end
 	
 	/**
+	 * \brief Absolute input device axis position changed.
+	 * \version 1.35
+	 * 
+	 * Axis keeps position until next event. Gamepad events typically send this method
+	 * when the stick is pushed to a new position.
+	 * 
+	 * \param value New axis position in the range -1 to 1.
+	 * \param binding Binding producing the event or null if unknown or generated.
+	 */
+	func void analogAbsolute(Binding binding, float value)
+		analogAbsolute(value)
+	end
+	
+	/**
 	 * \brief Input device button has been touched.
 	 * \version 1.6
 	 */
 	func void touch()
+	end
+	
+	/**
+	 * \brief Input device button has been touched.
+	 * \version 1.35
+	 * \param binding Binding producing the event or null if unknown or generated.
+	 */
+	func void touch(Binding binding)
+		touch()
 	end
 	
 	/**
@@ -292,6 +359,15 @@ class Command
 	end
 	
 	/**
+	 * \brief Input device button has been untouched.
+	 * \version 1.35
+	 * \param binding Binding producing the event or null if unknown or generated.
+	 */
+	func void untouch(Binding binding)
+		untouch()
+	end
+	
+	/**
 	 * \brief User finger approached device button.
 	 * \version 1.28
 	 */
@@ -299,9 +375,27 @@ class Command
 	end
 	
 	/**
+	 * \brief User finger approached device button.
+	 * \version 1.35
+	 * \param binding Binding producing the event or null if unknown or generated.
+	 */
+	func void approach(Binding binding)
+		approach()
+	end
+	
+	/**
 	 * \brief User finger withdrew from device button.
 	 * \version 1.28
 	 */
 	func void withdraw()
+	end
+	
+	/**
+	 * \brief User finger withdrew from device button.
+	 * \version 1.35
+	 * \param binding Binding producing the event or null if unknown or generated.
+	 */
+	func void withdraw(Binding binding)
+		withdraw()
 	end
 end

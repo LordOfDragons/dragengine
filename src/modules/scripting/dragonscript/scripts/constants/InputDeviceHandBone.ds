@@ -47,6 +47,9 @@ namespace Dragengine
  * frame for chain root bones.
  * 
  * Valid is InputDeviceBoneConfiguration.hand is used.
+ * 
+ * \ref #thumb3 is not used and is only present for backwards compatibility.
+ * If queried it will return identity pose.
  */
 fixed class InputDeviceHandBone
 	public static fixed var int wrist = 0

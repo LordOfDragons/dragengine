@@ -160,6 +160,10 @@ public:
 	
 	/** Prepare for static collsion test. Returns true if ready or false if not usable. */
 	bool PrepareStaticCollisionTest() override;
+	
+	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decVector &GetPredictedDisplacement() const{ return pPredictDisp; }
 	/*@}*/
 	
 	

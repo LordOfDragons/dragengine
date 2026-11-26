@@ -155,16 +155,6 @@ class ECBehaviorCollider extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorCollider'>
-	 *   <!-- optional: set collision filter. default value '0:1 2 3 5' which means
-	 *                  category BaseGameApp.CollisionFilterBit.geometry
-	 *                  filter BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actor,
-	 *                         BaseGameApp.CollisionFilterBit.actorAI,
-	 *                         BaseGameApp.CollisionFilterBit.particle.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>0:1 2 3 5</string>
-	 * 
 	 *   <!-- optional: use component with id instead of empty string -->
 	 *   <string name='component'>second</string>
 	 * </behavior>
@@ -185,8 +175,9 @@ class ECBehaviorCollider extends DefaultECBehavior
 				getHelper().defaultComponent(eclass, parameters))
 			
 			if parameters.has("collisionFilter")
-				behavior.getCollider().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
-					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+				behavior.getCollider().getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
 			end
 			
 			getHelper().setPropertiesFromParameters(eclass, parameters, "collider")
@@ -643,7 +634,7 @@ class ECBehaviorCollider extends DefaultECBehavior
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.particle)
 		
-		pCollider.setCollisionFilter(CollisionFilter.new(cfCategory, cfFilter))
+		pCollider.getCollisionFilterProperty().setCollisionFilter(CollisionFilter.new(cfCategory, cfFilter))
 		
 		eclass.addBehavior(this)
 	end
@@ -667,8 +658,8 @@ class ECBehaviorCollider extends DefaultECBehavior
 		pCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
 		pCollider.getLocalGravity().setVector(Vector.new())
 		pCollider.getWeight().setValue(1)
-		pCollider.setCollisionFilter(CollisionFilter.new())
-		// TODO setShape small spher once ECComposeCollider can do this
+		pCollider.getCollisionFilterProperty().setCollisionFilter(CollisionFilter.new())
+		// TODO setShape small sphere once ECComposeCollider can do this
 	end
 	
 	

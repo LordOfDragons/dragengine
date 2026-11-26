@@ -83,11 +83,12 @@ saeViewSAnimation::saeViewSAnimation(saeWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain)
 {
-	pFontStats = windowMain.GetEngine()->GetFontManager()->LoadFont("/igde/fonts/sans_10.defont", "/");
+	/*pFontStats = windowMain.GetEngine()->GetFontManager()->LoadFont(
+		"/igde/fonts/liberation/sans/regular.ttf", "/");*/
 	
 	pCameraInteraction = deTObjectReference<cCameraInteraction>::New(*this);
 	
-	pCameraInteraction->AddListeners(*this, windowMain);
+	pCameraInteraction->AddListeners(*this);
 }
 
 saeViewSAnimation::~saeViewSAnimation(){

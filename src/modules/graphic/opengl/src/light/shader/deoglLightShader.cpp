@@ -230,6 +230,15 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
 	return spb;
 }
 
+void deoglLightShader::SetSPBParameterInstParam(deoglSPBParameter &parameter, int arraySize){
+	deoglSPBParameter::ParameterList m;
+	for(int i=0; i<EIUT_COUNT; i++){
+		const auto &d = vInstanceSPBParamDefs[i];
+		m.Add({d.dataType, d.componentCount, d.vectorCount, d.arrayCount});
+	}
+	parameter.SetStruct(std::move(m), arraySize);
+}
+
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
 	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::New(pRenderThread));
 	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
@@ -245,6 +254,15 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
 	spb->MapToStd140();
 	spb->SetBindingPoint(deoglLightShader::eubLightParameters);
 	return spb;
+}
+
+void deoglLightShader::SetSPBParameterLightParam(deoglSPBParameter &parameter, int arraySize){
+	deoglSPBParameter::ParameterList m;
+	for(int i=0; i<ELUT_COUNT; i++){
+		const auto &d = vLightSPBParamDefs[i];
+		m.Add({d.dataType, d.componentCount, d.vectorCount, d.arrayCount});
+	}
+	parameter.SetStruct(std::move(m), arraySize);
 }
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBOccQueryParam(deoglRenderThread &renderThread){

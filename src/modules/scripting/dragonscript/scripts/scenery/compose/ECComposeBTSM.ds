@@ -41,11 +41,13 @@ class ECComposeBTSM
 	/** \brief Instance helper. */
 	class Instance
 		private class EntryBT
+			public var ECBehaviorBehaviorTree.Instance instance
 			public var BTContext context
 			public var String alias
 			
 			func new(ECBehaviorBehaviorTree behavior, BehaviorElement element, ECPStringMap aliasMap)
-				context = behavior.instance(element).getContext()
+				instance = behavior.instance(element)
+				context = instance.getContext()
 				if aliasMap != null
 					alias = aliasMap.map(behavior.getID())
 				end
@@ -76,11 +78,13 @@ class ECComposeBTSM
 		end
 		
 		private class EntrySM
+			public var ECBehaviorStateMachine.Instance instance
 			public var SMContext context
 			public var String alias
 			
 			func new(ECBehaviorStateMachine behavior, BehaviorElement element, ECPStringMap aliasMap)
-				context = behavior.instance(element).getContext()
+				instance = behavior.instance(element)
+				context = instance.getContext()
 				if aliasMap != null
 					alias = aliasMap.map(behavior.getID())
 				end
@@ -186,6 +190,64 @@ class ECComposeBTSM
 				end
 			end)
 		end
+		
+		
+		/**
+		 * \brief Count of state machines.
+		 * \version 1.35
+		 */
+		func int getStateMachineCount()
+			return pSMContexts.getCount()
+		end
+		
+		/**
+		 * \brief State machine at index.
+		 * \version 1.35
+		 */
+		func ECBehaviorStateMachine.Instance getStateMachineAt(int index)
+			return (pSMContexts.getAt(index) cast EntrySM).instance
+		end
+		
+		/**
+		 * \brief Visit state machine instances with block.
+		 * \version 1.35
+		 * 
+		 * Block receives as argument \ref ECBehaviorStateMachine.Instance.
+		 */
+		func void forEachStateMachine(Block visitor)
+			pSMContexts.forEach(block EntrySM each
+				visitor.run(each.instance)
+			end)
+		end
+		
+		
+		/**
+		 * \brief Count of behavior trees.
+		 * \version 1.35
+		 */
+		func int getBehaviorTreeCount()
+			return pBTContexts.getCount()
+		end
+		
+		/**
+		 * \brief Behavior tree at index.
+		 * \version 1.35
+		 */
+		func ECBehaviorBehaviorTree.Instance getBehaviorTreeAt(int index)
+			return (pBTContexts.getAt(index) cast EntryBT).instance
+		end
+		
+		/**
+		 * \brief Visit behavior tree instances with block.
+		 * \version 1.35
+		 * 
+		 * Block receives as argument \ref ECBehaviorBehaviorTree.Instance.
+		 */
+		func void forEachBehaviorTree(Block visitor)
+			pBTContexts.forEach(block EntryBT each
+				visitor.run(each.instance)
+			end)
+		end
 	end
 	
 	
@@ -280,5 +342,21 @@ class ECComposeBTSM
 	/** \brief At least one behavior tree or state machine is present. */
 	func bool hasAny()
 		return pBehaviorTrees.getCount() > 0 or pStateMachines.getCount() > 0
+	end
+	
+	/**
+	 * \brief At least one behavior tree is present.
+	 * \version 1.35
+	 */
+	func bool hasAnyBehaviorTrees()
+		return pBehaviorTrees.getCount() > 0
+	end
+	
+	/**
+	 * \brief At least one state machine is present.
+	 * \version 1.35
+	 */
+	func bool hasAnyStateMachines()
+		return pStateMachines.getCount() > 0
 	end
 end

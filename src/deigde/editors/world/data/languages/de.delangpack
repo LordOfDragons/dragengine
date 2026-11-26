@@ -518,6 +518,10 @@
 	<!-- UWorldSetSize -->
 	<translation name="World.UWorldSetSize.SetWorldSize">Welt: Grösse festlegen</translation>
 	
+	<translation name="World.USetWorldBehaviors">Welt-Verhalten festlegen</translation>
+	<translation name="World.UWorldBehavior.SetName">Welt-Verhalten: Name festlegen</translation>
+	<translation name="World.UWorldBehavior.SetId">Welt-Verhalten: ID festlegen</translation>
+	
 	<!-- ViewEditorSelect -->
 	
 	<!-- WPAdd -->
@@ -844,6 +848,8 @@ Standardwert: "{1}"</translation>
 	<translation name="World.WPWorld.WorldGravity.ToolTip">Schwerkraft</translation>
 	<translation name="World.WPWorld.WorldParameters">Parameter:</translation>
 	<translation name="World.WPWorld.WorldProperties">Eigenschaften:</translation>
+	<translation name="World.WPWorld.WorldBehaviors">Verhalten:</translation>
+	<translation name="World.WPWorld.WorldBehaviors.ToolTip">Welt-Verhalten, die beim laden der Welt hinzugefügt werden</translation>
 	
 	<!-- WVNode -->
 	<translation name="World.WVNode.Action.DeleteNode">Knoten löschen</translation>
@@ -1206,6 +1212,18 @@ Eigenschaftstyp verstossen. Bitte seien Sie daher vorsichtig bei der Eingabe.</t
 	<translation name="World.WPWorld.Action.MusicStop">Beenden</translation>
 	<translation name="World.WPWorld.Dialog.AddType">Typ hinzufügen</translation>
 	<translation name="World.WPWorld.Dialog.TypeNumber2">Typnummer:</translation>
+	<translation name="World.WPWorld.Action.WorldBehaviorAdd">Hinzufügen...</translation>
+	<translation name="World.WPWorld.Action.WorldBehaviorAdd.ToolTip">Weltverhalten hinzufügen</translation>
+	<translation name="World.WPWorld.Action.WorldBehaviorRemove">Entfernen...</translation>
+	<translation name="World.WPWorld.Action.WorldBehaviorRemove.ToolTip">Weltverhalten entfernen</translation>
+	<translation name="World.WPWorld.Action.WorldBehaviorRemoveAll">Alle entfernen</translation>
+	<translation name="World.WPWorld.Action.WorldBehaviorRemoveAll.ToolTip">Alle Weltverhalten entfernen</translation>
+	<translation name="World.WPWorld.Action.WorldBehaviorUp">Nach oben</translation>
+	<translation name="World.WPWorld.Action.WorldBehaviorUp.ToolTip">Weltverhalten nach oben verschieben</translation>
+	<translation name="World.WPWorld.Action.WorldBehaviorDown">Nach unten</translation>
+	<translation name="World.WPWorld.Action.WorldBehaviorDown.ToolTip">Weltverhalten nach unten verschieben</translation>
+	<translation name="World.WPWorld.Dialog.AddWorldBehavior.Name">Verhalten:</translation>
+	<translation name="World.WPWorld.Dialog.AddWorldBehavior.Id">ID:</translation>
 	
 	<!-- WPSelection -->
 	<translation name="World.WPSelection.NoSelection">Keine Auswahl</translation>

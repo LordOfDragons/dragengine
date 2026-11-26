@@ -33,6 +33,7 @@
 #define OGL_MAX_TEXTURE_STAGES 32
 
 class deoglArrayTexture;
+class deoglArrayCubeMap;
 class deoglRenderThread;
 class deoglRSkin;
 class deoglTexSamplerConfig;
@@ -124,6 +125,13 @@ public:
 	void EnableBareCubeMap(int stage, const deoglCubeMap &cubemap);
 	
 	/**
+	 * Enable stage and bind array cube map.
+	 * \details Sets no texture parameters. Useful if an array cube map has to be bound only
+	 *          for manipulating opengl states and is unbound immediately afterwards.
+	 */
+	void EnableBareArrayCubeMap(int stage, const deoglArrayCubeMap &arrayCubeMap);
+	
+	/**
 	 * Enable stage and bind tbo without sampler.
 	 * \details Sets no texture paramters. Useful if a tbo has to be bound for for
 	 *          manipulating opegl states and is unbound immediately afterwards.
@@ -144,6 +152,9 @@ public:
 	
 	/** Enable stage and bind array texture setting texture properties. */
 	void EnableArrayTexture(int stage, const deoglArrayTexture &texture, deoglTexSamplerConfig &samplerConfig);
+	
+	/** Enable stage and bind array cube map setting texture properties. */
+	void EnableArrayCubeMap(int stage, const deoglArrayCubeMap &arrayCubeMap, deoglTexSamplerConfig &samplerConfig);
 	
 	/** Enable given stage and bind texture buffer object. */
 	void EnableTBO(int stage, GLuint tbo, deoglTexSamplerConfig &samplerConfig);

@@ -111,6 +111,8 @@ void main( void ){
 		}
 	}
 	
+	vPosition = transformTransfer.viewPosition;
+	
 	// height terrain mask. this can be interpolated since each texel refers to exactly one vertex in the height map
 	if(GeometryMode == GeometryModeHeightMap){
 		//vHTMask = texelFetch(texHeightMapMask, ivec2(inHMPosition * pHeightTerrainMaskTCTransform + vec2(0.1)), 0.0)[pHeightTerrainMaskSelector.y];

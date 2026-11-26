@@ -217,6 +217,36 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 	
 	pAddPattern(pFPLSave[efplWorld], "@Igde.LoadSaveSystem.FilePattern.World", "*.deworld", ".deworld");
 	
+	pAddPattern(pFPLOpen[efplParameterTree], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.dept", ".dept");
+	pAddPattern(pFPLOpen[efplParameterTree], "@Igde.LoadSaveSystem.FilePattern.ParameterTree", "*.dept", ".dept");
+	
+	pAddPattern(pFPLSave[efplParameterTree], "@Igde.LoadSaveSystem.FilePattern.ParameterTree", "*.dept", ".dept");
+	
+	pAddPattern(pFPLOpen[efplStateMachine], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.desm", ".desm");
+	pAddPattern(pFPLOpen[efplStateMachine], "@Igde.LoadSaveSystem.FilePattern.StateMachine", "*.desm", ".desm");
+	
+	pAddPattern(pFPLSave[efplStateMachine], "@Igde.LoadSaveSystem.FilePattern.StateMachine", "*.desm", ".desm");
+	
+	pAddPattern(pFPLOpen[efplBehaviorTree], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.debt", ".debt");
+	pAddPattern(pFPLOpen[efplBehaviorTree], "@Igde.LoadSaveSystem.FilePattern.BehaviorTree", "*.debt", ".debt");
+	
+	pAddPattern(pFPLSave[efplBehaviorTree], "@Igde.LoadSaveSystem.FilePattern.BehaviorTree", "*.debt", ".debt");
+	
+	pAddPattern(pFPLOpen[efplGuiTheme], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.degt", ".degt");
+	pAddPattern(pFPLOpen[efplGuiTheme], "@Igde.LoadSaveSystem.FilePattern.GuiTheme", "*.degt", ".degt");
+	
+	pAddPattern(pFPLSave[efplGuiTheme], "@Igde.LoadSaveSystem.FilePattern.GuiTheme", "*.degt", ".degt");
+	
+	pAddPattern(pFPLOpen[efplConversation], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.deconvo", ".deconvo");
+	pAddPattern(pFPLOpen[efplConversation], "@Igde.LoadSaveSystem.FilePattern.Conversation", "*.deconvo", ".deconvo");
+	
+	pAddPattern(pFPLSave[efplConversation], "@Igde.LoadSaveSystem.FilePattern.Conversation", "*.deconvo", ".deconvo");
+	
+	pAddPattern(pFPLOpen[efplSimpleConversation], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.desconvo", ".desconvo");
+	pAddPattern(pFPLOpen[efplSimpleConversation], "@Igde.LoadSaveSystem.FilePattern.SimpleConversation", "*.desconvo", ".desconvo");
+	
+	pAddPattern(pFPLSave[efplSimpleConversation], "@Igde.LoadSaveSystem.FilePattern.SimpleConversation", "*.desconvo", ".desconvo");
+	
 	// game project file list
 	pAddPattern(pFPLOpen[efplGameProject], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.degp", "degp");
 	pAddPattern(pFPLOpen[efplGameProject], pLSGameProject->GetName().GetString(),

@@ -203,10 +203,10 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 				pValue = value
 				
 				if pCommandPositive != null
-					pCommandPositive.analogAbsolute(value)
+					pCommandPositive.analogAbsolute(null, value)
 					
 				elif pCommandNegative != null
-					pCommandNegative.analogAbsolute(value)
+					pCommandNegative.analogAbsolute(null, value)
 				end
 				
 				if value > 0.75 != pPressedPositive
@@ -214,10 +214,10 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 					
 					if pCommandPositive != null
 						if pPressedPositive
-							pCommandPositive.start()
+							pCommandPositive.start(null)
 							
 						else
-							pCommandPositive.stop()
+							pCommandPositive.stop(null)
 						end
 					end
 				end
@@ -227,10 +227,10 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 					
 					if pCommandNegative != null
 						if pPressedNegative
-							pCommandNegative.start()
+							pCommandNegative.start(null)
 							
 						else
-							pCommandNegative.stop()
+							pCommandNegative.stop(null)
 						end
 					end
 				end
@@ -369,29 +369,16 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "vrHandLocomotion{(id)}.check".
 		 * \version 1.26
 		 */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
 				var bool result = true
-				var Object value
-				
-				value = parameters.getAt(prefix + "enabled", null)
+				var Object value = parameters.getAt(prefix + "enabled", null)
 				if value != null
 					result &= pInstance.getEnabled() == value.equals("true")
 				end

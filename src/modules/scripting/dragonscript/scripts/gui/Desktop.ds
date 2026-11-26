@@ -1659,6 +1659,10 @@ class Desktop extends Container
 					event.getSystem(), event.getDevice()))
 			end
 		end
+		
+		if pToolTipManager != null
+			pToolTipManager.update()
+		end
 	end
 	
 	/**

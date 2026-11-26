@@ -200,8 +200,14 @@ void deoglSPBlockUBO::MapBuffer(int element, int count){
 	}
 }
 
-void deoglSPBlockUBO::UnmapBuffer(){
+void deoglSPBlockUBO::UnmapBuffer(bool delayUpload){
 	DEASSERT_TRUE(IsBufferMapped())
+	
+	if(delayUpload){
+		pWriteBufferUsed = false;
+		pClearMapped();
+		return;
+	}
 	
 	if(pWriteBufferUsed){
 		OGL_IF_CHECK(deoglRenderThread &renderThread = GetRenderThread();)
@@ -212,8 +218,8 @@ void deoglSPBlockUBO::UnmapBuffer(){
 		}
 		
 		const int stride = GetElementStride();
-		const int lower = pGetElementLower();
-		const int upper = pGetElementUpper();
+		const int lower = GetElementLower();
+		const int upper = GetElementUpper();
 		
 		const int offset = stride * lower;
 		const int size = stride * (upper - lower + 1);

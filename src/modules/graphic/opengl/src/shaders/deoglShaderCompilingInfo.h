@@ -31,6 +31,7 @@
 #include <dragengine/resources/canvas/deCanvasText.h>
 #include <dragengine/resources/canvas/deCanvasVideoPlayer.h>
 #include <dragengine/resources/font/deFont.h>
+#include <dragengine/resources/font/deFontSize.h>
 #include <dragengine/resources/video/deVideo.h>
 #include <dragengine/resources/video/deVideoPlayer.h>
 
@@ -84,6 +85,8 @@ private:
 	deCanvasText::Ref pCanvasText2;
 	
 	deFont::Ref pFontText;
+	deFontSize::Ref pFontSizeText;
+	float pTextEnlarge;
 	
 	deVideo::Ref pVideoCompile;
 	deVideoPlayer::Ref pVideoPlayerCompile;

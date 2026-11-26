@@ -222,25 +222,25 @@ mpAttachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMetaC
 	}
 	
 	uniqueNameController.SetIsUnique([this](const decString &name){
-		return !mpControllers->HasMatching([&](const aeController &each){
+		return mpControllers->NoneMatching([&](const aeController &each){
 			return each.mpName == name;
 		});
 	});
 	
 	uniqueNameLink.SetIsUnique([this](const decString &name){
-		return !mpLinks->HasMatching([&](const aeLink &each){
+		return mpLinks->NoneMatching([&](const aeLink &each){
 			return each.mpName == name;
 		});
 	});
 	
 	uniqueNameRule.SetIsUnique([this](const decString &name){
-		return !mpRules->HasMatching([&](const aeRule &each){
+		return mpRules->NoneMatching([&](const aeRule &each){
 			return each.mpName == name;
 		});
 	});
 	
 	uniqueNameAttachment.SetIsUnique([this](const decString &name){
-		return !mpAttachments->HasMatching([&](const aeAttachment &each){
+		return mpAttachments->NoneMatching([&](const aeAttachment &each){
 			return each.mpName == name;
 		});
 	});

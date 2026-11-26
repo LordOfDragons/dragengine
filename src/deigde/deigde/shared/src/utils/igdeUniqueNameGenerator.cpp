@@ -57,26 +57,36 @@ void igdeUniqueNameGenerator::SetIsUnique(const std::function<bool(const decStri
 }
 
 decString igdeUniqueNameGenerator::Generate(const decString &name) const{
-	DEASSERT_NOTNULL(pIsUnique)
+	return Generate(pIsUnique, name);
+}
+
+decString igdeUniqueNameGenerator::Generate(const decString &name, const decString &allowedName) const{
+	return Generate(pIsUnique, name, allowedName);
+}
+
+decString igdeUniqueNameGenerator::Generate(const std::function<bool(const decString &)> &isUnique,
+const decString &name) const{
+	DEASSERT_NOTNULL(isUnique)
 	
 	auto uniqueName = name;
 	int nextNumber = pStartNumber;
-	while(!pIsUnique(uniqueName)){
+	while(!isUnique(uniqueName)){
 		uniqueName.FormatSafe("{0}{1}{2}", name, pPrefix, nextNumber++);
 	}
 	return uniqueName;
 }
 
-decString igdeUniqueNameGenerator::Generate(const decString &name, const decString &allowedName) const{
+decString igdeUniqueNameGenerator::Generate(const std::function<bool(const decString &)> &isUnique,
+	const decString &name, const decString &allowedName) const{
 	if(name == allowedName){
 		return name;
 	}
 	
-	DEASSERT_NOTNULL(pIsUnique)
+	DEASSERT_NOTNULL(isUnique)
 	
 	auto uniqueName = name;
 	int nextNumber = pStartNumber;
-	while(uniqueName != allowedName && !pIsUnique(uniqueName)){
+	while(uniqueName != allowedName && !isUnique(uniqueName)){
 		uniqueName.FormatSafe("{0}{1}{2}", name, pPrefix, nextNumber++);
 	}
 	return uniqueName;

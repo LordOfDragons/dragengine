@@ -67,7 +67,7 @@ private:
 	bool pCanSelectNavSpaces;
 	bool pCanSelectHTNavPoints;
 	
-	meCLHitListEntry::List pHitList;
+	meCLHitListEntry::List pHitList, pTempHitList;
 	
 	meObject::List pRectSelOldObjectList;
 	meObjectShape::List pRectSelOldObjectShapeList;
@@ -162,6 +162,9 @@ public:
 	/** \brief Get hit list. */
 	inline meCLHitListEntry::List &GetHitList(){ return pHitList; }
 	inline const meCLHitListEntry::List &GetHitList() const{ return pHitList; }
+	
+	/** \brief Removed duplicates from hit list. */
+	void RemoveHitListDuplicates();
 	
 	/** \brief Prepare for a test clearing only the hit list. */
 	void Prepare();

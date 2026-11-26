@@ -295,11 +295,13 @@ class Label extends Widget implements TextModelListener
 			end
 		end
 		textLayout.setMaximalWidth(DEMath.max(maxWidth, 0))
+		textLayout.setBorderThickness(getTextBorderThickness())
+		textLayout.setDilation(getTextDilation())
 		
 		textLayout.layoutText()
 		
 		pMinSizeForWidthSize = Point.new(\
-			textLayout.getWidth() + padding.getWidth(), \
+			textLayout.getWidth() + padding.getWidth(),\
 			textLayout.getHeight() + padding.getHeight())
 		pMinSizeForWidthWidth = width
 		
@@ -308,24 +310,25 @@ class Label extends Widget implements TextModelListener
 	
 	
 	
-	/** \brief Font changed. */
 	func void onSetFont()
 		updateCanvasText()
 		layoutParent()
 	end
 	
-	/** \brief Foreground color changed. */
 	func void onSetTextColor()
 		updateCanvasText()
 	end
 	
-	/** \brief Size changed. */
+	func void onSetTextDilation()
+		updateCanvasText()
+		layoutParent()
+	end
+	
 	func void onResize(WidgetEvent event)
 		super.onResize(event)
 		updateCanvasText()
 	end
 	
-	/** \brief Gui theme changed. */
 	func void onGuiThemeChanged()
 		super.onGuiThemeChanged()
 		
@@ -372,7 +375,7 @@ class Label extends Widget implements TextModelListener
 		
 		var BorderSize padding = getPadding()
 		pMinTextSize = Point.new(\
-			textLayout.getWidth() + padding.getWidth(), \
+			textLayout.getWidth() + padding.getWidth(),\
 			textLayout.getHeight() + padding.getHeight())
 		
 		return pMinTextSize
@@ -395,9 +398,11 @@ class Label extends Widget implements TextModelListener
 		var int x = 0
 		var int y = 0
 		
-		if getTextColor() != null
-			pTextLayout.setColor(getTextColor())
+		var Color color = getTextColor()
+		if color != null
+			pTextLayout.setColor(color)
 		end
+		pTextLayout.setBorderColor(getTextBorderColor())
 		
 		if pAlignment & right == right
 			x = width - pTextLayout.getWidth()
@@ -438,6 +443,9 @@ class Label extends Widget implements TextModelListener
 		else
 			pTextLayout.setAlignment(TextLayout.Align.left)
 		end
+		
+		pTextLayout.setBorderThickness(getTextBorderThickness())
+		pTextLayout.setDilation(getTextDilation())
 		
 		pTextLayout.layoutText()
 		

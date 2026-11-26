@@ -67,13 +67,21 @@ bool deRig::Verify() const{
 	// check bones
 	const int boneCount = pBones.GetCount();
 	if(boneCount > 0){
-		decTList<bool> boneVisited(boneCount, false);
+		// check constraints do not reference their own bones
+		for(int b=0; b<boneCount; b++){
+			const int constraintCount = pBones[b]->GetConstraintCount();
+			for(int c=0; c<constraintCount; c++){
+				if(pBones[b]->GetConstraintAt(c)->GetParentBone() == b){
+					success = false;
+				}
+			}
+		}
 		
 		// check bone parents are valid
-		int i;
-		for(i=0; i<boneCount; i++){
-			int j;
-			for(j=0; j<boneCount; j++){
+		decTList<bool> boneVisited(boneCount, false);
+		
+		for(int i=0; i<boneCount; i++){
+			for(int j=0; j<boneCount; j++){
 				boneVisited[j] = false;
 			}
 			

@@ -71,9 +71,9 @@ class OBJECT_OT_ExportNavigationSpace( bpy.types.Operator, ExportHelper ):
 		self.scalePosition = Matrix( ( (self.scaling,0,0,0), (0,self.scaling,0,0), (0,0,self.scaling,0), (0,0,0,1) ) )
 		self.transformScalePosition = matmul(self.scalePosition, transformPosition)
 		
-		self.export( context )
-		
-		return { 'FINISHED' }
+		if not self.export(context):
+			return {'CANCELLED'}
+		return {'FINISHED'}
 	
 	def export( self, context ):
 		self.initExporterObjects( context )
@@ -109,12 +109,15 @@ class OBJECT_OT_ExportNavigationSpace( bpy.types.Operator, ExportHelper ):
 				if face.texture and face.texture.material.dragengine_doublesided:
 					self.doubleSidedFaceCount = self.doubleSidedFaceCount + 1
 	
-	def checkInitState( self, context ):
+	def checkInitState(self, context):
 		if not self.mesh:
-			self.report( { 'INFO', 'ERROR' }, "There is no Mesh selected" )
+			self.report({'ERROR'}, "There is no Mesh selected")
 			return False
 		if self.mesh.degeneratedFaces:
-			self.report( { 'INFO', 'ERROR' }, "Degenerated Faces found." )
+			self.report({'ERROR'}, "Degenerated Faces found.")
+			return False
+		if self.mesh.navspacetype == 'NONE':
+			self.report({'ERROR'}, "Navigation Space type is NONE (Panel 'Object' -> 'Drag[en]gine Model').")
 			return False
 		return True
 	

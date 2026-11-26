@@ -47,8 +47,11 @@ pFont(node.GetFont() && node.GetFont()->GetPeerGraphic()
 pFontSize(pFont ? ((deoglFont*)node.GetFont()->GetPeerGraphic())->GetFontSizeFor(
 	(int)(node.GetFontSize() + 0.5f)) : nullptr),
 pTextSize(node.GetFontSize()),
+pBorderThickness(node.GetBorderThickness()),
+pDilation(node.GetDilation()),
 pText(node.GetText()),
-pColor(node.GetColor())
+pColor(node.GetColor()),
+pBorderColor(node.GetBorderColor())
 {
 	int i;
 	for(i=0; i<deSkinPropertyNodeText::TextMappedCount; i++){
@@ -61,8 +64,11 @@ deoglSkinStateConstructedNode(node),
 pFont(node.pFont),
 pFontSize(node.pFontSize),
 pTextSize(node.pTextSize),
+pBorderThickness(node.pBorderThickness),
+pDilation(node.pDilation),
 pText(node.pText),
-pColor(node.pColor)
+pColor(node.pColor),
+pBorderColor(node.pBorderColor)
 {
 	int i;
 	for(i=0; i<deSkinPropertyNodeText::TextMappedCount; i++){

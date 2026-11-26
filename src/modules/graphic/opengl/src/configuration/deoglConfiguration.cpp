@@ -148,6 +148,8 @@ pVRHudFov(50.0f),
 pVRHudCurvature(0.0f),
 pVRSubmitDepth(true),
 
+pLowFillRate(false),
+
 pRenderDocMode(false)
 {
 	#ifdef OS_ANDROID
@@ -987,5 +989,14 @@ void deoglConfiguration::SetVRSubmitDepth(bool submit){
 	}
 	
 	pVRSubmitDepth = submit;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetLowFillRate(bool enable){
+	if(enable == pLowFillRate){
+		return;
+	}
+	
+	pLowFillRate = enable;
 	pDirty = true;
 }

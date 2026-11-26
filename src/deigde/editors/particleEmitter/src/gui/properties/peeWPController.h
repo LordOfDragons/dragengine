@@ -65,6 +65,7 @@ private:
 	igdeTextField::Ref pEditMin;
 	igdeTextField::Ref pEditMax;
 	igdeEditSliderText::Ref pSldValue;
+	igdeTextField::Ref pEditDefaultValue;
 	igdeCheckBox::Ref pChkClamp;
 	igdeCheckBox::Ref pChkFrozen;
 	

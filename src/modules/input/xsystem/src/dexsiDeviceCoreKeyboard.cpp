@@ -105,12 +105,14 @@ dexsiDevice(module, esX11)
 			DETHROW(deeInvalidParam);
 		}
 		
+		/*
 		int validCount = 0;
 		for(i=0; i<keyCodeCount; i++){
 			if(keysyms[i * keySymPerKeyCode] != NoSymbol){
 				validCount++;
 			}
 		}
+		*/
 		
 		ResetX11KeyCodeMap(minKeyCode, keyCodeCount);
 		

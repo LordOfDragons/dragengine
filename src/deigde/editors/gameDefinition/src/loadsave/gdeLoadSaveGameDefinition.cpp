@@ -378,6 +378,24 @@ void gdeLoadSaveGameDefinition::pReadProperty(const decXmlElementTag &root, gdeP
 			}else if(type == "world"){
 				property.SetPathPatternType(gdeProperty::epptWorld);
 				
+			}else if(type == "parameterTree"){
+				property.SetPathPatternType(gdeProperty::epptParameterTree);
+				
+			}else if(type == "stateMachine"){
+				property.SetPathPatternType(gdeProperty::epptStateMachine);
+				
+			}else if(type == "behaviorTree"){
+				property.SetPathPatternType(gdeProperty::epptBehaviorTree);
+				
+			}else if(type == "guiTheme"){
+				property.SetPathPatternType(gdeProperty::epptGuiTheme);
+				
+			}else if(type == "conversation"){
+				property.SetPathPatternType(gdeProperty::epptConversation);
+				
+			}else if(type == "simpleConversation"){
+				property.SetPathPatternType(gdeProperty::epptSimpleConversation);
+				
 			}else if(type == "custom"){
 				property.SetPathPatternType(gdeProperty::epptCustom);
 				
@@ -3771,6 +3789,30 @@ const gdeProperty &property, const char *tagName){
 			
 		case gdeProperty::epptWorld:
 			writer.WriteDataTagString("pathPatternType", "world");
+			break;
+			
+		case gdeProperty::epptParameterTree:
+			writer.WriteDataTagString("pathPatternType", "parameterTree");
+			break;
+			
+		case gdeProperty::epptStateMachine:
+			writer.WriteDataTagString("pathPatternType", "stateMachine");
+			break;
+			
+		case gdeProperty::epptBehaviorTree:
+			writer.WriteDataTagString("pathPatternType", "behaviorTree");
+			break;
+			
+		case gdeProperty::epptGuiTheme:
+			writer.WriteDataTagString("pathPatternType", "guiTheme");
+			break;
+			
+		case gdeProperty::epptConversation:
+			writer.WriteDataTagString("pathPatternType", "conversation");
+			break;
+			
+		case gdeProperty::epptSimpleConversation:
+			writer.WriteDataTagString("pathPatternType", "simpleConversation");
 			break;
 			
 		case gdeProperty::epptCustom:{

@@ -1353,8 +1353,9 @@ public:
 	}
 	
 	void Update() override{
-		const meObject * const object = pPanel.GetActiveObject();
+		const auto object = pPanel.GetActiveObject();
 		SetEnabled(object && object->GetCamera());
+		SetSelected(GetEnabled() && object->GetCameraShowPreview());
 	}
 };
 
@@ -1803,7 +1804,6 @@ void meWPSObject::UpdateGeometry(){
 		pEditScaling->SetVector(object->GetScaling());
 		pEditRotation->SetVector(object->GetRotation());
 		pChkShowMissingTextures->SetChecked(object->GetShowMissingTextures());
-		pChkCameraShowPreview->SetChecked(object->GetCameraShowPreview());
 		
 	}else{
 		pEditID->ClearText();
@@ -1813,8 +1813,9 @@ void meWPSObject::UpdateGeometry(){
 		pEditScaling->SetVector(decVector(1.0f, 1.0f, 1.0f));
 		pEditRotation->SetVector(decVector());
 		pChkShowMissingTextures->SetChecked(false);
-		pChkCameraShowPreview->SetChecked(false);
 	}
+	
+	pChkCameraShowPreview->GetAction()->Update();
 }
 
 void meWPSObject::UpdateLight(){

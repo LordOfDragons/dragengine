@@ -161,29 +161,16 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "vrHandLaserPointer{(id)}.check".
 		 * \version 1.26
 		 */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
 				var bool result = true
-				var Object value
-				
-				value = parameters.getAt(prefix + "length.less", null)
+				var Object value = parameters.getAt(prefix + "length.less", null)
 				if value != null
 					result &= pInstance.getLength() < (value cast String).toFloat()
 				end
@@ -289,8 +276,8 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 			// after the particle emitter behavior has been added. this code here ensures
 			// the user does not have to worry about setting the collision filter manually
 			// unless he is doing something special
-			ecbehavior.getParticleEmitter().getParticleEmitter().getCollisionFilter()\
-				.setCollisionFilter(ecbehavior.getVRHandPointAt().getCollisionFilter().getCollisionFilter())
+			ecbehavior.getParticleEmitter().getParticleEmitter().getCollisionFilterProperty()\
+				.setCollisionFilter(ecbehavior.getVRHandPointAt().getCollisionFilterProperty().getCollisionFilter())
 			
 			pVRHandPointAt = ecbehavior.getVRHandPointAt().instance(element)
 			pParticleEmitter = ecbehavior.getParticleEmitter().instance(element)
@@ -575,8 +562,8 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		pParticleEmitter = ECBehaviorParticleEmitter.new(eclass, null,\
 			eclass.sharedFactoryHelper.defaultLoaders(), null, subID, prefix + "particleEmitter")
 		pParticleEmitter.getParticleEmitter().getCasting().setValue(false)
-		pParticleEmitter.getParticleEmitter().getCollisionFilter().setCollisionFilter(\
-			vrHandPointAt.getCollisionFilter().getCollisionFilter())
+		pParticleEmitter.getParticleEmitter().getCollisionFilterProperty().setCollisionFilter(\
+			vrHandPointAt.getCollisionFilterProperty().getCollisionFilter())
 		pParticleEmitter.getParticleEmitter().getParticleEmitter().setPath(\
 			"/shareddata/particles/laserpointer/laserpointer.depemit")
 		

@@ -34,6 +34,50 @@
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
 
+// Class aeLink::ControllerStorage
+////////////////////////////////////
+
+void aeLink::ControllerStorage::SetValue(const ControllerStorage &value, bool notify){
+	igdeMetaPropertyObjectStorage<aeController>::Storage::SetValue(value, notify);
+	pControllerCopy = value.pControllerCopy;
+}
+
+void aeLink::ControllerStorage::CreateControllerCopy(){
+	pControllerCopy = this->GetValue() ? aeController::Ref::New(this->GetValue()) : aeController::Ref();
+}
+
+void aeLink::ControllerStorage::EnsureValidController(const aeAnimator &animator,
+decTDictionary<aeController::Ref,aeController::Ref> &addControllers){
+	const auto &controller = this->GetValue();
+	if(!controller){
+		return;
+	}
+	
+	const auto &animatorControllers = animator.mpControllers.GetValue();
+	if(animatorControllers.Has(controller)){
+		return;
+	}
+	
+	auto found = animatorControllers.FindOrDefault([&](const aeController &other){
+		return other.mpName.GetValue() == controller->mpName.GetValue();
+	});
+	if(found){
+		this->SetValue(found);
+		return;
+	}
+	
+	found = addControllers.GetAtOrDefault(controller);
+	if(found){
+		this->SetValue(found);
+		return;
+	}
+	
+	if(pControllerCopy){
+		addControllers.SetAt(controller, pControllerCopy);
+		this->SetValue(pControllerCopy);
+	}
+}
+
 
 // Class aeLink
 /////////////////

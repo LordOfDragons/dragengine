@@ -402,8 +402,8 @@ if envDragengine['platform_webwasm']:
 
 parent_targets['dragengine'] = {
 	'name': 'Drag[en]gine Game Engine',
-	'cpppath': cpppath,
-	'libpath': libpath,
+	'cpppath': cpppath[:],
+	'libpath': libpath[:],
 	'binlibs': binlibs,
 	'libs': linklibs,
 	'build': targetBuild,

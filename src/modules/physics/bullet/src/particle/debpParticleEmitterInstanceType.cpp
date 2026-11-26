@@ -1308,7 +1308,7 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle,
 		if(collisionResponse == deParticleEmitterType::ecrCustom){
 			//const debpCollisionObject &colObj = *( ( debpCollisionObject* )rayResult.m_collisionObject->getUserPointer() );
 			const debpCollisionObject &colObj = *((debpCollisionObject*)rayResult.m_hitCollisionObject->getUserPointer());
-			deCollisionInfo &cinfo = *pInstance->GetParentWorld()->GetCollisionInfo();
+			deCollisionInfo &cinfo = pInstance->GetParentWorld()->GetCollisionInfoAt(0);
 			
 			if(colObj.IsOwnerCollider()){
 				cinfo.SetCollider(&colObj.GetOwnerCollider()->GetCollider(), -1, -1, -1);
@@ -1424,7 +1424,7 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle,
 			break;
 			
 		case deParticleEmitterType::ecrCustom:{
-			deCollisionInfo &cinfo = *pInstance->GetParentWorld()->GetCollisionInfo();
+			deCollisionInfo &cinfo = pInstance->GetParentWorld()->GetCollisionInfoAt(0);
 			const decDVector &ciposition = cinfo.GetParticlePosition();
 			const decVector &civelocity = cinfo.GetParticleVelocity();
 			

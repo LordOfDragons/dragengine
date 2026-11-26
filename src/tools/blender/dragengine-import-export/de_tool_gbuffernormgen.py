@@ -743,13 +743,13 @@ for link in ng.links:
 		mesh.initCalcInfoNumbers()
 		
 		if mesh.multiFoldMesh:
-			self.report( { 'INFO', 'ERROR' }, "Can not Multi-Fold meshes (Edges used by more than 2 faces)." )
+			self.report( { 'ERROR' }, "Can not Multi-Fold meshes (Edges used by more than 2 faces)." )
 			return None
 		if mesh.degeneratedFaces:
-			self.report( { 'INFO', 'ERROR' }, "Degenerated Faces found." )
+			self.report( { 'ERROR' }, "Degenerated Faces found." )
 			return None
 		if not mesh.texCoordSets:
-			self.report( { 'INFO', 'ERROR' }, "No UV-Layers found. Add at least one UV-Layer." )
+			self.report( { 'ERROR' }, "No UV-Layers found. Add at least one UV-Layer." )
 			return None
 		
 		mesh.initCalcRealVertexPositions( transformPosition )

@@ -40,7 +40,7 @@ deoglRFontSize::deoglRFontSize(deoglRenderThread &renderThread,
 	deoglRFont &font, const deFontSize &size) :
 pFont(font),
 pSize(size),
-pGlyphs(renderThread, size)
+pGlyphs(renderThread, font, size)
 {
 	pGlyphs.SetImage(size.GetImage());
 	
@@ -62,4 +62,8 @@ deoglRFontSize::~deoglRFontSize(){
 
 void deoglRFontSize::FinalizeAsyncResLoading(){
 	pGlyphs.FinalizeAsyncResLoading();
+}
+
+void deoglRFontSize::PrepareForRender(){
+	pGlyphs.PrepareForRender();
 }

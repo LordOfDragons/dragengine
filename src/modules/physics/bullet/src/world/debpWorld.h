@@ -30,6 +30,7 @@
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
+#include <dragengine/resources/sensor/deTouchSensor.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsWorld.h>
 
 class deWorld;
@@ -60,7 +61,7 @@ class debpWorld : public deBasePhysicsWorld{
 private:
 	dePhysicsBullet &pBullet;
 	deWorld &pWorld;
-	deCollisionInfo::Ref pColInfo;
+	deCollisionInfo::List pColInfo;
 	debpUnstuckCollider *pUnstuckCollider;
 	
 	debpHeightTerrain *pHeightTerrain;
@@ -80,8 +81,8 @@ private:
 	bool pDirtyOctree;
 	bool pDirtyDynWorldAABB;
 	
-	deCollider *pDetNextCollider;
-	deTouchSensor *pDetNextTouchSensor;
+	decTObjectLinkedList<deCollider>::Element *pDetNextCollider;
+	decTObjectLinkedList<deTouchSensor>::Element *pDetNextTouchSensor;
 	
 	decTList<debpCollider*> pColDetPrepareColliders;
 	int pColDetPrepareColliderCount;
@@ -130,7 +131,8 @@ public:
 	inline deWorld &GetWorld() const{ return pWorld; }
 	
 	/** Shared collision information. */
-	inline const deCollisionInfo::Ref &GetCollisionInfo() const{ return pColInfo; }
+	inline const deCollisionInfo::List &GetCollisionInfo() const{ return pColInfo; }
+	const deCollisionInfo::Ref &GetCollisionInfoAt(int index);
 	
 	/** Unstuck collider. */
 	inline debpUnstuckCollider *GetUnstuckCollider() const{ return pUnstuckCollider; }
@@ -172,37 +174,32 @@ public:
 	void UpdateDynWorldAABBs();
 	
 	
-	
 	/** Add collider for prepare collision detection. */
-	void pColDetPrepareColliderAdd(debpCollider *collider);
+	void ColDetPrepareColliderAdd(debpCollider *collider);
 	
 	/** Remove collider for prepare collision detection. */
-	void pColDetPrepareColliderRemove(debpCollider *collider);
-	
+	void ColDetPrepareColliderRemove(debpCollider *collider);
 	
 	
 	/** Add collider for finish collision detection. */
-	void pColDetFinishColliderAdd(debpCollider *collider);
+	void ColDetFinishColliderAdd(debpCollider *collider);
 	
 	/** Remove collider for finish collision detection. */
-	void pColDetFinishColliderRemove(debpCollider *collider);
-	
+	void ColDetFinishColliderRemove(debpCollider *collider);
 	
 	
 	/** Add collider for post physics collision test processing. */
-	void pPPCTColliderAdd(debpCollider *collider);
+	void PPCTColliderAdd(debpCollider *collider);
 	
 	/** Remove collider for post physics collision test processing. */
-	void pPPCTColliderRemove(debpCollider *collider);
-	
+	void PPCTColliderRemove(debpCollider *collider);
 	
 	
 	/** Add collider for update octree processing. */
-	void pUpdateOctreeColliderAdd(debpCollider *collider);
+	void UpdateOctreeColliderAdd(debpCollider *collider);
 	
 	/** Remove collider for update octree processing. */
-	void pUpdateOctreeColliderRemove(debpCollider *collider);
-	
+	void UpdateOctreeColliderRemove(debpCollider *collider);
 	
 	
 	/** Shared collision filteringNULL. */

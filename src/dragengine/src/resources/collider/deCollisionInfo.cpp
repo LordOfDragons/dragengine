@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deCollisionInfo.h"
 #include "../terrain/heightmap/deHeightTerrain.h"
 #include "../terrain/heightmap/deHeightTerrainSector.h"
@@ -35,7 +31,6 @@
 #include "../collider/deColliderComponent.h"
 #include "../component/deComponent.h"
 #include "../../common/exceptions.h"
-
 
 
 // Class deCollisionInfo
@@ -60,7 +55,8 @@ pParticleResponse(deParticleEmitterType::ecrDestroy),
 pDistance(0.0f),
 pImpulse(0.0f),
 
-pStopTesting(false){
+pStopTesting(false),
+pStuck(false){
 }
 
 deCollisionInfo::deCollisionInfo(const deCollisionInfo &info) :
@@ -81,7 +77,22 @@ pParticleResponse(info.pParticleResponse),
 pDistance(info.pDistance),
 pImpulse(info.pImpulse),
 
-pStopTesting(info.pStopTesting){
+pOrgPosition(info.pOrgPosition),
+pOrgDisplacement(info.pOrgDisplacement),
+pOrgRotation(info.pOrgRotation),
+pOrgOrientation(info.pOrgOrientation),
+
+pBlockerPosition(info.pBlockerPosition),
+pBlockerDisplacement(info.pBlockerDisplacement),
+pBlockerRotation(info.pBlockerRotation),
+pBlockerOrientation(info.pBlockerOrientation),
+
+pStopTesting(info.pStopTesting),
+pStuck(info.pStuck)
+{
+	info.pHistory.Visit([&](const deCollisionInfo &each){
+		pHistory.Add(Ref::New(each));
+	});
 }
 
 deCollisionInfo::~deCollisionInfo(){
@@ -89,31 +100,23 @@ deCollisionInfo::~deCollisionInfo(){
 }
 
 
-
 // Management
 ///////////////
 
 void deCollisionInfo::SetOwnerBone(int bone){
-	if(bone < -1){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(bone >= -1)
 	pOwnerBone = bone;
 }
 
 void deCollisionInfo::SetOwnerShape(int shape){
-	if(shape < -1){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(shape >= -1)
 	pOwnerShape = shape;
 }
 
 void deCollisionInfo::SetOwnerFace(int face){
-	if(face < -1){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(face >= -1)
 	pOwnerFace = face;
 }
-
 
 
 bool deCollisionInfo::IsHTSector() const{
@@ -121,7 +124,7 @@ bool deCollisionInfo::IsHTSector() const{
 }
 
 bool deCollisionInfo::IsCollider() const{
-	return pCollider != nullptr;
+	return pCollider.IsNotNull();
 }
 
 bool deCollisionInfo::HasCollision() const{
@@ -129,9 +132,8 @@ bool deCollisionInfo::HasCollision() const{
 }
 
 void deCollisionInfo::SetHTSector(deHeightTerrain *heightTerrain, deHeightTerrainSector *sector){
-	if(!heightTerrain || !sector){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(heightTerrain)
+	DEASSERT_NOTNULL(sector)
 	
 	Clear();
 	
@@ -140,9 +142,10 @@ void deCollisionInfo::SetHTSector(deHeightTerrain *heightTerrain, deHeightTerrai
 }
 
 void deCollisionInfo::SetCollider(deCollider *collider, int bone, int shape, int face){
-	if(!collider || bone < -1 || shape < -1 || face < -1){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(collider)
+	DEASSERT_TRUE(bone >= -1)
+	DEASSERT_TRUE(shape >= -1)
+	DEASSERT_TRUE(face >= -1)
 	
 	Clear();
 	
@@ -153,9 +156,9 @@ void deCollisionInfo::SetCollider(deCollider *collider, int bone, int shape, int
 }
 
 void deCollisionInfo::Clear(){
-	pHeightTerrain = nullptr;
+	pHeightTerrain.Clear();
 	pHTSector = nullptr;
-	pCollider = nullptr;
+	pCollider.Clear();
 	pBone = -1;
 	pShape = -1;
 	pFace = -1;
@@ -169,8 +172,20 @@ void deCollisionInfo::Clear(){
 	pOwnerBone = -1;
 	pOwnerShape = -1;
 	pOwnerFace = -1;
+	
+	pOrgPosition.SetZero();
+	pOrgDisplacement.SetZero();
+	pOrgRotation.SetZero();
+	pOrgOrientation.SetZero();
+	
+	pBlockerPosition.SetZero();
+	pBlockerDisplacement.SetZero();
+	pBlockerRotation.SetZero();
+	pBlockerOrientation.SetZero();
+	
+	pHistory.RemoveAll();
+	pStuck = false;
 }
-
 
 
 void deCollisionInfo::SetParticleLifetime(float lifetime){
@@ -194,7 +209,6 @@ void deCollisionInfo::SetParticleResponse(deParticleEmitterType::eCollisionRespo
 }
 
 
-
 void deCollisionInfo::SetDistance(float distance){
 	pDistance = distance;
 }
@@ -212,11 +226,47 @@ void deCollisionInfo::SetImpulse(float impulse){
 }
 
 
+void deCollisionInfo::SetOrgPosition(const decDVector &position){
+	pOrgPosition = position;
+}
+
+void deCollisionInfo::SetOrgOrientation(const decQuaternion &orientation){
+	pOrgOrientation = orientation;
+}
+
+void deCollisionInfo::SetOrgDisplacement(const decDVector &displacement){
+	pOrgDisplacement = displacement;
+}
+
+void deCollisionInfo::SetOrgRotation(const decDVector &rotation){
+	pOrgRotation = rotation;
+}
+
+
+void deCollisionInfo::SetBlockerPosition(const decDVector &position){
+	pBlockerPosition = position;
+}
+
+void deCollisionInfo::SetBlockerOrientation(const decQuaternion &orientation){
+	pBlockerOrientation = orientation;
+}
+
+void deCollisionInfo::SetBlockerDisplacement(const decDVector &displacement){
+	pBlockerDisplacement = displacement;
+}
+
+void deCollisionInfo::SetBlockerRotation(const decDVector &rotation){
+	pBlockerRotation = rotation;
+}
+
 
 void deCollisionInfo::SetStopTesting(bool stopTesting){
 	pStopTesting = stopTesting;
 }
 
+void deCollisionInfo::SetStuck(bool stuck){
+	pStuck = stuck;
+}
 
 
 // Operators
@@ -242,7 +292,22 @@ deCollisionInfo &deCollisionInfo::operator=(const deCollisionInfo &info){
 	pDistance = info.pDistance;
 	pImpulse = info.pImpulse;
 	
+	pOrgPosition = info.pOrgPosition;
+	pOrgOrientation = info.pOrgOrientation;
+	pOrgDisplacement = info.pOrgDisplacement;
+	pOrgRotation = info.pOrgRotation;
+	
+	pBlockerPosition = info.pBlockerPosition;
+	pBlockerOrientation = info.pBlockerOrientation;
+	pBlockerDisplacement = info.pBlockerDisplacement;
+	pBlockerRotation = info.pBlockerRotation;
+	
 	pStopTesting = info.pStopTesting;
+	
+	info.pHistory.Visit([&](const deCollisionInfo &each){
+		pHistory.Add(Ref::New(each));
+	});
+	pStuck = info.pStuck;
 	
 	return *this;
 }

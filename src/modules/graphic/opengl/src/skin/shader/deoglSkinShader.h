@@ -91,6 +91,9 @@ public:
 		ettSubInstance1,
 		ettSubInstance2,
 		ettHeightMapMask,
+		ettFRShadowSky,
+		ettFRShadowSpot,
+		ettFRShadowPoint,
 		ETT_COUNT
 	};
 	
@@ -152,6 +155,8 @@ public:
 		erutVRDepthTransform,
 		erutDebugDepthTransform,
 		erutConditions1,
+		erutFRLightCount,
+		erutFRLights,
 		ERUT_COUNT
 	};
 	

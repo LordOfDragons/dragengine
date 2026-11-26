@@ -35,30 +35,30 @@ pin Dragengine.Scenery
  */
 class DefaultLabelDesigner extends DefaultWidgetDesigner
 	/** \brief Design for a particular widget state. */
-	public class LabelStateDesign extends StateDesign
-		private var Integer pAlignment
+	class LabelStateDesign extends StateDesign
+		var Integer pAlignment
 		
 		
 		
 		/** \brief Create state design. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Create copy of state design. */
-		public func new( LabelStateDesign stateDesign ) super( stateDesign )
-			this.pAlignment = stateDesign.pAlignment
+		func new(LabelStateDesign stateDesign) super(stateDesign)
+			pAlignment = stateDesign.pAlignment
 		end
 		
 		
 		
 		/** \brief Align.or null. */
-		public func Integer getAlignment()
-			return this.pAlignment
+		func Integer getAlignment()
+			return pAlignment
 		end
 		
 		/** \brief Set alignment or null. */
-		public func void setAlignment( Integer alignment )
-			this.pAlignment = alignment
+		func void setAlignment(Integer alignment)
+			pAlignment = alignment
 		end
 		
 		/**
@@ -71,42 +71,42 @@ class DefaultLabelDesigner extends DefaultWidgetDesigner
 		 * "right". These are the supported identifiers of the vertical alignment group:
 		 * "top", "middle" and "bottom".
 		 */
-		public func void setAlignmentFromString( String string )
+		func void setAlignmentFromString(String string)
 			if string == null
-				this.pAlignment = null
+				pAlignment = null
 				return
 			end
 			
-			var int alignment = string.splitExact( ',' ).inject( 0, block int value, String each
-				if each.equals( "left" )
+			var int alignment = string.splitExact(',').inject(0, block int value, String each
+				if each.equals("left")
 					return value | Label.left
 					
-				elif each.equals( "center" )
+				elif each.equals("center")
 					return value | Label.center
 					
-				elif each.equals( "right" )
+				elif each.equals("right")
 					return value | Label.right
 					
-				elif each.equals( "top" )
+				elif each.equals("top")
 					return value | Label.top
 					
-				elif each.equals( "middle" )
+				elif each.equals("middle")
 					return value | Label.middle
 					
-				elif each.equals( "bottom" )
+				elif each.equals("bottom")
 					return value | Label.bottom
 					
 				else
 					throw EInvalidParam.new()
 				end
-			end ) cast int
+			end) cast int
 			
-			if ( alignment & Label.right == Label.right and alignment & Label.center == Label.center ) \
-			or ( alignment & Label.bottom == Label.bottom and alignment & Label.middle == Label.middle )
+			if (alignment & Label.right == Label.right and alignment & Label.center == Label.center) \
+			or (alignment & Label.bottom == Label.bottom and alignment & Label.middle == Label.middle)
 				throw EInvalidParam.new()
 			end
 			
-			this.pAlignment = Integer.new( alignment )
+			pAlignment = Integer.new(alignment)
 		end
 		
 		
@@ -130,20 +130,20 @@ class DefaultLabelDesigner extends DefaultWidgetDesigner
 		 * | padding | BorderSize | setPadding |
 		 * | alignment | String | setAlignmentFromString |
 		 */
-		public func void setParameter( String name, Object value )
-			if name.equals( "alignment" )
-				this.setAlignmentFromString( value cast String )
+		func void setParameter(String name, Object value)
+			if name.equals("alignment")
+				setAlignmentFromString(value cast String)
 				
 			else
-				super.setParameter( name, value )
+				super.setParameter(name, value)
 			end
 		end
 		
 		
 		
 		/** \brief Create copy of state. */
-		public func DefaultWidgetDesigner.StateDesign copyDesign()
-			return LabelStateDesign.new( this )
+		func DefaultWidgetDesigner.StateDesign copyDesign()
+			return LabelStateDesign.new(this)
 		end
 		
 		/**
@@ -152,13 +152,13 @@ class DefaultLabelDesigner extends DefaultWidgetDesigner
 		 * Updates state with parameters of this state if defined. Used to find the first
 		 * defined parameter for a series of states acting as fallback for each other.
 		 */
-		public func void merge( DefaultWidgetDesigner.StateDesign state )
-			super.merge( state )
+		func void merge(DefaultWidgetDesigner.StateDesign state)
+			super.merge(state)
 			
 			var LabelStateDesign lstate = state cast LabelStateDesign
 			
-			if this.pAlignment != null
-				lstate.pAlignment = this.pAlignment
+			if pAlignment != null
+				lstate.pAlignment = pAlignment
 			end
 		end
 		
@@ -167,11 +167,11 @@ class DefaultLabelDesigner extends DefaultWidgetDesigner
 		 * 
 		 * This is typically called on a merged design to find the first defined parameters.
 		 */
-		public func void apply( Widget widget )
-			super.apply( widget )
+		func void apply(Widget widget)
+			super.apply(widget)
 			
-			if this.pAlignment != null
-				( widget cast Label ).setAlignment( this.pAlignment.value() )
+			if pAlignment != null
+				(widget cast Label).setAlignment(pAlignment.value())
 			end
 		end
 	end
@@ -179,43 +179,43 @@ class DefaultLabelDesigner extends DefaultWidgetDesigner
 	
 	
 	/** \brief Create new label designer. */
-	public func new()
-		this.setDesignNormal( LabelStateDesign.new() )
-		this.setDesignDisabled( LabelStateDesign.new() )
-		this.setDesignFocused( LabelStateDesign.new() )
-		this.setDesignHover( LabelStateDesign.new() )
-		this.setDesignFocusedHover( LabelStateDesign.new() )
+	func new()
+		setDesignNormal(LabelStateDesign.new())
+		setDesignDisabled(LabelStateDesign.new())
+		setDesignFocused(LabelStateDesign.new())
+		setDesignHover(LabelStateDesign.new())
+		setDesignFocusedHover(LabelStateDesign.new())
 	end
 	
 	/** \brief Create copy of widget designer designer. */
-	public func new( DefaultLabelDesigner designer ) super( designer )
+	func new(DefaultLabelDesigner designer) super(designer)
 	end
 	
 	
 	
 	/** \brief Design for normal state. */
-	public func LabelStateDesign getLabelDesignNormal()
-		return this.getDesignNormal() cast LabelStateDesign
+	func LabelStateDesign getLabelDesignNormal()
+		return getDesignNormal() cast LabelStateDesign
 	end
 	
 	/** \brief Design for disabled state. */
-	public func LabelStateDesign getLabelDesignDisabled()
-		return this.getDesignDisabled() cast LabelStateDesign
+	func LabelStateDesign getLabelDesignDisabled()
+		return getDesignDisabled() cast LabelStateDesign
 	end
 	
 	/** \brief Design for focused state. */
-	public func LabelStateDesign getLabelDesignFocused()
-		return this.getDesignFocused() cast LabelStateDesign
+	func LabelStateDesign getLabelDesignFocused()
+		return getDesignFocused() cast LabelStateDesign
 	end
 	
 	/** \brief Design for hover state. */
-	public func LabelStateDesign getLabelDesignHover()
-		return this.getDesignHover() cast LabelStateDesign
+	func LabelStateDesign getLabelDesignHover()
+		return getDesignHover() cast LabelStateDesign
 	end
 	
 	/** \brief Design for focused hover state. */
-	public func LabelStateDesign getLabelDesignFocusedHover()
-		return this.getDesignFocusedHover() cast LabelStateDesign
+	func LabelStateDesign getLabelDesignFocusedHover()
+		return getDesignFocusedHover() cast LabelStateDesign
 	end
 	
 	
@@ -229,12 +229,12 @@ class DefaultLabelDesigner extends DefaultWidgetDesigner
 	 * | name | value | Setter |
 	 * | {state}.alignment | String | getDesign{state}.setAlignmentFromString |
 	 */
-	public func void setParameter( String name, Object value )
-		super.setParameter( name, value )
+	func void setParameter(String name, Object value)
+		super.setParameter(name, value)
 	end
 	
 	/** \brief Create copy of designer. */
-	public func WidgetDesigner copyDesigner()
-		return DefaultLabelDesigner.new( this )
+	func WidgetDesigner copyDesigner()
+		return DefaultLabelDesigner.new(this)
 	end
 end

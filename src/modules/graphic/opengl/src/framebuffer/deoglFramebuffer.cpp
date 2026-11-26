@@ -32,6 +32,7 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTDebug.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
+#include "../texture/arraycubemap/deoglArrayCubeMap.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/texture2d/deoglTexture.h"
 
@@ -384,6 +385,29 @@ deoglArrayTexture *texture, int layer, int level){
 	}
 }
 
+void deoglFramebuffer::AttachColorArrayCubeMapLayerFace(
+int index, deoglArrayCubeMap *texture, int face){
+	AttachColorArrayCubeMapLayerFaceLevel(index, texture, face, 0);
+}
+
+void deoglFramebuffer::AttachColorArrayCubeMapLayerFaceLevel(
+int index, deoglArrayCubeMap *texture, int face, int level){
+	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || !texture){
+		DETHROW(deeInvalidParam);
+	}
+	
+	const GLuint image = texture->GetTexture();
+	
+	if(pAttColor[index].DoesNotMatch(image, eatArrayCubeMapLayerFace, level, face)){
+		DetachColorImage(index);
+		
+		OGL_CHECK(pRenderThread, pglFramebufferTextureLayer(GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0 + index, image, level, face));
+		
+		pAttColor[index].Set(image, eatArrayCubeMapLayerFace, level, face);
+	}
+}
+
 void deoglFramebuffer::AttachColorTextureLevel(int index, GLuint texture, int level){
 	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT){
 		DETHROW(deeInvalidParam);
@@ -628,6 +652,26 @@ void deoglFramebuffer::AttachDepthArrayTextureLayerLevel(deoglArrayTexture *text
 		OGL_CHECK(pRenderThread, pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, image, level, layer));
 		
 		pAttDepth.Set(image, eatArrayTextureLayer, level, layer);
+	}
+}
+
+void deoglFramebuffer::AttachDepthArrayCubeMapLayerFace(deoglArrayCubeMap *texture, int layer){
+	AttachDepthArrayCubeMapLayerFaceLevel(texture, layer, 0);
+}
+
+void deoglFramebuffer::AttachDepthArrayCubeMapLayerFaceLevel(deoglArrayCubeMap *texture, int layer, int level){
+	if(pPrimary || !texture){
+		DETHROW(deeInvalidParam);
+	}
+	
+	const GLuint image = texture->GetTexture();
+	
+	if(pAttDepth.DoesNotMatch(image, eatArrayCubeMapLayerFace, level, layer)){
+		DetachDepthImage();
+		
+		OGL_CHECK(pRenderThread, pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, image, level, layer));
+		
+		pAttDepth.Set(image, eatArrayCubeMapLayerFace, level, layer);
 	}
 }
 

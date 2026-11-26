@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <guiTheme>
 	<!-- Default widget parameters. -->
-	<font for='widget' size='15'>../modern/fonts/sans15.defont</font>
+	<font for='widget' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 	
 	<!-- Widget designers -->
 	<designer name='Desktop' type='Desktop'>
@@ -21,7 +21,7 @@
 	
 	<designer name='Window' extendNamed='WindowUndecorated'>
 		<decoration parameter='decoration' type='Simple'>
-			<font parameter='active.title.font' size='15'>../modern/fonts/sans15.defont</font>
+			<font parameter='active.title.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 			<color parameter='active.title.textColor' r='0' g='0' b='0'/>
 			<color parameter='inactive.title.textColor' r='0.25' g='0.25' b='0.25'/>
 		</decoration>
@@ -55,7 +55,7 @@
 	<designer name='Label.WindowToolTip' type='Label'>
 		<string parameter='normal.alignment'>left,top</string>
 		<color parameter='normal.textColor' r='1' g='1' b='1'/>
-		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 	</designer>
 	
 	<designer name='WindowFullScreen' type='Window'>
@@ -77,14 +77,14 @@
 			<color parameter='colorHighlight' r='1' g='1' b='1'/>
 			<color parameter='colorShadow' r='0.5' g='0.5' b='0.5'/>
 			<color parameter='textColor' r='0' g='0' b='0'/>
-			<font parameter='font' size='15'>../modern/fonts/sans15.defont</font>
+			<font parameter='font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 		</border>
 		<borderSize parameter='normal.padding' all='2'/>
 	</designer>
 	
 	<designer name='Label' type='Label'>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 		<color parameter='disabled.textColor' r='0.5' g='0.5' b='0.5'/>
 	</designer>
 	
@@ -174,7 +174,7 @@
 		</border>
 		<borderSize parameter='normal.padding' all='2'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 	</designer>
 	
 	<designer name='TextArea' type='TextArea'>
@@ -191,7 +191,7 @@
 		</border>
 		<borderSize parameter='normal.padding' all='2'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 	</designer>
 	
 	<designer name='ListBox' type='ListBox'>
@@ -211,7 +211,7 @@
 	<designer name='Label.ListRenderer' type='Label'>
 		<canvasCreator parameter='normal.canvas' type='Default'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 		<borderSize parameter='normal.padding' left='2' top='0' right='2' bottom='0'/>
 		
 		<canvasCreator parameter='hover.canvas' type='Rectangle'>
@@ -224,7 +224,7 @@
 			<color parameter='colorFill' r='0.2' g='0.2' b='0.5'/>
 		</canvasCreator>
 		<color parameter='normal.textColor' r='1' g='1' b='1'/>
-		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 		<borderSize parameter='normal.padding' left='2' top='0' right='2' bottom='0'/>
 		
 		<canvasCreator parameter='hover.canvas' type='Rectangle'>
@@ -248,7 +248,7 @@
 			<color parameter='colorFill' r='1' g='1' b='1'/>
 		</canvasCreator>-->
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/liberation/sans/regular.ttf</font>
 		<borderSize parameter='normal.padding' left='2' top='0' right='2' bottom='0'/>
 	</designer>
 	

@@ -132,6 +132,7 @@ bool deglbLauncher::RunCommandLineGame(){
 		
 		pCmdLineGame = list.First();
 		
+		auto delgaFile(pCmdLineGame->GetDelgaFile());
 		delGame::Ref loadedGame(GetGameManager().GetGames().FindWithId(pCmdLineGame->GetIdentifier()));
 		if(loadedGame){
 			if(loadedGame->GetDelgaFile() == pRunGame){
@@ -139,12 +140,14 @@ bool deglbLauncher::RunCommandLineGame(){
 				
 			}else{
 				pCmdLineGame->LoadConfig();
+				pCmdLineGame->SetDelgaFile(delgaFile);
 				GetGameManager().GetGames().Remove(loadedGame);
 				GetGameManager().GetGames().Add(pCmdLineGame);
 			}
 			
 		}else{
 			pCmdLineGame->LoadConfig();
+			pCmdLineGame->SetDelgaFile(delgaFile);
 		}
 		
 		pCmdLineGame->VerifyRequirements();

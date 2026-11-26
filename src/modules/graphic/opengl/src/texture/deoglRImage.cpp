@@ -22,15 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRImage.h"
 #include "texture2d/deoglTexture.h"
 #include "cubemap/deoglCubeMap.h"
 #include "arraytexture/deoglArrayTexture.h"
-#include "../deoglBasics.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../memory/deoglMemoryManager.h"

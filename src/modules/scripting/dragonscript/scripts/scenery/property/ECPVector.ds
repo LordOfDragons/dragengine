@@ -73,9 +73,9 @@ class ECPVector extends ElementClassProperty
 	
 	
 	/**
-	 * \brief Color modified by stub property if present.
+	 * \brief Vector modified by stub property if present.
 	 * 
-	 * If named stub property is not present or empty string the stored color is returned.
+	 * If named stub property is not present or empty string the stored vector is returned.
 	 * If the named stub property is present it is decoded using codec.
 	 * 
 	 * The following property value formats are understood where "x", "y" and "z" are

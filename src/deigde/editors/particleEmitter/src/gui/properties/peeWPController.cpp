@@ -39,6 +39,7 @@
 #include "../../undosys/controller/peeUControllerSetUpper.h"
 #include "../../undosys/controller/peeUControllerSetLower.h"
 #include "../../undosys/controller/peeUControllerSetName.h"
+#include "../../undosys/controller/peeUControllerSetDefaultValue.h"
 #include "../../undosys/controller/peeUControllerToggleClamp.h"
 #include "../../undosys/controller/peeUControllerToggleFrozen.h"
 
@@ -330,6 +331,20 @@ public:
 	}
 };
 
+class cTextDefaultValue : public cBaseTextFieldListener{
+public:
+	using Ref = deTObjectReference<cTextDefaultValue>;
+	cTextDefaultValue(peeWPController &panel) : cBaseTextFieldListener(panel){}
+	
+	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeController *controller) override{
+		const float value = textField->GetFloat();
+		if(fabsf(value - controller->GetDefaultValue()) <= FLOAT_SAFE_EPSILON){
+			return {};
+		}
+		return peeUControllerSetDefaultValue::Ref::New(controller, value);
+	}
+};
+
 class cSliderValue : public igdeEditSliderTextListener{
 	peeWPController &pPanel;
 public:
@@ -415,6 +430,9 @@ pWindowProperties(windowProperties)
 	helper.EditSliderText(groupBox, "@ParticleEmitter.WPController.Value", "@ParticleEmitter.WPController.Value.ToolTip",
 		0.0f, 0.0f, 4, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
 	
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPController.DefaultValue", "@ParticleEmitter.WPController.DefaultValue.ToolTip",
+		pEditDefaultValue, cTextDefaultValue::Ref::New(*this));
+	
 	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkFrozen, cActionFrozen::Ref::New(*this));
 }
@@ -488,6 +506,8 @@ void peeWPController::UpdateController(){
 		pSldValue->SetTickSpacing((controller->GetUpper() - controller->GetLower()) * 0.1f);
 		pSldValue->SetValue(controller->GetValue());
 		
+		pEditDefaultValue->SetFloat(controller->GetDefaultValue());
+		
 		pChkClamp->SetChecked(controller->GetClamp());
 		pChkFrozen->SetChecked(controller->GetFrozen());
 		
@@ -496,6 +516,7 @@ void peeWPController::UpdateController(){
 		pEditMin->ClearText();
 		pEditMax->ClearText();
 		pSldValue->SetRange(0, 0);
+		pEditDefaultValue->ClearText();
 		pChkClamp->SetChecked(false);
 		pChkFrozen->SetChecked(false);
 	}
@@ -505,6 +526,7 @@ void peeWPController::UpdateController(){
 	pEditMin->SetEnabled(enable);
 	pEditMax->SetEnabled(enable);
 	pSldValue->SetEnabled(enable);
+	pEditDefaultValue->SetEnabled(enable);
 	pChkClamp->SetEnabled(enable);
 	pChkFrozen->SetEnabled(enable);
 }

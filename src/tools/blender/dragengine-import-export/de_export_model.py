@@ -125,7 +125,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
                     and testmesh.object.dragengine_lodmesh\
                     and testmesh.object.dragengine_lodmesh.name in bpy.data.objects:
                 if testmesh.object.dragengine_lodmesh in loopProtection:
-                    self.report({ 'INFO', 'ERROR' }, "Loop in LOD meshes!")
+                    self.report({ 'ERROR' }, "Loop in LOD meshes!")
                     return False
                 loopProtection.append(testmesh.object.dragengine_lodmesh.name)
                 
@@ -135,19 +135,19 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
                     testmesh.lodMesh.lodError = testmesh.lodMesh.object.dragengine_loderror
                     prevLodLevelHasLodError = True
                     if testmesh.lodMesh.lodError < predLodError:
-                        self.report({'INFO', 'ERROR'}, ("LOD mesh '{}' has lower custom LOD error "
+                        self.report({'ERROR'}, ("LOD mesh '{}' has lower custom LOD error "
                             + "than previous LOD mesh!").format(testmesh.object.name))
                         return False
                     predLodError = testmesh.lodMesh.lodError
                 elif prevLodLevelHasLodError:
-                    self.report({'INFO', 'ERROR'}, ("LOD mesh '{}' has custom LOD error disabled "
+                    self.report({'ERROR'}, ("LOD mesh '{}' has custom LOD error disabled "
                         + "but previous LOD mesh has LOD error enabled!").format(testmesh.object.name))
                     return False
                 
                 if testmesh.lodMesh.object.parent:
                     if (testmesh.lodMesh.object.parent.type == 'ARMATURE'
                         and testmesh.lodMesh.object.parent.name != self.armature.object.name):
-                            self.report({ 'INFO', 'ERROR' }, "LOD mesh has not the same armature as the base mesh!")
+                            self.report({ 'ERROR' }, "LOD mesh has not the same armature as the base mesh!")
                             return False
                 testmesh.lodMesh.armature = self.armature
                 
@@ -260,7 +260,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
     def initChecksEarlyMesh(self, context, mesh):
         if bpy.app.version < (4, 1):
             if mesh.useAutoSmooth and mesh.edgeSplitModifier:
-                self.report({'INFO', 'ERROR'},
+                self.report({'ERROR'},
                             ("Edge Split modifier found on object '{}'"
                                 + " while Auto-Smooth is enabled.".format(
                                     mesh.object.name)))
@@ -269,21 +269,21 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 
     def checkInitState(self, context):
         if not self.mesh:
-            self.report({ 'INFO', 'ERROR' }, "There is no Mesh selected. Select at last a Mesh and optional an Armature")
+            self.report({ 'ERROR' }, "There is no Mesh selected. Select at last a Mesh and optional an Armature")
             return False
         if self.mesh.multiFoldMesh:
-            self.report({ 'INFO', 'ERROR' }, "Can not Multi-Fold meshes (Edges used by more than 2 faces).")
+            self.report({ 'ERROR' }, "Can not Multi-Fold meshes (Edges used by more than 2 faces).")
             return False
         if self.mesh.degeneratedFaces:
-            self.report({ 'INFO', 'ERROR' }, "Degenerated Faces found.")
+            self.report({ 'ERROR' }, "Degenerated Faces found.")
             return False
         if not self.mesh.textures:
-            self.report({ 'INFO', 'ERROR' }, "No materials found. Add at last one material.")
+            self.report({ 'ERROR' }, "No materials found. Add at last one material.")
             return False
         dupName = frozenset([x.exportName for x in self.mesh.textures if
              len(frozenset([y for y in self.mesh.textures if y.exportName == x.exportName])) > 1])
         if dupName:
-            self.report({ 'INFO', 'ERROR' }, "Duplicate texture export names: {}".format(
+            self.report({ 'ERROR' }, "Duplicate texture export names: {}".format(
                 ", ".join(["'{}'".format(x) for x in dupName])))
             """if(len(self.mesh.getUVLayerNames()) == 0):
                 alertUser('No UV-Layers found. Add at least one UV-Layer.', 'Error')
@@ -293,7 +293,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
         
         # verify all texture coordinate sets in base mesh have the same count of texture coordinates
         if not self.checkMeshTexCoordSetsConsistent(self.mesh):
-            self.report({ 'INFO', 'ERROR' },
+            self.report({ 'ERROR' },
                         f"Base mesh '{self.mesh.object.name}': All texture coordinate "
                         f"sets must have the same count of texture coordinates.")
             return False
@@ -315,34 +315,34 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
         lodMesh = self.mesh.lodMesh
         while lodMesh:
             if lodMesh.multiFoldMesh:
-                self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Can not Multi-Fold meshes"
+                self.report({'ERROR'}, ("LOD Mesh '{}': Can not Multi-Fold meshes"
                     " (Edges used by more than 2 faces).").format(lodMesh.object.name))
                 return False
             
             if lodMesh.degeneratedFaces:
-                self.report({'INFO', 'ERROR'}, "LOD Mesh '{}': Degenerated Faces found.".format(lodMesh.object.name))
+                self.report({'ERROR'}, "LOD Mesh '{}': Degenerated Faces found.".format(lodMesh.object.name))
                 return False
             
             if not self.checkLODMeshSameTextures(lodMesh):
-                self.report({'INFO', 'ERROR'}, "LOD Mesh '{}': Textures do not match base mesh '{}' textures.".format(
+                self.report({'ERROR'}, "LOD Mesh '{}': Textures do not match base mesh '{}' textures.".format(
                     lodMesh.object.name, self.mesh.object.name))
                 return False
             
             if not self.checkLODMeshSameTexCoordSets(lodMesh):
-                self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Texture coordinate sets do not"
+                self.report({'ERROR'}, ("LOD Mesh '{}': Texture coordinate sets do not"
                     + " match base mesh '{}' texture coordinate sets (different count or names).").format(lodMesh.object.name, self.mesh.object.name))
                 return False
             
             # verify all texture coordinate sets in LOD mesh have the same count of texture coordinates
             if not self.checkMeshTexCoordSetsConsistent(lodMesh):
-                self.report({ 'INFO', 'ERROR' },
+                self.report({ 'ERROR' },
                             f"LOD Mesh '{lodMesh.object.name}': All texture coordinate sets "
                             "must have the same count of texture coordinates.")
                 return False
             
             # verify LOD mesh texture coordinate sets have the same count as base mesh
             if not self.checkLODMeshTexCoordCountMatchesBase(lodMesh):
-                self.report({ 'INFO', 'ERROR' },
+                self.report({ 'ERROR' },
                             f"LOD Mesh '{lodMesh.object.name}': Texture coordinate sets "
                             "must have the same count of texture coordinates as "
                             f"base mesh '{self.mesh.object.name}'.")

@@ -211,7 +211,8 @@ void deoglRComponentTexture::UpdateSkinState(deoglComponent &component){
 	//      texture needs own skin state since it uses the dynamic skin of the component
 	//      and the component skin state does not match the texture skin
 	if(pSkin && (pDynamicSkin || pComponent.GetDynamicSkin()
-	|| pSkin->GetCalculatedPropertyCount() > 0 || pSkin->GetConstructedPropertyCount() > 0)){
+	|| pSkin->GetCalculatedPropertyCount() > 0 || pSkin->GetConstructedPropertyCount() > 0
+	|| pSkin->GetVideoPlayerCount() > 0)){
 		if(!pSkinState){
 			pSetSkinState(deoglSkinState::Ref::New(pComponent.GetRenderThread(), pComponent, pIndex));
 			component.DirtyRenderableMapping();

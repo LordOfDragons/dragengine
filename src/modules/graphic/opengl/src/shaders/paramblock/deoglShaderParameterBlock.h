@@ -170,13 +170,17 @@ public:
 	virtual void MapBuffer(int element, int count) = 0;
 	
 	/** Unmap buffer uploading data to GPU. */
-	virtual void UnmapBuffer() = 0;
+	virtual void UnmapBuffer(bool delayUpload) = 0;
 	
 	/** Ensure buffer exists. Calls MapBuffer() then UnmapBuffer(). */
 	virtual void EnsureBuffer();
 	
 	/** Create copy of shader parameter block. */
 	virtual Ref Copy() const = 0;
+	
+	/** Valid element range. */
+	inline int GetElementLower() const{ return pElementLower; }
+	inline int GetElementUpper() const{ return pElementUpper; }
 	
 	
 	
@@ -501,9 +505,6 @@ protected:
 	
 	virtual void pUpdateBufferSize();
 	
-	inline int pGetElementLower() const{ return pElementLower; }
-	inline int pGetElementUpper() const{ return pElementUpper; }
-	
 	
 	
 private:
@@ -532,6 +533,8 @@ private:
 		GLfloat **data, int arrayIndex = 0) const;
 	void pDataMatrix4(const deoglSPBParameter &parameter, int element,
 		GLfloat **data, int arrayIndex = 0) const;
+	
+	int pMapToStd140(deoglSPBParameter *parameter) const;
 };
 
 #endif

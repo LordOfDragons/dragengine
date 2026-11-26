@@ -38,6 +38,7 @@ class debpWorld;
 class dePhysicsBullet;
 class debpGhostObject;
 class deDebugDrawerShape;
+class deCollider;
 
 
 
@@ -50,20 +51,16 @@ private:
 	deTouchSensor &pTouchSensor;
 	
 	debpWorld *pParentWorld;
-	decDVector pMinExtend;
-	decDVector pMaxExtend;
-	decDMatrix pMatrix;
-	decDMatrix pInvMatrix;
+	decDVector pMinExtend, pMaxExtend;
+	decDMatrix pMatrix, pInvMatrix;
 	
-	decDVector pBasicMinExtend;
-	decDVector pBasicMaxExtend;
+	decDVector pBasicMinExtend, pBasicMaxExtend;
 	
-	bool pDirtyMatrix;
-	bool pDirtyExtends;
+	bool pDirtyMatrix, pDirtyExtends;
 	
 	debpShape::List pShape;
-	decTOrderedSet<debpCollider*> pTouchingColliders;
-	decTOrderedSet<debpCollider*> pLeavingColliders;
+	decTOrderedSet<debpCollider*> pTouchingColliders, pLeavingColliders;
+	decTObjectOrderedSet<deCollider> pNotifyEnterColliders;
 	debpGhostObject *pGhostObject;
 	
 	deDebugDrawer::Ref pDebugDrawer;

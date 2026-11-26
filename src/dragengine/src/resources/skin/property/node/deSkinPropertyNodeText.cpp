@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSkinPropertyNodeText.h"
 #include "deSkinPropertyNodeVisitor.h"
 #include "../../../font/deFont.h"
@@ -40,7 +36,9 @@
 ////////////////////////////
 
 deSkinPropertyNodeText::deSkinPropertyNodeText() :
-pFontSize(10.0f)
+pFontSize(10.0f),
+pBorderThickness(0.0f),
+pDilation(0.0f)
 {
 	int i;
 	for(i=0; i<TextMappedCount; i++){
@@ -76,6 +74,17 @@ void deSkinPropertyNodeText::SetColor(const decColor &color){
 	pColor = color;
 }
 
+void deSkinPropertyNodeText::SetBorderColor(const decColor &color){
+	pBorderColor = color;
+}
+
+void deSkinPropertyNodeText::SetBorderThickness(float thickness){
+	pBorderThickness = decMath::max(thickness, 0.0f);
+}
+
+void deSkinPropertyNodeText::SetDilation(float dilation){
+	pDilation = dilation;
+}
 
 
 int deSkinPropertyNodeText::GetTextMappedFor(eTextMapped mapped) const{

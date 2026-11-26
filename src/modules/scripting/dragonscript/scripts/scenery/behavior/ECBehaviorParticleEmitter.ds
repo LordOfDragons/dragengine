@@ -167,16 +167,6 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorParticleEmitter'>
-	 *   <!-- optional: set collision filter. default value '5:0 1 2 6' which means
-	 *                  category BaseGameApp.CollisionFilterBit.particle
-	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
-	 *                         BaseGameApp.CollisionFilterBit.dynamic,
-	 *                         BaseGameApp.CollisionFilterBit.actor,
-	 *                         BaseGameApp.CollisionFilterBit.forceField.
-	 *                  format is '', 'category' or 'category:filter' where category and filter
-	 *                  are a list of bits to set. -->
-	 *   <string name='collisionFilter'>5:0 1 2 6</string>
-	 * 
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values -->
 	 *   <string name='triggerTable'>default</string>
 	 * 
@@ -219,8 +209,8 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			if parameters.has("collisionFilter")
-				behavior.getParticleEmitter().getCollisionFilter().setCollisionFilter(\
-					ElementClass.getSharedCodecPropertyString().decodeCollisionFilter(\
+				behavior.getParticleEmitter().getCollisionFilterProperty().setCollisionFilter(\
+					eclass.getSharedCodecPropertyString().decodeCollisionFilter(\
 						parameters.getAt("collisionFilter") cast String))
 			end
 			
@@ -243,10 +233,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		/**
-		 * \brief Behavior tree action "particleEmitter{(id)}.set".
-		 * \version 1.26
-		 */
+		/** \brief Behavior tree action "particleEmitter{(id)}.set". */
 		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
@@ -259,39 +246,45 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 				
 				value = parameters.getAt("casting", null)
 				if value != null
-					pInstance.setCasting(value.equals("true"))
+					if value.equals("pulse")
+						pInstance.pulseCasting()
+						
+					else
+						pInstance.setCasting(value.equals("true"))
+					end
 				end
 				
 				return BTResult.success
 			end
 		end
 		
-		/**
-		 * \brief Behavior tree action/condition "particleEmitter{(id)}.check".
-		 * \version 1.26
-		 */
-		private class BTACheck extends BTSMActionCondition
+		/** \brief Behavior tree action "particleEmitter{(id)}.update". */
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
-				var Object value
+				if parameters.has("burstDetached")
+					pInstance.burstDetached()
+				end
 				
-				value = parameters.getAt(prefix + "casting", null)
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Behavior tree action/condition "particleEmitter{(id)}.check". */
+		private class BTACheck extends BTSMCondition
+			var Instance pInstance
+			
+			func new(Instance instance, String prefix) super(prefix)
+				pInstance = instance
+			end
+			
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+				var Object value = parameters.getAt(prefix + "casting", null)
 				if value != null and pInstance.getCasting() != value.equals("true")
 					return false
 				end
@@ -341,8 +334,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		var ParticleEmitterInstance pParticleEmitterInstance
 		var ECBehaviorTriggered.Instance pTrigger
 		var TSTriggerTable pTriggerTable
-		var TSNamedTriggerTarget pTargetCasting
-		var TSNamedTriggerTarget pTargetLastParticleDied
+		var TSNamedTriggerTarget pTargetCasting, pTargetLastParticleDied
 		var Array pListeners
 		var ECComposeBTSM.Instance pBTSMs
 		
@@ -406,12 +398,18 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachEmitterInstance(stub, pCollider)
+				
+			else
+				var DMatrix matrix = pECBehavior.getAttach().attachMatrix(stub)
+				pParticleEmitterInstance.setPosition(matrix.getPosition())
+				pParticleEmitterInstance.setOrientation(matrix.toQuaternion())
 			end
 			
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
 				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
@@ -447,7 +445,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		/**
 		 * \brief Attach particle emitter instance to collider.
 		 * 
-		 * Default implementation calls ECComposeAttachResource.attach().
+		 * Default implementation calls \ref ECComposeAttachResource#attach().
 		 */
 		protected func void attachEmitterInstance(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pParticleEmitterInstance, stub)
@@ -520,6 +518,15 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			setCasting(not pCasting)
 		end
 		
+		/**
+		 * \brief Pulse particle emitter instance casting state.
+		 * \version 1.35
+		 */
+		func void pulseCasting()
+			setCasting(false)
+			setCasting(true)
+		end
+		
 		/** \brief Trigger target reflecting casting state. */
 		func TSNamedTriggerTarget getTargetCasting()
 			return pTargetCasting
@@ -530,6 +537,38 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			return pTargetLastParticleDied
 		end
 		
+		
+		/**
+		 * \brief Created detached burst particle emitter instance.
+		 * \version 1.35
+		 * 
+		 * Clones the particle emitter instance used by this behavior as a standalone particle
+		 * emitter destroying itself once all burst particles died. Use this call if you intend
+		 * to dispose of the owner element before the casting finished. Call has no effect if
+		 * no particle emitter instance exist, particle emitter is not of burst type or owner
+		 * element is not in a game world.
+		 */
+		func void burstDetached()
+			if pParticleEmitterInstance == null\
+			or not pParticleEmitterInstance.getEmitter().getEmitBurst()
+				return
+			end
+			
+			var GameWorld gameWorld = getElement().getGameWorld()
+			if gameWorld == null
+				return
+			end
+			
+			var ParticleEmitterInstance instance = ParticleEmitterInstance.new()
+			instance.setEmitter(pParticleEmitterInstance.getEmitter())
+			instance.setPosition(pParticleEmitterInstance.getPosition())
+			instance.setOrientation(pParticleEmitterInstance.getOrientation())
+			instance.setLayerMask(pParticleEmitterInstance.getLayerMask())
+			instance.setCollisionFilter(pParticleEmitterInstance.getCollisionFilter())
+			instance.setRemoveAfterLastParticleDied(true)
+			instance.setEnableCasting(true)
+			gameWorld.getWorld().addParticleEmitter(instance)
+		end
 		
 		
 		/** \brief Add listener. */

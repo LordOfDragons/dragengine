@@ -169,7 +169,12 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 aeMCPControllers::ObjectTypeRef aeMCPControllers::CopyObjectType(const ContextRef &context,
 const aeController::List &existingObjects, const ObjectTypeRef &object) const{
 	auto copied = aeController::Ref::New(*object);
-	copied->mpName.SetValue(Owner(context).uniqueNameController.Generate(copied->mpName), false);
+	copied->mpName.SetValue(Owner(context).uniqueNameController.Generate(
+		[&](const decString &name){
+			return existingObjects.NoneMatching([&](const aeController &existing){
+				return existing.mpName == name;
+			});
+		}, copied->mpName), false);
 	return copied;
 }
 

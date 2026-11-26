@@ -67,9 +67,7 @@ public:
 	igdeMetaPropertyStringStorage::Storage mpInputBone;
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleBoneTransformator::eCoordinateFrames>::Storage mpCoordinateFrame;
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleBoneTransformator::eInputSources>::Storage mpInputSource;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetTranslation;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetRotation;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetScaling;
+	LinkStorage mpTargetTranslation, mpTargetRotation, mpTargetScaling;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -99,6 +97,14 @@ public:
 	
 	/** Create a copy of this rule. */
 	aeRule::Ref CreateCopy() const override;
+	
+	/** Create link copies. Required for rules copied to clipboard. */
+	void CreateLinkCopies() override;
+	
+	/** Ensure links are valid. Required for rules pasted from clipboard. */
+	void EnsureValidLinks(const aeAnimator &animator,
+		decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+		decTDictionary<aeController::Ref,aeController::Ref> &addControllers) override;
 	/*@}*/
 	
 	/** \name Operators */

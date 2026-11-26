@@ -29,6 +29,7 @@
 #include "../deObject.h"
 #include "../common/file/decBaseFileReader.h"
 #include "../common/file/decBaseFileWriter.h"
+#include "../common/string/decString.h"
 
 class decPath;
 class deFileSearchVisitor;
@@ -60,6 +61,7 @@ public:
 	
 private:
 	deVFSContainer::List pContainers;
+	decString pIdentifier;
 	
 	
 	
@@ -84,6 +86,21 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/**
+	 * \brief Identifier of the virtual file system.
+	 * 
+	 * Can be used by caches to distinguish virtual file systems.
+	 */
+	const decString &GetIdentifier() const{ return pIdentifier; }
+	
+	/**
+	 * \brief Set identifier of the virtual file system.
+	 * 
+	 * Can be used by caches to distinguish virtual file systems.
+	 */
+	void SetIdentifier(const decString &identifier);
+	
+	
 	/** \brief File exists. */
 	bool ExistsFile(const decPath &path) const;
 	

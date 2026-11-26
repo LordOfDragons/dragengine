@@ -35,17 +35,16 @@ pin Dragengine.Utils
  * Provides billboard support to element class without subclassing from a specific class.
  */
 class ECComposeBillboard
-	private var ECPSkin pSkin
-	private var ECPVector pAxis
-	private var ECPVector2 pOffset
-	private var ECPBoolean pLocked
-	private var ECPBoolean pSpherical
-	private var ECPBoolean pSizeFixedToScreen
-	private var ECPBoolean pRenderEnvMap
-	private var LayerMask pLayerMask
-	private var LayerMask pLayerMaskRenderEnvMap
+	var ECPSkin pSkin
+	var ECPVector pAxis
+	var ECPVector2 pOffset
+	var ECPBoolean pLocked
+	var ECPBoolean pSpherical
+	var ECPBoolean pSizeFixedToScreen
+	var ECPBoolean pRenderEnvMap
+	var ECPLayerMask pLayerMask, pLayerMaskRenderEnvMap
 	
-	private var String pPrefix
+	var String pPrefix
 	
 	
 	
@@ -55,7 +54,7 @@ class ECComposeBillboard
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new( ElementClass ownerClass ) this( ownerClass, "billboard." )
+	func new(ElementClass ownerClass) this(ownerClass, "billboard.")
 	end
 	
 	/**
@@ -64,122 +63,127 @@ class ECComposeBillboard
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new( ElementClass ownerClass, String prefix )
+	func new(ElementClass ownerClass, String prefix)
 		if prefix == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pSkin = ECPSkin.new( prefix + "skin" )
-		ownerClass.addProperty( this.pSkin )
+		ownerClass.addProperty(pSkin = ECPSkin.new(prefix + "skin"))
+		ownerClass.addProperty(pAxis = ECPVector.new(prefix + "axis", Vector.new(0, 1, 0)))
+		ownerClass.addProperty(pOffset = ECPVector2.new(prefix + "offset", Vector2.new()))
+		ownerClass.addProperty(pLocked = ECPBoolean.new(prefix + "locked", true))
+		ownerClass.addProperty(pSpherical = ECPBoolean.new(prefix + "spherical", true))
+		ownerClass.addProperty(pSizeFixedToScreen = ECPBoolean.new(prefix + "sizeFixedToScreen", false))
+		ownerClass.addProperty(pRenderEnvMap = ECPBoolean.new(prefix + "renderEnvMap", true))
 		
-		this.pAxis = ECPVector.new( prefix + "axis", Vector.new( 0, 1, 0 ) )
-		ownerClass.addProperty( this.pAxis )
+		var CodecPropertyString codec = ownerClass.getCodecPropertyString()
+		var Dictionary layerMap = BaseGameApp.getApp().getWorldLayerMap()
 		
-		this.pOffset = ECPVector2.new( prefix + "offset", Vector2.new() )
-		ownerClass.addProperty( this.pOffset )
+		ownerClass.addProperty(pLayerMask = ECPLayerMask.new(\
+			prefix + "layerMask", codec, layerMap,\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.default)))
 		
-		this.pLocked = ECPBoolean.new( prefix + "locked", true )
-		ownerClass.addProperty( this.pLocked )
+		ownerClass.addProperty(pLayerMaskRenderEnvMap = ECPLayerMask.new(\
+			prefix + "layerMaskRenderEnvMap", codec, layerMap,\
+			LayerMask.newWith(BaseGameApp.WorldLayerBit.envmap)))
 		
-		this.pSpherical = ECPBoolean.new( prefix + "spherical", true )
-		ownerClass.addProperty( this.pSpherical )
-		
-		this.pSizeFixedToScreen = ECPBoolean.new( prefix + "sizeFixedToScreen", false )
-		ownerClass.addProperty( this.pSizeFixedToScreen )
-		
-		this.pRenderEnvMap = ECPBoolean.new( prefix + "renderEnvMap", true )
-		ownerClass.addProperty( this.pRenderEnvMap )
-		
-		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.default )
-		this.pLayerMaskRenderEnvMap = LayerMask.newWith( BaseGameApp.WorldLayerBit.envmap )
-		
-		this.pPrefix = prefix
+		pPrefix = prefix
 	end
 	
 	
 	
 	/** \brief Skin resource. */
-	public func ECPSkin getSkin()
-		return this.pSkin
+	func ECPSkin getSkin()
+		return pSkin
 	end
 	
 	/** \brief Billboard axis. */
-	public func ECPVector getAxis()
-		return this.pAxis
+	func ECPVector getAxis()
+		return pAxis
 	end
 	
 	/** \brief Billboard offset. */
-	public func ECPVector2 getOffset()
-		return this.pOffset
+	func ECPVector2 getOffset()
+		return pOffset
 	end
 	
 	/** \brief Billboard is locked. */
-	public func ECPBoolean getLocked()
-		return this.pLocked
+	func ECPBoolean getLocked()
+		return pLocked
 	end
 	
 	/** \brief Billboard is spherical. */
-	public func ECPBoolean getSpherical()
-		return this.pSpherical
+	func ECPBoolean getSpherical()
+		return pSpherical
 	end
 	
 	/** \brief Billboard size is fixed to the screen size. */
-	public func ECPBoolean getSizeFixedToScreen()
-		return this.pSizeFixedToScreen
+	func ECPBoolean getSizeFixedToScreen()
+		return pSizeFixedToScreen
 	end
 	
 	/** \brief Render prop in environment maps. */
-	public func ECPBoolean getRenderEnvMap()
-		return this.pRenderEnvMap
+	func ECPBoolean getRenderEnvMap()
+		return pRenderEnvMap
 	end
 	
-	/** \brief Layer mask to set (basic layer mask). */
-	public func LayerMask getLayerMask()
-		return this.pLayerMask
+	/**
+	 * \brief Layer mask to set (basic layer mask).
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
+		return pLayerMask
 	end
 	
-	/** \brief Set layer mask to set (basic layer mask). */
-	public func void setLayerMask( LayerMask layerMask )
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		this.pLayerMask = layerMask
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
 	end
 	
-	/** \brief Layer mask to set if render environment map is true. */
-	public func LayerMask getLayerMaskRenderEnvMap()
-		return this.pLayerMaskRenderEnvMap
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func void setLayerMask(LayerMask layerMask)
+		pLayerMask.setLayerMask(layerMask)
 	end
 	
-	/** \brief Set layer mask to set if render environment map is true. */
-	public func void setLayerMaskRenderEnvMap( LayerMask layerMask )
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		this.pLayerMaskRenderEnvMap = layerMask
+	/**
+	 * \brief Layer mask to set if render environment map is true.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskRenderEnvMapProperty()
+		return pLayerMaskRenderEnvMap
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskRenderEnvMapProperty() instead. */
+	func LayerMask getLayerMaskRenderEnvMap()
+		return pLayerMaskRenderEnvMap.getLayerMask()
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskRenderEnvMapProperty() instead. */
+	func void setLayerMaskRenderEnvMap(LayerMask layerMask)
+		pLayerMaskRenderEnvMap.setLayerMask(layerMask)
 	end
 	
 	/** \brief Property prefix. */
-	public func String getPrefix()
-		return this.pPrefix
+	func String getPrefix()
+		return pPrefix
 	end
 	
 	
 	
 	/** \brief Initialize billboard for element from stub. */
-	public func Billboard createBillboard( Element element, StubElement stub )
+	func Billboard createBillboard(Element element, StubElement stub)
 		var ElementClass eclass = element.getClass()
 		var CodecPropertyString codec = element.getClass().getCodecPropertyString()
 		var Billboard billboard = Billboard.new()
 		
-		billboard.setSkin( this.pSkin.getSkin( stub, eclass ) )
-		billboard.setPosition( element.getPosition() )
-		billboard.setSize( Vector2.new( element.getScaling().getX(), element.getScaling().getY() ) )
-		billboard.setOffset( this.pOffset.getVector2( stub, codec ) )
-		billboard.setAxis( this.pAxis.getVector( stub, codec ) )
-		billboard.setLocked( this.pLocked.getValue( stub ) )
-		billboard.setSpherical( this.pSpherical.getValue( stub ) )
-		billboard.setSizeFixedToScreen( this.pSizeFixedToScreen.getValue( stub ) )
+		billboard.setSkin(pSkin.getSkin(stub, eclass))
+		billboard.setPosition(element.getPosition())
+		billboard.setSize(Vector2.new(element.getScaling().getX(), element.getScaling().getY()))
+		billboard.setOffset(pOffset.getVector2(stub, codec))
+		billboard.setAxis(pAxis.getVector(stub, codec))
+		billboard.setLocked(pLocked.getValue(stub))
+		billboard.setSpherical(pSpherical.getValue(stub))
+		billboard.setSizeFixedToScreen(pSizeFixedToScreen.getValue(stub))
 		
 		return billboard
 	end
@@ -187,13 +191,11 @@ class ECComposeBillboard
 	/**
 	 * \brief Create billboard layer mask.
 	 */
-	public func LayerMask createLayerMask( StubElement stub )
-		var LayerMask layerMask =  LayerMask.new( this.pLayerMask )
-		
-		if stub.getPropertyBoolFor( this.pRenderEnvMap.getName(), this.pRenderEnvMap.getValue() )
-			layerMask |= this.pLayerMaskRenderEnvMap
+	func LayerMask createLayerMask(StubElement stub)
+		var LayerMask layerMask = LayerMask.new(pLayerMask.getLayerMask(stub))
+		if stub.getPropertyBoolFor(pRenderEnvMap.getName(), pRenderEnvMap.getValue())
+			layerMask |= pLayerMaskRenderEnvMap.getLayerMask(stub)
 		end
-		
 		return layerMask
 	end
 end

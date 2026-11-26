@@ -55,10 +55,11 @@ private:
 	deFont::Ref pFont;
 	float pFontSize;
 	decString pText;
-	decColor pColor;
+	decColor pColor, pBorderColor;
+	float pBorderThickness;
+	float pDilation;
 	
 	int pTextMapped[TextMappedCount];
-	
 	
 	
 public:
@@ -70,7 +71,6 @@ public:
 	/** \brief Clean up constructed property node. */
 	~deSkinPropertyNodeText() override;
 	/*@}*/
-	
 	
 	
 	/** \name Management */
@@ -109,6 +109,23 @@ public:
 	/** \brief Set text color. */
 	void SetColor(const decColor &color);
 	
+	/** \brief Border color. */
+	inline const decColor &GetBorderColor() const{ return pBorderColor; }
+	
+	/** \brief Set border color. */
+	void SetBorderColor(const decColor &color);
+	
+	/** \brief Border thickness. */
+	inline float GetBorderThickness() const{ return pBorderThickness; }
+	
+	/** \brief Set border thickness. */
+	void SetBorderThickness(float thickness);
+	
+	/** \brief Dilation. */
+	inline float GetDilation() const{ return pDilation; }
+	
+	/** \brief Set dilation. */
+	void SetDilation(float dilation);
 	
 	
 	/** \brief Index of mapped value or -1 to use static value. */

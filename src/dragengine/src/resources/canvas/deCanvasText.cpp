@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deCanvasText.h"
 #include "deCanvasVisitor.h"
 #include "../font/deFont.h"
@@ -41,8 +37,9 @@
 
 deCanvasText::deCanvasText(deCanvasManager *manager) :
 deCanvas(manager),
-
-pFontSize(10.0f){
+pFontSize(10.0f),
+pBorderThickness(0.0f),
+pDilation(0.0f){
 }
 
 deCanvasText::~deCanvasText(){
@@ -99,6 +96,33 @@ void deCanvasText::SetColor(const decColor &color){
 	NotifyContentChanged();
 }
 
+void deCanvasText::SetBorderColor(const decColor &color){
+	if(pBorderColor.IsEqualTo(color)){
+		return;
+	}
+	
+	pBorderColor = color;
+	NotifyContentChanged();
+}
+
+void deCanvasText::SetBorderThickness(float thickness){
+	thickness = decMath::max(thickness, 0.0f);
+	if(fabsf(thickness - pBorderThickness) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pBorderThickness = thickness;
+	NotifyContentChanged();
+}
+
+void deCanvasText::SetDilation(float dilation){
+	if(fabsf(dilation - pDilation) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pDilation = dilation;
+	NotifyContentChanged();
+}
 
 
 // Visiting

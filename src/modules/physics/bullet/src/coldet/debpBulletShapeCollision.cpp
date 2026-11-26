@@ -80,6 +80,8 @@ struct LocalInfoAdder : public btCollisionWorld::ConvexResultCallback{
 		const btScalar result = pUserCallback->addSingleResult(r, b);
 		m_closestHitFraction = pUserCallback->m_closestHitFraction;
 		
+		r.m_localShapeInfo = nullptr;
+		
 		return result;
 	}
 };

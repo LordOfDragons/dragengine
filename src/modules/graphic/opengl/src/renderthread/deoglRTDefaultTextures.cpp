@@ -30,6 +30,7 @@
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
+#include "../texture/arraycubemap/deoglArrayCubeMap.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../texture/deoglImage.h"
 
@@ -64,6 +65,8 @@ pShadowMapColor(nullptr),
 pShadowCube(nullptr),
 pShadowCubeInverseDepth(nullptr),
 pShadowCubeColor(nullptr),
+pShadowArrayMap(nullptr),
+pShadowArrayCube(nullptr),
 
 pWeights(nullptr),
 pMaskOpaque(nullptr),
@@ -175,6 +178,12 @@ void deoglRTDefaultTextures::pCleanUp(){
 	}
 	if(pShadowMapInverseDepth){
 		delete pShadowMapInverseDepth;
+	}
+	if(pShadowArrayMap){
+		delete pShadowArrayMap;
+	}
+	if(pShadowArrayCube){
+		delete pShadowArrayCube;
 	}
 	if(pNonPbrMetalness){
 		delete pNonPbrMetalness;
@@ -516,4 +525,27 @@ void deoglRTDefaultTextures::pCreateShadowTextures(deoglRenderThread &renderThre
 	pShadowCubeColor->SetSize(1);
 	pShadowCubeColor->SetMapingFormat(3, false, false);
 	pShadowCubeColor->SetPixels(pbByte3Cube);
+	
+	// shadow array map
+	pShadowArrayMap = new deoglArrayTexture(renderThread);
+	pShadowArrayMap->SetSize(1, 1, 1);
+	pShadowArrayMap->SetDepthFormat(false, false);
+	pShadowArrayMap->SetPixels(bpDepth);
+
+	// shadow array cube
+	pShadowArrayCube = new deoglArrayCubeMap(renderThread);
+	pShadowArrayCube->SetSize(1, 1);
+	pShadowArrayCube->SetDepthFormat(false, false);
+	if(pShadowArrayCube->GetFormat()->GetIsStencil()){
+		const deoglPixelBuffer::Ref pbDepthStencilArrayCube(deoglPixelBuffer::Ref::New(
+			deoglPixelBuffer::epfDepthStencil, 1, 1, 6));
+		pbDepthStencilArrayCube->SetToDepthStencil(1.0f, 0);
+		pShadowArrayCube->SetPixels(pbDepthStencilArrayCube);
+		
+	}else{
+		const deoglPixelBuffer::Ref pbDepthArrayCube(deoglPixelBuffer::Ref::New(
+			deoglPixelBuffer::epfDepth, 1, 1, 6));
+		pbDepthArrayCube->SetToFloatColor(1.0f, 1.0f, 1.0f, 1.0f);
+		pShadowArrayCube->SetPixels(pbDepthArrayCube);
+	}
 }

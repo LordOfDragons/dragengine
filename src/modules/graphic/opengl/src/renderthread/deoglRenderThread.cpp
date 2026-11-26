@@ -65,6 +65,7 @@
 #include "../rendering/defren/deoglDeferredRendering.h"
 #include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../shadow/deoglFRShadowManager.h"
 #include "../shadow/deoglShadowMapper.h"
 #include "../shaders/deoglShaderLanguage.h"
 #include "../shaders/deoglShaderManager.h"
@@ -1105,6 +1106,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pOcclusionTestPool = new deoglOcclusionTestPool(*this);
 	pPersistentRenderTaskPool = new deoglPersistentRenderTaskPool;
 	pShadowMapper = new deoglShadowMapper(*this);
+	pFRShadowManager = deTUniqueReference<deoglFRShadowManager>::New(*this);
 	pDeferredRendering = new deoglDeferredRendering(*this);
 	pEnvMapSlotManager = new deoglEnvMapSlotManager(*this);
 	
@@ -2529,6 +2531,7 @@ void deoglRenderThread::pCleanUpThread(){
 		delete pShadowMapper;
 		pShadowMapper = nullptr;
 	}
+	pFRShadowManager.Clear();
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy shadow mapper (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 	#endif

@@ -230,29 +230,17 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "skinSwitcher{(id)}.check".
 		 * \version 1.26
 		 */
-		private class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMCondition
 			var Instance pInstance
-			var String pPrefix
 			
-			func new(Instance instance, String prefix)
+			func new(Instance instance, String prefix) super(prefix)
 				pInstance = instance
-				pPrefix = prefix
 			end
 			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				return check("", parameters) if BTResult.success\
-					else (parameters.has("wait") if BTResult.running else BTResult.failure)
-			end
-			
-			func bool evaluateConditionShared(Object context, Dictionary parameters)
-				return check(pPrefix, parameters)
-			end
-			
-			func bool check(String prefix, Dictionary parameters)
-				var Object value
-				var bool result
+			func bool evaluateConditionShared(String prefix, Object context, Dictionary parameters)
+				var bool result = true
 				
-				value = parameters.getAt(prefix + "active", null)
+				var Object value = parameters.getAt(prefix + "active", null)
 				if value != null
 					if value.equals("first")
 						result &= pInstance.getActive() == 0

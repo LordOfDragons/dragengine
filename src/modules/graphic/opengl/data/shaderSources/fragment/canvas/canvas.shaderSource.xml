@@ -10,4 +10,7 @@
 	<define>WITH_RENDER_WORLD</define>
 	<define>WITH_MASK</define>
 	<define>INPUT_ARRAY_TEXTURES</define>
+	
+	<!-- shared/defren/skin/color_sdf.glsl -->
+	<define>TEXTURE_COLOR_SDF</define>
 </shaderSource>

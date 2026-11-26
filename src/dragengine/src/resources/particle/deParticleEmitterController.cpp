@@ -48,8 +48,16 @@ pClamp(true),
 pFrozen(false){
 }
 
-deParticleEmitterController::~deParticleEmitterController(){
+deParticleEmitterController::deParticleEmitterController(const deParticleEmitterController &controller) :
+pName(controller.pName),
+pLower(controller.pLower),
+pUpper(controller.pUpper),
+pValue(controller.pValue),
+pClamp(controller.pClamp),
+pFrozen(controller.pFrozen){
 }
+
+deParticleEmitterController::~deParticleEmitterController() = default;
 
 
 

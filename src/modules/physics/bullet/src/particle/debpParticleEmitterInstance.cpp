@@ -284,6 +284,12 @@ void debpParticleEmitterInstance::EnableCastingChanged(){
 	}
 }
 
+void debpParticleEmitterInstance::RemoveAfterLastParticleDiedChanged(){
+	if(pInstance->GetRemoveAfterLastParticleDied()){
+		RequestCheckForLastParticle();
+	}
+}
+
 void debpParticleEmitterInstance::WarmUpTimeChanged(){
 }
 

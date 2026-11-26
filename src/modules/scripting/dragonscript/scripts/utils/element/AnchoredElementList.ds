@@ -68,8 +68,14 @@ class AnchoredElementList
 	
 	/** \brief Add anchored element. */
 	func void add(StringID id, Element element)
-		if id == null or pElements.has(id)
-			throw EInvalidParam.new()
+		if id == null
+			throw ENullPointer.new("id")
+		end
+		if element == null
+			throw ENullPointer.new("element")
+		end
+		if pElements.has(id)
+			throw EInvalidParam.new("id present")
 		end
 		pElements.setAt(id, element)
 	end
@@ -77,6 +83,16 @@ class AnchoredElementList
 	/** \brief Remove anchored element. */
 	func void remove(StringID id)
 		pElements.remove(id)
+	end
+	
+	/**
+	 * \brief Remove anchored element if present.
+	 * \version 1.35
+	 */
+	func void removeIfPresent(StringID id)
+		if pElements.has(id)
+			pElements.remove(id)
+		end
 	end
 	
 	/** \brief Remove all anchored elements. */

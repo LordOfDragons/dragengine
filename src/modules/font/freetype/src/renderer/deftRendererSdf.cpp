@@ -1,0 +1,422 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include "deftRendererSdf.h"
+#include "../deftModule.h"
+#include "../includeMsdfgen.h"
+#include "../layout/deftLayout.h"
+
+#include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/resources/font/deFontSize.h>
+#include <dragengine/resources/image/deImageManager.h>
+
+#include <algorithm>
+#include <future>
+#include <thread>
+#include <vector>
+
+
+struct sFTColorBGRA{
+	unsigned char blue, green, red, alpha;
+};
+
+struct sFTOutlineData{
+	msdfgen::Shape &shape;
+	msdfgen::Point2 start, current;
+	bool contourOpen;
+	
+	sFTOutlineData(msdfgen::Shape &s) :
+	shape(s),
+	contourOpen(false){
+	}
+};
+
+static msdfgen::Point2 fFTPoint(const FT_Vector &v){
+	return msdfgen::Point2(v.x, v.y);
+}
+
+static bool fFTSamePoint(const msdfgen::Point2 &a, const msdfgen::Point2 &b){
+	return a.x == b.x && a.y == b.y;
+}
+
+static void fFTCloseContour(sFTOutlineData &data){
+	if(!data.contourOpen){
+		return;
+	}
+	if(!fFTSamePoint(data.current, data.start)){
+		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, data.start));
+	}
+	data.contourOpen = false;
+	if(data.shape.contours.back().edges.empty()){
+		data.shape.contours.pop_back();
+	}
+}
+
+// mirror scanline pass of msdfgen standalone tool (main.cpp)
+static void fFTGenerateMtsdf(const msdfgen::BitmapSection<float, 4> &output,
+const msdfgen::Shape &shape, const msdfgen::Projection &projection, const msdfgen::Range &range){
+	msdfgen::generateMTSDF(output, shape, projection, range,
+		msdfgen::MSDFGeneratorConfig(true,
+			msdfgen::ErrorCorrectionConfig(
+				msdfgen::ErrorCorrectionConfig::DISABLED)));
+	
+	const float sdfZeroValue = range.lower != range.upper
+		? float(range.lower / (range.lower - range.upper)) : 0.5f;
+	
+	msdfgen::distanceSignCorrection(output, shape, projection, sdfZeroValue, msdfgen::FILL_NONZERO);
+	
+	msdfgen::msdfErrorCorrection(output, shape, projection, range,
+		msdfgen::MSDFGeneratorConfig(true,
+			msdfgen::ErrorCorrectionConfig(
+				msdfgen::ErrorCorrectionConfig::EDGE_PRIORITY,
+				msdfgen::ErrorCorrectionConfig::DO_NOT_CHECK_DISTANCE)));
+}
+
+static int sFTMoveTo(const FT_Vector *to, void *user){
+	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
+	fFTCloseContour(data);
+	data.shape.addContour();
+	data.start = fFTPoint(*to);
+	data.current = data.start;
+	data.contourOpen = true;
+	return 0;
+}
+
+static int sFTLineTo(const FT_Vector *to, void *user){
+	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
+	const msdfgen::Point2 p = fFTPoint(*to);
+	if(!fFTSamePoint(p, data.current)){
+		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, p));
+	}
+	data.current = p;
+	return 0;
+}
+
+static int sFTConicTo(const FT_Vector *control, const FT_Vector *to, void *user){
+	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
+	const msdfgen::Point2 c = fFTPoint(*control);
+	const msdfgen::Point2 p = fFTPoint(*to);
+	if(!fFTSamePoint(p, data.current)){
+		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, c, p));
+	}
+	data.current = p;
+	return 0;
+}
+
+static int sFTCubicTo(const FT_Vector *control1, const FT_Vector *control2, const FT_Vector *to, void *user){
+	sFTOutlineData &data = *static_cast<sFTOutlineData*>(user);
+	const msdfgen::Point2 c1 = fFTPoint(*control1);
+	const msdfgen::Point2 c2 = fFTPoint(*control2);
+	const msdfgen::Point2 p = fFTPoint(*to);
+	if(!fFTSamePoint(p, data.current) || msdfgen::crossProduct(c1 - p, c2 - p) != 0.0){
+		data.shape.contours.back().addEdge(msdfgen::EdgeHolder(data.current, c1, c2, p));
+	}
+	data.current = p;
+	return 0;
+}
+
+// Glyph job for parallel SDF generation. Shape extraction uses FreeType on the calling thread.
+struct sSdfJob{
+	msdfgen::Shape shape;
+	msdfgen::Projection projection;
+	int cellWidth, cellHeight, posX, posY, posZ;
+};
+
+
+// Class deftRendererSdf
+///////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+deftRendererSdf::deftRendererSdf(deftModule &module, FT_Face face) :
+pModule(module),
+pFace(face),
+pLoadFlags(FT_LOAD_DEFAULT),
+pUnitScale(1.0),
+pSdfMinVal(0.0),
+pSdfMaxVal(1.0),
+pPixelRange(1.0){
+}
+
+deftRendererSdf::~deftRendererSdf() = default;
+
+
+// Management
+///////////////
+
+void deftRendererSdf::SetLoadFlags(FT_Int32 loadFlags){
+	pLoadFlags = loadFlags;
+}
+
+void deftRendererSdf::SetUnitScale(double unitScale){
+	pUnitScale = unitScale;
+}
+
+void deftRendererSdf::SetSdfDistanceRange(double minVal, double maxVal){
+	pSdfMinVal = minVal;
+	pSdfMaxVal = maxVal;
+}
+
+void deftRendererSdf::SetPixelRange(double pixelRange){
+	pPixelRange = pixelRange;
+}
+
+
+void deftRendererSdf::Render(const deftLayout &layout, deFontSize &fontSize){
+	const auto &imageSize = layout.GetImageSize();
+	const auto image = pModule.GetGameEngine()->GetImageManager()->CreateImage(
+		imageSize.x, imageSize.y, imageSize.z, 4, 16);
+	
+	// rendering using single threaded approach requires roughly 4.5s for a full 2048 image.
+	// using multi threaded approach the render time is roughly 0.7s for a full 2048 image.
+	// this is best effort since this over-commits CPU resources when competing with
+	// deParallelProcessing spawned threads. But games and applications rarely load more than
+	// a few fonts and the loaded fonts are cached. unless this really shows to be a problem
+	// the multi-threaded approach is used
+	pRenderSdfParallel(layout, image);
+	
+	image->NotifyImageDataChanged();
+	fontSize.SetImage(image);
+}
+
+
+// Protected Functions
+////////////////////////
+
+void deftRendererSdf::pRenderSdf(const deftLayout &layout, deImage &image){
+	const auto &glyphs = layout.GetGlyphs();
+	
+	const int width = image.GetWidth();
+	const int height = image.GetHeight();
+	const int depth = image.GetDepth();
+	const int strideZ = width * height;
+	const int strideY = width;
+	const int pixelCount = strideZ * depth;
+	
+	sRGBA16 * const di = image.GetDataRGBA16();
+	int glyphIndex = 0;
+	for(int x=0; x<pixelCount; x++){
+		di[x] = {0, 0, 0, 0};
+	}
+	
+	const double unitScale = pUnitScale;
+	const msdfgen::Range range(pPixelRange / unitScale);
+	const int sdfMargin = (int)(std::ceil(pPixelRange * 0.5f));
+	const double sdfValDiv = 1.0 / (pSdfMaxVal - pSdfMinVal);
+	const float sdfRemap1 = (float)sdfValDiv;
+	const float sdfRemap2 = (float)(sdfValDiv * -pSdfMinVal);
+	
+	const auto toUShort = [](float v) -> unsigned short{
+		return (unsigned short)(decMath::clamp(v, 0.0f, 1.0f) * 65535.0f + 0.5f);
+	};
+	
+	FT_UInt gindex;
+	FT_ULong charcode = FT_Get_First_Char(pFace, &gindex);
+	while(gindex != 0){
+		if(charcode < 0xffff){
+			pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
+			
+			const deftLayout::Glyph &glyph = glyphs[glyphIndex++];
+			const int cellWidth = decMath::min(glyph.size.x, width - glyph.position.x);
+			const int cellHeight = decMath::min(glyph.size.y, height - glyph.position.y);
+			
+			do{
+				if(cellWidth <= 0 || cellHeight <= 0 || pFace->glyph->format != FT_GLYPH_FORMAT_OUTLINE){
+					break;
+				}
+				
+				FT_Outline &outline = pFace->glyph->outline;
+				
+				msdfgen::Shape shape;
+				sFTOutlineData data(shape);
+				FT_Outline_Funcs funcs{};
+				funcs.move_to = sFTMoveTo;
+				funcs.line_to = sFTLineTo;
+				funcs.conic_to = sFTConicTo;
+				funcs.cubic_to = sFTCubicTo;
+				pModule.AssertFT(FT_Outline_Decompose(&outline, &funcs, &data), "FT_Outline_Decompose");
+				fFTCloseContour(data);
+				if(shape.contours.empty()){
+					break;
+				}
+				
+				shape.normalize();
+				msdfgen::edgeColoringSimple(shape, 3.0);
+				
+				// compute exact pixel bounds from unscaled CBox and center inside sdfMargin
+				FT_BBox cbox;
+				FT_Outline_Get_CBox(&outline, &cbox);
+				const double left = std::floor(cbox.xMin * unitScale);
+				const double top = std::ceil(cbox.yMax * unitScale);
+				
+				// msdfgen::Projection applies: pixel = scale * (shapeCoord + translate)
+				const msdfgen::Projection projection(
+					msdfgen::Vector2(unitScale, unitScale),
+					msdfgen::Vector2((-left + sdfMargin) / unitScale,
+						(cellHeight - sdfMargin - top) / unitScale));
+				
+				decTList<float> buffer(cellWidth * cellHeight * 4);
+				float * const bufferPtr = buffer.GetArrayPointer();
+				msdfgen::BitmapSection<float, 4> output(bufferPtr, cellWidth, cellHeight);
+				fFTGenerateMtsdf(output, shape, projection, range);
+				
+				for(int y=0; y<cellHeight; y++){
+					const int row = cellHeight - 1 - y;
+					sRGBA16 *dg = di + strideZ * glyph.position.z + strideY * (glyph.position.y + y) + glyph.position.x;
+					for(int x=0; x<cellWidth; x++){
+						const float * const sp = bufferPtr + ((size_t)row * cellWidth + x) * 4;
+						dg[x].red = toUShort(sp[0]);
+						dg[x].green = toUShort(sp[1]);
+						dg[x].blue = toUShort(sp[2]);
+						dg[x].alpha = toUShort(sp[3] * sdfRemap1 + sdfRemap2);
+					}
+				}
+			}while(false);
+		}
+		charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
+	}
+}
+
+void deftRendererSdf::pRenderSdfParallel(const deftLayout &layout, deImage &image){
+	const auto &glyphs = layout.GetGlyphs();
+	
+	const int width = image.GetWidth();
+	const int height = image.GetHeight();
+	const int depth = image.GetDepth();
+	const int strideZ = width * height;
+	const int strideY = width;
+	const int pixelCount = strideZ * depth;
+	
+	sRGBA16 * const di = image.GetDataRGBA16();
+	int glyphIndex = 0;
+	for(int x=0; x<pixelCount; x++){
+		di[x] = {0, 0, 0, 0};
+	}
+	
+	const double unitScale = pUnitScale;
+	const msdfgen::Range range(pPixelRange / unitScale);
+	const int sdfMargin = (int)(std::ceil(pPixelRange * 0.5f));
+	const double sdfValDiv = 1.0 / (pSdfMaxVal - pSdfMinVal);
+	const float sdfRemap1 = (float)sdfValDiv;
+	const float sdfRemap2 = (float)(sdfValDiv * -pSdfMinVal);
+	
+	const auto toUShort = [](float v) -> unsigned short{
+		return (unsigned short)(decMath::clamp(v, 0.0f, 1.0f) * 65535.0f + 0.5f);
+	};
+	
+	// FreeType is not thread safe. load glyphs and extract shapes.
+	decTList<sSdfJob> jobs(glyphs.GetCount());
+	FT_UInt gindex;
+	FT_ULong charcode = FT_Get_First_Char(pFace, &gindex);
+	while(gindex != 0){
+		if(charcode < 0xffff){
+			pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
+			
+			const auto &glyph = glyphs[glyphIndex++];
+			const int cellWidth = decMath::min(glyph.size.x, width - glyph.position.x);
+			const int cellHeight = decMath::min(glyph.size.y, height - glyph.position.y);
+			
+			do{
+				if(cellWidth <= 0 || cellHeight <= 0 || pFace->glyph->format != FT_GLYPH_FORMAT_OUTLINE){
+					break;
+				}
+				
+				FT_Outline &outline = pFace->glyph->outline;
+				
+				msdfgen::Shape shape;
+				sFTOutlineData data(shape);
+				FT_Outline_Funcs funcs{};
+				funcs.move_to = sFTMoveTo;
+				funcs.line_to = sFTLineTo;
+				funcs.conic_to = sFTConicTo;
+				funcs.cubic_to = sFTCubicTo;
+				pModule.AssertFT(FT_Outline_Decompose(&outline, &funcs, &data), "FT_Outline_Decompose");
+				fFTCloseContour(data);
+				if(shape.contours.empty()){
+					break;
+				}
+				
+				FT_BBox cbox;
+				FT_Outline_Get_CBox(&outline, &cbox);
+				const double left = std::floor(cbox.xMin * unitScale);
+				const double top = std::ceil(cbox.yMax * unitScale);
+				
+				// msdfgen::Projection applies: pixel = scale * (shapeCoord + translate)
+				const msdfgen::Projection projection(
+					msdfgen::Vector2(unitScale, unitScale),
+					msdfgen::Vector2((-left + sdfMargin) / unitScale,
+						(cellHeight - sdfMargin - top) / unitScale));
+				
+				jobs.Add({std::move(shape), projection, cellWidth, cellHeight,
+					glyph.position.x, glyph.position.y, glyph.position.z});
+			}while(false);
+		}
+		charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
+	}
+	
+	if(jobs.IsEmpty()){
+		return;
+	}
+	
+	// msdfgen is thread safe. each job writes to its own glyph cell.
+	const auto renderJob = [&](sSdfJob &job, decTList<float> &buffer){
+		job.shape.normalize();
+		msdfgen::edgeColoringSimple(job.shape, 3.0);
+		
+		buffer.SetCountDiscard(job.cellWidth * job.cellHeight * 4);
+		float * const bufferPtr = buffer.GetArrayPointer();
+		msdfgen::BitmapSection<float, 4> output(bufferPtr, job.cellWidth, job.cellHeight);
+		fFTGenerateMtsdf(output, job.shape, job.projection, range);
+		
+		for(int y=0; y<job.cellHeight; y++){
+			const int row = job.cellHeight - 1 - y;
+			sRGBA16 *dg = di + strideZ * job.posZ + strideY * (job.posY + y) + job.posX;
+			for(int x=0; x<job.cellWidth; x++){
+				const float * const sp = bufferPtr + ((size_t)row * job.cellWidth + x) * 4;
+				dg[x].red = toUShort(sp[0]);
+				dg[x].green = toUShort(sp[1]);
+				dg[x].blue = toUShort(sp[2]);
+				dg[x].alpha = toUShort(sp[3] * sdfRemap1 + sdfRemap2);
+			}
+		}
+	};
+	
+	const int threadCount = std::min(jobs.GetCount(),
+		(int)std::max(1u, std::thread::hardware_concurrency()));
+	
+	decTList<std::future<void>> futures(threadCount);
+	for(int t=0; t<threadCount; t++){
+		futures.Add(std::async(std::launch::async, [&, t](){
+			decTList<float> buffer;
+			jobs.Visit(t, jobs.GetCount(), threadCount, [&](sSdfJob &job){
+				renderJob(job, buffer);
+			});
+		}));
+	}
+	for(auto &future : futures){
+		future.get();
+	}
+}

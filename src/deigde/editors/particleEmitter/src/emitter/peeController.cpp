@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "peeEmitter.h"
 #include "peeController.h"
 
@@ -33,7 +29,6 @@
 #include <dragengine/resources/particle/deParticleEmitterController.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
-
 
 
 // Class peeController
@@ -50,6 +45,7 @@ peeController::peeController(){
 	pLower = 0.0f;
 	pUpper = 1.0f;
 	pValue = 0.0f;
+	pDefaultValue = 0.0f;
 	pClamp = true;
 	pFrozen = false;
 	pLinkToTime = false;
@@ -223,6 +219,17 @@ void peeController::SetActive(bool active){
 	pActive = active;
 }
 
+void peeController::SetDefaultValue(float value){
+	if(fabsf(value - pDefaultValue) <= FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pDefaultValue = pCheckValue(value);
+	
+	if(pEmitter){
+		pEmitter->NotifyControllerChanged(this);
+	}
+}
 
 
 void peeController::UpdateValue(float elapsed){

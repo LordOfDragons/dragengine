@@ -245,7 +245,7 @@ public:
 	
 	sePropertyNode::Ref CreateNode(seSkin &, seProperty &) override{
 		const sePropertyNodeText::Ref node(sePropertyNodeText::Ref::New(*pView.GetEngine()));
-		node->SetPath("/igde/fonts/regular_67px.defont");
+		node->SetPath("/igde/fonts/liberation/sans/regular.ttf");
 		node->SetTextSize(67.0f);
 		node->SetSize(decPoint3(256, 67, 1));
 		node->SetText(pView.Translate("Skin.ViewConstructed.DefaultText").ToUTF8());
@@ -1282,6 +1282,9 @@ void seViewConstructedView::pUpdateContentCanvasParams(const sePropertyNodeGroup
 			canvasText.SetFont(nodeText.GetFont());
 			canvasText.SetFontSize(nodeText.GetTextSize());
 			canvasText.SetText(nodeText.GetText());
+			canvasText.SetBorderColor(nodeText.GetBorderColor());
+			canvasText.SetBorderThickness(nodeText.GetBorderThickness());
+			canvasText.SetDilation(nodeText.GetDilation());
 			}break;
 			
 		case sePropertyNodeImage::entGroup:

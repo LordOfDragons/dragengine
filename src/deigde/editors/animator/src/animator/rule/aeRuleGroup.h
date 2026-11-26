@@ -62,7 +62,7 @@ public:
 	igdeMetaPropertyBooleanStorage::Storage mpEnableVertexPositionSet;
 	igdeMetaPropertyBooleanStorage::Storage mpUseCurrentState;
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>::Storage mpApplicationType;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage mpTargetSelect;
+	LinkStorage mpTargetSelect;
 	
 public:
 	igdeUniqueNameGenerator uniqueNameRule;
@@ -104,6 +104,14 @@ public:
 	
 	/** Parent animator changed. */
 	void OnParentAnimatorChanged() override;
+	
+	/** Create link copies. Required for rules copied to clipboard. */
+	void CreateLinkCopies() override;
+	
+	/** Ensure links are valid. Required for rules pasted from clipboard. */
+	void EnsureValidLinks(const aeAnimator &animator,
+		decTDictionary<aeLink::Ref,aeLink::Ref> &addLinks,
+		decTDictionary<aeController::Ref,aeController::Ref> &addControllers) override;
 	/*@}*/
 	
 	/** \name Operators */

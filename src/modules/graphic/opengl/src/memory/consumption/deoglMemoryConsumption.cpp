@@ -43,6 +43,7 @@ texture2D("Texture2D"),
 texture3D("Texture3D"),
 textureArray("ArrayTexture"),
 textureCube("CubeMap"),
+textureArrayCube("Array CubeMap"),
 texture2DRenderable("Renderable Texture2D"),
 texture3DRenderable("Renderable Texture3D"),
 textureArrayRenderable("Renderable ArrayTexture"),
@@ -62,5 +63,6 @@ unsigned long long deoglMemoryConsumption::Total() const{
 		+ texture3D.all.GetConsumption()
 		+ textureArray.all.GetConsumption()
 		+ textureCube.all.GetConsumption()
+		+ textureArrayCube.all.GetConsumption()
 		+ bufferObject.all.GetConsumption();
 }

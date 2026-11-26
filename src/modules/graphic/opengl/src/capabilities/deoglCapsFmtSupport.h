@@ -122,16 +122,20 @@ private:
 	deoglCapsTextureFormat::List pFoundTex2DFormats;
 	deoglCapsTextureFormat::List pFoundTexCubeFormats;
 	deoglCapsTextureFormat::List pFoundArrTexFormats;
+	deoglCapsTextureFormat::List pFoundArrTexCubeFormats;
 	deoglCapsTextureFormat::List pFoundFBOTex2DFormats;
 	deoglCapsTextureFormat::List pFoundFBOTexCubeFormats;
 	deoglCapsTextureFormat::List pFoundFBOArrTexFormats;
+	deoglCapsTextureFormat::List pFoundFBOArrTexCubeFormats;
 	
 	const deoglCapsTextureFormat *pUseTex2DFormats[UseTextureFormatCount];
 	const deoglCapsTextureFormat *pUseTexCubeFormats[UseTextureFormatCount];
 	const deoglCapsTextureFormat *pUseArrTexFormats[UseTextureFormatCount];
+	const deoglCapsTextureFormat *pUseArrTexCubeFormats[UseTextureFormatCount];
 	const deoglCapsTextureFormat *pUseFBOTex2DFormats[UseTextureFormatCount];
 	const deoglCapsTextureFormat *pUseFBOTexCubeFormats[UseTextureFormatCount];
 	const deoglCapsTextureFormat *pUseFBOArrTexFormats[UseTextureFormatCount];
+	const deoglCapsTextureFormat *pUseFBOArrTexCubeFormats[UseTextureFormatCount];
 	
 	
 	
@@ -158,6 +162,10 @@ public:
 	const deoglCapsTextureFormat::List &GetFoundArrayTexFormats() const{ return pFoundArrTexFormats; }
 	deoglCapsTextureFormat::List &GetFoundArrayTexFormats(){return pFoundArrTexFormats;}
 	
+	/** List of found array cube map formats. */
+	const deoglCapsTextureFormat::List &GetFoundArrayTexCubeFormats() const{ return pFoundArrTexCubeFormats; }
+	deoglCapsTextureFormat::List &GetFoundArrayTexCubeFormats(){return pFoundArrTexCubeFormats;}
+	
 	/** List of found fbo texture 2d formats. */
 	const deoglCapsTextureFormat::List &GetFoundFBOTex2DFormats() const{ return pFoundFBOTex2DFormats; }
 	deoglCapsTextureFormat::List &GetFoundFBOTex2DFormats(){return pFoundFBOTex2DFormats;}
@@ -170,6 +178,10 @@ public:
 	const deoglCapsTextureFormat::List &GetFoundFBOArrayTexFormats() const{ return pFoundFBOArrTexFormats; }
 	deoglCapsTextureFormat::List &GetFoundFBOArrayTexFormats(){return pFoundFBOArrTexFormats;}
 	
+	/** List of found fbo array cube map formats. */
+	const deoglCapsTextureFormat::List &GetFoundFBOArrayTexCubeFormats() const{ return pFoundFBOArrTexCubeFormats; }
+	deoglCapsTextureFormat::List &GetFoundFBOArrayTexCubeFormats(){return pFoundFBOArrTexCubeFormats;}
+	
 	
 	
 	/** Format to use for texture 2d type or \em NULL if not supported. */
@@ -181,6 +193,9 @@ public:
 	/** Format to use for array texture type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseArrayTexFormatFor(eUseTextureFormats type) const;
 	
+	/** Format to use for array cube map type or \em NULL if not supported. */
+	const deoglCapsTextureFormat *GetUseArrayTexCubeFormatFor(eUseTextureFormats type) const;
+	
 	/** Format to use for fbo texture 2d type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseFBOTex2DFormatFor(eUseTextureFormats type) const;
 	
@@ -189,6 +204,9 @@ public:
 	
 	/** Format to use for fbo array texture type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseFBOArrayTexFormatFor(eUseTextureFormats type) const;
+	
+	/** Format to use for fbo array cube map type or \em NULL if not supported. */
+	const deoglCapsTextureFormat *GetUseFBOArrayTexCubeFormatFor(eUseTextureFormats type) const;
 	
 	
 	
@@ -201,6 +219,9 @@ public:
 	/** Format to use for array texture type or throws exception if not supported. */
 	const deoglCapsTextureFormat &RequireUseArrayTexFormatFor(eUseTextureFormats type) const;
 	
+	/** Format to use for array cube map type or throws exception if not supported. */
+	const deoglCapsTextureFormat &RequireUseArrayTexCubeFormatFor(eUseTextureFormats type) const;
+	
 	/** Format to use for fbo texture 2d type or throws exception if not supported. */
 	const deoglCapsTextureFormat &RequireUseFBOTex2DFormatFor(eUseTextureFormats type) const;
 	
@@ -209,6 +230,9 @@ public:
 	
 	/** Format to use for fbo array texture type or throws exception if not supported. */
 	const deoglCapsTextureFormat &RequireUseFBOArrayTexFormatFor(eUseTextureFormats type) const;
+	
+	/** Format to use for fbo array cube map type or throws exception if not supported. */
+	const deoglCapsTextureFormat &RequireUseFBOArrayTexCubeFormatFor(eUseTextureFormats type) const;
 	
 	
 	/** Get texture format name for logging. */
@@ -223,9 +247,11 @@ public:
 	decString SupportedFormatsTex2D() const;
 	decString SupportedFormatsTexCube() const;
 	decString SupportedFormatsArrayTex() const;
+	decString SupportedFormatsArrayTexCube() const;
 	decString SupportedFormatsFBOTex2D() const;
 	decString SupportedFormatsFBOTexCube() const;
 	decString SupportedFormatsFBOArrayTex() const;
+	decString SupportedFormatsFBOArrayTexCube() const;
 	/*@}*/
 	
 	
@@ -234,9 +260,11 @@ private:
 	void pDetectTex2DFormats();
 	void pDetectTexCubeFormats();
 	void pDetectArrayTexFormats();
+	void pDetectArrayTexCubeFormats();
 	void pDetectFBOTex2DFormats(GLuint fbo);
 	void pDetectFBOTexCubeFormats(GLuint fbo);
 	void pDetectFBOArrayTexFormats(GLuint fbo);
+	void pDetectFBOArrayTexCubeFormats(GLuint fbo);
 	
 	bool pTestTex2DFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
 		int bitsPerPixel, int flags, const char *name);
@@ -244,11 +272,15 @@ private:
 		int bitsPerPixel, int flags, const char *name);
 	bool pTestArrayTexFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
 		int bitsPerPixel, int flags, const char *name);
+	bool pTestArrayTexCubeFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
+		int bitsPerPixel, int flags, const char *name);
 	bool pTestFBOTex2DFormat(GLuint fbo, GLint format, GLenum pixelFormat,
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what);
 	bool pTestFBOTexCubeFormat(GLuint fbo, GLint format, GLenum pixelFormat,
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what);
 	bool pTestFBOArrayTexFormat(GLuint fbo, GLint format, GLenum pixelFormat,
+		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what);
+	bool pTestFBOArrayTexCubeFormat(GLuint fbo, GLint format, GLenum pixelFormat,
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what);
 	
 	const deoglCapsTextureFormat &pRequireFormat(const char *categoryName,

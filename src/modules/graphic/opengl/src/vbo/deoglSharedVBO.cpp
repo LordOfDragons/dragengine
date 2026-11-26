@@ -126,21 +126,22 @@ void deoglSharedVBO::Prepare(){
 	OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, stride * pUsedSize, nullptr, drawType));
 	
 	if(pUsedSize > 0){
-		// another way which does not require a memory copy is to write the data blocks in ascending
-		// order using glBufferSubData. according to the Internet this should not be slower than
-		// glBufferData for a newly created buffer.
-		decTList<unsigned char> vboData;
-		vboData.SetCountDiscard(stride * pUsedSize);
+		// another way which does not require a memory copy is to write the data blocks in
+		// ascending order using glBufferSubData. according to the Internet this should not
+		// be slower than glBufferData for a newly created buffer. to avoid memory fragmentation
+		// the scratch buffer is stored as class member.
+		pDataVBO.SetCountDiscard(stride * pUsedSize);
 		
 		for(i=0; i<blockCount; i++){
 			const deoglSharedVBOBlock &block = pBlocks.GetAt(i);
 			if(!block.GetEmpty()){
-				memcpy(vboData.GetArrayPointer() + stride * block.GetOffset(), block.GetData(), stride * block.GetSize());
+				memcpy(pDataVBO.GetArrayPointer() + stride * block.GetOffset(),
+					block.GetData(), stride * block.GetSize());
 			}
 		}
 		
 		OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER,
-			stride * pUsedSize, vboData.GetArrayPointer(), drawType));
+			stride * pUsedSize, pDataVBO.GetArrayPointer(), drawType));
 	}
 	
 	// update index buffer. works differently depending on the presence of base-vertex support
@@ -151,11 +152,11 @@ void deoglSharedVBO::Prepare(){
 		if(pIndexUsedSize > 0){
 			const bool useBaseVertex = renderThread.GetChoices().GetSharedVBOUseBaseVertex();
 
-			// another way which does not require a memory copy is to write the data blocks in ascending
-			// order using glBufferSubData. according to the Internet this should not be slower than
-			// glBufferData for a newly created buffer.
-			decTList<unsigned char> vboData;
-			vboData.SetCountDiscard(indexSize * pIndexUsedSize);
+			// another way which does not require a memory copy is to write the data blocks in
+			// ascending order using glBufferSubData. according to the Internet this should not
+			// be slower than glBufferData for a newly created buffer. to avoid memory
+			// fragmentation the scratch buffer is stored as class member.
+			pDataIBO.SetCountDiscard(indexSize * pIndexUsedSize);
 			
 			for(i=0; i<blockCount; i++){
 				const deoglSharedVBOBlock &block = pBlocks.GetAt(i);
@@ -164,7 +165,7 @@ void deoglSharedVBO::Prepare(){
 				}
 				
 				if(useBaseVertex){
-					memcpy(vboData.GetArrayPointer() + indexSize * block.GetIndexOffset(),
+					memcpy(pDataIBO.GetArrayPointer() + indexSize * block.GetIndexOffset(),
 						block.GetIndexData(), indexSize * block.GetIndexCount());
 					
 				}else{
@@ -176,7 +177,8 @@ void deoglSharedVBO::Prepare(){
 					const int firstPoint = block.GetOffset();
 					int j;
 					
-					unsigned int *dest = (unsigned int *)(vboData.GetArrayPointer() + indexSize * block.GetIndexOffset());
+					unsigned int *dest = (unsigned int *)(pDataIBO.GetArrayPointer()
+						+ indexSize * block.GetIndexOffset());
 					unsigned int *source = (unsigned int *)block.GetIndexData();
 					for(j=0; j<indexCount; j++){
 						dest[j] = (unsigned int)(source[j] + firstPoint);
@@ -185,7 +187,7 @@ void deoglSharedVBO::Prepare(){
 			}
 			
 			OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER,
-				indexSize * pIndexUsedSize, vboData.GetArrayPointer(), drawType));
+				indexSize * pIndexUsedSize, pDataIBO.GetArrayPointer(), drawType));
 		}
 	}
 	

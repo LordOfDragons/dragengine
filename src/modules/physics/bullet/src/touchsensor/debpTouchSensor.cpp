@@ -259,15 +259,15 @@ void debpTouchSensor::ApplyChanges(){
 		// NOTE bullet ghost object uses only AABB for collecting overlapping object pairs.
 		//      this gives wrong result since touch sensors are support to provide exact
 		//      collision check not approximate ones. so we have to do this manually here
-	const btGhostObject &ghostObject = *pGhostObject->GetGhostObject();
-	const int count = ghostObject.getNumOverlappingObjects();
-	
-	pTouchingColliders.Visit([](debpCollider *collider){
-		collider->SetTouchSensorMarked(false);
-	});
-	
-	int i;
-	for(i=0; i<count; i++){
+		const btGhostObject &ghostObject = *pGhostObject->GetGhostObject();
+		const int count = ghostObject.getNumOverlappingObjects();
+		
+		pTouchingColliders.Visit([](debpCollider *collider){
+			collider->SetTouchSensorMarked(false);
+		});
+		
+		pNotifyEnterColliders.RemoveAll();
+		for(int i=0; i<count; i++){
 			const btCollisionObject * const btColObj = ghostObject.getOverlappingObject(i);
 			const debpCollisionObject &colObj = *((debpCollisionObject*)btColObj->getUserPointer());
 			
@@ -292,13 +292,8 @@ void debpTouchSensor::ApplyChanges(){
 							collider->GetTrackingTouchSensors().Add(this);
 						}
 						
-						pTouchSensor.NotifyColliderEntered(&collider->GetCollider());
-						// at this point we might have been removed from the parent world
-						// by the user. in this case pParentWorld is NULL and all further
-						// actions are invalid. we need to quit the loop
-						if(!pParentWorld){
-							break;
-						}
+						// delay notification to avoid changing overlapping object list
+						pNotifyEnterColliders.Add(&collider->GetCollider());
 					}
 					
 				}else{
@@ -313,26 +308,33 @@ void debpTouchSensor::ApplyChanges(){
 			}
 		}
 		
-	// add all non-marked colliders to leaving list
-	pTouchingColliders.VisitReverse([&](debpCollider *collider){
-		if(!collider->GetTouchSensorMarked()){
-			pTouchingColliders.Remove(collider);
-			pLeavingColliders.Add(collider);
-		}
-	});
-	
-	// send a notification for all leaving colliders. if we have been removed from the
-	// parent world in the mean time pLeavingColliders is empty so no need to check
-	// if pParentWorld is NULL
-	while(pLeavingColliders.IsNotEmpty()){
-		const int index = pLeavingColliders.GetCount() - 1;
-		debpCollider * const collider = pLeavingColliders.GetAt(index);
-		pLeavingColliders.RemoveFrom(index);
-		collider->GetTrackingTouchSensors().Remove(this);
+		// notify enter colliders. this can remove or add colliders which in turn modify the
+		// ghost overlapping object list. doing this in the loop above can result in segfaults
+		pNotifyEnterColliders.Visit([&](deCollider *collider){
+			pTouchSensor.NotifyColliderEntered(collider);
+		});
+		pNotifyEnterColliders.RemoveAll();
 		
-		pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
-	}
-	
+		// add all non-marked colliders to leaving list
+		pTouchingColliders.VisitReverse([&](debpCollider *collider){
+			if(!collider->GetTouchSensorMarked()){
+				pTouchingColliders.Remove(collider);
+				pLeavingColliders.Add(collider);
+			}
+		});
+		
+		// send a notification for all leaving colliders. if we have been removed from the
+		// parent world in the mean time pLeavingColliders is empty so no need to check
+		// if pParentWorld is NULL
+		while(pLeavingColliders.IsNotEmpty()){
+			const int index = pLeavingColliders.GetCount() - 1;
+			debpCollider * const collider = pLeavingColliders.GetAt(index);
+			pLeavingColliders.RemoveFrom(index);
+			collider->GetTrackingTouchSensors().Remove(this);
+			
+			pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
+		}
+		
 	}else{
 		// all colliders left the shape
 		while(pTouchingColliders.GetCount() > 0){
@@ -426,29 +428,6 @@ bool debpTouchSensor::TestCollider(debpCollider *collider){
 			const debpColliderComponent &component = *collider->CastToComponent();
 			
 			if(component.GetSimplePhysicsBody()){
-					/*
-					if(component.GetCollider().GetPosition().IsEqualTo(decDVector(2.161,0.0,3.549), 0.1)){
-						const bool r = component.GetSimplePhysicsBody()->GetRigidBody()
-							&& cw.safeContactPairTest(go, component.GetSimplePhysicsBody()->GetRigidBody());
-						pBullet.LogInfoFormat("BulletBug.TouchSensor.TestCollider: %d", r);
-						
-						if(r){
-							const debpShape::List &sl = component.GetRigShapes();
-							const int count = sl.GetCount();
-							debpShapeToLog visitor;
-							int i;
-							for(i=0; i<count; i++){
-								if(sl.GetAt(i)->GetShape()){
-									visitor.Reset();
-									sl.GetAt(i)->GetShape()->Visit(visitor);
-									pBullet.LogWarnFormat("  %d: %s", i, visitor.GetLog().GetString());
-								}
-							}
-						}
-						
-						return r;
-					}
-					*/
 				return component.GetSimplePhysicsBody()->GetRigidBody()
 					&& cw.safeContactPairTest(go, component.GetSimplePhysicsBody()->GetRigidBody());
 				
@@ -1006,10 +985,11 @@ void debpTouchSensor::UpdateDebugDrawer(){
 		
 		// show shapes if layer mask matches
 		if(!pDDSShape){
-			auto pDDSShape = deDebugDrawerShape::Ref::New();
-			pDDSShape->SetFillColor(debpDebugDrawerColors::touchSensorFill);
-			pDDSShape->SetEdgeColor(debpDebugDrawerColors::touchSensorEdge);
-			pDebugDrawer->AddShape(std::move(pDDSShape));
+			auto shape = deDebugDrawerShape::Ref::New();
+			shape->SetFillColor(debpDebugDrawerColors::touchSensorFill);
+			shape->SetEdgeColor(debpDebugDrawerColors::touchSensorEdge);
+			pDDSShape = shape;
+			pDebugDrawer->AddShape(std::move(shape));
 			UpdateDDSShape();
 		}
 		

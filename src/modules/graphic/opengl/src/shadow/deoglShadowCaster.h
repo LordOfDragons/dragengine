@@ -89,6 +89,9 @@ private:
 	
 	decTList<sShadowLayer> pShadowLayers;
 	
+	int pFRSpotLayer;
+	int pFRPointLayer;
+	
 	
 	
 public:
@@ -186,6 +189,20 @@ public:
 	/** Shadow layer at index. */
 	sShadowLayer &GetShadowLayerAt(int index);
 	const sShadowLayer &GetShadowLayerAt(int index) const;
+	
+	
+	
+	/** Forward rendering spot shadow array layer or -1 if not assigned. */
+	inline int GetFRSpotLayer() const{ return pFRSpotLayer; }
+	
+	/** Set forward rendering spot shadow array layer or -1 if not assigned. */
+	void SetFRSpotLayer(int layer);
+	
+	/** Forward rendering point shadow array layer or -1 if not assigned. */
+	inline int GetFRPointLayer() const{ return pFRPointLayer; }
+	
+	/** Set forward rendering point shadow array layer or -1 if not assigned. */
+	void SetFRPointLayer(int layer);
 	/*@}*/
 };
 

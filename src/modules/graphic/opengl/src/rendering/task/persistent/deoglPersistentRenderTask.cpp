@@ -352,7 +352,7 @@ void deoglPersistentRenderTask::pUpdateSPBInstances(){
 					vao->GetInstances().Visit([&](deoglPersistentRenderTaskInstance *instance){
 						if(instance->GetSIIndexInstanceSPB() != paramBlock){
 							if(paramBlock){
-								paramBlock->UnmapBuffer();
+								paramBlock->UnmapBuffer(false);
 								paramBlock = nullptr;
 							}
 							
@@ -367,12 +367,12 @@ void deoglPersistentRenderTask::pUpdateSPBInstances(){
 		});
 		
 		if(paramBlock){
-			paramBlock->UnmapBuffer();
+			paramBlock->UnmapBuffer(false);
 		}
 		
 	}catch(const deException &){
 		if(paramBlock){
-			paramBlock->UnmapBuffer();
+			paramBlock->UnmapBuffer(false);
 		}
 		throw;
 	}

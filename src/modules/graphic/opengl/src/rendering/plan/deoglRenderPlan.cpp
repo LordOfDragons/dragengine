@@ -49,6 +49,7 @@
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../envmap/deoglEnvironmentMap.h"
+#include "../../extensions/deoglExtensions.h"
 #include "../../light/deoglRLight.h"
 #include "../../model/deoglModelLOD.h"
 #include "../../model/deoglRModel.h"
@@ -74,6 +75,7 @@
 #include "../../renderthread/deoglRTShader.h"
 #include "../../shadow/deoglShadowMapper.h"
 #include "../../shadow/deoglShadowCaster.h"
+#include "../../shadow/deoglFRShadowManager.h"
 #include "../../skin/deoglRSkin.h"
 #include "../../skin/deoglSkinTexture.h"
 #include "../../skin/shader/deoglSkinShader.h"
@@ -124,12 +126,14 @@ pHdrMaxNits(10000),
 pHdrReferenceNits(203),
 pUseConstGIState(nullptr),
 pRenderVR(ervrNone),
+pLowFillRate(false),
 pSkyLightCount(0),
 pLodMaxPixelError(0),
 pLodLevelOffset(0),
 pOcclusionMap(nullptr),
 pOcclusionTest(nullptr),
-pGIState(nullptr)
+pGIState(nullptr),
+pFRLightsValid(false)
 {
 	pCamera = nullptr;
 	pCameraFov = DEG2RAD * 90.0f;
@@ -314,6 +318,9 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	}
 	
 	// the rest is safe
+	pLowFillRate = pRenderThread.GetConfiguration().GetLowFillRate()
+		&& pRenderThread.GetExtensions().GetHasArrayCubeMap();
+	
 	pDebugPrepare();
 	pPlanCamera();
 	SPECIAL_TIMER_PRINT("PrepareCamera")
@@ -332,6 +339,10 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	pPlanSky();
 	pPlanSkyLight();
 	pPlanShadowCasting();
+	
+	if(pLowFillRate){
+		pRenderThread.GetFRShadowManager()->PrepareForRender(*this);
+	}
 	
 	pStartFindContent(mask); // starts parallel tasks
 	SPECIAL_TIMER_PRINT("Planning")
@@ -1452,6 +1463,7 @@ void deoglRenderPlan::CleanUp(){
 	pComponentsOccMap.RemoveAll();
 	SetOcclusionTest(nullptr);
 	SetOcclusionMap(nullptr);
+	pFRLightsValid = false;
 }
 
 
@@ -1849,6 +1861,9 @@ void deoglRenderPlan::DropGIState(){
 	}
 }
 
+void deoglRenderPlan::SetFRLightsValid(bool valid){
+	pFRLightsValid = valid;
+}
 
 
 void deoglRenderPlan::SetDebugTiming(bool debugTiming){

@@ -100,6 +100,9 @@ class LoadStateMachine extends BaseXmlLoader
 			elif tagName.equals("state")
 				stateMachine.addStateReplace(readState(element, stateMachine))
 				
+			elif tagName.equals("transition")
+				stateMachine.addTransition(readTransition(element, stateMachine))
+				
 			elif tagName.equals("import")
 				var StateMachine imported = loadFromFile(\
 					File.absolutePath(element.getFirstCData(), basePath).getPath())
@@ -107,9 +110,11 @@ class LoadStateMachine extends BaseXmlLoader
 				if imported.getInitialState() != null
 					stateMachine.setInitialState(imported.getInitialState())
 				end
-				
 				imported.forEachState(block SMState each
 					stateMachine.addStateReplace(each)
+				end)
+				imported.forEachTransition(block SMTransition each
+					stateMachine.addTransition(each)
 				end)
 				
 			else
@@ -163,25 +168,10 @@ class LoadStateMachine extends BaseXmlLoader
 		var SMStateAction action = SMStateAction.new(id)
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
-			if tagName.equals("parameter")
-				action.getParameters().setAt(element.getAttributeNamed("name"), element.getFirstCData())
-				
-			elif tagName.equals("condition")
-				action.addCondition(element.getFirstCData())
-				
-			elif tagName.equals("conditionMode")
-				var String value = element.getFirstCData()
-				var SMTransition.ConditionMode mode = SMTransition.ConditionMode.named(value)
-				if mode == null
-					logInvalidValue(element, value)
-					throw EInvalidParam.new()
-				end
-				action.setConditionMode(mode)
-				
-			elif tagName.equals("state")
+			if tagName.equals("state")
 				action.setStateID(element.getFirstCData())
 				
-			else
+			elif not readConditionGroup(element, action)
 				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
@@ -190,32 +180,52 @@ class LoadStateMachine extends BaseXmlLoader
 		return action
 	end
 	
+	/** \brief Read condition group. */
+	private func bool readConditionGroup(EasyXMLElement element, SMConditionGroup group)
+		var String tagName = element.getTagName()
+		if tagName.equals("parameter")
+			group.getParameters().setAt(element.getAttributeNamed("name"), element.getFirstCData())
+			
+		elif tagName.equals("condition")
+			group.addCondition(element.getFirstCData())
+			
+		elif tagName.equals("conditionMode")
+			var String value = element.getFirstCData()
+			var SMTransition.ConditionMode mode = SMTransition.ConditionMode.named(value)
+			if mode == null
+				logInvalidValue(element, value)
+				throw EInvalidParam.new()
+			end
+			group.setConditionMode(mode)
+			
+		elif tagName.equals("conditionGroup")
+			var SMConditionGroup subGroup = SMConditionGroup.new()
+			if not readConditionGroup(element, subGroup)
+				logUnknownTag(element)
+				throw EInvalidParam.new()
+			end
+			group.addConditionGroup(subGroup)
+			
+		else
+			return false
+		end
+		return true
+	end
+	
 	/** \brief Read transition. */
 	private func SMTransition readTransition(EasyXMLElement root, StateMachine stateMachine)
-		var String stateId
+		var String stateId, delegate
 		if root.hasAttributeNamed("state")
 			stateId = root.getAttributeNamed("state")
+			
+		elif root.hasAttributeNamed("delegate")
+			delegate = root.getAttributeNamed("delegate")
 		end
-		var SMTransition transition = SMTransition.new(root.getAttributeNamed("event"), stateId)
+		var SMTransition transition = SMTransition.new(root.getAttributeNamed("event"), stateId, delegate)
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			if tagName.equals("action")
 				transition.addAction(readStateAction(element))
-				
-			elif tagName.equals("parameter")
-				transition.getParameters().setAt(element.getAttributeNamed("name"), element.getFirstCData())
-				
-			elif tagName.equals("condition")
-				transition.addCondition(element.getFirstCData())
-				
-			elif tagName.equals("conditionMode")
-				var String value = element.getFirstCData()
-				var SMTransition.ConditionMode mode = SMTransition.ConditionMode.named(value)
-				if mode == null
-					logInvalidValue(element, value)
-					throw EInvalidParam.new()
-				end
-				transition.setConditionMode(mode)
 				
 			elif tagName.equals("import")
 				var String id = element.getFirstCData()
@@ -225,7 +235,7 @@ class LoadStateMachine extends BaseXmlLoader
 				end
 				transition.importState(importState)
 				
-			else
+			elif not readConditionGroup(element, transition)
 				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end

@@ -130,9 +130,12 @@ void deoglSkinStateMapped::UpdateBone(const deComponent &component){
 
 void deoglSkinStateMapped::Update(deoglSkinState &skinState){
 	if(pMapped){
-		pValue = pMapped->Calculate(skinState, *this);
+		const deoglSkinMapped::Result result = pMapped->Calculate(skinState, *this);
+		pValue = result.value;
+		pTexture = result.texture;
 		
 	}else{
 		pValue = 0.0f;
+		pTexture = nullptr;
 	}
 }

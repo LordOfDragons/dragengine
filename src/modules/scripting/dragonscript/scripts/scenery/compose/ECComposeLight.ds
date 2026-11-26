@@ -37,28 +37,17 @@ pin Dragengine.TriggerSystem
  * Provides light support to element class without subclassing from a specific class.
  */
 class ECComposeLight
-	private var ECPEnumeration pType
-	private var ECPColor pColor
-	private var ECPFloat pIntensity
-	private var ECPFloat pAmbientRatio
-	private var ECPFloat pRange
-	private var ECPFloat pHalfIntensityDistance
-	private var ECPFloat pSpotAngle
-	private var ECPFloat pSpotRatio
-	private var ECPFloat pSpotSmoothness
-	private var ECPFloat pSpotExponent
-	private var ECPShapeList pShape
-	private var ECPSkin pLightSkin
-	private var ECPEnumeration pHintMovement
-	private var ECPEnumeration pHintParameter
-	private var ECPInteger pHintShadowImportance
-	private var ECPBoolean pActivated
-	private var ECPBoolean pCastShadows
-	
-	private var LayerMask pLayerMask
-	private var LayerMask pLayerMaskShadow
-	
-	private var String pPrefix
+	var ECPEnumeration pType
+	var ECPColor pColor
+	var ECPFloat pIntensity, pAmbientRatio, pRange, pHalfIntensityDistance
+	var ECPFloat pSpotAngle, pSpotRatio, pSpotSmoothness, pSpotExponent
+	var ECPShapeList pShape
+	var ECPSkin pLightSkin
+	var ECPEnumeration pHintMovement, pHintParameter
+	var ECPInteger pHintShadowImportance
+	var ECPBoolean pActivated, pCastShadows
+	var ECPLayerMask pLayerMask, pLayerMaskShadow
+	var String pPrefix
 	
 	
 	
@@ -68,7 +57,7 @@ class ECComposeLight
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new( ElementClass ownerClass ) this( ownerClass, "light." )
+	func new(ElementClass ownerClass) this(ownerClass, "light.")
 	end
 	
 	/**
@@ -77,234 +66,220 @@ class ECComposeLight
 	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
-	public func new( ElementClass ownerClass, String prefix )
-		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.default, BaseGameApp.WorldLayerBit.envmap )
-		this.pLayerMaskShadow = LayerMask.new( this.pLayerMask )
+	func new(ElementClass ownerClass, String prefix)
+		ownerClass.addProperty(pType = ECPEnumeration.new(prefix + "type", LightType.all(), LightType.point))
+		ownerClass.addProperty(pColor = ECPColor.new(prefix + "color", Color.white))
+		ownerClass.addProperty(pIntensity = ECPFloat.new(prefix + "intensity", 1, 0))
+		ownerClass.addProperty(pAmbientRatio = ECPFloat.new(prefix + "ambientRatio", 0, 0, 1))
+		ownerClass.addProperty(pRange = ECPFloat.new(prefix + "range", 10, 0))
+		ownerClass.addProperty(pHalfIntensityDistance = ECPFloat.new(prefix + "halfIntensityDistance", 0.1, 0, 1))
+		ownerClass.addProperty(pSpotAngle = ECPFloat.new(prefix + "spotAngle", 30, 0, 179))
+		ownerClass.addProperty(pSpotRatio = ECPFloat.new(prefix + "spotRatio", 1, 0))
+		ownerClass.addProperty(pSpotSmoothness = ECPFloat.new(prefix + "spotSmoothness", 1, 0, 1))
+		ownerClass.addProperty(pSpotExponent = ECPFloat.new(prefix + "spotExponent", 2, 0))
+		ownerClass.addProperty(pShape = ECPShapeList.new(prefix + "shape", ownerClass.getSharedCodecPropertyString()))
+		ownerClass.addProperty(pLightSkin = ECPSkin.new(prefix + "lightSkin"))
+		ownerClass.addProperty(pHintMovement = ECPEnumeration.new(prefix + "hintMovement", \
+			LightHintMovement.all(), LightHintMovement.stationary))
+		ownerClass.addProperty(pHintParameter = ECPEnumeration.new(prefix + "hintParameter", \
+			LightHintParameter.all(), LightHintParameter.initial))
+		ownerClass.addProperty(pHintShadowImportance = ECPInteger.new(prefix + "hintShadowImportance", 100, 0, 100))
+		ownerClass.addProperty(pActivated = ECPBoolean.new(prefix + "activated", true))
+		ownerClass.addProperty(pCastShadows = ECPBoolean.new(prefix + "castShadows", true))
 		
-		this.pType = ECPEnumeration.new( prefix + "type", LightType.all(), LightType.point )
-		ownerClass.addProperty( this.pType )
+		var CodecPropertyString codec = ownerClass.getSharedCodecPropertyString()
+		var Dictionary layerMap = BaseGameApp.getApp().getWorldLayerMap()
+		var LayerMask lm = LayerMask.newWith(BaseGameApp.WorldLayerBit.default, BaseGameApp.WorldLayerBit.envmap)
+		ownerClass.addProperty(pLayerMask = ECPLayerMask.new(prefix + "layerMask", codec, layerMap, lm))
+		ownerClass.addProperty(pLayerMaskShadow = ECPLayerMask.new(prefix + "layerMaskShadow", codec, layerMap, lm))
 		
-		this.pColor = ECPColor.new( prefix + "color", Color.white )
-		ownerClass.addProperty( this.pColor )
-		
-		this.pIntensity = ECPFloat.new( prefix + "intensity", 1, 0 )
-		ownerClass.addProperty( this.pIntensity )
-		
-		this.pAmbientRatio = ECPFloat.new( prefix + "ambientRatio", 0, 0, 1 )
-		ownerClass.addProperty( this.pAmbientRatio )
-		
-		this.pRange = ECPFloat.new( prefix + "range", 10, 0 )
-		ownerClass.addProperty( this.pRange )
-		
-		this.pHalfIntensityDistance = ECPFloat.new( prefix + "halfIntensityDistance", 0.1, 0, 1 )
-		ownerClass.addProperty( this.pHalfIntensityDistance )
-		
-		this.pSpotAngle = ECPFloat.new( prefix + "spotAngle", 30, 0, 179 )
-		ownerClass.addProperty( this.pSpotAngle )
-		
-		this.pSpotRatio = ECPFloat.new( prefix + "spotRatio", 1, 0 )
-		ownerClass.addProperty( this.pSpotRatio )
-		
-		this.pSpotSmoothness = ECPFloat.new( prefix + "spotSmoothness", 1, 0, 1 )
-		ownerClass.addProperty( this.pSpotSmoothness )
-		
-		this.pSpotExponent = ECPFloat.new( prefix + "spotExponent", 2, 0 )
-		ownerClass.addProperty( this.pSpotExponent )
-		
-		this.pShape = ECPShapeList.new( prefix + "shape", ownerClass.getSharedCodecPropertyString() )
-		ownerClass.addProperty( this.pShape )
-		
-		this.pLightSkin = ECPSkin.new( prefix + "lightSkin" )
-		ownerClass.addProperty( this.pLightSkin )
-		
-		this.pHintMovement = ECPEnumeration.new( prefix + "hintMovement", \
-			LightHintMovement.all(), LightHintMovement.stationary )
-		ownerClass.addProperty( this.pHintMovement )
-		
-		this.pHintParameter = ECPEnumeration.new( prefix + "hintParameter", \
-			LightHintParameter.all(), LightHintParameter.initial )
-		ownerClass.addProperty( this.pHintParameter )
-		
-		this.pHintShadowImportance = ECPInteger.new( prefix + "hintShadowImportance", 100, 0, 100 )
-		ownerClass.addProperty( this.pHintShadowImportance )
-		
-		this.pActivated = ECPBoolean.new( prefix + "activated", true )
-		ownerClass.addProperty( this.pActivated )
-		
-		this.pCastShadows = ECPBoolean.new( prefix + "castShadows", true )
-		ownerClass.addProperty( this.pCastShadows )
-		
-		this.pPrefix = prefix
+		pPrefix = prefix
 	end
 	
 	
 	
 	/** \brief Light type. */
-	public func ECPEnumeration getType()
-		return this.pType
+	func ECPEnumeration getType()
+		return pType
 	end
 	
 	/** \brief Light color. */
-	public func ECPColor getColor()
-		return this.pColor
+	func ECPColor getColor()
+		return pColor
 	end
 	
 	/** \brief Light intensity. */
-	public func ECPFloat getIntensity()
-		return this.pIntensity
+	func ECPFloat getIntensity()
+		return pIntensity
 	end
 	
 	/** \brief Ambient ratio. */
-	public func ECPFloat getAmbientRatio()
-		return this.pAmbientRatio
+	func ECPFloat getAmbientRatio()
+		return pAmbientRatio
 	end
 	
 	/** \brief Light range. */
-	public func ECPFloat getRange()
-		return this.pRange
+	func ECPFloat getRange()
+		return pRange
 	end
 	
 	/** \brief Half intensity distance. */
-	public func ECPFloat getHalfIntensityDistance()
-		return this.pHalfIntensityDistance
+	func ECPFloat getHalfIntensityDistance()
+		return pHalfIntensityDistance
 	end
 	
 	/** \brief Outer spot Angle. */
-	public func ECPFloat getSpotAngle()
-		return this.pSpotAngle
+	func ECPFloat getSpotAngle()
+		return pSpotAngle
 	end
 	
 	/** \brief Spot ratio as height divided by width. */
-	public func ECPFloat getSpotRatio()
-		return this.pSpotRatio
+	func ECPFloat getSpotRatio()
+		return pSpotRatio
 	end
 	
 	/** \brief Spot smoothness. */
-	public func ECPFloat getSpotSmoothness()
-		return this.pSpotSmoothness
+	func ECPFloat getSpotSmoothness()
+		return pSpotSmoothness
 	end
 	
 	/** \brief Spot exponent. */
-	public func ECPFloat getSpotExponent()
-		return this.pSpotExponent
+	func ECPFloat getSpotExponent()
+		return pSpotExponent
 	end
 	
 	/** \brief Light shape. */
-	public func ECPShapeList getShape()
-		return this.pShape
+	func ECPShapeList getShape()
+		return pShape
 	end
 	
 	/** \brief Light skin. */
-	public func ECPSkin getLightSkin()
-		return this.pLightSkin
+	func ECPSkin getLightSkin()
+		return pLightSkin
 	end
 	
 	/** \brief Hint movement. */
-	public func ECPEnumeration getHintMovement()
-		return this.pHintMovement
+	func ECPEnumeration getHintMovement()
+		return pHintMovement
 	end
 	
 	/** \brief Hint parameter. */
-	public func ECPEnumeration getHintParameter()
-		return this.pHintParameter
+	func ECPEnumeration getHintParameter()
+		return pHintParameter
 	end
 	
 	/** \brief Hint shadow importance. */
-	public func ECPInteger getHintShadowImportance()
-		return this.pHintShadowImportance
+	func ECPInteger getHintShadowImportance()
+		return pHintShadowImportance
 	end
 	
 	/** \brief Initial light activated state. */
-	public func ECPBoolean getActivated()
-		return this.pActivated
+	func ECPBoolean getActivated()
+		return pActivated
 	end
 	
 	/** \brief Light is casting shadows. */
-	public func ECPBoolean getCastShadows()
-		return this.pCastShadows
+	func ECPBoolean getCastShadows()
+		return pCastShadows
 	end
 	
 	/** \brief Property prefix. */
-	public func String getPrefix()
-		return this.pPrefix
+	func String getPrefix()
+		return pPrefix
 	end
 	
 	
 	
-	/** \brief Layer mask affecting lighting. */
-	public func LayerMask getLayerMask()
-		return this.pLayerMask
+	/**
+	 * \brief Layer mask affecting lighting.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskProperty()
+		return pLayerMask
 	end
 	
-	/** \brief Set layer mask affecting lighting. */
-	public func void setLayerMask( LayerMask layerMask )
-		this.pLayerMask = layerMask
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func LayerMask getLayerMask()
+		return pLayerMask.getLayerMask()
 	end
 	
-	/** \brief Layer mask affecting shadow casting. */
-	public func LayerMask getLayerMaskShadow()
-		return this.pLayerMaskShadow
+	/** \deprecated Use \ref #getLayerMaskProperty() instead. */
+	func void setLayerMask(LayerMask layerMask)
+		pLayerMask.setLayerMask(layerMask)
 	end
 	
-	/** \brief Set layer mask affecting shadow casting. */
-	public func void setLayerMaskShadow( LayerMask layerMask )
-		this.pLayerMaskShadow = layerMask
+	/**
+	 * \brief Layer mask affecting shadow casting.
+	 * \version 1.35
+	 */
+	func ECPLayerMask getLayerMaskShadowProperty()
+		return pLayerMaskShadow
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskShadowProperty() instead. */
+	func LayerMask getLayerMaskShadow()
+		return pLayerMaskShadow.getLayerMask()
+	end
+	
+	/** \deprecated Use \ref #getLayerMaskShadowProperty() instead. */
+	func void setLayerMaskShadow(LayerMask layerMask)
+		pLayerMaskShadow.setLayerMask(layerMask)
 	end
 	
 	
 	
 	/** \brief Initialize light for element from stub. */
-	public func Light createLight( Element element, StubElement stub )
+	func Light createLight(Element element, StubElement stub)
 		var CodecPropertyString codec = element.getClass().getCodecPropertyString()
 		var Light light = Light.new()
 		
-		light.setPosition( element.getPosition() )
-		light.setOrientation( element.getOrientation() )
+		light.setPosition(element.getPosition())
+		light.setOrientation(element.getOrientation())
 		
-		light.setType( this.pType.getEnumeration( stub ) cast LightType )
-		light.setColor( this.pColor.getColor( stub, codec ) )
-		light.setIntensity( this.pIntensity.getValue( stub ) )
-		light.setAmbientRatio( this.pAmbientRatio.getValue( stub ) )
-		light.setRange( this.pRange.getValue( stub ) )
-		light.setHalfIntensityDistance( this.pHalfIntensityDistance.getValue( stub ) )
+		light.setType(pType.getEnumeration(stub) cast LightType)
+		light.setColor(pColor.getColor(stub, codec))
+		light.setIntensity(pIntensity.getValue(stub))
+		light.setAmbientRatio(pAmbientRatio.getValue(stub))
+		light.setRange(pRange.getValue(stub))
+		light.setHalfIntensityDistance(pHalfIntensityDistance.getValue(stub))
 		
 		if light.getType() != LightType.point
-			light.setSpotAngle( this.pSpotAngle.getValue( stub ) )
-			light.setSpotRatio( this.pSpotRatio.getValue( stub ) )
-			light.setSpotSmoothness( this.pSpotSmoothness.getValue( stub ) )
-			light.setSpotExponent( this.pSpotExponent.getValue( stub ) )
+			light.setSpotAngle(pSpotAngle.getValue(stub))
+			light.setSpotRatio(pSpotRatio.getValue(stub))
+			light.setSpotSmoothness(pSpotSmoothness.getValue(stub))
+			light.setSpotExponent(pSpotExponent.getValue(stub))
 		end
 		
-		light.setShape( this.pShape.getShapeList( stub ) )
-		light.setLightSkin( this.pLightSkin.getSkin( stub, element.getClass() ) )
-		light.setHintMovement( this.pHintMovement.getEnumeration( stub ) cast LightHintMovement )
-		light.setHintParameter( this.pHintParameter.getEnumeration( stub ) cast LightHintParameter )
-		light.setHintLightImportance( 100 )
-		light.setHintShadowImportance( this.pHintShadowImportance.getValue( stub ) )
+		light.setShape(pShape.getShapeList(stub))
+		light.setLightSkin(pLightSkin.getSkin(stub, element.getClass()))
+		light.setHintMovement(pHintMovement.getEnumeration(stub) cast LightHintMovement)
+		light.setHintParameter(pHintParameter.getEnumeration(stub) cast LightHintParameter)
+		light.setHintLightImportance(100)
+		light.setHintShadowImportance(pHintShadowImportance.getValue(stub))
 		
-		light.setActivated( this.pActivated.getValue( stub ) )
-		light.setCastShadows( this.pCastShadows.getValue( stub ) )
+		light.setActivated(pActivated.getValue(stub))
+		light.setCastShadows(pCastShadows.getValue(stub))
 		
-		light.setLayerMask( this.pLayerMask )
-		light.setLayerMaskShadow( this.pLayerMaskShadow )
+		light.setLayerMask(pLayerMask.getLayerMask(stub))
+		light.setLayerMaskShadow(pLayerMaskShadow.getLayerMask(stub))
 		
 		return light
 	end
 	
 	/** \brief Create activate light trigger expression from stub or \em null if not used. */
-	public func TSTriggerExpression createTriggerActivate( Element element, StubElement stub )
-		return this.createTriggerActivate( element, stub, "" )
+	func TSTriggerExpression createTriggerActivate(Element element, StubElement stub)
+		return createTriggerActivate(element, stub, "")
 	end
 	
 	/** \brief Create activate light trigger expression from stub or \em null if not used. */
-	public func TSTriggerExpression createTriggerActivate( Element element, StubElement stub, String defaultValue )
-		var String value = stub.getPropertyValueFor( this.pPrefix + "trigger", defaultValue )
+	func TSTriggerExpression createTriggerActivate(Element element, StubElement stub, String defaultValue)
+		var String value = stub.getPropertyValueFor(pPrefix + "trigger", defaultValue)
 		
 		if value.empty()
 			return null
 			
 		else
-			return element.getClass().getTriggerExpressionParser().stringToExpression( value )
+			return element.getClass().getTriggerExpressionParser().stringToExpression(value)
 		end
 	end
 end

@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Gui
 
 pin Dragengine.Commands
@@ -32,24 +31,19 @@ pin Dragengine.Gui.Events
  * \brief Action listener running a command.
  */
 class RunCommandActionListener extends DefaultActionListener
-	/** \brief Command manager. */
-	private var CommandManager pCommandManager
-	
-	/** \brief Name of command to execute. */
-	private var String pCommand
-	
+	var CommandManager pCommandManager
+	var String pCommand
 	
 	
 	/** \brief Create action listener. */
-	public func new( CommandManager manager, String command )
+	func new(CommandManager manager, String command)
 		if manager == null or command == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pCommandManager = manager
-		this.pCommand = command
+		pCommandManager = manager
+		pCommand = command
 	end
-	
 	
 	
 	/**
@@ -58,14 +52,10 @@ class RunCommandActionListener extends DefaultActionListener
 	 *          If found the command Command.start() and Command.stop() is called
 	 *          in this order without delay. If not found nothing is done.
 	 */
-	public func void onAction( ActionEvent event )
-		var Command command = this.pCommandManager.getNamed( this.pCommand )
-		
-		if command == null
-			return
+	func void onAction(ActionEvent event)
+		var Command command = this.pCommandManager.getNamed(pCommand)
+		if command != null
+			command.pulse(null)
 		end
-		
-		command.start()
-		command.stop()
 	end
 end

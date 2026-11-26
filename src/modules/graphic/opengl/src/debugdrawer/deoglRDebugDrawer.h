@@ -125,6 +125,9 @@ public:
 	/** Update shapes. */
 	void UpdateShapes(const deDebugDrawer &debugDrawer);
 	
+	/** Update shape parameters. */
+	void UpdateShapeParams(const deDebugDrawer &debugDrawer);
+	
 	/** Determines if the debug drawer has shapes. */
 	inline bool GetHasShapes() const{ return pHasShapes; }
 	
