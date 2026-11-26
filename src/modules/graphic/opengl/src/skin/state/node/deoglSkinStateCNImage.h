@@ -33,6 +33,7 @@
 #include <dragengine/resources/image/deImage.h>
 
 class deSkinPropertyNodeImage;
+class deoglRDSRenderable;
 
 
 /**
@@ -47,6 +48,7 @@ private:
 	const deImage::Ref pSyncImage;
 	const deoglRImage::Ref pImage;
 	const decPoint pRepeat;
+	deoglRDSRenderable *pRenderable;
 	deoglTexture *pTexture;
 	
 	decTexMatrix2 pTCTransform;
@@ -89,6 +91,9 @@ public:
 	
 	/** Texture coordinates clamp maximum. */
 	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
+	
+	/** Renderable. */
+	inline deoglRDSRenderable *GetRenderable() const{ return pRenderable; }
 	
 	/** Texture. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }

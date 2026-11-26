@@ -112,12 +112,12 @@ const deoglSkinStateMapped &mapped) const{
 			break;
 		}
 		
-		deoglRDSRenderable * const dsrenderable = dynamicSkin->GetRenderableAt(hostRenderable);
-		if(!dsrenderable){
+		result.renderable = dynamicSkin->GetRenderableAt(hostRenderable);
+		if(!result.renderable){
 			break;
 		}
 		
-		const auto color = dsrenderable->GetRenderColor({});
+		const auto color = result.renderable->GetRenderColor({});
 		switch(pMapped.GetRenderableComponent()){
 		case deSkinMapped::ercRed:
 			result.value = color.r;
@@ -135,8 +135,6 @@ const deoglSkinStateMapped &mapped) const{
 			result.value = color.a;
 			break;
 		}
-		
-		result.texture = dsrenderable->GetRenderTexture();
 		}break;
 		
 	default:

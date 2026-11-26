@@ -28,7 +28,7 @@
 class deoglRenderThread;
 class deoglSkinState;
 class deoglRComponent;
-class deoglTexture;
+class deoglRDSRenderable;
 class deoglSkinMapped;
 
 class deComponent;
@@ -44,7 +44,7 @@ private:
 	const deoglRComponent *pComponent;
 	int pBone;
 	float pBoneInputValue;
-	deoglTexture *pTexture;
+	deoglRDSRenderable *pRenderable;
 	
 	
 	
@@ -86,8 +86,8 @@ public:
 	/** Bone input value. */
 	inline float GetBoneInputValue() const{ return pBoneInputValue; }
 	
-	/** Texture. */
-	inline deoglTexture *GetTexture() const{ return pTexture; }
+	/** Renderable or nullptr. */
+	inline deoglRDSRenderable *GetRenderable() const{ return pRenderable; }
 	
 	/** Map bone. */
 	void MapBone(const deComponent &component);
