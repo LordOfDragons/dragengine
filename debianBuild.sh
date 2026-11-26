@@ -48,7 +48,7 @@ fetchExternals() {
     lib_modio_fetch lib_openxr_fetch lib_steamsdk_fetch \
     lib_libapng_fetch lib_jsoncpp_fetch lib_freetype_fetch \
     lib_denetwork_fetch lib_deremotelauncher_fetch \
-    lib_libavif_fetch lib_svtav1_fetch || exit 1
+    lib_libavif_fetch lib_svtav1_fetch lib_msdfgen_fetch || exit 1
 }
 
 addIncludeBinaryEntry() {
@@ -83,6 +83,7 @@ writeIncludeBinaries() {
   addIncludeBinaryEntry "extern/freetype/freetype-*.tar.xz"
   addIncludeBinaryEntry "extern/libavif/libavif-*.tar.xz"
   addIncludeBinaryEntry "extern/svtav1/svt-av1-*.tar.xz"
+  addIncludeBinaryEntry "extern/msdfgen/msdfgen-*.tar.xz"
   addIncludeBinaryEntry "extern/*/*.sha256sum"
 }
 
@@ -151,6 +152,7 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../$FILETAR \
   `dir -1 extern/freetype/freetype-*.tar.xz` \
   `dir -1 extern/libavif/libavif-*.tar.xz` \
   `dir -1 extern/svtav1/svt-av1-*.tar.xz` \
+  `dir -1 extern/msdfgen/msdfgen-*.tar.xz` \
   `dir -1 extern/*/*.sha256sum` || exit 1
 gzip ../$FILETAR || exit 1
 
