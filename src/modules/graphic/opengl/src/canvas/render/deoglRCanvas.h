@@ -52,12 +52,10 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
-	decVector2 pPosition;
-	decVector2 pSize;
+	decVector2 pPosition, pSize;
 	decTexMatrix2 pTransform;
 	decColorMatrix pColorTransform;
-	float pOrder;
-	float pTransparency;
+	float pOrder, pTransparency;
 	deCanvas::eBlendModes pBlendMode;
 	deoglRCanvas::Ref pMask;
 	bool pVisible;
