@@ -203,7 +203,7 @@ bool deglbLauncher::RunCommandLineGame(){
 			decString error;
 			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
 				GetLogger()->LogError(GetLogSource(), "Can not run game. Profile problems:");
-				profile->LogProblems();
+				profile->LogProblems(*this);
 				BAlert alert("Can not run game", error, "OK");
 				alert.Go();
 				return false;

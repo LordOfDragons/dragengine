@@ -458,7 +458,7 @@ void deglbWindowMain::RunDelga(const char *filename){
 	delGameProfile *profile = game->GetProfileToUse();
 	if(!profile->GetValid()){
 		pLauncher->GetLogger()->LogError(pLauncher->GetLogSource(), "Can not run game. Profile problems:");
-		profile->LogProblems();
+		profile->LogProblems(*pLauncher);
 		BAlert alert("Can not run game", "Game profile is not valid.", "OK");
 		alert.Go();
 		return;
